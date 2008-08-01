@@ -1,7 +1,6 @@
 package jshm.gh;
 
-public enum Game {
-	UNKNOWN,
+public enum GameTitle {
 	GH1,
 	GH2,
 	GH80,
