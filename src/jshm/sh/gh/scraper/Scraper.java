@@ -1,16 +1,11 @@
 package jshm.sh.gh.scraper;
 
-import org.htmlparser.NodeFilter;
+import org.htmlparser.*;
+import org.htmlparser.http.*;
 import org.htmlparser.beans.FilterBean;
-import org.htmlparser.filters.AndFilter;
-import org.htmlparser.filters.HasAttributeFilter;
-import org.htmlparser.filters.HasParentFilter;
-import org.htmlparser.filters.NodeClassFilter;
-import org.htmlparser.filters.NotFilter;
-import org.htmlparser.filters.RegexFilter;
-import org.htmlparser.filters.TagNameFilter;
-import org.htmlparser.nodes.TextNode;
-import org.htmlparser.util.NodeList;
+import org.htmlparser.filters.*;
+import org.htmlparser.nodes.*;
+import org.htmlparser.util.*;
 
 /**
  * This class serves to scrape song data from ScoreHero.
@@ -26,7 +21,13 @@ public class Scraper {
 	 * @return
 	 */
 	public static NodeList scrape(final String url) {
-		return scrape(url, true);
+		return scrape(url, true, jshm.sh.Client.getAuthCookies());
+	}
+	
+	public static NodeList scrape(
+		final String url,
+		final org.apache.commons.httpclient.Cookie[] cookies) {
+		return scrape(url, true, cookies);
 	}
 	
 	/**
@@ -35,9 +36,14 @@ public class Scraper {
 	 * @param url
 	 * @param removeWhitespace Whether to remove TextNodes that
 	 * contain only whitespace
+	 * @param cookies Any cookies that should be passed along with
+	 * the request
 	 * @return
 	 */
-	public static NodeList scrape(final String url, final boolean removeWhitespace) {
+	public static NodeList scrape(
+		final String url,
+		final boolean removeWhitespace,
+		final org.apache.commons.httpclient.Cookie[] cookies) {
 		// HtmlParser semi auto-generated filter stuff
 		
 		NodeFilter[] array2 = null;
@@ -80,7 +86,20 @@ public class Scraper {
         bean.setFilters (array2);
         
         // }}}
-
+        
+        // set cookies if necessary
+        if (null != cookies) {
+        	ConnectionManager cm = Parser.getConnectionManager();
+        	Cookie cookie = null;
+        	
+        	// have to convert from commons cookie to htmlparser cookie
+        	for (org.apache.commons.httpclient.Cookie c : cookies) {
+        		cookie = new Cookie(c.getName(), c.getValue());
+        		cookie.setDomain(c.getDomain());
+        		cm.setCookie(cookie, c.getDomain());
+        	}
+        }
+        
         bean.setURL(url);
         NodeList nodes = bean.getNodes();
         

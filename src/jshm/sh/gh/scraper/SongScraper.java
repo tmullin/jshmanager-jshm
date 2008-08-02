@@ -11,7 +11,7 @@ import org.htmlparser.tags.*;
 import org.htmlparser.util.*;
 
 import jshm.exceptions.*;
-import jshm.sh.Difficulty;
+import jshm.sh.*;
 import jshm.sh.gh.*;
 
 /**
@@ -34,11 +34,10 @@ public class SongScraper {
 		final List<Song> songs, final Game game, final Difficulty difficulty)
 	throws ScraperException {
 		NodeList nodes = Scraper.scrape(
-			String.format(
-				URLs.SONG_STATS,
-				SongStat.TOTAL_NOTES.id,
-				game.id,
-				difficulty.id)/*, false*/);
+			URLs.gh.getSongStatsUrl(
+				SongStat.TOTAL_NOTES,
+				game,
+				difficulty)/*, false*/);
 		
 		//System.out.println(nodes.toHtml());
 		//System.exit(0);
@@ -262,11 +261,10 @@ outerRowLoop:
 		final List<Song> songs, final Game game, final Difficulty difficulty)
 	throws ScraperException {
 		NodeList nodes = Scraper.scrape(
-			String.format(
-				URLs.SONG_STATS,
-				SongStat.ALL_CUTOFFS.id,
-				game.id,
-				difficulty.id));
+			URLs.gh.getSongStatsUrl(
+				SongStat.ALL_CUTOFFS,
+				game,
+				difficulty));
 		
         SimpleNodeIterator it = nodes.elements();
         
