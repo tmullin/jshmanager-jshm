@@ -1,6 +1,6 @@
 package jshm.sh.scraper.format;
 
-public class FormatException extends Exception {
+public class FormatException extends RuntimeException {
 	public FormatException(String message) {
 		super(message);
 	}

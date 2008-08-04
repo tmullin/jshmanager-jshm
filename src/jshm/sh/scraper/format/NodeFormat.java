@@ -6,7 +6,7 @@ import org.htmlparser.util.*;
 /**
  * This class specifies what text to return from
  * a given node. By default node.getText() is returned.
- * @author Tim
+ * @author Tim Mullin
  *
  */
 public class NodeFormat {
@@ -18,11 +18,6 @@ public class NodeFormat {
 	
 	public static final NodeFormat PARSE_FLOAT = new NodeFormat(
 		new RegexFormatCallback("^.*?(\\d+(?:\\.\\d+)?).*?$", 1)
-	);
-	
-	public static final NodeFormat SONG_ID_LINK = new TagFormat(
-		"href",
-		new RegexFormatCallback("^.*song=(\\d+).*$", 1)
 	);
 	
 	protected NodeFormatCallback formatCb;
@@ -61,5 +56,12 @@ public class NodeFormat {
 	 */
 	protected String getTextInternal(final Node node) {
 		return Translate.decode(node.getText());
+	}
+	
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof NodeFormat)) return false;
+		
+		return formatCb.equals(((NodeFormat) o).formatCb);
 	}
 }

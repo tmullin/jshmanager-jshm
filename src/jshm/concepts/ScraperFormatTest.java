@@ -19,12 +19,12 @@ public class ScraperFormatTest {
 	static void myScores() throws Exception {
 		TableRowFormat f1 = TableRowFormat.factory("text");
 		TableRowFormat f2 = TableRowFormat.factory(
-			"-|-|text|-|-|text=int|img=src~text=float|text=int|text=int|text|text");
+			"-|-|text|-|-|text=int|img=rating~text=float|text=int|text=int|text|text");
 		
 		Game game = Game.GH3_XBOX360;
 		Difficulty diff = Difficulty.EXPERT;
 		
-		Client.getAuthCookies("somuser", "somepass");
+		Client.getAuthCookies("someuser", "somepass");
 		NodeList nodes = Scraper.scrape(
 			URLs.gh.getManageScoresUrl(
 				game,

@@ -31,7 +31,7 @@ public class Song {
 	public int eightStarCutoff 	= 0;
 	public int nineStarCutoff 	= 0;
 	
-	public void setScoreAndCutoffs(Song source) {
+	public void setScoreAndCutoffs(final Song source) {
 		this.baseScore 			= source.baseScore;
 		this.fourStarCutoff 	= source.fourStarCutoff;
 		this.fiveStarCutoff 	= source.fiveStarCutoff;

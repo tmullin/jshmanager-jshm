@@ -15,6 +15,15 @@ public class TagFormat extends NodeFormat {
 	public static final TagFormat HREF =
 		new TagFormat("href");
 	
+	public static final TagFormat STAR_RATING_SRC = new TagFormat(
+		"src",
+		new RegexFormatCallback("^.*rating_(\\d)\\.gif$", 1)
+	);
+	public static final TagFormat SONG_ID_HREF = new TagFormat(
+		"href",
+		new RegexFormatCallback("^.*song=(\\d+).*$", 1)
+	);
+	
 	protected String attribute;
 	
 	public TagFormat(final String attribute) {

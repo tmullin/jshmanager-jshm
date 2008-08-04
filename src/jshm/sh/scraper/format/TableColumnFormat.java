@@ -11,6 +11,11 @@ import org.htmlparser.tags.ImageTag;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.tags.TableColumn;
 
+/**
+ * 
+ * @author Tim Mullin
+ *
+ */
 public class TableColumnFormat {
 	// some basic types
 	public static final TableColumnFormat PLAIN_TEXT =
@@ -18,21 +23,33 @@ public class TableColumnFormat {
 	public static final TableColumnFormat COMMA_NUMBER =
 		new TableColumnFormat(TextNode.class, NodeFormat.KEEP_NUMBERS);
 	public static final TableColumnFormat SONG_ID_LINK =
-		new TableColumnFormat(LinkTag.class, NodeFormat.SONG_ID_LINK);
+		new TableColumnFormat(LinkTag.class, TagFormat.SONG_ID_HREF);
 	
-	private static final Pattern FORMAT_SPLIT_REGEX1 =
-		Pattern.compile("~");
-	private static final Pattern FORMAT_SPLIT_REGEX2 =
-		Pattern.compile("=");
-	private static final Pattern FORMAT_SPLIT_REGEX3 =
-		Pattern.compile(",");
 
-	private static final Map<String, NodeFormat> TEXT_ARG_MAP =
-		new HashMap<String, NodeFormat>();
+	private static final Map<String, Map<String, NodeFormat>> ARG_MAP =
+		new HashMap<String, Map<String, NodeFormat>>();
+	private static final Map<String, Class<? extends Node>> TYPE_MAP =
+		new HashMap<String, Class<? extends Node>>();
 	
 	static {
-		TEXT_ARG_MAP.put("int", NodeFormat.KEEP_NUMBERS);
-		TEXT_ARG_MAP.put("float", NodeFormat.PARSE_FLOAT);
+		Map<String, NodeFormat> tmp = new HashMap<String, NodeFormat>();
+		tmp.put("", NodeFormat.DEFAULT);
+		tmp.put("int", NodeFormat.KEEP_NUMBERS);
+		tmp.put("float", NodeFormat.PARSE_FLOAT);
+		ARG_MAP.put("text", tmp);
+		TYPE_MAP.put("text", TextNode.class);
+		
+		tmp = new HashMap<String, NodeFormat>();
+		tmp.put("", TagFormat.HREF);
+		tmp.put("songid", TagFormat.SONG_ID_HREF);
+		ARG_MAP.put("link", tmp);
+		TYPE_MAP.put("link", LinkTag.class);
+		
+		tmp = new HashMap<String, NodeFormat>();
+		tmp.put("", TagFormat.SRC);
+		tmp.put("rating", TagFormat.STAR_RATING_SRC);
+		ARG_MAP.put("img", tmp);
+		TYPE_MAP.put("img", ImageTag.class);
 	}
 	
 	private static final Map<String, Object[]> TAG_ARG_MAP =
@@ -45,6 +62,13 @@ public class TableColumnFormat {
 	
 	// text|text=int|tag=img-src|text=int,-,int~tag=img
 	
+	private static final Pattern FORMAT_SPLIT_REGEX1 =
+		Pattern.compile("~");
+	private static final Pattern FORMAT_SPLIT_REGEX2 =
+		Pattern.compile("=");
+	private static final Pattern FORMAT_SPLIT_REGEX3 =
+		Pattern.compile(",");
+	
 	public static TableColumnFormat factory(String format)
 	throws FormatException {
 		TableColumnFormat fmt = new TableColumnFormat();
@@ -54,7 +78,7 @@ public class TableColumnFormat {
 			final String[] typeParts = FORMAT_SPLIT_REGEX2.split(s);
 			
 			if (typeParts.length > 2)
-				throw new FormatException("Invalid format: " + s);
+				throw new InvalidFormatException(s);
 			
 			String type = typeParts[0];
 			String[] args = new String[0];
@@ -68,12 +92,13 @@ public class TableColumnFormat {
 			
 			if ("-".equals(type)) {
 				continue; // ignore column
-			} else if ("text".equals(type)) {
-				myClass = TextNode.class;
+			} else if (ARG_MAP.containsKey(type)) {
+				final Map<String, NodeFormat> curFmtMap = ARG_MAP.get(type);
+				myClass = TYPE_MAP.get(type);
 				
 				if (args.length == 0) {
 					myFmts = new NodeFormat[] {
-						NodeFormat.DEFAULT
+						curFmtMap.get("")
 					};
 				}
 				
@@ -82,34 +107,16 @@ public class TableColumnFormat {
 					
 					if ("-".equals(args[i])) {
 						// keep the null
-					} else if (TEXT_ARG_MAP.containsKey(args[i])) {
-						curFmt = TEXT_ARG_MAP.get(args[i]);
+					} else if (curFmtMap.containsKey(args[i])) {
+						curFmt = curFmtMap.get(args[i]);
 					} else {
-						throw new FormatException("Unknown text arg: " + args[i]);
+						throw new InvalidFormatArgumentException(type + "=" + args[i]);
 					}
 					
 					myFmts[i] = curFmt;
 				}
-			} else if (TAG_ARG_MAP.containsKey(type)) {
-				Object[] arr = TAG_ARG_MAP.get(type);
-				myClass = (Class<? extends Node>) arr[0];				
-				
-				if (args.length == 0) {
-					myFmts = new NodeFormat[] {
-						(NodeFormat) arr[1]
-					};
-				}
-				
-				for (int i = 0; i < args.length; i++) {
-					if ("-".equals(args[i])) {
-						myFmts[i] = null;
-						continue;
-					}
-					
-					myFmts[i] = new TagFormat(args[i]);
-				}
 			} else {
-				throw new FormatException("Unknown node type: " + type);
+				throw new UndefinedFormatTypeException(type);
 			}
 			
 			fmt.addType(myClass, myFmts);
@@ -156,6 +163,26 @@ public class TableColumnFormat {
 		this.formats.add(formats);
 	}
 	
+	
+	/**
+	 * Cache for the NodeClassFilters
+	 */
+	private static final Map<Class<? extends Node>, NodeFilter> CLASS_FILTER_CACHE =
+		new HashMap<Class<? extends Node>, NodeFilter>();
+	
+	private static NodeFilter getNodeFilter(Class<? extends Node> nodeType) {
+		if (!CLASS_FILTER_CACHE.containsKey(nodeType)) {
+			CLASS_FILTER_CACHE.put(nodeType, new NodeClassFilter(nodeType));
+		}
+		
+		return CLASS_FILTER_CACHE.get(nodeType);
+	}
+	
+	/**
+	 * Returns the data to be found by this format.
+	 * @param tc
+	 * @return
+	 */
 	public String[] getData(TableColumn tc) {
 		List<String> data = new ArrayList<String>();
 		
@@ -165,8 +192,7 @@ public class TableColumnFormat {
 		for (int i = 0; i < typesSize; i++) {
 			NodeFormat[] curFormats = formats.get(i);
 			
-			// TODO cache filters once we create them initially
-			NodeFilter filter = new NodeClassFilter(types.get(i));
+			NodeFilter filter = getNodeFilter(types.get(i));
 			NodeList nodes = tc.getChildren().extractAllNodesThatMatch(filter, true);
 			final int nodesSize = nodes.size();
 			
@@ -177,6 +203,24 @@ public class TableColumnFormat {
 			}
 		}
 		
-		return data.toArray(new String[] {});
+		return data.size() > 0 ? data.toArray(new String[] {}) : null;
+	}
+	
+	
+	public boolean equals(Object o) {
+		if (o == this) return true;
+		if (!(o instanceof TableColumnFormat)) return false;
+		
+		TableColumnFormat f = (TableColumnFormat) o;
+		
+		if (!this.types.equals(f.types)) return false;
+		if (this.formats.size() != f.formats.size()) return false;
+		
+		for (int i = 0; i < this.formats.size(); i++) {
+			if (!Arrays.equals(this.formats.get(i), f.formats.get(i)))
+				return false;
+		}
+		
+		return true;
 	}
 }

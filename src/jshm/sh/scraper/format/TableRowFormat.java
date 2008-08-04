@@ -14,7 +14,7 @@ import org.htmlparser.tags.*;
  */
 public class TableRowFormat {
 	private static final Pattern FORMAT_SPLIT_PATTERN =
-		Pattern.compile("\\s*\\|\\s*");
+		Pattern.compile("\\|");
 	
 	public static TableRowFormat factory(final String format)
 	throws FormatException {
@@ -74,7 +74,10 @@ public class TableRowFormat {
 			if (!(children.elementAt(i) instanceof TableColumn))
 				throw new FormatException("Received a TableRow where one of the child nodes isn't a TableColumn");
 			
-			data.add(curFormat.getData((TableColumn) children.elementAt(i)));
+			String[] curData = curFormat.getData((TableColumn) children.elementAt(i));
+			
+			if (null != curData)
+				data.add(curData);
 		}
 		
 		return data.toArray(new String[][] {});
