@@ -1,6 +1,6 @@
 package jshm.concepts;
 
-import org.apache.commons.httpclient.Cookie;
+// import org.apache.commons.httpclient.Cookie;
 import org.htmlparser.util.*;
 
 import jshm.sh.*;
@@ -9,13 +9,14 @@ import jshm.sh.gh.scraper.Scraper;
 
 public class HttpClientLoginTest {	
 	public static void main(String[] args) throws Exception {
-		Cookie[] cookies =
+		// Cookie[] cookies =
 			Client.getAuthCookies(
 				"someuser", "somepass", true);
 		
 		NodeList nodes = Scraper.scrape(
-			jshm.sh.URLs.gh.getManageScoresUrl(Game.GH3_XBOX360, Difficulty.EXPERT),
-			false, cookies);
+			jshm.sh.URLs.gh.getManageScoresUrl(
+				Game.GH3_XBOX360, Difficulty.EXPERT),
+			false);
 		
 		System.out.println(nodes.toHtml());
 	}

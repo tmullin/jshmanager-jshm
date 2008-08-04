@@ -13,6 +13,7 @@ import org.htmlparser.util.*;
 import jshm.exceptions.*;
 import jshm.sh.*;
 import jshm.sh.gh.*;
+import jshm.sh.gh.scraper.Scraper;
 
 /**
  * This class serves to scrape all necessary info from
