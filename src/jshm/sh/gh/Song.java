@@ -41,6 +41,10 @@ public class Song {
 		this.nineStarCutoff 	= source.nineStarCutoff;
 	}
 	
+	public String getTierName() {
+		return game.title.getTierName(this.tierLevel);
+	}
+	
 	public boolean equals(Object o) {
 		if (!(o instanceof Song)) return false;
 		

@@ -23,6 +23,12 @@ public enum Game {
 	GH3_WII(8, Platform.WII, GameTitle.GH3),
 	GH3_PC(9, Platform.PC, GameTitle.GH3),
 	
+	GHOT_DS(10, Platform.DS, GameTitle.GHOT),
+	
+	GHA_PS2(11, Platform.PS2, GameTitle.GHA),
+	GHA_XBOX360(12, Platform.XBOX360, GameTitle.GHA),
+	GHA_PS3(13, Platform.PS3, GameTitle.GHA),
+	GHA_WII(14, Platform.WII, GameTitle.GHA)
 	;
 	
 	/**

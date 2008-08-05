@@ -33,7 +33,7 @@ public class ScraperFormatTest {
 		SimpleNodeIterator it = nodes.elements();
 		
         // have to track the tier while we traverse the rows
-        String curTierName = "";
+//        String curTierName = "";
     	int curTierLevel = 0;
     	int totalSongs = 0;
         
@@ -60,7 +60,7 @@ public class ScraperFormatTest {
         		String[][] tierData = f1.getData(tr);
         		print(tierData);
         		
-        		curTierName = tierData[0][0];
+//        		curTierName = tierData[0][0];
         		curTierLevel++;
         		
         		continue;
