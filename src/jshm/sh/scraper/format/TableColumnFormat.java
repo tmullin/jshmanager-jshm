@@ -32,35 +32,98 @@ public class TableColumnFormat {
 		new HashMap<String, Class<? extends Node>>();
 	
 	static {
-		Map<String, NodeFormat> tmp = new HashMap<String, NodeFormat>();
-		tmp.put("", NodeFormat.DEFAULT);
-		tmp.put("int", NodeFormat.KEEP_NUMBERS);
-		tmp.put("float", NodeFormat.PARSE_FLOAT);
-		ARG_MAP.put("text", tmp);
-		TYPE_MAP.put("text", TextNode.class);
+		addFormat("text", TextNode.class,
+			NodeFormat.DEFAULT,
+			"int", NodeFormat.KEEP_NUMBERS,
+			"float", NodeFormat.PARSE_FLOAT);
 		
-		tmp = new HashMap<String, NodeFormat>();
-		tmp.put("", TagFormat.HREF);
-		tmp.put("songid", TagFormat.SONG_ID_HREF);
-		ARG_MAP.put("link", tmp);
-		TYPE_MAP.put("link", LinkTag.class);
+		addFormat("link", LinkTag.class,
+			TagFormat.HREF,
+			"songid", TagFormat.SONG_ID_HREF);
 		
-		tmp = new HashMap<String, NodeFormat>();
-		tmp.put("", TagFormat.SRC);
-		tmp.put("rating", TagFormat.STAR_RATING_SRC);
-		ARG_MAP.put("img", tmp);
-		TYPE_MAP.put("img", ImageTag.class);
+		addFormat("img", ImageTag.class,
+			TagFormat.SRC,
+			"rating", TagFormat.STAR_RATING_SRC);
+	}
+
+	/**
+	 * Edits a format that {@link #factory(String)} is able to parse.
+	 * @param typeName The format name to edit. Built-in types include "text", "img", "link".
+	 * @param args See {@link #addFormat(String, Class, Object[])} for details. 
+	 */
+	public static void addFormat(final String typeName, final Object ... args) {
+		addFormat(typeName, null, args);
 	}
 	
-	private static final Map<String, Object[]> TAG_ARG_MAP =
-		new HashMap<String, Object[]>();
-	
-	static {
-		TAG_ARG_MAP.put("img", new Object[] { ImageTag.class, TagFormat.SRC});
-		TAG_ARG_MAP.put("link", new Object[] { LinkTag.class, TagFormat.HREF});
+	/**
+	 * Adds or edits a format that {@link #factory(String)} will be
+	 * able to parse. 
+	 * @param typeName The format name to add or edit. Built-in types include "text", "img", "link".
+	 * @param nodeClass The Node class type to associate with the typeName
+	 * when adding new formats. It must be null when editing an existing format.
+	 * @param args This should contain alternating Strings and {@link NodeFormat}s that
+	 * will serve as arguments in the format string for {@link #factory(String)}.
+	 * You may have the first element be a NodeFormat instead of a String to
+	 * specify the default NodeFormat.
+	 * @see #addType(Class, NodeFormat[])
+	 */
+	public static void addFormat(final String typeName, Class<? extends Node> nodeClass, final Object ... args) {
+		if (args.length < 1)
+			throw new IllegalArgumentException("args must have at least 1 element");
+		
+		final boolean modifyingExistingType = ARG_MAP.containsKey(typeName);
+		
+		if (!modifyingExistingType && null == nodeClass)
+			throw new IllegalArgumentException("nodeClass cannot be null when adding a new format");
+		
+		final Map<String, NodeFormat> tmp =
+			modifyingExistingType
+			? ARG_MAP.get(typeName)
+			: new HashMap<String, NodeFormat>();
+			
+		boolean didDefault = false;
+		int i = 0;
+		
+		// if the first arg is a NodeFormat, then it is to be
+		// the default NodeFormat
+		if (args[i] instanceof NodeFormat) {
+			// there must be an odd number of args
+			if ((args.length & 1) != 1) {
+				throw new IllegalArgumentException("args must have an odd number of elements when the first is the default format");
+			}
+			
+			tmp.put("", (NodeFormat) args[i]);
+			didDefault = true;
+			i++;
+		} else if ((args.length & 1) != 0) {
+			throw new IllegalArgumentException("args must have an even number of elements when the first is not the default format");
+		}
+		
+		for (int j = i; j < args.length; j += 2) {
+			if (!(args[j] instanceof String))
+				throw new IllegalArgumentException("args[" + j + "] should be a String");
+			if (!(args[j + 1] instanceof NodeFormat))
+				throw new IllegalArgumentException("args[" + j + "] should be a NodeFormat");
+			
+			String key = (String) args[j];
+			NodeFormat fmt = (NodeFormat) args[j + 1];
+			
+			tmp.put(key, fmt);
+			
+			if ("".equals(key))
+				didDefault = true;
+		}
+		
+		if (!didDefault)
+			throw new IllegalArgumentException("args must contain a default format");
+		
+		ARG_MAP.put(typeName, tmp);
+		
+		if (null != nodeClass)
+			TYPE_MAP.put(typeName, nodeClass);
 	}
 	
-	// text|text=int|tag=img-src|text=int,-,int~tag=img
+	// text|text=int|img|text=int,-,int~img
 	
 	private static final Pattern FORMAT_SPLIT_REGEX1 =
 		Pattern.compile("~");
