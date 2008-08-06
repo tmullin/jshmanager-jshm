@@ -17,6 +17,8 @@ public class TieredTabularDataExtractor {
         SimpleNodeIterator it = nodes.elements();
         
         while (it.hasMoreNodes()) {
+        	if (handler.ignoreNewData()) break;
+        	
         	Node node = it.nextNode();
         	
         	if (!(node instanceof TableRow)) {

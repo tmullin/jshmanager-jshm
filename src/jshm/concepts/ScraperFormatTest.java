@@ -21,7 +21,7 @@ public class ScraperFormatTest {
 		TableRowFormat f2 = TableRowFormat.factory(
 			"-|-|text|-|-|text=int|img=rating~text=float|text=int|text=int|text|text");
 		
-		Game game = Game.GH3_XBOX360;
+		GhGame game = GhGame.GH3_XBOX360;
 		Difficulty diff = Difficulty.EXPERT;
 		
 		Client.getAuthCookies("someuser", "somepass");
@@ -77,7 +77,7 @@ public class ScraperFormatTest {
 //		TableRowFormat f1 = new TableRowFormat(
 //			TableColumnFormat.PLAIN_TEXT
 //		);
-		TableRowFormat f1 = TableRowFormat.factory("text");
+//		TableRowFormat f1 = TableRowFormat.factory("text");
 	
 		// "text|text=int|tag=img-src ..."
 		
@@ -92,7 +92,7 @@ public class ScraperFormatTest {
 		TableRowFormat f2 = TableRowFormat.factory(
 			"text|text=int|text=int|text=int|text=int|text=int|text=int|text=int");
 		
-		Game game = Game.GH3_XBOX360;
+		GhGame game = GhGame.GH3_XBOX360;
 		Difficulty diff = Difficulty.EXPERT;
 		
 		NodeList nodes = Scraper.scrape(
@@ -104,7 +104,7 @@ public class ScraperFormatTest {
 		SimpleNodeIterator it = nodes.elements();
 		
         // have to track the tier while we traverse the rows
-        String curTierName = "";
+//        String curTierName = "";
     	int curTierLevel = 0;
     	int totalSongs = 0;
         
@@ -128,10 +128,10 @@ public class ScraperFormatTest {
         	
         	if (tr.getChildCount() == 2) {
         		// should be tier name row
-        		String[][] tierData = f1.getData(tr);
+//        		String[][] tierData = f1.getData(tr);
         		// print(tierData);
         		
-        		curTierName = tierData[0][0];
+//        		curTierName = tierData[0][0];
         		curTierLevel++;
         		
         		continue;
@@ -140,11 +140,10 @@ public class ScraperFormatTest {
     		String[][] songData = f2.getData(tr);
     		// print(songData);
     		
-        	Song curSong = new Song();
-        	curSong.game = game;
-        	curSong.difficulty = diff;
-        	curSong.tierLevel = curTierLevel;
-        	curSong.tierName = curTierName;
+        	GhSong curSong = new GhSong();
+        	curSong.setGame(game);
+        	curSong.setDifficulty(diff);
+        	curSong.setTierLevel(curTierLevel);
         	
         	for (int i = 0; i < 8; i++) {
         		int k = 0;
@@ -154,14 +153,14 @@ public class ScraperFormatTest {
         		} catch (NumberFormatException e) {}
         		
         		switch (i) {
-        			case 0: curSong.title = songData[i][0]; break;
-        			case 1: curSong.baseScore = k; break;
-        			case 2: curSong.fourStarCutoff = k; break;
-        			case 3: curSong.fiveStarCutoff = k; break;
-        			case 4: curSong.sixStarCutoff = k; break;
-        			case 5: curSong.sevenStarCutoff = k; break;
-        			case 6: curSong.eightStarCutoff = k; break;
-        			case 7: curSong.nineStarCutoff = k; break;
+        			case 0: curSong.setTitle(songData[i][0]); break;
+        			case 1: curSong.setBaseScore(k); break;
+        			case 2: curSong.setFourStarCutoff(k); break;
+        			case 3: curSong.setFiveStarCutoff(k); break;
+        			case 4: curSong.setSixStarCutoff(k); break;
+        			case 5: curSong.setSevenStarCutoff(k); break;
+        			case 6: curSong.setEightStarCutoff(k); break;
+        			case 7: curSong.setNineStarCutoff(k); break;
         		}
         	}
         	

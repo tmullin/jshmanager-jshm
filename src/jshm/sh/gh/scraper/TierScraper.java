@@ -10,7 +10,7 @@ import jshm.sh.scraper.*;
 import jshm.sh.gh.*;
 
 public class TierScraper {
-	public static List<String> scrape(Game game)
+	public static List<String> scrape(GhGame game)
 	throws ScraperException {
 		final Difficulty difficulty = Difficulty.EXPERT;
 		

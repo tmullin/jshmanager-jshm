@@ -10,7 +10,7 @@ import java.util.*;
  *
  */
 public class Score {
-	public Song song = null;
+	public GhSong song = null;
 	public int score = 0;
 	public int observedRating = 0;
 	public float calculatedRating = 0.0f;

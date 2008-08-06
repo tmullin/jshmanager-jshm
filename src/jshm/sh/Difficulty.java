@@ -24,4 +24,12 @@ public enum Difficulty {
 	public String toShortString() {
 		return shortName;
 	}
+	
+	public static Difficulty getById(final int id) {
+		for (Difficulty d : Difficulty.values())
+			if (d.id == id)
+				return d;
+		
+		throw new IllegalArgumentException("invalid difficulty id: " + id);
+	}
 }

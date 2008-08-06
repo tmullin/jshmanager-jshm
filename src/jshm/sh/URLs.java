@@ -1,6 +1,6 @@
 package jshm.sh;
 
-import jshm.sh.gh.Game;
+import jshm.sh.gh.GhGame;
 import jshm.sh.gh.SongStat;
 
 public class URLs {
@@ -18,11 +18,11 @@ public class URLs {
 			MANAGE_SCORES = BASE + "/manage_scores.php?game=%s&diff=%s"
 			;
 		
-		public static String getSongStatsUrl(final SongStat stat, final Game game, final Difficulty difficulty) {
+		public static String getSongStatsUrl(final SongStat stat, final GhGame game, final Difficulty difficulty) {
 			return String.format(SONG_STATS, stat.id, game.id, difficulty.id);
 		}
 		
-		public static String getManageScoresUrl(final Game game, final Difficulty difficulty) {
+		public static String getManageScoresUrl(final GhGame game, final Difficulty difficulty) {
 			return String.format(MANAGE_SCORES, game.id, difficulty.id);
 		}
 	}

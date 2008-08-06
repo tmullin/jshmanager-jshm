@@ -10,11 +10,11 @@ public class ShGhScraperTest {
 	public static void main(String[] args) throws Exception {
 		jshm.util.TestTimer.start(true);
 		
-		List<Song> songs = 
+		List<GhSong> songs = 
 			SongScraper.scrape(
-				Game.GH3_XBOX360, Difficulty.EXPERT);
+				GhGame.GH2_XBOX360, Difficulty.EXPERT);
 		
-		for (Song s : songs) {
+		for (GhSong s : songs) {
 			System.out.println(s);
 		}
 		

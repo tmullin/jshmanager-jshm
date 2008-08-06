@@ -6,7 +6,7 @@ import org.htmlparser.tags.*;
 import org.htmlparser.util.*;
 
 import jshm.exceptions.*;
-import jshm.sh.gh.Song;
+import jshm.sh.gh.GhSong;
 import jshm.sh.gh.scraper.Scraper;
 
 public class HtmlParserTest {
@@ -23,7 +23,7 @@ public class HtmlParserTest {
         SimpleNodeIterator it = nodes.elements();
         
         // have to track the tier while we traverse the rows
-        String curTierName = "";
+//        String curTierName = "";
     	int curTierLevel = 0;
     	int totalSongs = 0;
         
@@ -48,9 +48,8 @@ outerRowLoop:
         	
         	int curCol = 0;
         	boolean expectTierName = false;
-        	Song curSong = new Song();
-        	curSong.tierName = curTierName;
-        	curSong.tierLevel = curTierLevel;
+        	GhSong curSong = new GhSong();
+        	curSong.setTierLevel(curTierLevel);
         	
         	NodeTreeWalker walker = new NodeTreeWalker(node);
         	
@@ -116,14 +115,14 @@ outerRowLoop:
 	        			} catch (NumberFormatException e) {}
 	        			
 	        			switch (++curCol) {
-	        				case 1: curSong.title = s; break;
-	        				case 2: curSong.baseScore = i; break;
-	        				case 3: curSong.fourStarCutoff = i; break;
-	        				case 4: curSong.fiveStarCutoff = i; break;
-	        				case 5: curSong.sixStarCutoff = i; break;
-	        				case 6: curSong.sevenStarCutoff = i; break;
-	        				case 7: curSong.eightStarCutoff = i; break;
-	        				case 8: curSong.nineStarCutoff = i; break;
+	        				case 1: curSong.setTitle(s); break;
+	        				case 2: curSong.setBaseScore(i); break;
+	        				case 3: curSong.setFourStarCutoff(i); break;
+	        				case 4: curSong.setFiveStarCutoff(i); break;
+	        				case 5: curSong.setSixStarCutoff(i); break;
+	        				case 6: curSong.setSevenStarCutoff(i); break;
+	        				case 7: curSong.setEightStarCutoff(i); break;
+	        				case 8: curSong.setNineStarCutoff(i); break;
 	        				
 	        				default:
 	        					throw new ScraperException("Invalid curCol value: " + curCol);
@@ -135,12 +134,11 @@ outerRowLoop:
 	        		tn.setText(Translate.decode(tn.getText()));
 	        		
 	        		if (expectTierName) {
-	        			curTierName = tn.getText();
+//	        			curTierName = tn.getText();
 	        			curTierLevel++;
 	        			expectTierName = false;
 	        			
-	        			curSong.tierName = curTierName;
-	        			curSong.tierLevel = curTierLevel;
+	        			curSong.setTierLevel(curTierLevel);
 	        			
 	        			// get rid of the next td and text node
 	        			try {
@@ -182,7 +180,7 @@ outerRowLoop:
 	        	}
         	}
         	
-        	curSong.order = ++totalSongs;
+        	curSong.setOrder(++totalSongs);
         	
         	System.out.println("SONG: " + curSong);
         }

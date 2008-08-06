@@ -8,7 +8,6 @@ import jshm.exceptions.*;
 import jshm.sh.*;
 import jshm.sh.scraper.*;
 import jshm.sh.gh.*;
-import jshm.sh.gh.scraper.Scraper;
 
 /**
  * This class serves to scrape all necessary info from
@@ -17,11 +16,11 @@ import jshm.sh.gh.scraper.Scraper;
  *
  */
 public class SongScraper {
-	public static List<Song> scrape(
-		final Game game, final Difficulty difficulty)
+	public static List<GhSong> scrape(
+		final GhGame game, final Difficulty difficulty)
 	throws ScraperException {
 		
-		List<Song> songs = new ArrayList<Song>();
+		List<GhSong> songs = new ArrayList<GhSong>();
 		
 		NodeList nodes = Scraper.scrape(
 			URLs.gh.getSongStatsUrl(
@@ -47,17 +46,17 @@ public class SongScraper {
 	}
 	
 	private static class IdAndNoteHandler extends TieredTabularDataAdapter {
-		final Game game;
+		final GhGame game;
 		final Difficulty difficulty;
-		final List<Song> songs;
+		final List<GhSong> songs;
 		
 		String curTierName = "UNKNOWN";
 		int curTierLevel = 0;
 		
 		public IdAndNoteHandler(
-			final Game game,
+			final GhGame game,
 			final Difficulty difficulty,
-			final List<Song> songs) {
+			final List<GhSong> songs) {
 			this.game = game;
 			this.difficulty = difficulty;
 			this.songs = songs;
@@ -68,38 +67,44 @@ public class SongScraper {
 		}
 		
 		public void handleTierRow(String tierName) throws ScraperException {
+			// this will prevent retrieval of the gh3 demo tier
+			// on the gh2 page, for example
+			if (curTierLevel >= game.title.getTierCount()) {
+				ignoreNewData = true;
+				return;
+			}
+			
 			curTierName = tierName;
 			curTierLevel++;
 		}
 		
-		public void handleDataRow(String[][] data) throws ScraperException {
-        	Song curSong = new Song();
-        	curSong.game = game;
-        	curSong.difficulty = difficulty;
-        	curSong.tierName = curTierName;
-        	curSong.tierLevel = curTierLevel;
+		public void handleDataRow(String[][] data) throws ScraperException {			
+        	GhSong curSong = new GhSong();
+        	curSong.setGame(game);
+        	curSong.setDifficulty(difficulty);
+        	curSong.setTierLevel(curTierLevel);
         	
     		try {
-    			curSong.id = Integer.parseInt(data[0][0]);
+    			curSong.setId(Integer.parseInt(data[0][0]));
     		} catch (NumberFormatException e) {}
     		
-    		curSong.title = data[1][0];
+    		curSong.setTitle(data[1][0]);
     		
     		try {
-    			curSong.noteCount = Integer.parseInt(data[2][0]);
+    			curSong.setNoteCount(Integer.parseInt(data[2][0]));
     		} catch (NumberFormatException e) {}
     		
         	songs.add(curSong);
-        	curSong.order = songs.size();
+        	curSong.setOrder(songs.size());
 		}
 	}
 	
 	private static class CutoffHandler extends TieredTabularDataAdapter {
-		final List<Song> songs;
+		final List<GhSong> songs;
 		int totalSongs = 0;
 		
 		public CutoffHandler(
-			final List<Song> songs) {
+			final List<GhSong> songs) {
 			this.songs = songs;
 		}
 		
@@ -108,7 +113,7 @@ public class SongScraper {
 		}
 		
 		public void handleDataRow(String[][] data) throws ScraperException {
-        	Song curSong = new Song();
+        	GhSong curSong = new GhSong();
         	
     		for (int i = 0; i < data.length; i++) {
     			String s = data[i][0];
@@ -119,21 +124,22 @@ public class SongScraper {
     			} catch (NumberFormatException e) {}
     			
     			switch (i) {
-    				case 0: curSong.title = s; break;
-    				case 1: curSong.baseScore = k; break;
-    				case 2: curSong.fourStarCutoff = k; break;
-    				case 3: curSong.fiveStarCutoff = k; break;
-    				case 4: curSong.sixStarCutoff = k; break;
-    				case 5: curSong.sevenStarCutoff = k; break;
-    				case 6: curSong.eightStarCutoff = k; break;
-    				case 7: curSong.nineStarCutoff = k; break;
+    				case 0: curSong.setTitle(s); break;
+    				case 1: curSong.setBaseScore(k); break;
+    				case 2: curSong.setFourStarCutoff(k); break;
+    				case 3: curSong.setFiveStarCutoff(k); break;
+    				case 4: curSong.setSixStarCutoff(k); break;
+    				case 5: curSong.setSevenStarCutoff(k); break;
+    				case 6: curSong.setEightStarCutoff(k); break;
+    				case 7: curSong.setNineStarCutoff(k); break;
     			}
     		}
         	
         	try {
         		songs.get(totalSongs++).setScoreAndCutoffs(curSong);
         	} catch (IndexOutOfBoundsException e) {
-        		throw new ScraperException("Song list is out of sync", e);
+        		ignoreNewData = true;
+//        		throw new ScraperException("Song list is out of sync", e);
         	}
 		}
 	}

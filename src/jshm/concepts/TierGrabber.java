@@ -14,14 +14,14 @@ import jshm.sh.gh.scraper.*;
  */
 public class TierGrabber {
 	public static void main(String[] args) throws Exception {
-		Game[] games = new Game[] {
-			Game.GH1_PS2, Game.GH2_XBOX360, Game.GH80_PS2,
-			Game.GH3_XBOX360, Game.GHOT_DS, Game.GHA_XBOX360
+		GhGame[] games = new GhGame[] {
+			GhGame.GH1_PS2, GhGame.GH2_XBOX360, GhGame.GH80_PS2,
+			GhGame.GH3_XBOX360, GhGame.GHOT_DS, GhGame.GHA_XBOX360
 		};
 		
 		jshm.util.TestTimer.start();
 		
-		for (Game game : games) {
+		for (GhGame game : games) {
 			List<String> tiers = TierScraper.scrape(game);
 			
 			System.out.print(game.title + "(\"");
