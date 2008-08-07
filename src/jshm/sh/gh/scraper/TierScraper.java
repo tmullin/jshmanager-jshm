@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.htmlparser.util.NodeList;
 
+import jshm.Difficulty;
 import jshm.exceptions.*;
 import jshm.sh.*;
 import jshm.sh.scraper.*;

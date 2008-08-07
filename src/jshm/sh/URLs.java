@@ -1,5 +1,6 @@
 package jshm.sh;
 
+import jshm.Difficulty;
 import jshm.sh.gh.GhGame;
 import jshm.sh.gh.SongStat;
 

@@ -4,8 +4,9 @@ import java.util.List;
 
 import org.hibernate.Session;
 
+import jshm.Difficulty;
+import jshm.Song;
 import jshm.hibernate.HibernateUtil;
-import jshm.sh.Difficulty;
 import jshm.sh.gh.GhGame;
 import jshm.sh.gh.GhSong;
 import jshm.sh.gh.scraper.SongScraper;
@@ -25,7 +26,7 @@ public class GhSongDbTest {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         
-        for (GhSong song : songs)
+        for (Song song : songs)
         	session.save(song);
         
         session.getTransaction().commit();
@@ -38,7 +39,7 @@ public class GhSongDbTest {
 	    List<GhSong> result = (List<GhSong>) session.createQuery("from GhSong").list();
 	    session.getTransaction().commit();
 	    
-	    for (GhSong s : result)
+	    for (Song s : result)
 	    	System.out.println(s);
 	}
 }

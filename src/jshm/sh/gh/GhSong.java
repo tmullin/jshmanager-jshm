@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 import org.hibernate.validator.*;
 
-import jshm.sh.Difficulty;
+import jshm.Difficulty;
 
 
 /**
@@ -14,13 +14,7 @@ import jshm.sh.Difficulty;
  *
  */
 @Entity
-public class GhSong implements java.io.Serializable {
-	/**
-	 * The ScoreHero id for this song.
-	 */
-	private int id	  = 0;
-	private int order = 0;
-	
+public class GhSong extends jshm.Song implements java.io.Serializable {
 	private 		  int		 gameId		  = 0;
 	private transient GhGame 	 game 		  = null;
 	
@@ -88,24 +82,6 @@ public class GhSong implements java.io.Serializable {
 	
 	// getters/setters
 	
-	@Id @Min(1)
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	@Column(name="ordering") // "order" is a reserved sql word
-	public int getOrder() {
-		return order;
-	}
-
-	public void setOrder(int order) {
-		this.order = order;
-	}
-
 	public int getGameId() {
 		return gameId;
 	}
@@ -116,6 +92,7 @@ public class GhSong implements java.io.Serializable {
 		getGame();
 	}
 	
+	@Override
 	@Transient
 	public GhGame getGame() {
 		if (null == game)

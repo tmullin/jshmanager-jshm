@@ -3,6 +3,7 @@ package jshm.concepts;
 // import org.apache.commons.httpclient.Cookie;
 import org.htmlparser.util.*;
 
+import jshm.Difficulty;
 import jshm.sh.*;
 import jshm.sh.gh.*;
 import jshm.sh.gh.scraper.Scraper;

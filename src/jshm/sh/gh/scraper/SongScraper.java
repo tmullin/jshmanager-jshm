@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.htmlparser.util.*;
 
+import jshm.Difficulty;
 import jshm.exceptions.*;
 import jshm.sh.*;
 import jshm.sh.scraper.*;
@@ -85,7 +86,7 @@ public class SongScraper {
         	curSong.setTierLevel(curTierLevel);
         	
     		try {
-    			curSong.setId(Integer.parseInt(data[0][0]));
+    			curSong.setScoreHeroId(Integer.parseInt(data[0][0]));
     		} catch (NumberFormatException e) {}
     		
     		curSong.setTitle(data[1][0]);

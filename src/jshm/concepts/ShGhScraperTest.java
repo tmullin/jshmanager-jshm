@@ -2,7 +2,8 @@ package jshm.concepts;
 
 import java.util.*;
 
-import jshm.sh.Difficulty;
+import jshm.Difficulty;
+import jshm.Song;
 import jshm.sh.gh.*;
 import jshm.sh.gh.scraper.*;
 
@@ -14,7 +15,7 @@ public class ShGhScraperTest {
 			SongScraper.scrape(
 				GhGame.GH2_XBOX360, Difficulty.EXPERT);
 		
-		for (GhSong s : songs) {
+		for (Song s : songs) {
 			System.out.println(s);
 		}
 		

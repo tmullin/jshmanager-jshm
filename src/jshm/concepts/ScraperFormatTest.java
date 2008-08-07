@@ -5,6 +5,7 @@ import org.htmlparser.tags.TableRow;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.SimpleNodeIterator;
 
+import jshm.Difficulty;
 import jshm.exceptions.ScraperException;
 import jshm.sh.*;
 import jshm.sh.gh.*;

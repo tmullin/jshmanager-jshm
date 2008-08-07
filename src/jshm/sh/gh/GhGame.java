@@ -1,7 +1,12 @@
 package jshm.sh.gh;
 
+import jshm.Difficulty;
+import jshm.Instrument;
 import jshm.gh.Platform;
 import jshm.gh.GameTitle;
+
+// TODO pull up the platform and gmae title and comvert them
+// to be more generic.
 
 /**
  * This class represents a Guitar Hero game as far as it
@@ -41,9 +46,13 @@ public class GhGame extends jshm.Game {
 		GHA_PS2, GHA_XBOX360, GHA_PS3, GHA_WII
 	};
 	
+	private static final Instrument.Group[] DEFAULT_SUPPORTED_INSTRUMENT_GROUPS = new Instrument.Group[] {
+		Instrument.Group.GUITAR, Instrument.Group.GUITAR_BASS
+	};
+	
 	private static final int
 		MIN_STARS			 = 3,
-		MAX_OBSERVABLE_STARS = 5,
+		MAX_STARS			 = 5,
 		MAX_CALCULABLE_STARS = 9;
 	
 	/**
@@ -81,27 +90,7 @@ public class GhGame extends jshm.Game {
 	}
 
 	
-	// override abstract methods
-	
-	@Override
-	public int getMaxObservableStars() {
-		return MAX_OBSERVABLE_STARS;
-	}
-
-	@Override
-	public int getMinStars() {
-		return MIN_STARS;
-	}
-
-	@Override
-	public boolean supportsCalculableStars() {
-		return true;
-	}
-	
-	@Override
-	public int getMaxCalculableStars() {
-		return MAX_CALCULABLE_STARS;
-	}
+	// override Object methods
 	
 	@Override
 	public boolean equals(Object o) {
@@ -119,5 +108,38 @@ public class GhGame extends jshm.Game {
 	@Override
 	public String toString() {
 		return title + "_" + platform;
+	}
+	
+	
+	// override abstract methods
+	
+	@Override
+	public int getMaxStars() {
+		return MAX_STARS;
+	}
+
+	@Override
+	public int getMinStars() {
+		return MIN_STARS;
+	}
+
+	@Override
+	public boolean supportsCalculableStars() {
+		return true;
+	}
+	
+	@Override
+	public float getMaxCalculableStars() {
+		return MAX_CALCULABLE_STARS;
+	}
+
+	@Override
+	public Difficulty.Strategy getDifficultyStrategy() {
+		return Difficulty.Strategy.BY_SONG;
+	}
+	
+	@Override
+	public Instrument.Group[] getSupportedInstrumentGroups() {
+		return DEFAULT_SUPPORTED_INSTRUMENT_GROUPS;
 	}
 }
