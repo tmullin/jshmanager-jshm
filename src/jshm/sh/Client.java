@@ -78,14 +78,14 @@ public class Client {
 		post.releaseConnection();
 		
 		if (body.contains("Invalid login, please try again.")) {
-			throw new ClientException("Invalid login credentials");
+			throw new ClientException("invalid login credentials");
 		}
 		
 		if (body.contains("Too many failed attempts, you must wait before trying again.")) {
-			throw new ClientException("Too many failed login attempts");
+			throw new ClientException("too many failed login attempts");
 		}
 		
-		return null;
+		throw new ClientException("login failed, unknown error");
 	}
 	
 	/**

@@ -1,11 +1,10 @@
-package jshm.sh.gh;
+package jshm.gh;
 
 import javax.persistence.*;
 
 import org.hibernate.validator.*;
 
 import jshm.Difficulty;
-import jshm.gh.GhGameTitle;
 
 
 /**

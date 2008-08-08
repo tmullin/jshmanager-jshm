@@ -6,15 +6,15 @@ import org.hibernate.Session;
 
 import jshm.Difficulty;
 import jshm.Song;
+import jshm.gh.GhGame;
+import jshm.gh.GhSong;
 import jshm.hibernate.HibernateUtil;
-import jshm.sh.gh.GhGame;
-import jshm.sh.gh.GhSong;
-import jshm.sh.gh.scraper.SongScraper;
+import jshm.sh.scraper.GhSongScraper;
 
 public class GhSongDbTest {
 	public static void main(String[] args) throws Exception {
 		List<GhSong> songs = 
-			SongScraper.scrape(
+			GhSongScraper.scrape(
 				GhGame.GH3_XBOX360, Difficulty.EXPERT);
 		
 		storeSongs(songs);

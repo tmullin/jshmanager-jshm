@@ -1,4 +1,4 @@
-package jshm.sh.scraper;
+package jshm.scraper;
 
 import org.htmlparser.tags.*;
 

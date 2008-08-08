@@ -1,4 +1,4 @@
-package jshm.sh.gh.scraper;
+package jshm.sh.scraper;
 
 import java.util.*;
 
@@ -6,20 +6,21 @@ import org.htmlparser.util.NodeList;
 
 import jshm.Difficulty;
 import jshm.exceptions.*;
+import jshm.gh.GhGame;
+import jshm.scraper.TieredTabularDataAdapter;
+import jshm.scraper.TieredTabularDataExtractor;
 import jshm.sh.*;
-import jshm.sh.scraper.*;
-import jshm.sh.gh.*;
 
-public class TierScraper {
+public class GhTierScraper {
 	public static List<String> scrape(GhGame game)
 	throws ScraperException {
 		final Difficulty difficulty = Difficulty.EXPERT;
 		
         List<String> tiers = new ArrayList<String>();
         
-		NodeList nodes = Scraper.scrape(
+		NodeList nodes = GhScraper.scrape(
 			URLs.gh.getSongStatsUrl(
-				SongStat.TOTAL_NOTES,
+				GhSongStat.TOTAL_NOTES,
 				game,
 				difficulty));
         

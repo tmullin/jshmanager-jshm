@@ -1,6 +1,6 @@
 package jshm.sh;
 
-import jshm.sh.scraper.format.*;
+import jshm.scraper.format.*;
 
 /**
  * This stores some information about the table layouts

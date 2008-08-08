@@ -6,15 +6,15 @@ import org.htmlparser.tags.*;
 import org.htmlparser.util.*;
 
 import jshm.exceptions.*;
-import jshm.sh.gh.GhSong;
-import jshm.sh.gh.scraper.Scraper;
+import jshm.gh.GhSong;
+import jshm.sh.scraper.GhScraper;
 
 public class HtmlParserTest {
 	static final String GH3X_CUTOFFS = "http://www.scorehero.com/songstats.php?stat=4&group=4&game=6&diff=4";
 	static final String GH3X_TOTAL_NOTES = "http://www.scorehero.com/songstats.php?stat=3&group=4&game=6&diff=4";
 	
 	public static void main(String[] args) throws Exception {
-		NodeList nodes = Scraper.scrape(GH3X_CUTOFFS);
+		NodeList nodes = GhScraper.scrape(GH3X_CUTOFFS);
 		
 //		NodeList nodes = GhScraper.scrape(GH3X_TOTAL_NOTES, false);
 //        System.out.println(nodes.toHtml());

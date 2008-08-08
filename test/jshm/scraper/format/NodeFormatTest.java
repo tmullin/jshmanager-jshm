@@ -1,4 +1,6 @@
-package jshm.sh.scraper.format;
+package jshm.scraper.format;
+
+import jshm.scraper.format.NodeFormat;
 
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -39,6 +41,12 @@ public class NodeFormatTest {
 	@Test public void parseFloatTest2() {
 		TextNode node = new TextNode("#$%123ABC");
 		assertEquals("123",
+			NodeFormat.PARSE_FLOAT.getText(node));
+	}
+	
+	@Test public void parseFloatTest3() {
+		TextNode node = new TextNode("(.1234)ABC");
+		assertEquals(".1234",
 			NodeFormat.PARSE_FLOAT.getText(node));
 	}
 }

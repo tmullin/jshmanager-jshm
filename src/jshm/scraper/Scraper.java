@@ -1,4 +1,4 @@
-package jshm.sh.scraper;
+package jshm.scraper;
 
 import org.htmlparser.*;
 import org.htmlparser.http.*;
@@ -8,24 +8,17 @@ import org.htmlparser.nodes.*;
 import org.htmlparser.util.*;
 
 /**
- * This class serves to scrape various data from ScoreHero.
- * @author Tim
+ * This class serves to scrape data from a URL.
+ * @author Tim Mullin
  *
  */
 public class Scraper {
-	/**
-	 * Retrieves a NodeList of all TR elements of interest 
-	 * (and children) from the supplied URL. TextNodes
-	 * that contain only whitespace are removed.
-	 * @param url
-	 * @return
-	 */
 	public static NodeList scrape(final String url, final NodeFilter[] filters) {
 		return scrape(url, filters, true);
 	}
 	
 	public static NodeList scrape(final String url, final NodeFilter[] filters, final boolean removeWhitespace) {
-		return scrape(url, filters, removeWhitespace, jshm.sh.Client.getAuthCookies());
+		return scrape(url, filters, removeWhitespace, null);
 	}
 	
 	/**

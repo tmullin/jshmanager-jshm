@@ -1,4 +1,4 @@
-package jshm.sh.gh.scraper;
+package jshm.sh.scraper;
 
 import java.util.*;
 
@@ -6,10 +6,13 @@ import org.htmlparser.util.*;
 
 import jshm.Difficulty;
 import jshm.exceptions.*;
+import jshm.gh.GhGame;
 import jshm.gh.GhGameTitle;
+import jshm.gh.GhSong;
+import jshm.scraper.TieredTabularDataAdapter;
+import jshm.scraper.TieredTabularDataExtractor;
+import jshm.scraper.TieredTabularDataHandler;
 import jshm.sh.*;
-import jshm.sh.scraper.*;
-import jshm.sh.gh.*;
 
 /**
  * This class serves to scrape all necessary info from
@@ -17,16 +20,20 @@ import jshm.sh.gh.*;
  * @author Tim Mullin
  *
  */
-public class SongScraper {
+public class GhSongScraper {
+	static {
+		Formats.init();
+	}
+	
 	public static List<GhSong> scrape(
 		final GhGame game, final Difficulty difficulty)
 	throws ScraperException {
 		
 		List<GhSong> songs = new ArrayList<GhSong>();
 		
-		NodeList nodes = Scraper.scrape(
+		NodeList nodes = GhScraper.scrape(
 			URLs.gh.getSongStatsUrl(
-				SongStat.TOTAL_NOTES,
+				GhSongStat.TOTAL_NOTES,
 				game,
 				difficulty));
 		
@@ -35,9 +42,9 @@ public class SongScraper {
 		
 		TieredTabularDataExtractor.extract(nodes, handler);
 		
-		nodes = Scraper.scrape(
+		nodes = GhScraper.scrape(
 			URLs.gh.getSongStatsUrl(
-				SongStat.ALL_CUTOFFS,
+				GhSongStat.ALL_CUTOFFS,
 				game,
 				difficulty));
 		

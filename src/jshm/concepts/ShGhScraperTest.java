@@ -4,15 +4,16 @@ import java.util.*;
 
 import jshm.Difficulty;
 import jshm.Song;
-import jshm.sh.gh.*;
-import jshm.sh.gh.scraper.*;
+import jshm.gh.GhGame;
+import jshm.gh.GhSong;
+import jshm.sh.scraper.GhSongScraper;
 
 public class ShGhScraperTest {
 	public static void main(String[] args) throws Exception {
 		jshm.util.TestTimer.start(true);
 		
 		List<GhSong> songs = 
-			SongScraper.scrape(
+			GhSongScraper.scrape(
 				GhGame.GH2_XBOX360, Difficulty.EXPERT);
 		
 		for (Song s : songs) {

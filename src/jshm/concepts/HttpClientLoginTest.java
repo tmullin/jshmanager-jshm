@@ -4,9 +4,9 @@ package jshm.concepts;
 import org.htmlparser.util.*;
 
 import jshm.Difficulty;
+import jshm.gh.GhGame;
 import jshm.sh.*;
-import jshm.sh.gh.*;
-import jshm.sh.gh.scraper.Scraper;
+import jshm.sh.scraper.GhScraper;
 
 public class HttpClientLoginTest {	
 	public static void main(String[] args) throws Exception {
@@ -14,7 +14,7 @@ public class HttpClientLoginTest {
 			Client.getAuthCookies(
 				"someuser", "somepass", true);
 		
-		NodeList nodes = Scraper.scrape(
+		NodeList nodes = GhScraper.scrape(
 			jshm.sh.URLs.gh.getManageScoresUrl(
 				GhGame.GH3_XBOX360, Difficulty.EXPERT),
 			false);

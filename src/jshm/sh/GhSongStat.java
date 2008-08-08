@@ -1,4 +1,4 @@
-package jshm.sh.gh;
+package jshm.sh;
 
 /**
  * This contains ScoreHero's ids for the different
@@ -6,7 +6,7 @@ package jshm.sh.gh;
  * @author Tim
  *
  */
-public enum SongStat {
+public enum GhSongStat {
 	FOUR_STAR_CUTOFF(1),
 	FIVE_STAR_CUTOFF(2),
 	TOTAL_NOTES(3),
@@ -14,7 +14,7 @@ public enum SongStat {
 	
 	public final int id;
 	
-	private SongStat(final int id) {
+	private GhSongStat(final int id) {
 		this.id = id;
 	}
 }

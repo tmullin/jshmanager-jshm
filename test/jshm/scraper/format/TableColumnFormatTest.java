@@ -1,4 +1,12 @@
-package jshm.sh.scraper.format;
+package jshm.scraper.format;
+
+import jshm.scraper.format.InvalidFormatArgumentException;
+import jshm.scraper.format.InvalidFormatException;
+import jshm.scraper.format.NodeFormat;
+import jshm.scraper.format.TableColumnFormat;
+import jshm.scraper.format.TagFormat;
+import jshm.scraper.format.UndefinedFormatTypeException;
+import jshm.sh.scraper.Formats;
 
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -43,7 +51,7 @@ public class TableColumnFormatTest {
 	
 	@Test public void linkSongIdTest() {
 		TableColumnFormat fmt1 =
-			new TableColumnFormat(LinkTag.class, TagFormat.SONG_ID_HREF);
+			new TableColumnFormat(LinkTag.class, Formats.SONG_ID_HREF);
 		TableColumnFormat fmt2 = TableColumnFormat.factory("link=songid");
 		assertEquals(fmt1, fmt2);
 	}
@@ -57,7 +65,7 @@ public class TableColumnFormatTest {
 	
 	@Test public void imgRatingTest() {
 		TableColumnFormat fmt1 =
-			new TableColumnFormat(ImageTag.class, TagFormat.STAR_RATING_SRC);
+			new TableColumnFormat(ImageTag.class, Formats.STAR_RATING_SRC);
 		TableColumnFormat fmt2 = TableColumnFormat.factory("img=rating");
 		assertEquals(fmt1, fmt2);
 	}
@@ -65,7 +73,7 @@ public class TableColumnFormatTest {
 	@Test public void multiTest1() {
 		// img=rating~text=float
 		TableColumnFormat fmt1 = new TableColumnFormat();
-		fmt1.addType(ImageTag.class, TagFormat.STAR_RATING_SRC);
+		fmt1.addType(ImageTag.class, Formats.STAR_RATING_SRC);
 		fmt1.addType(TextNode.class, NodeFormat.PARSE_FLOAT);
 		TableColumnFormat fmt2 = TableColumnFormat.factory("img=rating~text=float");
 		assertEquals(fmt1, fmt2);

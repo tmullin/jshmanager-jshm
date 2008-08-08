@@ -1,4 +1,4 @@
-package jshm.sh.rb;
+package jshm.sh;
 
 import java.util.*;
 

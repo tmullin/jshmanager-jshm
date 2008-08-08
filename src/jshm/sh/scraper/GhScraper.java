@@ -1,11 +1,13 @@
-package jshm.sh.gh.scraper;
+package jshm.sh.scraper;
+
+import jshm.scraper.Scraper;
 
 import org.htmlparser.*;
 import org.htmlparser.filters.*;
 import org.htmlparser.util.*;
 
-public class Scraper {
-	private static NodeFilter[] filters = null;
+public class GhScraper {
+	public static final NodeFilter[] filters;
 	
 	/**
 	 * This sets up the filters for the Guitar Hero page
@@ -50,6 +52,6 @@ public class Scraper {
 	}
 	
 	public static NodeList scrape(String url, boolean removeWhitespace) {
-        return jshm.sh.scraper.Scraper.scrape(url, filters, removeWhitespace);
+        return Scraper.scrape(url, filters, removeWhitespace);
 	}
 }

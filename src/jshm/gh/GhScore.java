@@ -1,4 +1,4 @@
-package jshm.sh.gh;
+package jshm.gh;
 
 /**
  * This class represents one Guitar Hero score entry as far as

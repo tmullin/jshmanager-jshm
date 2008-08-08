@@ -7,10 +7,11 @@ import org.htmlparser.util.SimpleNodeIterator;
 
 import jshm.Difficulty;
 import jshm.exceptions.ScraperException;
+import jshm.gh.GhGame;
+import jshm.gh.GhSong;
+import jshm.scraper.format.*;
 import jshm.sh.*;
-import jshm.sh.gh.*;
-import jshm.sh.gh.scraper.*;
-import jshm.sh.scraper.format.*;
+import jshm.sh.scraper.GhScraper;
 
 public class ScraperFormatTest {
 	public static void main(String[] args) throws Exception {
@@ -26,7 +27,7 @@ public class ScraperFormatTest {
 		Difficulty diff = Difficulty.EXPERT;
 		
 		Client.getAuthCookies("someuser", "somepass");
-		NodeList nodes = Scraper.scrape(
+		NodeList nodes = GhScraper.scrape(
 			URLs.gh.getManageScoresUrl(
 				game,
 				diff));
@@ -96,9 +97,9 @@ public class ScraperFormatTest {
 		GhGame game = GhGame.GH3_XBOX360;
 		Difficulty diff = Difficulty.EXPERT;
 		
-		NodeList nodes = Scraper.scrape(
+		NodeList nodes = GhScraper.scrape(
 			URLs.gh.getSongStatsUrl(
-				SongStat.ALL_CUTOFFS,
+				GhSongStat.ALL_CUTOFFS,
 				game,
 				diff));
 			

@@ -3,8 +3,8 @@ package jshm.concepts;
 import java.util.*;
 
 //import jshm.gh.*;
-import jshm.sh.gh.*;
-import jshm.sh.gh.scraper.*;
+import jshm.gh.GhGame;
+import jshm.sh.scraper.GhTierScraper;
 
 /**
  * This is an internal program to provide an easily
@@ -22,7 +22,7 @@ public class TierGrabber {
 		jshm.util.TestTimer.start();
 		
 		for (GhGame game : games) {
-			List<String> tiers = TierScraper.scrape(game);
+			List<String> tiers = GhTierScraper.scrape(game);
 			
 			System.out.print(game.title + "(\"");
 			for (int i = 0; i < tiers.size(); i++) {

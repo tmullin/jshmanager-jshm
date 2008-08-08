@@ -1,7 +1,6 @@
-package jshm.sh.gh;
+package jshm.gh;
 
 import jshm.*;
-import jshm.gh.GhGameTitle;
 
 /**
  * This class represents a Guitar Hero game as far as it
