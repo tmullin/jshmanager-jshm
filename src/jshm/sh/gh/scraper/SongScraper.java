@@ -6,6 +6,7 @@ import org.htmlparser.util.*;
 
 import jshm.Difficulty;
 import jshm.exceptions.*;
+import jshm.gh.GhGameTitle;
 import jshm.sh.*;
 import jshm.sh.scraper.*;
 import jshm.sh.gh.*;
@@ -48,6 +49,7 @@ public class SongScraper {
 	
 	private static class IdAndNoteHandler extends TieredTabularDataAdapter {
 		final GhGame game;
+		final GhGameTitle title;
 		final Difficulty difficulty;
 		final List<GhSong> songs;
 		
@@ -59,6 +61,7 @@ public class SongScraper {
 			final Difficulty difficulty,
 			final List<GhSong> songs) {
 			this.game = game;
+			this.title = (GhGameTitle) game.title;
 			this.difficulty = difficulty;
 			this.songs = songs;
 		}
@@ -70,7 +73,7 @@ public class SongScraper {
 		public void handleTierRow(String tierName) throws ScraperException {
 			// this will prevent retrieval of the gh3 demo tier
 			// on the gh2 page, for example
-			if (curTierLevel >= game.title.getTierCount()) {
+			if (curTierLevel >= title.getTierCount()) {
 				ignoreNewData = true;
 				return;
 			}

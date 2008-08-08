@@ -5,6 +5,7 @@ import javax.persistence.*;
 import org.hibernate.validator.*;
 
 import jshm.Difficulty;
+import jshm.gh.GhGameTitle;
 
 
 /**
@@ -14,12 +15,11 @@ import jshm.Difficulty;
  *
  */
 @Entity
-public class GhSong extends jshm.Song implements java.io.Serializable {
+public class GhSong extends jshm.Song {
 	private 		  int		 gameId		  = 0;
 	private transient GhGame 	 game 		  = null;
 	
-	private 		  int		 difficultyId = 0;
-	private transient Difficulty difficulty   = null;
+	private Difficulty difficulty   = null;
 	
 	private String  title 			= "UNKNOWN";
 	private int 	tierLevel		= 0;
@@ -62,7 +62,7 @@ public class GhSong extends jshm.Song implements java.io.Serializable {
 		sb.append(',');
 		sb.append(getDifficulty().toShortString());
 		sb.append(',');
-		sb.append(getId());
+		sb.append(getScoreHeroId());
 		sb.append(',');
 		sb.append(getTitle());
 		sb.append(",t=");
@@ -101,29 +101,15 @@ public class GhSong extends jshm.Song implements java.io.Serializable {
 	}
 
 	public void setGame(GhGame game) {
-		this.gameId = game.id;
+		this.gameId = game.scoreHeroId;
 		this.game = game;
 	}
-
-	public int getDifficultyId() {
-		return difficultyId;
-	}
-
-	protected void setDifficultyId(int difficultyId) {
-		this.difficultyId = difficultyId;
-		this.difficulty = null;
-		this.getDifficulty();
-	}
 	
-	@Transient
 	public Difficulty getDifficulty() {
-		if (null == difficulty)
-			difficulty = Difficulty.getById(getDifficultyId());
 		return difficulty;
 	}
 
 	public void setDifficulty(Difficulty difficulty) {
-		this.difficultyId = difficulty.id;
 		this.difficulty = difficulty;
 	}
 
@@ -159,7 +145,7 @@ public class GhSong extends jshm.Song implements java.io.Serializable {
 	 */
 	@Transient
 	public String getTierName() {
-		return getGame().title.getTierName(this.getTierLevel());
+		return ((GhGameTitle) getGame().title).getTierName(this.getTierLevel());
 	}
 
 	/**

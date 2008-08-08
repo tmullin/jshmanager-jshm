@@ -20,11 +20,11 @@ public class URLs {
 			;
 		
 		public static String getSongStatsUrl(final SongStat stat, final GhGame game, final Difficulty difficulty) {
-			return String.format(SONG_STATS, stat.id, game.id, difficulty.id);
+			return String.format(SONG_STATS, stat.id, game.scoreHeroId, difficulty.scoreHeroId);
 		}
 		
 		public static String getManageScoresUrl(final GhGame game, final Difficulty difficulty) {
-			return String.format(MANAGE_SCORES, game.id, difficulty.id);
+			return String.format(MANAGE_SCORES, game.scoreHeroId, difficulty.scoreHeroId);
 		}
 	}
 }

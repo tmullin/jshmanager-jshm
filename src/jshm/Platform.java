@@ -1,4 +1,4 @@
-package jshm.gh;
+package jshm;
 
 public enum Platform {
 	PS2,

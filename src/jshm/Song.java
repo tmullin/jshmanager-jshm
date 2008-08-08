@@ -30,6 +30,7 @@ public abstract class Song {
 	 * @return
 	 * @throws UnsupportedOperationException If this song's game's difficulty strategy is not BY_SONG.
 	 */
+	@Transient
 	public Difficulty getDifficulty() {
 		throw new UnsupportedOperationException();
 	}

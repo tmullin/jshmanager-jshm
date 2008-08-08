@@ -1,58 +1,58 @@
 package jshm;
 
+import java.util.*;
+
 /**
- * Represents an abstract game from this program's
- * point of view. This exists in preparation for
- * eventual RockBand support.
+ * This represents a specific {@link GameTitle} and
+ * {@link Platform} combination in case there are differences
+ * between versions.
  * @author Tim Mullin
  *
  */
 public abstract class Game {
-	public abstract Difficulty.Strategy getDifficultyStrategy();
+	private static List<Game> values = new ArrayList<Game>();
 	
-	/**
-	 * The minimum number of stars that can be obtained
-	 * for a song.
-	 */
-	public abstract int getMinStars();
-	
-	/**
-	 * The maximum number of stars that the game will report.
-	 */
-	public abstract int getMaxStars();
-	
-	/**
-	 * 
-	 * @return Whether we can calculate more stars than the
-	 * max number of observable stars.
-	 */
-	public abstract boolean supportsCalculableStars();
-	
-	/**
-	 * If calculable stars are supported, this will return
-	 * getMinStars() by default.
-	 * @return
-	 */
-	public float getMinCalculableStars() {
-		if (!supportsCalculableStars())
-			throw new UnsupportedOperationException();
-		return (float) getMinStars();
+	public static List<Game> values() {
+		return values;
 	}
 	
-	/**
-	 * The maximum number of stars that we know how to calculate.
-	 * This method must be overridden if supportsCalculableStars()
-	 * is overridden to return true.
-	 */
-	public float getMaxCalculableStars() {
-		if (!supportsCalculableStars())
-			throw new UnsupportedOperationException();	
-		throw new UnsupportedOperationException("supportsCalculableStars() is true but getMaxCalculableStars() is not implemented");
+	public static List<Game> getBySeries(final GameSeries series) {
+		final List<Game> ret = new ArrayList<Game>();
+		
+		for (Game g : values)
+			if (g.title.series.equals(series))
+				ret.add(g);
+		
+		return ret;
 	}
 	
-	/**
-	 * 
-	 * @return An array of the possible instrument combinations this game supports.
-	 */
-	public abstract Instrument.Group[] getSupportedInstrumentGroups();
+	public static List<Game> getByTitle(final GameTitle title) {
+		final List<Game> ret = new ArrayList<Game>();
+		
+		for (Game g : values)
+			if (g.title.equals(title))
+				ret.add(g);
+		
+		return ret;
+	}
+	
+	public static Game getByTitleAndPlatform(final GameTitle title, final Platform platform) {
+		for (Game g : values) {
+			if (g.platform.equals(platform) && g.title.equals(title)) return g;
+		}
+		
+		throw new IllegalArgumentException("invalid title/platform combination: " + title + "_" + platform);
+	}
+	
+	
+	
+	public final int scoreHeroId;
+	public final GameTitle title;
+	public final Platform platform;
+	
+	protected Game(final int scoreHeroId, final GameTitle title, final Platform platform) {
+		this.scoreHeroId = scoreHeroId;
+		this.title = title;
+		this.platform = platform;		
+	}
 }

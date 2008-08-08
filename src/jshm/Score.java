@@ -64,7 +64,7 @@ public abstract class Score {
 	 */
 	@Transient
 	public Difficulty getDifficulty() {
-		switch (getGame().getDifficultyStrategy()) {
+		switch (getGame().title.getDifficultyStrategy()) {
 			case BY_SONG:
 				return getSong().getDifficulty();
 		}
@@ -87,6 +87,10 @@ public abstract class Score {
 			throw new IllegalArgumentException("score must be >= 0");
 		this.score = score;
 	}
+	
+	public int getScore() {
+		return score;
+	}
 
 	public Set<Part> getParts() {
 		return parts;
@@ -99,13 +103,7 @@ public abstract class Score {
 	public void addPart(Part part) {
 		this.parts.add(part);
 	}
-
-	public int getScore() {
-		return score;
-	}
 	
-	@Transient
-	public abstract StreakStrategy getStreakStrategy();
 	
 	/**
 	 * If streakStrategy is BY_PART, the highest streak of the different parts
@@ -114,7 +112,7 @@ public abstract class Score {
 	 */
 	@Transient
 	public int getStreak() {
-		switch (getStreakStrategy()) {
+		switch (getGame().title.getStreakStrategy()) {
 			case BY_PART:
 				int highest = 0;
 				
@@ -156,9 +154,9 @@ public abstract class Score {
 	}
 
 	public void setRating(int rating) {
-		if (rating < getGame().getMinStars() ||
-			getGame().getMaxStars() < rating)
-			throw new IllegalArgumentException("rating must be between " + getGame().getMinStars() + " and " + getGame().getMaxCalculableStars());
+		if (rating < getGame().title.getMinRating() ||
+			getGame().title.getMaxRating() < rating)
+			throw new IllegalArgumentException("rating must be between " + getGame().title.getMinRating() + " and " + getGame().title.getMaxCalculatedRating());
 		this.rating = rating;
 	}
 
@@ -188,7 +186,7 @@ public abstract class Score {
 	
 	@Transient
 	public void setCalculatedRating(float calculatedRating) {
-		if (getGame().supportsCalculableStars())
+		if (getGame().title.supportsCalculatedRating())
 			throw new UnsupportedOperationException("supportsCalculableStars() is true but setCalculableRating() is not overridden");
 		throw new UnsupportedOperationException();
 	}
@@ -198,24 +196,8 @@ public abstract class Score {
 	 * @return The rating as calculated by some means not in-game.
 	 */
 	public float getCalculatedRating() {
-		if (getGame().supportsCalculableStars())
+		if (getGame().title.supportsCalculatedRating())
 			throw new UnsupportedOperationException("supportsCalculableStars() is true but getCalculatedRating() is not overridden");
 		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * This represents whether note streaks are managed on a
-	 * by score or by part basis.
-	 * 
-	 * <p>
-	 * GH is BY_SCORE in that if one player loses combo,
-	 * the streak is reset. RB is BY_PART in that each Part is
-	 * separately tracked.
-	 * </p>
-	 * @author Tim Mullin
-	 *
-	 */
-	public static enum StreakStrategy {
-		BY_SCORE, BY_PART
 	}
 }
