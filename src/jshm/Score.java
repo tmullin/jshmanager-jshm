@@ -14,7 +14,7 @@ public abstract class Score {
 	private int		id					= 0;
 	
 	/**
-	 * The id in ScoreHero's database if this score has been submitted
+	 * The id in ScoreHero's database if this score has been submitted.
 	 */
 	private int		scoreHeroId			= 0;
 	
@@ -24,6 +24,10 @@ public abstract class Score {
 	private int		rating				= 0;
 	private Date	submissionDate		= null;
 	private String	comment				= null;
+	
+	private String	imageUrl			= null;
+	private String	videoUrl			= null;
+	
 	private Set<Part> parts				= new LinkedHashSet<Part>(4);
 	
 	@Id
@@ -46,11 +50,21 @@ public abstract class Score {
 		this.scoreHeroId = scoreHeroId;
 	}
 	
-	@ManyToOne
+	/**
+	 * A score can only be modified if it has not been
+	 * submitted to ScoreHero.
+	 * @return
+	 */
+	@Transient
+	public boolean isEditable() {
+		return this.scoreHeroId == 0;
+	}
+	
 	public void setSong(Song song) {
 		this.song = song;
 	}
 
+	@ManyToOne
 	public Song getSong() {
 		return song;
 	}
@@ -97,6 +111,8 @@ public abstract class Score {
 	}
 
 	@OneToMany
+	@JoinColumn
+	@OrderBy("instrument")
 	public Set<Part> getParts() {
 		return parts;
 	}
@@ -110,12 +126,32 @@ public abstract class Score {
 	}
 	
 	/**
+	 * 
+	 * @param index The <b>1-based</b> index of the Part to retrieve
+	 * @return The Part at the specified index
+	 */
+	@Transient
+	public Part getPart(int index) {		
+		if (index < 1 || parts.size() < index)
+			return null;
+		
+		Part ret = null;
+		Iterator<Part> it = parts.iterator();
+		
+		for (int i = 0; i < index; i++) {
+			ret = it.next();
+		}
+		
+		return ret;
+	}
+	
+	/**
 	 * This method must be overridden if the current
 	 * {@link StreakStrategy} is BY_SCORE.
 	 * @param streak
 	 */
 	public void setStreak(int streak) {
-		throw new UnsupportedOperationException("Score.setStreak() is not supported unless StreakStrategy == BY_SCORE");
+		throw new UnsupportedOperationException("setStreak() is not supported unless StreakStrategy == BY_SCORE");
 	}
 	
 	/**
@@ -198,6 +234,25 @@ public abstract class Score {
 	@NotNull
 	public String getComment() {
 		return comment;
+	}
+	
+	@NotNull
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	// TODO validate for empty or a url
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	@NotNull
+	public String getVideoUrl() {
+		return videoUrl;
+	}
+
+	public void setVideoUrl(String videoUrl) {
+		this.videoUrl = videoUrl;
 	}
 	
 	@Transient

@@ -11,11 +11,13 @@ import org.hibernate.validator.*;
  *
  */
 @Entity
-public class Part {
+public class Part implements Comparable<Part> {
 	private int			id;
-
+	
 	private float 		hitPercent;
 	private int 		streak;
+	
+	private Difficulty	difficulty;
 	private Instrument 	instrument;
 	
 	@Id
@@ -53,6 +55,15 @@ public class Part {
 	}
 	
 	@Enumerated(EnumType.STRING)
+	public Difficulty getDifficulty() {
+		return difficulty;
+	}
+
+	public void setDifficulty(Difficulty difficulty) {
+		this.difficulty = difficulty;
+	}
+	
+	@Enumerated(EnumType.STRING)
 	public Instrument getInstrument() {
 		return instrument;
 	}
@@ -61,5 +72,10 @@ public class Part {
 		if (null == instrument)
 			throw new IllegalArgumentException("instrument cannot be null");
 		this.instrument = instrument;
+	}
+
+	@Override
+	public int compareTo(Part o) {
+		return this.instrument.compareTo(o.instrument);
 	}
 }
