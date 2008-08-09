@@ -4,6 +4,12 @@ import javax.persistence.*;
 
 import org.hibernate.validator.*;
 
+/**
+ * Represents common attributes among songs from
+ * different games.
+ * @author Tim Mullin
+ *
+ */
 @Entity
 public abstract class Song {
 	/**
@@ -16,12 +22,9 @@ public abstract class Song {
 	 */
 	private int scoreHeroId	= 0;
 
-	/**
-	 * The default display order for this song.
-	 */
-	private int order	= 0;
+	private Game game = null;
 
-	public abstract Game getGame();
+	private String	title	= "UNKNOWN";
 	
 	/**
 	 * If the game's {@link Difficulty.Strategy} is BY_SONG this
@@ -55,12 +58,25 @@ public abstract class Song {
 		this.scoreHeroId = scoreHeroId;
 	}
 
-	@Column(name = "ordering")
-	public int getOrder() {
-		return order;
+	@NotNull
+	@Enumerated(EnumType.STRING) // this probably won't work
+//	@Type(type="jshm.hibernate.FakeEnumUserType.Song")
+	public Game getGame() {
+		return game;
 	}
 
-	public void setOrder(int order) {
-		this.order = order;
+	public void setGame(Game game) {
+		this.game = game;
+	}
+	
+	@NotEmpty
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		if (title.isEmpty())
+			throw new IllegalArgumentException("title cannot be empty");
+		this.title = title;
 	}
 }

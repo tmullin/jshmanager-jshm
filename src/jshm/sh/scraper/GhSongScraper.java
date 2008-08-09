@@ -106,7 +106,6 @@ public class GhSongScraper {
     		} catch (NumberFormatException e) {}
     		
         	songs.add(curSong);
-        	curSong.setOrder(songs.size());
 		}
 	}
 	

@@ -25,7 +25,6 @@ public class HtmlParserTest {
         // have to track the tier while we traverse the rows
 //        String curTierName = "";
     	int curTierLevel = 0;
-    	int totalSongs = 0;
         
 outerRowLoop:
         while (it.hasMoreNodes()) {
@@ -179,8 +178,6 @@ outerRowLoop:
 	        		throw new ScraperException("Unexpected node type, got a " + node.getClass().getName());
 	        	}
         	}
-        	
-        	curSong.setOrder(++totalSongs);
         	
         	System.out.println("SONG: " + curSong);
         }

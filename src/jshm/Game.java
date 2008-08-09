@@ -16,6 +16,14 @@ public abstract class Game {
 		return values;
 	}
 	
+	public static Game valueOf(final String value) {
+		for (Game g : values)
+			if (g.toString().equals(value))
+				return g;
+		
+		throw new IllegalArgumentException("invalid value: " + value);
+	}
+	
 	public static List<Game> getBySeries(final GameSeries series) {
 		final List<Game> ret = new ArrayList<Game>();
 		
@@ -54,5 +62,25 @@ public abstract class Game {
 		this.scoreHeroId = scoreHeroId;
 		this.title = title;
 		this.platform = platform;		
+	}
+	
+
+	// override Object methods
+	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Game)) return false;
+		
+		Game g = (Game) o;
+		
+		return
+			this.title.equals(title) &&
+			this.platform.equals(g.platform);
+	}
+	
+	@Override
+	public String toString() {
+		return title + "_" + platform;
 	}
 }

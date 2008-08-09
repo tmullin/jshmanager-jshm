@@ -46,26 +46,5 @@ public class GhGame extends jshm.Game {
 	
 	protected GhGame(final int scoreHeroId, final GhGameTitle title, final Platform platform) {
 		super(scoreHeroId, title, platform);
-	}
-
-	
-	// override Object methods
-	
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof GhGame)) return false;
-		
-		GhGame g = (GhGame) o;
-		
-		return
-			this.scoreHeroId == g.scoreHeroId &&
-			this.title == g.title &&
-			this.platform == g.platform;
-	}
-	
-	@Override
-	public String toString() {
-		return title + "_" + platform;
-	}
+	}	
 }

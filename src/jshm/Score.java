@@ -44,6 +44,7 @@ public abstract class Score {
 		this.scoreHeroId = scoreHeroId;
 	}
 	
+	@ManyToOne
 	public void setSong(Song song) {
 		this.song = song;
 	}
@@ -82,16 +83,18 @@ public abstract class Score {
 		throw new UnsupportedOperationException("DifficultyStrategy is not BY_SCORE for this game");
 	}
 
+	@Min(0)
+	public int getScore() {
+		return score;
+	}
+	
 	public void setScore(int score) {
 		if (score < 0)
 			throw new IllegalArgumentException("score must be >= 0");
 		this.score = score;
 	}
-	
-	public int getScore() {
-		return score;
-	}
 
+	@OneToMany
 	public Set<Part> getParts() {
 		return parts;
 	}
@@ -104,6 +107,14 @@ public abstract class Score {
 		this.parts.add(part);
 	}
 	
+	/**
+	 * This method must be overridden if the current
+	 * {@link StreakStrategy} is BY_SCORE.
+	 * @param streak
+	 */
+	public void setStreak(int streak) {
+		throw new UnsupportedOperationException("Score.setStreak() is not supported unless StreakStrategy == BY_SCORE");
+	}
 	
 	/**
 	 * If streakStrategy is BY_PART, the highest streak of the different parts
@@ -114,25 +125,25 @@ public abstract class Score {
 	public int getStreak() {
 		switch (getGame().title.getStreakStrategy()) {
 			case BY_PART:
-				int highest = 0;
-				
-				for (Part p : parts)
-					if (p.getStreak() > highest)
-						highest = p.getStreak();
-				
-				return highest;
+				return getMaxStreak();
 		}
 		
 		throw new UnsupportedOperationException("getStreak() may need to be overridden");
 	}
 	
 	/**
-	 * This method must be overridden if the current
-	 * {@link StreakStrategy} is BY_SCORE.
-	 * @param streak
+	 * 
+	 * @return The highest streak among all of the Parts.
 	 */
-	public void setStreak(int streak) {
-		throw new UnsupportedOperationException("Score.setStreak() is not supported unless StreakStrategy == BY_SCORE");
+	@Transient
+	public int getMaxStreak() {
+		int highest = 0;
+		
+		for (Part p : parts)
+			if (p.getStreak() > highest)
+				highest = p.getStreak();
+		
+		return highest;
 	}
 	
 	/**
@@ -177,9 +188,12 @@ public abstract class Score {
 	}
 
 	public void setComment(String comment) {
+		if (null == comment)
+			throw new IllegalArgumentException("comment cannot be null");
 		this.comment = comment;
 	}
 
+	@NotNull
 	public String getComment() {
 		return comment;
 	}

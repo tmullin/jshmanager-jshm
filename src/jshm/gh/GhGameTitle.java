@@ -12,26 +12,17 @@ public class GhGameTitle extends jshm.GameTitle {
 		GHA  = new GhGameTitle("GHA",  "Getting The Band Together|First Taste Of Success|The Triumphant Return|International Superstars|The Great American Band|Rock 'N Roll Legends|The Vault", Platform.PS2, Platform.XBOX360, Platform.PS3, Platform.WII)
 	;
 	
-	private final String[] tiers;
-	
 	private GhGameTitle(final String title, final String tiers, final Platform ... platforms) {
 		super(GameSeries.GUITAR_HERO, title, platforms);
-		this.tiers = tiers.split("\\|");
+		mapTiers(Instrument.Group.GUITAR, new Tiers(tiers));
 	}
 	
-	/**
-	 * Get a tier name by index. Providing 0 will return "UNKNOWN" for
-	 * compatibility with empty songs.
-	 * @param index The <b>1-based</b> index to retrieve.
-	 * @return
-	 */
-	public String getTierName(final int index) {
-		if (0 == index) return "UNKNOWN";
-		return tiers[index - 1];
+	public String getTierName(final int tierLevel) {
+		return getTierName(Instrument.Group.GUITAR, tierLevel);
 	}
 	
 	public int getTierCount() {
-		return tiers.length;
+		return getTierCount(Instrument.Group.GUITAR);
 	}
 	
 	

@@ -5,6 +5,7 @@ import javax.persistence.*;
 import org.hibernate.validator.*;
 
 import jshm.Difficulty;
+import jshm.Song;
 
 
 /**
@@ -15,12 +16,8 @@ import jshm.Difficulty;
  */
 @Entity
 public class GhSong extends jshm.Song {
-	private 		  int		 gameId		  = 0;
-	private transient GhGame 	 game 		  = null;
-	
 	private Difficulty difficulty   = null;
 	
-	private String  title 			= "UNKNOWN";
 	private int 	tierLevel		= 0;
 	private int 	noteCount 		= -1;
 	private int 	baseScore 		= -1;
@@ -46,7 +43,7 @@ public class GhSong extends jshm.Song {
 		if (o == this) return true;
 		if (!(o instanceof GhSong)) return false;
 		
-		GhSong s = (GhSong) o;
+		Song s = (Song) o;
 		
 		return (this.getId() == s.getId() ||
 				(this.getTitle().equals(s.getTitle()) &&
@@ -81,46 +78,13 @@ public class GhSong extends jshm.Song {
 	
 	// getters/setters
 	
-	public int getGameId() {
-		return gameId;
-	}
-
-	protected void setGameId(int gameId) {
-		this.gameId = gameId;
-		this.game = null;
-		getGame();
-	}
-	
-	@Override
-	@Transient
-	public GhGame getGame() {
-		if (null == game)
-			game = GhGame.getById(getGameId());
-		return game;
-	}
-
-	public void setGame(GhGame game) {
-		this.gameId = game.scoreHeroId;
-		this.game = game;
-	}
-	
+	@Enumerated(EnumType.STRING)
 	public Difficulty getDifficulty() {
 		return difficulty;
 	}
 
 	public void setDifficulty(Difficulty difficulty) {
 		this.difficulty = difficulty;
-	}
-
-	@NotEmpty
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		if (title.isEmpty())
-			throw new IllegalArgumentException("title cannot be empty");
-		this.title = title;
 	}
 
 	/**

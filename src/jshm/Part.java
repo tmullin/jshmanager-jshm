@@ -1,5 +1,15 @@
 package jshm;
 
+import javax.persistence.*;
+
+import org.hibernate.validator.*;
+
+/**
+ * Represents a part played for a particular Score.
+ * @author Tim Mullin
+ *
+ */
+@Entity
 public class Part {
 	private int			id;
 
@@ -7,6 +17,7 @@ public class Part {
 	private int 		streak;
 	private Instrument 	instrument;
 	
+	@Id
 	public int getId() {
 		return id;
 	}
@@ -16,6 +27,7 @@ public class Part {
 		this.id = id;
 	}
 	
+	@Range(min=0, max=1)
 	public float getHitPercent() {
 		return hitPercent;
 	}
@@ -26,6 +38,7 @@ public class Part {
 		this.hitPercent = hitPercent;
 	}
 	
+	@Min(0)
 	public int getStreak() {
 		return streak;
 	}
@@ -36,6 +49,7 @@ public class Part {
 		this.streak = streak;
 	}
 	
+	@Enumerated(EnumType.STRING)
 	public Instrument getInstrument() {
 		return instrument;
 	}
