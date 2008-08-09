@@ -1,5 +1,13 @@
 package jshm.util;
 
+/**
+ * This extends {@link java.util.Properties} and adds
+ * getX() methods to convert the string value to various
+ * built-in types other than String (namely int, long, bool,
+ * double, float).
+ * @author Tim Mullin
+ *
+ */
 public class Properties extends java.util.Properties {
 	public Properties() {
 		super();
@@ -50,6 +58,17 @@ public class Properties extends java.util.Properties {
 		try {
 			defaultValue =
 				Double.parseDouble(get(propertyName));
+		} catch (NumberFormatException e) {}
+		
+		return defaultValue;
+	}
+	
+	public double getFloat(String propertyName) {
+		float defaultValue = 0.0f;
+		
+		try {
+			defaultValue =
+				Float.parseFloat(get(propertyName));
 		} catch (NumberFormatException e) {}
 		
 		return defaultValue;

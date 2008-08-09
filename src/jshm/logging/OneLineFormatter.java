@@ -5,6 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.*;
 
+/**
+ * This formatter is intended for console logging. It's format is:<br>
+ * <code>[HH:mm:ss][Level][Thread][Logger]: Message</code>.
+ * @author Tim Mullin
+ *
+ */
 public class OneLineFormatter extends Formatter {	
 	static final SimpleDateFormat df =
 		new SimpleDateFormat("HH:mm:ss");
