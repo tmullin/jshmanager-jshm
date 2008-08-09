@@ -2,6 +2,7 @@ package jshm;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.*;
 
 /**
@@ -18,6 +19,8 @@ public class Part {
 	private Instrument 	instrument;
 	
 	@Id
+	@GeneratedValue(generator="part-id")
+	@GenericGenerator(name="part-id", strategy = "native")
 	public int getId() {
 		return id;
 	}

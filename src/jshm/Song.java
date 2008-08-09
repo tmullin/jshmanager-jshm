@@ -2,6 +2,8 @@ package jshm;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.*;
 
 /**
@@ -11,6 +13,7 @@ import org.hibernate.validator.*;
  *
  */
 @Entity
+@Inheritance(strategy=InheritanceType.JOINED)
 public abstract class Song {
 	/**
 	 * The id internal to JSHManager's database. 
@@ -20,11 +23,9 @@ public abstract class Song {
 	/**
 	 * The ScoreHero id for this song.
 	 */
-	private int scoreHeroId	= 0;
-
-	private Game game = null;
-
-	private String	title	= "UNKNOWN";
+	private int		scoreHeroId	= 0;
+	private Game	game		= null;
+	private String	title		= "UNKNOWN";
 	
 	/**
 	 * If the game's {@link Difficulty.Strategy} is BY_SONG this
@@ -39,7 +40,8 @@ public abstract class Song {
 	}
 
 	@Id
-	@Min(1)
+	@GeneratedValue(generator="song-id")
+	@GenericGenerator(name="song-id", strategy="native")
 	public int getId() {
 		return id;
 	}
@@ -59,8 +61,8 @@ public abstract class Song {
 	}
 
 	@NotNull
-	@Enumerated(EnumType.STRING) // this probably won't work
-//	@Type(type="jshm.hibernate.FakeEnumUserType.Song")
+//	@Enumerated(EnumType.STRING) // this probably won't work
+	@Type(type="jshm.hibernate.GameUserType")
 	public Game getGame() {
 		return game;
 	}

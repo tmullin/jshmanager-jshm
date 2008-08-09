@@ -1,5 +1,10 @@
 package jshm;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+import org.hibernate.annotations.GenericGenerator;
+
 /*
 
 GH3_XBOX360	GUITAR	"Slow Ride"	1	1
@@ -32,9 +37,23 @@ RB1_XBOX360	GUITAR_BASS_DRUMS_VOCALS	"Creep"	2	2
  *
  */
 public class SongOrder {
+	private int id = 0;
+	
 	public Game game;
 	public Instrument.Group group;
 	public Song song;
 	public int tier;
 	public int order;
+	
+	@Id
+	@GeneratedValue(generator="song-id")
+	@GenericGenerator(name="song-id", strategy = "native")
+	public int getId() {
+		return this.id;
+	}
+
+	@SuppressWarnings("unused")
+	private void setId(int id) {
+		this.id = id;
+	}
 }

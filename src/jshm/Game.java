@@ -61,7 +61,8 @@ public abstract class Game {
 	protected Game(final int scoreHeroId, final GameTitle title, final Platform platform) {
 		this.scoreHeroId = scoreHeroId;
 		this.title = title;
-		this.platform = platform;		
+		this.platform = platform;
+		values.add(this);
 	}
 	
 

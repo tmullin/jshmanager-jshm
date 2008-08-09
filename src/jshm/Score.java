@@ -3,6 +3,7 @@ package jshm;
 import java.util.*;
 import javax.persistence.*;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.*;
 
 @Entity
@@ -26,7 +27,8 @@ public abstract class Score {
 	private Set<Part> parts				= new LinkedHashSet<Part>(4);
 	
 	@Id
-	@Min(1)
+	@GeneratedValue(generator="score-id")
+	@GenericGenerator(name="score-id", strategy = "native")
 	public int getId() {
 		return id;
 	}

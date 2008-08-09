@@ -25,7 +25,7 @@ public class GhSongDbTest {
 	static void storeSongs(final List<GhSong> songs) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        
+
         for (Song song : songs)
         	session.save(song);
         

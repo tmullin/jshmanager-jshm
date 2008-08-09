@@ -2,6 +2,7 @@ package jshm.hibernate;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,38 +16,39 @@ import org.hibernate.usertype.UserType;
 /**
  * Defines how to store a "fake enum". This will store
  * an object via its toString() in a varchar column and restore
- * it with the class's static valueOf() method.
+ * it with the class's static valueOf(String) method.
  * 
  * <p>
- * A fake enum is like a real enum in that there is a limited
- * set of unique elements with unique string representations
+ * A fake enum is like a real enum in that there is a
+ * set of limited unique elements with unique string representations
  * but for the sake of extensibility they are not implemented
- * as an enum. {@link jshm.Game} is an example.
- * </p> 
+ * as an enum. The fake enum class is responsible for maintaining
+ * a static list of these elements. {@link jshm.Game} is an example.
+ * </p>
  * @author Tim Mullin
  *
  */
 public abstract class FakeEnumUserType implements UserType {
-	public static class Song extends FakeEnumUserType {
-		@Override public Class<?> getClassType() {
-			return Song.class;
-		}
-	}
-	
 	private static final int[] SQL_TYPES = {
 		Types.VARCHAR
 	};
 	
-	private static Object invokeValueOf(Class<?> clazz, Object value)
-			throws InvocationTargetException, IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchMethodException {
-		return clazz.getMethod("valueOf", String.class).invoke(null, value.toString());
-	}
-	
 	private Object invokeValueOf(Object value) throws IllegalArgumentException, SecurityException, InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-		return invokeValueOf(getClassType(), value);
+		return method.invoke(null, (String) value);
 	}
 	
-	public abstract Class<?> getClassType();
+	protected final Class<?> clazz;
+	protected Method method;
+	
+	protected FakeEnumUserType(Class<?> clazz) {
+		this.clazz = clazz;
+		
+		try {
+			method = clazz.getMethod("valueOf", String.class);
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException("no valueOf() method found when constructing " + this.getClass().getName(), e);
+		}
+	}
 	
 	@Override
 	public Object assemble(Serializable cached, Object owner)

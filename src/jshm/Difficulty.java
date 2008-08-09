@@ -24,11 +24,6 @@ public enum Difficulty {
 		return shortName;
 	}
 	
-	@Override
-	public String toString() {
-		return toShortString();
-	}
-	
 	public static Difficulty getByScoreHeroId(final int scoreHeroId) {
 		for (Difficulty d : Difficulty.values())
 			if (d.scoreHeroId == scoreHeroId)

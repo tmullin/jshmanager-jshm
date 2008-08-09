@@ -29,6 +29,7 @@
         <!-- Drop and re-create the database schema on startup -->
         <property name="hbm2ddl.auto">create</property>
 
-		<mapping class="jshm.sh.gh.GhSong" />
+		<mapping class="jshm.Song"/>
+		<mapping class="jshm.gh.GhSong"/>
 	</session-factory>
 </hibernate-configuration>
