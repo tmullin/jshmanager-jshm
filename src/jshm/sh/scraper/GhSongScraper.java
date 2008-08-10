@@ -80,7 +80,7 @@ public class GhSongScraper {
 		public void handleTierRow(String tierName) throws ScraperException {
 			// this will prevent retrieval of the gh3 demo tier
 			// on the gh2 page, for example
-			if (curTierLevel >= title.getTierCount()) {
+			if (curTierLevel >= game.getTierCount()) {
 				ignoreNewData = true;
 				return;
 			}

@@ -47,27 +47,12 @@ public abstract class GameTitle {
 	public final String		title;
 	public final Platform[] platforms;
 	
-	protected final Map<Instrument.Group, Tiers> tiersMap =
-		new HashMap<Instrument.Group, Tiers>();
-	
 	protected GameTitle(final GameSeries series, final String title, final Platform ... platforms) {
 		registerTitle(this);
 		
 		this.series = series;
 		this.title = title;
 		this.platforms = platforms;
-	}
-	
-	protected void mapTiers(final Instrument.Group group, final Tiers tiers) {
-		tiersMap.put(group, tiers);
-	}
-	
-	public String getTierName(final Instrument.Group group, final int tierLevel) {
-		return tiersMap.get(group).getName(tierLevel);
-	}
-	
-	public int getTierCount(final Instrument.Group group) {
-		return tiersMap.get(group).getCount();
 	}
 	
 	public abstract Difficulty.Strategy getDifficultyStrategy();

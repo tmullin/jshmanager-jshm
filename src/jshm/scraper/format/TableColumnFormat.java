@@ -33,6 +33,8 @@ public class TableColumnFormat {
 		
 		addFormat("img", ImageTag.class,
 			TagFormat.SRC);
+		
+		jshm.sh.scraper.Formats.init();
 	}
 
 	/**

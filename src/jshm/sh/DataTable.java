@@ -8,6 +8,9 @@ import jshm.scraper.format.*;
  */
 public class DataTable {
 	public static final DataTable
+	GH_TOP_SCORES = new DataTable(3, 2, 8,
+		"-|text~link=songid|text=int|img=rating~text=float|text=int|text=int|text|text"
+	),
 	GH_MANAGE_SCORES = new DataTable(3, 4, 11,
 		"-|-|text|-|-|text=int|img=rating~text=float|text=int|text=int|text|text"
 	),

@@ -5,8 +5,6 @@ import javax.persistence.*;
 import org.hibernate.validator.*;
 
 import jshm.Difficulty;
-import jshm.Game;
-import jshm.Platform;
 
 
 /**
@@ -17,9 +15,6 @@ import jshm.Platform;
  */
 @Entity
 public class GhSong extends jshm.Song {
-	private transient GhGame	game	= null;
-	
-	private Platform	platform	= null;
 	private Difficulty	difficulty	= null;
 	
 	private int 	tierLevel		= 0;
@@ -82,30 +77,6 @@ public class GhSong extends jshm.Song {
 	
 	// getters/setters
 	
-	@Transient
-	public GhGame getGame() {
-		if (null == game)
-			game = (GhGame) Game.getByTitleAndPlatform(getGameTitle(), platform);
-		return game;
-	}
-	
-	public void setGame(GhGame game) {
-		this.game = game;
-		this.platform = game.platform;
-		this.setGameTitle(game.title);
-	}
-	
-	@NotNull
-	@Enumerated(EnumType.STRING)
-	public Platform getPlatform() {
-		return platform;
-	}
-	
-	@SuppressWarnings("unused")
-	private void setPlatform(Platform platform) {
-		this.platform = platform;
-	}
-	
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	public Difficulty getDifficulty() {
@@ -137,7 +108,7 @@ public class GhSong extends jshm.Song {
 	 */
 	@Transient
 	public String getTierName() {
-		return ((GhGameTitle) getGame().title).getTierName(this.getTierLevel());
+		return ((GhGame) getGame()).getTierName(this.getTierLevel());
 	}
 
 	/**

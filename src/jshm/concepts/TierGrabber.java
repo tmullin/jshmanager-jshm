@@ -3,6 +3,8 @@ package jshm.concepts;
 import java.util.*;
 
 //import jshm.gh.*;
+import jshm.Game;
+import jshm.GameSeries;
 import jshm.gh.GhGame;
 import jshm.sh.scraper.GhTierScraper;
 
@@ -14,22 +16,19 @@ import jshm.sh.scraper.GhTierScraper;
  */
 public class TierGrabber {
 	public static void main(String[] args) throws Exception {
-		GhGame[] games = new GhGame[] {
-			GhGame.GH1_PS2, GhGame.GH2_XBOX360, GhGame.GH80_PS2,
-			GhGame.GH3_XBOX360, GhGame.GHOT_DS, GhGame.GHA_XBOX360
-		};
+		List<Game> games = Game.getBySeries(GameSeries.GUITAR_HERO);
 		
 		jshm.util.TestTimer.start();
 		
-		for (GhGame game : games) {
-			List<String> tiers = GhTierScraper.scrape(game);
+		for (Game game : games) {
+			List<String> tiers = GhTierScraper.scrape((GhGame) game);
 			
-			System.out.print(game.title + "(\"");
+			System.out.print(game + " = \"");
 			for (int i = 0; i < tiers.size(); i++) {
 				if (i > 0) System.out.print('|');
 				System.out.print(tiers.get(i));
 			}
-			System.out.println("\"),");
+			System.out.println("\",");
 		}
 		
 		jshm.util.TestTimer.stop();

@@ -26,9 +26,9 @@ public abstract class Song {
 	/**
 	 * The ScoreHero id for this song.
 	 */
-	private int			scoreHeroId	= 0;
-	private GameTitle	gameTitle	= null;
-	private String		title		= "UNKNOWN";
+	private int		scoreHeroId	= 0;
+	private Game	game		= null;
+	private String	title		= "UNKNOWN";
 	
 	/**
 	 * If the game's {@link Difficulty.Strategy} is BY_SONG this
@@ -64,13 +64,18 @@ public abstract class Song {
 	}
 
 	@NotNull
-	@Type(type="jshm.hibernate.GameTitleUserType")
-	public GameTitle getGameTitle() {
-		return gameTitle;
+	@Type(type="jshm.hibernate.GameUserType")
+	public Game getGame() {
+		return game;
 	}
-
-	public void setGameTitle(GameTitle gameTitle) {
-		this.gameTitle = gameTitle;
+	
+	public void setGame(Game game) {
+		this.game = game;
+	}
+	
+	@Transient
+	public GameTitle getGameTitle() {
+		return game.title;
 	}
 	
 	@NotEmpty

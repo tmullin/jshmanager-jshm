@@ -11,9 +11,13 @@ public class Tiers {
 	private final String[] tiers;
 	
 	public Tiers(final String tiers) {
-		this.tiers = tiers.split("\\|");
+		this(tiers.split("\\|"));
 	}
 	
+	public Tiers(final String[] tiers) {
+		this.tiers = tiers;
+	}
+
 	/**
 	 * 
 	 * @param index The <b>1-based</b> index to retreive the name for

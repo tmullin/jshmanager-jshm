@@ -19,8 +19,7 @@ public class GhTierScraper {
         List<String> tiers = new ArrayList<String>();
         
 		NodeList nodes = GhScraper.scrape(
-			URLs.gh.getSongStatsUrl(
-				GhSongStat.TOTAL_NOTES,
+			URLs.gh.getTopScoresUrl(
 				game,
 				difficulty));
         
@@ -40,7 +39,7 @@ public class GhTierScraper {
 		}
 		
 		public DataTable getDataTable() {
-			return DataTable.GH_TOTAL_NOTES;
+			return DataTable.GH_TOP_SCORES;
 		}
 		
 		public void handleTierRow(String tierName) {

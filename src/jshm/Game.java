@@ -2,6 +2,8 @@ package jshm;
 
 import java.util.*;
 
+import jshm.gh.GhGame;
+
 /**
  * This represents a specific {@link GameTitle} and
  * {@link Platform} combination in case there are differences
@@ -10,7 +12,7 @@ import java.util.*;
  *
  */
 public abstract class Game {
-	private static List<Game> values = new ArrayList<Game>();
+	private static final List<Game> values = new ArrayList<Game>();
 	
 	public static List<Game> values() {
 		return values;
@@ -52,17 +54,41 @@ public abstract class Game {
 		throw new IllegalArgumentException("invalid title/platform combination: " + title + "_" + platform);
 	}
 	
-	
+	static {
+		// needed to ensure the GhGames get put into values
+		GhGame.init();
+	}
 	
 	public final int scoreHeroId;
 	public final GameTitle title;
 	public final Platform platform;
+	
+	protected final Map<Instrument.Group, Tiers> tiersMap =
+		new HashMap<Instrument.Group, Tiers>();
 	
 	protected Game(final int scoreHeroId, final GameTitle title, final Platform platform) {
 		this.scoreHeroId = scoreHeroId;
 		this.title = title;
 		this.platform = platform;
 		values.add(this);
+	}
+
+	protected void mapTiers(final Instrument.Group group, final String[] tiers) {
+		mapTiers(group, new Tiers(tiers));
+	}
+	
+	protected void mapTiers(final Instrument.Group group, final Tiers tiers) {
+		tiersMap.put(group, tiers);
+	}
+	
+	public String getTierName(final Instrument.Group group, final int tierLevel) {
+		if (!tiersMap.containsKey(group)) return "UNKNOWN";
+		return tiersMap.get(group).getName(tierLevel);
+	}
+	
+	public int getTierCount(final Instrument.Group group) {
+		if (!tiersMap.containsKey(group)) return 0;
+		return tiersMap.get(group).getCount();
 	}
 	
 

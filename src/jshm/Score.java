@@ -13,6 +13,19 @@ import org.hibernate.validator.*;
 @Inheritance(strategy=InheritanceType.JOINED)
 public abstract class Score {
 	/**
+	 * <ul>
+	 *   <li>NEW - A newly entered score that hasn't been submitted to ScoreHero
+	 *   <li>SUBMITTED - A score that has been submitted to ScoreHero
+	 *   <li>DELETED - A score that has been submitted but was deleted on ScoreHero due to a new score overwriting it.
+	 * </ul>
+	 * @author Tim Mullin
+	 *
+	 */
+	public static enum State {
+		NEW, SUBMITTED, DELETED
+	}
+	
+	/**
 	 * The id internal to JSHManager's database
 	 */
 	private int		id					= 0;
@@ -21,7 +34,8 @@ public abstract class Score {
 	 * The id in ScoreHero's database if this score has been submitted.
 	 */
 	private int		scoreHeroId			= 0;
-	
+	private State	state				= State.NEW;
+
 	private Song	song				= null;
 	
 	/**
@@ -31,7 +45,7 @@ public abstract class Score {
 	
 	private int		score				= 0;
 	private int		rating				= 0;
-	private Date	submissionDate		= null;
+	private Date	date				= new Date();
 	private String	comment				= "";
 	
 	private String	imageUrl			= "";
@@ -59,6 +73,18 @@ public abstract class Score {
 		this.scoreHeroId = scoreHeroId;
 	}
 	
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		if (null == state)
+			throw new IllegalArgumentException("state cannot be null");
+		this.state = state;
+	}
+	
 	/**
 	 * A score can only be modified if it has not been
 	 * submitted to ScoreHero.
@@ -66,7 +92,7 @@ public abstract class Score {
 	 */
 	@Transient
 	public boolean isEditable() {
-		return this.scoreHeroId == 0;
+		return this.state == State.NEW;
 	}
 	
 	public void setSong(Song song) {
@@ -76,6 +102,11 @@ public abstract class Score {
 	@ManyToOne
 	public Song getSong() {
 		return song;
+	}
+	
+	@Transient
+	public Game getGame() {
+		return getSong().getGame();
 	}
 	
 	@Transient
@@ -217,12 +248,13 @@ public abstract class Score {
 		return rating;
 	}
 	
-	public void setSubmissionDate(Date submissionDate) {
-		this.submissionDate = submissionDate;
+	public void setDate(Date submissionDate) {
+		this.date = submissionDate;
 	}
 
-	public Date getSubmissionDate() {
-		return submissionDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getDate() {
+		return date;
 	}
 
 	public void setComment(String comment) {

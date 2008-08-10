@@ -1,7 +1,6 @@
 package jshm.gh;
 
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 
 import org.hibernate.validator.*;
 
@@ -15,11 +14,6 @@ import org.hibernate.validator.*;
 public class GhScore extends jshm.Score {
 	private int   streak			= 0; 
 	private float calculatedRating	= 0.0f;
-
-	@Transient
-	public GhGame getGame() {
-		return ((GhSong) getSong()).getGame();
-	}
 	
 	@Min(0)
 	@Override
