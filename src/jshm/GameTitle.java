@@ -14,10 +14,6 @@ public abstract class GameTitle {
 	private static final List<GameTitle> values =
 		new ArrayList<GameTitle>();
 	
-	private static void registerTitle(final GameTitle title) {
-		values.add(title);
-	}
-	
 	public static List<GameTitle> values() {
 		return values;
 	}
@@ -42,13 +38,17 @@ public abstract class GameTitle {
 		return ret;
 	}
 	
+	static {
+		jshm.gh.GhGameTitle.init();
+	}
+	
 	
 	public final GameSeries series;
 	public final String		title;
 	public final Platform[] platforms;
 	
 	protected GameTitle(final GameSeries series, final String title, final Platform ... platforms) {
-		registerTitle(this);
+		values.add(this);
 		
 		this.series = series;
 		this.title = title;

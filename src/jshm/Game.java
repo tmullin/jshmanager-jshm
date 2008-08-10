@@ -62,14 +62,22 @@ public abstract class Game {
 	public final int scoreHeroId;
 	public final GameTitle title;
 	public final Platform platform;
+	public final boolean supportsDLC;
 	
 	protected final Map<Instrument.Group, Tiers> tiersMap =
 		new HashMap<Instrument.Group, Tiers>();
 	
-	protected Game(final int scoreHeroId, final GameTitle title, final Platform platform) {
+	protected Game(
+		final int scoreHeroId,
+		final GameTitle title,
+		final Platform platform,
+		final boolean supportsDLC) {
+		
 		this.scoreHeroId = scoreHeroId;
 		this.title = title;
 		this.platform = platform;
+		this.supportsDLC = supportsDLC;
+		
 		values.add(this);
 	}
 

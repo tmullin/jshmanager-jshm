@@ -30,25 +30,25 @@ public class GhGame extends jshm.Game {
 	}
 	
 	public static final GhGame
-		GH1_PS2 = new GhGame(1, GhGameTitle.GH1, SPTiers.GH1, Platform.PS2),
+		GH1_PS2 = new GhGame(1, GhGameTitle.GH1, SPTiers.GH1, Platform.PS2, false),
 		
-		GH2_PS2 = new GhGame(2, GhGameTitle.GH2, SPTiers.GH2, Platform.PS2),
-		GH2_XBOX360 = new GhGame(3, GhGameTitle.GH2, SPTiers.GH2_DLC, Platform.XBOX360),
+		GH2_PS2 = new GhGame(2, GhGameTitle.GH2, SPTiers.GH2, Platform.PS2, false),
+		GH2_XBOX360 = new GhGame(3, GhGameTitle.GH2, SPTiers.GH2_DLC, Platform.XBOX360, true),
 		
-		GH80_PS2 = new GhGame(4, GhGameTitle.GH80, SPTiers.GH80, Platform.PS2),
+		GH80_PS2 = new GhGame(4, GhGameTitle.GH80, SPTiers.GH80, Platform.PS2, false),
 		
-		GH3_PS2 = new GhGame(5, GhGameTitle.GH3, SPTiers.GH3, Platform.PS2),
-		GH3_XBOX360 = new GhGame(6, GhGameTitle.GH3, SPTiers.GH3_DLC, Platform.XBOX360),
-		GH3_PS3 = new GhGame(7, GhGameTitle.GH3, SPTiers.GH3_DLC, Platform.PS3),
-		GH3_WII = new GhGame(8, GhGameTitle.GH3, SPTiers.GH3, Platform.WII),
-		GH3_PC = new GhGame(9, GhGameTitle.GH3, SPTiers.GH3, Platform.PC),
+		GH3_PS2 = new GhGame(5, GhGameTitle.GH3, SPTiers.GH3, Platform.PS2, false),
+		GH3_XBOX360 = new GhGame(6, GhGameTitle.GH3, SPTiers.GH3_DLC, Platform.XBOX360, true),
+		GH3_PS3 = new GhGame(7, GhGameTitle.GH3, SPTiers.GH3_DLC, Platform.PS3, true),
+		GH3_WII = new GhGame(8, GhGameTitle.GH3, SPTiers.GH3, Platform.WII, false),
+		GH3_PC = new GhGame(9, GhGameTitle.GH3, SPTiers.GH3, Platform.PC, false),
 		
-		GHOT_DS = new GhGame(10, GhGameTitle.GHOT, SPTiers.GHOT, Platform.DS),
+		GHOT_DS = new GhGame(10, GhGameTitle.GHOT, SPTiers.GHOT, Platform.DS, false),
 		
-		GHA_PS2 = new GhGame(11, GhGameTitle.GHA, SPTiers.GHA, Platform.PS2),
-		GHA_XBOX360 = new GhGame(12, GhGameTitle.GHA, SPTiers.GHA, Platform.XBOX360),
-		GHA_PS3 = new GhGame(13, GhGameTitle.GHA, SPTiers.GHA, Platform.PS3),
-		GHA_WII = new GhGame(14, GhGameTitle.GHA, SPTiers.GHA, Platform.WII)
+		GHA_PS2 = new GhGame(11, GhGameTitle.GHA, SPTiers.GHA, Platform.PS2, false),
+		GHA_XBOX360 = new GhGame(12, GhGameTitle.GHA, SPTiers.GHA, Platform.XBOX360, false),
+		GHA_PS3 = new GhGame(13, GhGameTitle.GHA, SPTiers.GHA, Platform.PS3, false),
+		GHA_WII = new GhGame(14, GhGameTitle.GHA, SPTiers.GHA, Platform.WII, false)
 	;
 	
 	public static void init() {}
@@ -66,8 +66,14 @@ public class GhGame extends jshm.Game {
 		throw new IllegalArgumentException("invalid GhGame id: " + id);
 	}
 	
-	protected GhGame(final int scoreHeroId, final GhGameTitle title, final String[] singlePlayerTiers, final Platform platform) {
-		super(scoreHeroId, title, platform);
+	protected GhGame(
+		final int scoreHeroId,
+		final GhGameTitle title,
+		final String[] singlePlayerTiers,
+		final Platform platform,
+		final boolean supportsDLC) {
+		
+		super(scoreHeroId, title, platform, supportsDLC);
 		
 		if (null != singlePlayerTiers)
 			mapTiers(GhGameTitle.SINGLE_PLAYER_GROUP, singlePlayerTiers);

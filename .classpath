@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test"/>
+	<classpathentry excluding="**/.svn" kind="src" path="src"/>
+	<classpathentry excluding="**/.svn" kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/htmlparser.jar" sourcepath="libsrc/htmlparser-src.zip"/>
 	<classpathentry kind="lib" path="lib/junit-4.4.jar" sourcepath="libsrc/junit-4.4-src.jar"/>

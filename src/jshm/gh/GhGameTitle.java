@@ -3,6 +3,8 @@ package jshm.gh;
 import jshm.*;
 
 public class GhGameTitle extends jshm.GameTitle {
+	public static void init() {}
+	
 	public static final GhGameTitle
 		GH1  = new GhGameTitle("GH1", Platform.PS2),
 		GH2  = new GhGameTitle("GH2", Platform.PS2, Platform.XBOX360),
