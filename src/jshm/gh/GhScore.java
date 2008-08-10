@@ -1,5 +1,8 @@
 package jshm.gh;
 
+import javax.persistence.Entity;
+import javax.persistence.Transient;
+
 import org.hibernate.validator.*;
 
 /**
@@ -8,10 +11,16 @@ import org.hibernate.validator.*;
  * @author Tim Mullin
  *
  */
+@Entity
 public class GhScore extends jshm.Score {
 	private int   streak			= 0; 
 	private float calculatedRating	= 0.0f;
 
+	@Transient
+	public GhGame getGame() {
+		return ((GhSong) getSong()).getGame();
+	}
+	
 	@Min(0)
 	@Override
 	public int getStreak() {
@@ -27,9 +36,10 @@ public class GhScore extends jshm.Score {
 	
 	@Override
 	public void setCalculatedRating(float calculatedRating) {
-		if (calculatedRating < getGame().title.getMinCalculatedRating() ||
-			getGame().title.getMaxCalculatedRating() < calculatedRating)
-			throw new IllegalArgumentException("calculatedRating must be between " + getGame().title.getMinCalculatedRating() + " and " + getGame().title.getMaxCalculatedRating());
+		if (0.0f != calculatedRating &&
+			(calculatedRating < getGameTitle().getMinCalculatedRating() ||
+			 getGameTitle().getMaxCalculatedRating() < calculatedRating))
+			throw new IllegalArgumentException("calculatedRating must be 0 or between " + getGameTitle().getMinCalculatedRating() + " and " + getGameTitle().getMaxCalculatedRating());
 		
 		this.calculatedRating = calculatedRating;
 	}

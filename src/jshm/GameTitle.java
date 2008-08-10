@@ -11,25 +11,29 @@ import java.util.*;
  *
  */
 public abstract class GameTitle {
-	private static final List<GameTitle> registeredTitles =
+	private static final List<GameTitle> values =
 		new ArrayList<GameTitle>();
 	
 	private static void registerTitle(final GameTitle title) {
-		registeredTitles.add(title);
-	}
-	
-	public static List<GameTitle> getTitles() {
-		return registeredTitles;
+		values.add(title);
 	}
 	
 	public static List<GameTitle> values() {
-		return getTitles();
+		return values;
+	}
+	
+	public static GameTitle valueOf(String value) {
+		for (GameTitle g : values)
+			if (g.title.equals(value))
+				return g;
+		
+		return null;
 	}
 	
 	public static List<GameTitle> getTitlesBySeries(final GameSeries series) {
 		List<GameTitle> ret = new ArrayList<GameTitle>();
 		
-		for (GameTitle g : registeredTitles) {
+		for (GameTitle g : values) {
 			if (g.series.equals(series)) {
 				ret.add(g);
 			}

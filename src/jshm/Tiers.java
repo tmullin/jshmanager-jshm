@@ -14,6 +14,11 @@ public class Tiers {
 		this.tiers = tiers.split("\\|");
 	}
 	
+	/**
+	 * 
+	 * @param index The <b>1-based</b> index to retreive the name for
+	 * @return The name of the tier the given index maps to
+	 */
 	public String getName(final int index) {
 		if (0 == index) return "UNKNOWN";
 		return tiers[index - 1];

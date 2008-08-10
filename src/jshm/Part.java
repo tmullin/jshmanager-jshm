@@ -74,6 +74,23 @@ public class Part implements Comparable<Part> {
 		this.instrument = instrument;
 	}
 
+	
+	// override object methods
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(instrument);
+		sb.append(',');
+		sb.append(difficulty.toShortString());
+		sb.append(',');
+		sb.append(hitPercent);
+		sb.append(',');
+		sb.append(streak);
+		
+		return sb.toString();
+	}
+	
+	// comparable
 	@Override
 	public int compareTo(Part o) {
 		return this.instrument.compareTo(o.instrument);

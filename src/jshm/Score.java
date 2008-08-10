@@ -4,9 +4,13 @@ import java.util.*;
 import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.*;
 
 @Entity
+@OnDelete(action=OnDeleteAction.CASCADE)
+@Inheritance(strategy=InheritanceType.JOINED)
 public abstract class Score {
 	/**
 	 * The id internal to JSHManager's database
@@ -20,13 +24,18 @@ public abstract class Score {
 	
 	private Song	song				= null;
 	
+	/**
+	 * This will represent the highest difficulty of the parts.
+	 */
+	private Difficulty difficulty		= null;
+	
 	private int		score				= 0;
 	private int		rating				= 0;
 	private Date	submissionDate		= null;
-	private String	comment				= null;
+	private String	comment				= "";
 	
-	private String	imageUrl			= null;
-	private String	videoUrl			= null;
+	private String	imageUrl			= "";
+	private String	videoUrl			= "";
 	
 	private Set<Part> parts				= new LinkedHashSet<Part>(4);
 	
@@ -70,33 +79,18 @@ public abstract class Score {
 	}
 	
 	@Transient
-	public Game getGame() {
-		return getSong().getGame();
+	public GameTitle getGameTitle() {
+		return getSong().getGameTitle();
 	}
 	
-	/**
-	 * This must be overridden if the game's {@link Difficulty.Strategy}
-	 * is BY_SCORE.
-	 * @return The difficulty level that this score was achieved on.
-	 */
-	@Transient
+	@NotNull
+	@Enumerated(EnumType.STRING)
 	public Difficulty getDifficulty() {
-		switch (getGame().title.getDifficultyStrategy()) {
-			case BY_SONG:
-				return getSong().getDifficulty();
-		}
-		
-//		return null;
-		throw new UnsupportedOperationException("getDifficulty() may need to be overridden");
+		return difficulty;
 	}
 	
-	/**
-	 * This should be overridden in subclasses when the game's
-	 * {@link Difficulty.Strategy} is BY_SCORE.
-	 * @param difficulty
-	 */
 	public void setDifficulty(Difficulty difficulty) {
-		throw new UnsupportedOperationException("DifficultyStrategy is not BY_SCORE for this game");
+		this.difficulty = difficulty;
 	}
 
 	@Min(0)
@@ -110,8 +104,8 @@ public abstract class Score {
 		this.score = score;
 	}
 
-	@OneToMany
-	@JoinColumn
+	@OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+	@JoinColumn(name="score_id", nullable=false)
 	@OrderBy("instrument")
 	public Set<Part> getParts() {
 		return parts;
@@ -145,6 +139,11 @@ public abstract class Score {
 		return ret;
 	}
 	
+	@Transient
+	public Iterator<Part> getPartsIterator() {
+		return parts.iterator();
+	}
+	
 	/**
 	 * This method must be overridden if the current
 	 * {@link StreakStrategy} is BY_SCORE.
@@ -161,7 +160,7 @@ public abstract class Score {
 	 */
 	@Transient
 	public int getStreak() {
-		switch (getGame().title.getStreakStrategy()) {
+		switch (getGameTitle().getStreakStrategy()) {
 			case BY_PART:
 				return getMaxStreak();
 		}
@@ -203,9 +202,10 @@ public abstract class Score {
 	}
 
 	public void setRating(int rating) {
-		if (rating < getGame().title.getMinRating() ||
-			getGame().title.getMaxRating() < rating)
-			throw new IllegalArgumentException("rating must be between " + getGame().title.getMinRating() + " and " + getGame().title.getMaxCalculatedRating());
+//		if (rating != 0 &&
+//			(rating < getGame().title.getMinRating() ||
+//			 getGame().title.getMaxRating() < rating))
+//			throw new IllegalArgumentException("rating must be 0 or between " + getGame().title.getMinRating() + " and " + getGame().title.getMaxRating());
 		this.rating = rating;
 	}
 
@@ -255,9 +255,8 @@ public abstract class Score {
 		this.videoUrl = videoUrl;
 	}
 	
-	@Transient
 	public void setCalculatedRating(float calculatedRating) {
-		if (getGame().title.supportsCalculatedRating())
+		if (getGameTitle().supportsCalculatedRating())
 			throw new UnsupportedOperationException("supportsCalculableStars() is true but setCalculableRating() is not overridden");
 		throw new UnsupportedOperationException();
 	}
@@ -266,9 +265,33 @@ public abstract class Score {
 	 * 
 	 * @return The rating as calculated by some means not in-game.
 	 */
+	@Transient
 	public float getCalculatedRating() {
-		if (getGame().title.supportsCalculatedRating())
+		if (getGameTitle().supportsCalculatedRating())
 			throw new UnsupportedOperationException("supportsCalculableStars() is true but getCalculatedRating() is not overridden");
 		throw new UnsupportedOperationException();
+	}
+	
+	
+	// override object methods
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getGameTitle());
+		sb.append(',');
+		sb.append(song.getTitle());
+		sb.append(',');
+		sb.append(score);
+		sb.append(',');
+		sb.append(rating);
+		
+		for (Part p : parts) {
+			sb.append(',');
+			sb.append('{');
+			sb.append(p);
+			sb.append('}');
+		}
+		
+		return sb.toString();
 	}
 }
