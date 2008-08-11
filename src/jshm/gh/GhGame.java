@@ -83,6 +83,10 @@ public class GhGame extends jshm.Game {
 		return getTierName(GhGameTitle.SINGLE_PLAYER_GROUP, tierLevel);
 	}
 	
+	public int getTierLevel(final String tierName) {
+		return getTierLevel(GhGameTitle.SINGLE_PLAYER_GROUP, tierName);
+	}
+	
 	public int getTierCount() {
 		return getTierCount(GhGameTitle.SINGLE_PLAYER_GROUP);
 	}

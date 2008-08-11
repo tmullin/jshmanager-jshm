@@ -28,6 +28,19 @@ public class Tiers {
 		return tiers[index - 1];
 	}
 	
+	/**
+	 * 
+	 * @param name The name of the tier to find the level for
+	 * @return The <b>1-based</b> level for the given tier name or 0 if not found
+	 */
+	public int getLevel(final String name) {
+		for (int i = 0; i < tiers.length; i++) {
+			if (tiers[i].equals(name)) return i + 1;
+		}
+		
+		return 0;
+	}
+	
 	public int getCount() {
 		return tiers.length;
 	}

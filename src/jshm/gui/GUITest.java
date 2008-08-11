@@ -14,6 +14,9 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.UIManager;
+import javax.swing.tree.TreeModel;
+import org.netbeans.swing.outline.DefaultOutlineModel;
+import org.netbeans.swing.outline.OutlineModel;
 
 /**
  *
@@ -35,12 +38,18 @@ public class GUITest extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        outline1 = new org.netbeans.swing.outline.Outline();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         quitMenuItem = new javax.swing.JMenuItem();
         gamesMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        outline1.setRenderDataProvider(new GhTiersAndSongDataRenderData());
+        outline1.setRootVisible(false);
+        jScrollPane1.setViewportView(outline1);
 
         fileMenu.setText("File");
 
@@ -64,11 +73,13 @@ public class GUITest extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 263, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -132,6 +143,19 @@ private void initDynamicGameMenu(javax.swing.JMenu menu) {
 
 private void dynamicGameMenuItemActionPerformed(java.awt.event.ActionEvent evt, jshm.gh.GhGame game, jshm.Difficulty difficulty) {
 	System.out.println("Menu Evt: " + evt + "\n" + game + "," + difficulty);
+	
+	java.util.List<jshm.gh.GhSong> songs = jshm.gh.GhSong.getSongs(game, difficulty);
+	
+	if (songs.size() == 0) {
+		javax.swing.JOptionPane.showMessageDialog(this, "No songs for " + game + " on " + difficulty, "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+		return;
+	}
+	
+	TreeModel treeModel = new GhTiersAndSongDataTreeModel(game, songs);
+	OutlineModel outlineModel = DefaultOutlineModel.createOutlineModel(
+		treeModel, new GhTiersAndSongDataRowModel(), true, "Gh Song Data");
+
+	outline1.setModel(outlineModel);
 }
 
     /**
@@ -157,6 +181,8 @@ private void dynamicGameMenuItemActionPerformed(java.awt.event.ActionEvent evt, 
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu gamesMenu;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private org.netbeans.swing.outline.Outline outline1;
     private javax.swing.JMenuItem quitMenuItem;
     // End of variables declaration//GEN-END:variables
 

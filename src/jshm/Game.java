@@ -94,6 +94,11 @@ public abstract class Game {
 		return tiersMap.get(group).getName(tierLevel);
 	}
 	
+	public int getTierLevel(final Instrument.Group group, final String tierName) {
+		if (!tiersMap.containsKey(group)) return 0;
+		return tiersMap.get(group).getLevel(tierName);
+	}
+	
 	public int getTierCount(final Instrument.Group group) {
 		if (!tiersMap.containsKey(group)) return 0;
 		return tiersMap.get(group).getCount();

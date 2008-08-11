@@ -1,5 +1,6 @@
 package jshm.gh;
 
+import java.util.List;
 import javax.persistence.*;
 
 import org.hibernate.validator.*;
@@ -15,6 +16,21 @@ import jshm.Difficulty;
  */
 @Entity
 public class GhSong extends jshm.Song {
+	public static List<GhSong> getSongs(final GhGame game, final Difficulty difficulty) {
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    List<GhSong> result =
+			(List<GhSong>)
+			session.createQuery(
+				String.format(
+					"from GhSong where game='%s' and difficulty='%s'",
+					game.toString(), difficulty.toString()))
+				.list();
+	    session.getTransaction().commit();
+		
+		return result;
+	}
+	
 	private Difficulty	difficulty	= null;
 	
 	private int 	tierLevel		= 0;
