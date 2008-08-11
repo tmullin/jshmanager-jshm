@@ -17,12 +17,14 @@ public abstract class Score {
 	 *   <li>NEW - A newly entered score that hasn't been submitted to ScoreHero
 	 *   <li>SUBMITTED - A score that has been submitted to ScoreHero
 	 *   <li>DELETED - A score that has been submitted but was deleted on ScoreHero due to a new score overwriting it.
+	 *   <li>SUMMARY - Represents the highest overall score, hitPercent, noteStreak but
+	 *  				may not directly correspond to a particular score. scoreHeroId would 0 in this case.
 	 * </ul>
 	 * @author Tim Mullin
 	 *
 	 */
 	public static enum State {
-		NEW, SUBMITTED, DELETED
+		NEW, SUBMITTED, DELETED, SUMMARY
 	}
 	
 	/**
@@ -307,15 +309,18 @@ public abstract class Score {
 	
 	// override object methods
 	
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(getGameTitle());
+		sb.append(getGame());
 		sb.append(',');
 		sb.append(song.getTitle());
 		sb.append(',');
 		sb.append(score);
-		sb.append(',');
+		sb.append(",r=");
 		sb.append(rating);
+		sb.append(",%=");
+		sb.append(getHitPercent());
 		
 		for (Part p : parts) {
 			sb.append(',');

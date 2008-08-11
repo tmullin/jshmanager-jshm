@@ -41,7 +41,10 @@ public class TieredTabularDataExtractor {
         	}
         	
         	if (dataTable.rowChildNodeCount != tr.getChildCount())
-        		throw new ScraperException("Invalid data row child node count, expecting " + dataTable.rowChildNodeCount + ", got " + tr.getChildCount());
+        		if (handler.ignoreInvalidRowChildCount())
+        			continue;
+        		else
+        			throw new ScraperException("invalid data row child node count, expecting " + dataTable.rowChildNodeCount + ", got " + tr.getChildCount());
         	
     		handler.handleDataRow(dataTable.rowFormat.getData(tr));
         }

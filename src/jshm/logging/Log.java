@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.logging.*;
 
 //import jshm.Config;
-import jshm.JSHManager;
 
 public class Log {
 	public static void reloadConfig() {
@@ -16,7 +15,7 @@ public class Log {
 //			System.out.println("Reading: " + props);
 			
 			InputStream in =
-				JSHManager.class.getResourceAsStream("properties/" + props);
+				Log.class.getResourceAsStream("/jshm/properties/" + props);
 			LogManager.getLogManager().readConfiguration(in);
 		} catch (IOException e) {
 			e.printStackTrace();

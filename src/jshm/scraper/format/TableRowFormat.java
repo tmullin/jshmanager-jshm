@@ -49,6 +49,16 @@ public class TableRowFormat {
 		formats.add(format);
 	}
 	
+	/**
+	 * 
+	 * @param row
+	 * @return A 2-dimensional String array of data. The first dimension
+	 * directly corresponds to each column that this format has. It may be
+	 * null if a given column is ignored via "-". The second dimension
+	 * corresponds to each piece of information found in that column
+	 * according to this format. 
+	 * @throws FormatException
+	 */
 	public String[][] getData(final TableRow row)
 	throws FormatException {
 		List<String[]> data = new ArrayList<String[]>();
@@ -76,7 +86,7 @@ public class TableRowFormat {
 			
 			String[] curData = curFormat.getData((TableColumn) children.elementAt(i));
 			
-			if (null != curData)
+//			if (null != curData)
 				data.add(curData);
 		}
 		

@@ -16,6 +16,7 @@ import jshm.Difficulty;
  */
 @Entity
 public class GhSong extends jshm.Song {
+	@SuppressWarnings("unchecked")
 	public static List<GhSong> getSongs(final GhGame game, final Difficulty difficulty) {
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
@@ -26,6 +27,20 @@ public class GhSong extends jshm.Song {
 					"from GhSong where game='%s' and difficulty='%s'",
 					game.toString(), difficulty.toString()))
 				.list();
+	    session.getTransaction().commit();
+		
+		return result;
+	}
+	
+	public static GhSong getByScoreHeroId(final int id) {
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    GhSong result =
+			(GhSong)
+			session.createQuery(
+				String.format(
+					"from GhSong where scoreHeroId=%d", id))
+				.uniqueResult();
 	    session.getTransaction().commit();
 		
 		return result;

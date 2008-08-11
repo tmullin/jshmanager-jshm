@@ -13,6 +13,31 @@ import org.htmlparser.util.*;
  *
  */
 public class Scraper {
+	public static NodeList scrape(final String url, final jshm.sh.DataTable dataTable) {
+		return scrape(url, dataTable.getFilters(), true);
+	}
+	
+	public static NodeList scrape(final String url, final jshm.sh.DataTable dataTable, final boolean removeWhitespace) {
+		return scrape(url, dataTable.getFilters(), removeWhitespace);
+	}
+	
+	public static NodeList scrape(
+			final String url,
+			final jshm.sh.DataTable dataTable,
+			final org.apache.commons.httpclient.Cookie[] cookies) {
+			
+			return scrape(url, dataTable.getFilters(), true, cookies);
+		}
+	
+	public static NodeList scrape(
+		final String url,
+		final jshm.sh.DataTable dataTable,
+		final boolean removeWhitespace,
+		final org.apache.commons.httpclient.Cookie[] cookies) {
+		
+		return scrape(url, dataTable.getFilters(), removeWhitespace, cookies);
+	}
+	
 	public static NodeList scrape(final String url, final NodeFilter[] filters) {
 		return scrape(url, filters, true);
 	}

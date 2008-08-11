@@ -10,13 +10,26 @@ public class Client {
 	private static Cookie[] cookieCache = null;
 	
 	/**
-	 * Returns the auth cookies if they are cached or null
+	 *  
+	 * @return The auth cookies if they are cached or null
 	 * otherwise. This is useful to obtain the cookies
 	 * for subsequent requests after they have been retrieved
 	 * initially without needing to provide credentials again.
-	 * @return
 	 */
 	public static Cookie[] getAuthCookies() {
+		return getAuthCookies(true);
+	}
+	
+	/**
+	 * 
+	 * @param required Whether the cookies are required. If true, an
+	 * exception is thrown if null == cookieCache. Useful for dev.
+	 * @return
+	 * @see #getAuthCookies()
+	 */
+	public static Cookie[] getAuthCookies(boolean required) {
+		if (required && null == cookieCache)
+			throw new RuntimeException("auth cookies are required but not present");
 		return cookieCache;
 	}
 	

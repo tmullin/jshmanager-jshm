@@ -6,12 +6,8 @@ import org.htmlparser.util.*;
 
 import jshm.Difficulty;
 import jshm.exceptions.*;
-import jshm.gh.GhGame;
-import jshm.gh.GhGameTitle;
-import jshm.gh.GhSong;
-import jshm.scraper.TieredTabularDataAdapter;
-import jshm.scraper.TieredTabularDataExtractor;
-import jshm.scraper.TieredTabularDataHandler;
+import jshm.gh.*;
+import jshm.scraper.*;
 import jshm.sh.*;
 
 /**
@@ -31,24 +27,27 @@ public class GhSongScraper {
 		
 		List<GhSong> songs = new ArrayList<GhSong>();
 		
-		NodeList nodes = GhScraper.scrape(
-			URLs.gh.getSongStatsUrl(
-				GhSongStat.TOTAL_NOTES,
-				game,
-				difficulty));
-		
 		TieredTabularDataHandler handler =
 			new IdAndNoteHandler(game, difficulty, songs);
 		
+		NodeList nodes = Scraper.scrape(
+			URLs.gh.getSongStatsUrl(
+				GhSongStat.TOTAL_NOTES,
+				game,
+				difficulty),
+			handler.getDataTable());
+		
 		TieredTabularDataExtractor.extract(nodes, handler);
 		
-		nodes = GhScraper.scrape(
+		handler = new CutoffHandler(songs);
+		
+		nodes = Scraper.scrape(
 			URLs.gh.getSongStatsUrl(
 				GhSongStat.ALL_CUTOFFS,
 				game,
-				difficulty));
+				difficulty),
+			handler.getDataTable());
 		
-		handler = new CutoffHandler(songs);
 		TieredTabularDataExtractor.extract(nodes, handler);
 		
 		return songs;
@@ -67,16 +66,19 @@ public class GhSongScraper {
 			final GhGame game,
 			final Difficulty difficulty,
 			final List<GhSong> songs) {
+			
 			this.game = game;
 			this.title = (GhGameTitle) game.title;
 			this.difficulty = difficulty;
 			this.songs = songs;
 		}
 		
+		@Override
 		public DataTable getDataTable() {
 			return DataTable.GH_TOTAL_NOTES;
 		}
 		
+		@Override
 		public void handleTierRow(String tierName) throws ScraperException {
 			// this will prevent retrieval of the gh3 demo tier
 			// on the gh2 page, for example
@@ -89,6 +91,8 @@ public class GhSongScraper {
 			curTierLevel++;
 		}
 		
+		// "link=songid|-|text|text=int|-|-"
+		@Override
 		public void handleDataRow(String[][] data) throws ScraperException {			
         	GhSong curSong = new GhSong();
         	curSong.setGame(game);
@@ -99,10 +103,10 @@ public class GhSongScraper {
     			curSong.setScoreHeroId(Integer.parseInt(data[0][0]));
     		} catch (NumberFormatException e) {}
     		
-    		curSong.setTitle(data[1][0]);
+    		curSong.setTitle(data[2][0]);
     		
     		try {
-    			curSong.setNoteCount(Integer.parseInt(data[2][0]));
+    			curSong.setNoteCount(Integer.parseInt(data[3][0]));
     		} catch (NumberFormatException e) {}
     		
         	songs.add(curSong);
@@ -115,13 +119,17 @@ public class GhSongScraper {
 		
 		public CutoffHandler(
 			final List<GhSong> songs) {
+			
 			this.songs = songs;
 		}
 		
+		@Override
 		public DataTable getDataTable() {
 			return DataTable.GH_ALL_CUTOFFS;
 		}
 		
+		// "text|text=int|text=int|text=int|text=int|text=int|text=int|text=int"
+		@Override
 		public void handleDataRow(String[][] data) throws ScraperException {
         	GhSong curSong = new GhSong();
         	
