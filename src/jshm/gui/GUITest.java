@@ -88,10 +88,9 @@ private void initDynamicGameMenu(javax.swing.JMenu menu) {
 	
 	for (jshm.GameTitle ttl : titles) {		
 		System.out.println("Creating " + ttl);
+		
 		javax.swing.JMenu ttlMenu = new javax.swing.JMenu(ttl.toString());
-		java.net.URL url = GUITest.class.getResource("/jshm/resources/images/icons/" + ttl.title + "_32.png");
-		System.out.println("URL: " + url);
-		ttlMenu.setIcon(new ImageIcon(url));
+		ttlMenu.setIcon(ttl.getIcon());
 		
 		java.util.List<jshm.Game> games =
 			jshm.Game.getByTitle(ttl);
@@ -102,7 +101,7 @@ private void initDynamicGameMenu(javax.swing.JMenu menu) {
 				
 			if (games.size() > 1) {
 				gameMenu = new javax.swing.JMenu(game.platform.toString());
-				gameMenu.setIcon(new ImageIcon(GUITest.class.getResource("/jshm/resources/images/platforms/" + game.platform.toString() + "_32.png")));
+				gameMenu.setIcon(game.platform.getIcon());
 			} else {
 				gameMenu = ttlMenu;
 			}
@@ -110,7 +109,9 @@ private void initDynamicGameMenu(javax.swing.JMenu menu) {
 			System.out.println("  Creating " + game.platform);
 			for (final jshm.Difficulty diff : jshm.Difficulty.values()) {
 				if (diff == jshm.Difficulty.CO_OP) continue;
+				
 				System.out.println("    Creating " + diff);
+				
 				JMenuItem diffItem = new JMenuItem(diff.toString());
 				diffItem.addActionListener(new ActionListener() {
 					@Override
