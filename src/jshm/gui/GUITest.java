@@ -8,7 +8,12 @@ package jshm.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
+import javax.swing.UIManager;
 
 /**
  *
@@ -81,25 +86,32 @@ private void initDynamicGameMenu(javax.swing.JMenu menu) {
 	java.util.List<jshm.GameTitle> titles =
 		jshm.GameTitle.getTitlesBySeries(jshm.GameSeries.GUITAR_HERO);
 	
-	for (jshm.GameTitle ttl : titles) {
+	for (jshm.GameTitle ttl : titles) {		
+		System.out.println("Creating " + ttl);
+		javax.swing.JMenu ttlMenu = new javax.swing.JMenu(ttl.toString());
+		java.net.URL url = GUITest.class.getResource("/jshm/resources/images/icons/" + ttl.title + "_32.png");
+		System.out.println("URL: " + url);
+		ttlMenu.setIcon(new ImageIcon(url));
+		
 		java.util.List<jshm.Game> games =
 			jshm.Game.getByTitle(ttl);
 		
-		System.out.println("Creating " + ttl);
-		javax.swing.JMenu ttlMenu = new javax.swing.JMenu(ttl.toString());
-		
 		for (final jshm.Game game : games) {
 			// no need for an extra menu if there's only one platform
-			javax.swing.JMenu gameMenu =
-				games.size() > 1
-				? new javax.swing.JMenu(game.platform.toString())
-				: ttlMenu;
+			javax.swing.JMenu gameMenu = null;
+				
+			if (games.size() > 1) {
+				gameMenu = new javax.swing.JMenu(game.platform.toString());
+				gameMenu.setIcon(new ImageIcon(GUITest.class.getResource("/jshm/resources/images/platforms/" + game.platform.toString() + "_32.png")));
+			} else {
+				gameMenu = ttlMenu;
+			}
 			
 			System.out.println("  Creating " + game.platform);
 			for (final jshm.Difficulty diff : jshm.Difficulty.values()) {
 				if (diff == jshm.Difficulty.CO_OP) continue;
 				System.out.println("    Creating " + diff);
-				JMenuItem diffItem = new JMenuItem(diff.toShortString());
+				JMenuItem diffItem = new JMenuItem(diff.toString());
 				diffItem.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -127,6 +139,14 @@ private void dynamicGameMenuItemActionPerformed(java.awt.event.ActionEvent evt, 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+				try {
+					// Set the Look & Feel to match the current system
+					UIManager.setLookAndFeel(
+						UIManager.getSystemLookAndFeelClassName());
+				} catch (Exception e) {
+					System.out.println("Couldn't set system look & feel (not fatal)");
+				}
+				
                 new GUITest().setVisible(true);
             }
         });

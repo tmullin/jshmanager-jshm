@@ -20,6 +20,8 @@ public class JSHManager {
 	 * Launches this application
 	 */
 	public static void main(String[] args) {
+		System.exit(0);
+		
 		// Ensure any uncaught exceptions are logged so that bugs
 		// can be found more easily.
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
