@@ -27,14 +27,68 @@ public class GhSong extends jshm.Song {
 	private int 	eightStarCutoff = -1;
 	private int 	nineStarCutoff 	= -1;
 	
-	public void setScoreAndCutoffs(final GhSong source) {
-		this.setBaseScore(source.getBaseScore());
-		this.setFourStarCutoff(source.getFourStarCutoff());
-		this.setFiveStarCutoff(source.getFiveStarCutoff());
-		this.setSixStarCutoff(source.getSixStarCutoff());
-		this.setSevenStarCutoff(source.getSevenStarCutoff());
-		this.setEightStarCutoff(source.getEightStarCutoff());
-		this.setNineStarCutoff(source.getNineStarCutoff());
+	/**
+	 * Sets the noteCount, baseScore and cutoffs of
+	 * this song to that of <code>source</code>. 
+	 * @param source
+	 * @return Whether any values were changed
+	 */
+	public boolean update(final GhSong source) {
+		boolean test = false;
+		
+		if (this.noteCount != source.noteCount) {
+			test = true;
+			this.noteCount = source.noteCount;
+		}
+		
+		return test || this.setScoreAndCutoffs(source);
+	}
+	
+	/**
+	 * Sets the baseScore and cutoffs of this song
+	 * to that of <code>source</code>.
+	 * @param source
+	 * @return Whether any values were changed
+	 */
+	public boolean setScoreAndCutoffs(final GhSong source) {
+		boolean test = false;
+		
+		if (this.baseScore != source.baseScore) {
+			test = true;
+			this.baseScore = source.baseScore;
+		}
+		
+		if (this.fourStarCutoff != source.fourStarCutoff) {
+			test = true;
+			this.fourStarCutoff = source.fourStarCutoff;
+		}
+		
+		if (this.fiveStarCutoff != source.fiveStarCutoff) {
+			test = true;
+			this.fiveStarCutoff = source.fiveStarCutoff;
+		}
+		
+		if (this.sixStarCutoff != source.sixStarCutoff) {
+			test = true;
+			this.sixStarCutoff = source.sixStarCutoff;
+		}
+		
+		if (this.sevenStarCutoff != source.sevenStarCutoff) {
+			test = true;
+			this.sevenStarCutoff = source.sevenStarCutoff;
+		}
+		
+		if (this.eightStarCutoff != source.eightStarCutoff) {
+			test = true;
+			this.eightStarCutoff = source.eightStarCutoff;
+		}
+		
+		if (this.nineStarCutoff != source.nineStarCutoff) {
+			test = true;
+			this.nineStarCutoff = source.nineStarCutoff;
+		}
+		
+		return test;
 	}
 	
 	@Override

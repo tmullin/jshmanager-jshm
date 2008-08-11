@@ -36,10 +36,13 @@ public class TestTimer {
 			System.out.println("Time: " + seconds + " seconds");
 			timers.remove(Thread.currentThread());
 		} catch (NullPointerException e) {
-			throw new RuntimeException("Cannot stop timer without starting it", e);
+			// silently ignore
+//			throw new RuntimeException("Cannot stop timer without starting it", e);
 		}
 		
 		if (printMem) printMemUsage();
+		
+		start(false);
 		
 		return seconds;
 	}

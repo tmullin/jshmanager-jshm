@@ -127,7 +127,7 @@ public class GhSongScraper {
         	
     		for (int i = 0; i < data.length; i++) {
     			String s = data[i][0];
-    			int k = 0;
+    			int k = -1;
     			
     			try {
     				k = Integer.parseInt(s);
