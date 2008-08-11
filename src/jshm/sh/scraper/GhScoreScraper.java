@@ -7,6 +7,7 @@ import org.htmlparser.util.NodeList;
 import jshm.Difficulty;
 import jshm.Instrument;
 import jshm.Part;
+import jshm.Score;
 import jshm.exceptions.ScraperException;
 import jshm.gh.*;
 import jshm.scraper.Scraper;
@@ -14,6 +15,7 @@ import jshm.scraper.TieredTabularDataAdapter;
 import jshm.scraper.TieredTabularDataExtractor;
 import jshm.scraper.TieredTabularDataHandler;
 import jshm.sh.DataTable;
+import jshm.sh.DateFormats;
 import jshm.sh.URLs;
 
 public class GhScoreScraper {
@@ -74,6 +76,7 @@ public class GhScoreScraper {
 				throw new ScraperException("GhSong not found, scoreHeroId: " + data[2][0]);
 			
 			GhScore score = new GhScore();
+			score.setState(Score.State.SUMMARY);
 			score.setSong(song);
 			
 			score.setScore(Integer.parseInt(data[5][0]));
@@ -110,6 +113,20 @@ public class GhScoreScraper {
 			}
 			
 			score.addPart(p);
+			
+			score.setCreationDate(null);
+			
+			// null date is fine
+//			if (!data[9][0].isEmpty()) {
+				try {
+					Date date = DateFormats.GH_MANAGE_SCORES.parse(data[9][0]);
+					score.setSubmissionDate(date);
+				} catch (Exception e) {}
+//			}
+			
+			if (!data[10][0].isEmpty() && !"N/A".equals(data[10][0])) {
+				score.setComment(data[10][0]);
+			}
 			
 			scores.add(score);
 		}

@@ -1,5 +1,6 @@
 package jshm;
 
+import java.text.DateFormat;
 import java.util.*;
 import javax.persistence.*;
 
@@ -47,7 +48,8 @@ public abstract class Score {
 	
 	private int		score				= 0;
 	private int		rating				= 0;
-	private Date	date				= new Date();
+	private Date	creationDate		= new Date();
+	private Date	submissionDate		= null;
 	private String	comment				= "";
 	
 	private String	imageUrl			= "";
@@ -99,6 +101,10 @@ public abstract class Score {
 	
 	public void setSong(Song song) {
 		this.song = song;
+		
+		if (Difficulty.Strategy.BY_SONG == getGameTitle().getDifficultyStrategy()) {
+			this.difficulty = song.getDifficulty();
+		}
 	}
 
 	@ManyToOne
@@ -250,13 +256,31 @@ public abstract class Score {
 		return rating;
 	}
 	
-	public void setDate(Date submissionDate) {
-		this.date = submissionDate;
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
 	}
 
+	/**
+	 * 
+	 * @return The {@link Date} that this score was created if it was created
+	 * within JSHM (as opposed to scraped from ScoreHero)
+	 */
 	@Temporal(TemporalType.TIMESTAMP)
-	public Date getDate() {
-		return date;
+	public Date getCreationDate() {
+		return creationDate;
+	}
+	
+	public void setSubmissionDate(Date submissionDate) {
+		this.submissionDate = submissionDate;
+	}
+
+	/**
+	 * 
+	 * @return The {@link Date} that this score was submitted to ScoreHero
+	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getSubmissionDate() {
+		return submissionDate;
 	}
 
 	public void setComment(String comment) {
@@ -296,8 +320,10 @@ public abstract class Score {
 	}
 
 	/**
-	 * 
+	 * This should be overridden if the GameTitle supports 
+	 * calculated ratings.
 	 * @return The rating as calculated by some means not in-game.
+	 * @throws UnsupportedOperationException If this method is not overridden
 	 */
 	@Transient
 	public float getCalculatedRating() {
@@ -311,16 +337,40 @@ public abstract class Score {
 	
 	@Override
 	public String toString() {
+		return toString(null);
+	}
+	
+	/**
+	 * Allows for subclasses to insert extra stuff into
+	 * the String representation after the hitPercent.
+	 * @param extra
+	 * @return
+	 */
+	protected String toString(String extra) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getGame());
 		sb.append(',');
 		sb.append(song.getTitle());
 		sb.append(',');
+		sb.append(difficulty.toShortString());
+		
+		sb.append(',');
 		sb.append(score);
 		sb.append(",r=");
 		sb.append(rating);
+		
+		if (getGameTitle().supportsCalculatedRating()) {
+			sb.append(",cr=");
+			sb.append(getCalculatedRating());
+		}
+		
 		sb.append(",%=");
 		sb.append(getHitPercent());
+		sb.append(",ns=");
+		sb.append(getStreak());
+		
+		if (null != extra)
+			sb.append(extra);
 		
 		for (Part p : parts) {
 			sb.append(',');
@@ -328,6 +378,11 @@ public abstract class Score {
 			sb.append(p);
 			sb.append('}');
 		}
+		
+		sb.append(",cdate=");
+		sb.append(creationDate == null ? null : DateFormat.getInstance().format(creationDate));
+		sb.append(",sdate=");
+		sb.append(submissionDate == null ? null : DateFormat.getInstance().format(submissionDate));
 		
 		return sb.toString();
 	}

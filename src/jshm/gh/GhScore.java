@@ -2,8 +2,6 @@ package jshm.gh;
 
 import javax.persistence.Entity;
 
-import jshm.Part;
-
 import org.hibernate.validator.*;
 
 /**
@@ -48,30 +46,5 @@ public class GhScore extends jshm.Score {
 	
 	// override object methods
 	
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(getGame());
-		sb.append(',');
-		sb.append(getSong().getTitle());
-		sb.append(',');
-		sb.append(getScore());
-		sb.append(",r=");
-		sb.append(getRating());
-		sb.append(",cr=");
-		sb.append(getCalculatedRating());
-		sb.append(",%=");
-		sb.append(getHitPercent());
-		sb.append(",ns=");
-		sb.append(getStreak());
-		
-		for (Part p : getParts()) {
-			sb.append(',');
-			sb.append('{');
-			sb.append(p);
-			sb.append('}');
-		}
-		
-		return sb.toString();
-	}
+
 }
