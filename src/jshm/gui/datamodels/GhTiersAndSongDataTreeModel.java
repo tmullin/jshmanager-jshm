@@ -1,4 +1,4 @@
-package jshm.gui;
+package jshm.gui.datamodels;
 
 import java.util.ArrayList;
 import java.util.List;

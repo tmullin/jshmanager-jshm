@@ -76,7 +76,7 @@ public class GhScoreScraper {
 				throw new ScraperException("GhSong not found, scoreHeroId: " + data[2][0]);
 			
 			GhScore score = new GhScore();
-			score.setState(Score.State.SUMMARY);
+			score.setStatus(Score.Status.SUMMARY);
 			score.setSong(song);
 			
 			score.setScore(Integer.parseInt(data[5][0]));

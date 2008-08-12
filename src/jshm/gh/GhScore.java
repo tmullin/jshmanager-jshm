@@ -1,7 +1,9 @@
 package jshm.gh;
 
+import java.util.List;
 import javax.persistence.Entity;
 
+import jshm.Difficulty;
 import org.hibernate.validator.*;
 
 /**
@@ -12,6 +14,23 @@ import org.hibernate.validator.*;
  */
 @Entity
 public class GhScore extends jshm.Score {
+	@SuppressWarnings("unchecked")
+	public static List<GhScore> getScores(final GhGame game, final Difficulty difficulty) {
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    List<GhScore> result =
+			(List<GhScore>)
+			session.createQuery(
+				String.format(
+					"from GhScore where game='%s' and difficulty='%s'",
+					game.toString(), difficulty.toString()))
+				.list();
+	    session.getTransaction().commit();
+		
+		return result;
+	}
+	
+	
 	private int   streak			= 0; 
 	private float calculatedRating	= 0.0f;
 	

@@ -24,7 +24,7 @@ public abstract class Score {
 	 * @author Tim Mullin
 	 *
 	 */
-	public static enum State {
+	public static enum Status {
 		NEW, SUBMITTED, DELETED, SUMMARY
 	}
 	
@@ -37,7 +37,7 @@ public abstract class Score {
 	 * The id in ScoreHero's database if this score has been submitted.
 	 */
 	private int		scoreHeroId			= 0;
-	private State	state				= State.NEW;
+	private Status	status				= Status.NEW;
 
 	private Song	song				= null;
 	
@@ -79,14 +79,14 @@ public abstract class Score {
 	
 	@NotNull
 	@Enumerated(EnumType.STRING)
-	public State getState() {
-		return state;
+	public Status getStatus() {
+		return status;
 	}
 
-	public void setState(State state) {
-		if (null == state)
-			throw new IllegalArgumentException("state cannot be null");
-		this.state = state;
+	public void setStatus(Status status) {
+		if (null == status)
+			throw new IllegalArgumentException("status cannot be null");
+		this.status = status;
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public abstract class Score {
 	 */
 	@Transient
 	public boolean isEditable() {
-		return this.state == State.NEW;
+		return this.status == Status.NEW;
 	}
 	
 	public void setSong(Song song) {

@@ -1,4 +1,4 @@
-package jshm.gui;
+package jshm.gui.datamodels;
 
 import java.awt.Color;
 

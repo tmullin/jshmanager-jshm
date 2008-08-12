@@ -12,9 +12,15 @@ import java.util.logging.Level;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JMenuItem;
 import javax.swing.UIManager;
 import javax.swing.tree.TreeModel;
+
+import jshm.gui.datamodels.GhTiersAndSongDataRenderData;
+import jshm.gui.datamodels.GhTiersAndSongDataRowModel;
+import jshm.gui.datamodels.GhTiersAndSongDataTreeModel;
+
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.OutlineModel;
 
@@ -38,12 +44,18 @@ public class GUITest extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        aboutDialog1 = new AboutDialog(this);
         jScrollPane1 = new javax.swing.JScrollPane();
         outline1 = new org.netbeans.swing.outline.Outline();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        quitMenuItem = new javax.swing.JMenuItem();
-        gamesMenu = new javax.swing.JMenu();
+        exitMenuItem = new javax.swing.JMenuItem();
+        myScoresMenu = new javax.swing.JMenu();
+        songDataMenu = new javax.swing.JMenu();
+        helpMenu = new javax.swing.JMenu();
+        aboutMenuItem = new javax.swing.JMenuItem();
+
+        aboutDialog1.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -51,21 +63,39 @@ public class GUITest extends javax.swing.JFrame {
         outline1.setRootVisible(false);
         jScrollPane1.setViewportView(outline1);
 
+        fileMenu.setMnemonic('F');
         fileMenu.setText("File");
 
-        quitMenuItem.setText("Quit");
-        quitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        exitMenuItem.setMnemonic('x');
+        exitMenuItem.setText("Exit");
+        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                quitMenuItemActionPerformed(evt);
+                exitMenuItemActionPerformed(evt);
             }
         });
-        fileMenu.add(quitMenuItem);
+        fileMenu.add(exitMenuItem);
 
         jMenuBar1.add(fileMenu);
 
-        gamesMenu.setText("Games");
-        initDynamicGameMenu(gamesMenu);
-        jMenuBar1.add(gamesMenu);
+        myScoresMenu.setText("My Scores");
+        initDynamicGameMenu(myScoresMenu);
+        jMenuBar1.add(myScoresMenu);
+
+        songDataMenu.setText("Song Data");
+        initDynamicGameMenu(songDataMenu);
+        jMenuBar1.add(songDataMenu);
+
+        helpMenu.setText("Help");
+
+        aboutMenuItem.setText("About");
+        aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutMenuItemActionPerformed(evt);
+            }
+        });
+        helpMenu.add(aboutMenuItem);
+
+        jMenuBar1.add(helpMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -85,15 +115,21 @@ public class GUITest extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-private void quitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitMenuItemActionPerformed
+private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
 	System.exit(0);
-}//GEN-LAST:event_quitMenuItemActionPerformed
+}//GEN-LAST:event_exitMenuItemActionPerformed
+
+private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
+	// this.aboutDialog1
+	this.aboutDialog1.setLocationRelativeTo(null);
+	this.aboutDialog1.setVisible(true);
+}//GEN-LAST:event_aboutMenuItemActionPerformed
 
 /**
  * Load the menu with all avaialable GH games.
  * @param menu
  */
-private void initDynamicGameMenu(javax.swing.JMenu menu) {
+private void initDynamicGameMenu(final javax.swing.JMenu menu) {
 	java.util.List<jshm.GameTitle> titles =
 		jshm.GameTitle.getTitlesBySeries(jshm.GameSeries.GUITAR_HERO);
 	
@@ -124,12 +160,29 @@ private void initDynamicGameMenu(javax.swing.JMenu menu) {
 				System.out.println("    Creating " + diff);
 				
 				JMenuItem diffItem = new JMenuItem(diff.toString());
-				diffItem.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						dynamicGameMenuItemActionPerformed(e, (jshm.gh.GhGame) game, diff);
-					}
-				});
+				diffItem.setIcon(diff.getIcon());
+				
+				ActionListener al = null;
+				
+				if (menu == songDataMenu) {
+					al = new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							songDataMenuItemActionPerformed(e, (jshm.gh.GhGame) game, diff);
+						}
+					};
+				} else if (menu == myScoresMenu) {
+					al = new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							myScoresMenuItemActionPerformed(e, (jshm.gh.GhGame) game, diff);
+						}
+					};
+				} else {
+					assert false;
+				}
+				
+				diffItem.addActionListener(al);
 				
 				gameMenu.add(diffItem);
 			}
@@ -141,7 +194,7 @@ private void initDynamicGameMenu(javax.swing.JMenu menu) {
 	}
 }
 
-private void dynamicGameMenuItemActionPerformed(java.awt.event.ActionEvent evt, jshm.gh.GhGame game, jshm.Difficulty difficulty) {
+private void songDataMenuItemActionPerformed(java.awt.event.ActionEvent evt, jshm.gh.GhGame game, jshm.Difficulty difficulty) {
 	System.out.println("Menu Evt: " + evt + "\n" + game + "," + difficulty);
 	
 	java.util.List<jshm.gh.GhSong> songs = jshm.gh.GhSong.getSongs(game, difficulty);
@@ -153,9 +206,14 @@ private void dynamicGameMenuItemActionPerformed(java.awt.event.ActionEvent evt, 
 	
 	TreeModel treeModel = new GhTiersAndSongDataTreeModel(game, songs);
 	OutlineModel outlineModel = DefaultOutlineModel.createOutlineModel(
-		treeModel, new GhTiersAndSongDataRowModel(), true, "Gh Song Data");
+		treeModel, new GhTiersAndSongDataRowModel(), true, "Song");
 
 	outline1.setModel(outlineModel);
+}
+
+private void myScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt, jshm.gh.GhGame game, jshm.Difficulty difficulty) {
+	System.out.println("Menu Evt: " + evt + "\n" + game + "," + difficulty);
+	
 }
 
     /**
@@ -178,12 +236,16 @@ private void dynamicGameMenuItemActionPerformed(java.awt.event.ActionEvent evt, 
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private jshm.gui.AboutDialog aboutDialog1;
+    private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
-    private javax.swing.JMenu gamesMenu;
+    private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JMenu myScoresMenu;
     private org.netbeans.swing.outline.Outline outline1;
-    private javax.swing.JMenuItem quitMenuItem;
+    private javax.swing.JMenu songDataMenu;
     // End of variables declaration//GEN-END:variables
 
 }
