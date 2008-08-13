@@ -2,6 +2,7 @@ package jshm.scraper.format;
 
 import org.htmlparser.*;
 import org.htmlparser.nodes.*;
+import org.htmlparser.util.Translate;
 
 /**
  * This NodeFormat returns the text of a
@@ -14,6 +15,8 @@ public class TagFormat extends NodeFormat {
 		new TagFormat("src");
 	public static final TagFormat HREF =
 		new TagFormat("href");
+	public static final TagFormat TITLE =
+		new TagFormat("title");
 	
 	protected String attribute;
 	
@@ -26,11 +29,13 @@ public class TagFormat extends NodeFormat {
 		this.attribute = attribute;
 	}
 	
-	@Override protected String getTextInternal(final Node node) {
+	@Override
+	protected String getTextInternal(final Node node) {
 		if (!(node instanceof TagNode))
 			throw new IllegalArgumentException("TagNode required");
 		
 		TagNode tagNode = (TagNode) node;
-		return tagNode.getAttribute(attribute);
+		String ret = tagNode.getAttribute(attribute);
+		return ret == null ? "" : Translate.decode(ret);
 	}
 }

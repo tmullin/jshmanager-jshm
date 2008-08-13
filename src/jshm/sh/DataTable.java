@@ -55,10 +55,10 @@ public class DataTable {
 	
 	public static final DataTable
 	GH_TOP_SCORES = new DataTable(3, 2, 8,
-		"-|text~link=songid|text=int|img=rating~text=float|text=int|text=int|text|text"
+		"-|text~link=songid|text=int|img=rating~text=float|text=int|text=int|text|span"
 	),
 	GH_MANAGE_SCORES = new DataTable(3, 4, 11,
-		"-|-|link=songid~text|-|-|text=int|img=rating~text=float|text=int|text=int|text|text"
+		"-|-|link=songid~text|-|-|text=int|img=rating~text=float|text=int|text=int|text|span"
 	),
 	GH_STAR_CUTOFFS = new DataTable(3, 2, 7,
 		"link=songid|-|text|text=int,-,int|text=int|text=int|text"

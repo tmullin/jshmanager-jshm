@@ -2,6 +2,8 @@ package jshm.gh;
 
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
+import javax.swing.ImageIcon;
 
 import jshm.Difficulty;
 import org.hibernate.validator.*;
@@ -60,6 +62,20 @@ public class GhScore extends jshm.Score {
 	@Override
 	public float getCalculatedRating() {
 		return calculatedRating;
+	}
+
+	@Transient
+	public boolean isFullCombo() {
+		return this.streak > 0 && this.streak == ((GhSong) getSong()).getNoteCount();
+	}
+	
+	@Transient
+	@Override
+	public ImageIcon getRatingIcon() {
+		int rating = Math.max(getRating(), (int) Math.floor(getCalculatedRating()));
+		return new javax.swing.ImageIcon(
+			GhScore.class.getResource(
+				"/jshm/resources/images/ratings/gh/" + rating + ".gif"));
 	}
 	
 	

@@ -9,6 +9,7 @@ import org.htmlparser.nodes.*;
 import org.htmlparser.filters.NodeClassFilter;
 import org.htmlparser.tags.ImageTag;
 import org.htmlparser.tags.LinkTag;
+import org.htmlparser.tags.Span;
 import org.htmlparser.tags.TableColumn;
 
 /**
@@ -33,6 +34,9 @@ public class TableColumnFormat {
 		
 		addFormat("img", ImageTag.class,
 			TagFormat.SRC);
+		
+		addFormat("span", Span.class,
+			TagFormat.TITLE);
 		
 		jshm.sh.scraper.Formats.init();
 	}

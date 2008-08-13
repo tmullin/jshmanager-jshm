@@ -5,12 +5,10 @@ import java.util.*;
 import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.*;
 
 @Entity
-@OnDelete(action=OnDeleteAction.CASCADE)
 @Inheritance(strategy=InheritanceType.JOINED)
 public abstract class Score {
 	/**
@@ -18,14 +16,12 @@ public abstract class Score {
 	 *   <li>NEW - A newly entered score that hasn't been submitted to ScoreHero
 	 *   <li>SUBMITTED - A score that has been submitted to ScoreHero
 	 *   <li>DELETED - A score that has been submitted but was deleted on ScoreHero due to a new score overwriting it.
-	 *   <li>SUMMARY - Represents the highest overall score, hitPercent, noteStreak but
-	 *  				may not directly correspond to a particular score. scoreHeroId would 0 in this case.
 	 * </ul>
 	 * @author Tim Mullin
 	 *
 	 */
 	public static enum Status {
-		NEW, SUBMITTED, DELETED, SUMMARY
+		NEW, SUBMITTED, DELETED
 	}
 	
 	/**
@@ -39,6 +35,7 @@ public abstract class Score {
 	private int		scoreHeroId			= 0;
 	private Status	status				= Status.NEW;
 
+	private Game	game				= null;
 	private Song	song				= null;
 	
 	/**
@@ -99,8 +96,19 @@ public abstract class Score {
 		return this.status == Status.NEW;
 	}
 	
+	public void setGame(Game game) {
+		this.game = game;
+	}
+	
+	@NotNull
+	@Type(type="jshm.hibernate.GameUserType")
+	public Game getGame() {
+		return this.game;
+	}
+	
 	public void setSong(Song song) {
 		this.song = song;
+		this.game = song.getGame();
 		
 		if (Difficulty.Strategy.BY_SONG == getGameTitle().getDifficultyStrategy()) {
 			this.difficulty = song.getDifficulty();
@@ -110,11 +118,6 @@ public abstract class Score {
 	@ManyToOne
 	public Song getSong() {
 		return song;
-	}
-	
-	@Transient
-	public Game getGame() {
-		return getSong().getGame();
 	}
 	
 	@Transient
@@ -332,6 +335,8 @@ public abstract class Score {
 		throw new UnsupportedOperationException();
 	}
 	
+	@Transient
+	public abstract javax.swing.ImageIcon getRatingIcon();
 	
 	// override object methods
 	

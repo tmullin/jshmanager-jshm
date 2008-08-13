@@ -3,9 +3,6 @@
 <Form version="1.3" maxVersion="1.6" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
     <Component class="jshm.gui.AboutDialog" name="aboutDialog1">
-      <Properties>
-        <Property name="defaultCloseOperation" type="int" value="1"/>
-      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new AboutDialog(this)"/>
       </AuxValues>
@@ -70,6 +67,10 @@
     <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar1"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
   </SyntheticProperties>
+  <Events>
+    <EventHandler event="windowOpened" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowOpened"/>
+    <EventHandler event="componentResized" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="formComponentResized"/>
+  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -84,13 +85,18 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jScrollPane1" alignment="1" pref="419" max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jScrollPane1" pref="722" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="jScrollPane1" pref="299" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jScrollPane1" pref="336" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -104,13 +110,22 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="org.netbeans.swing.outline.Outline" name="outline1">
+        <Component class="org.jdesktop.swingx.JXTreeTable" name="jXTreeTable1">
           <Properties>
-            <Property name="renderDataProvider" type="org.netbeans.swing.outline.RenderDataProvider" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="new GhTiersAndSongDataRenderData()" type="code"/>
+            <Property name="columnControlVisible" type="boolean" value="true"/>
+            <Property name="editable" type="boolean" value="false"/>
+            <Property name="horizontalScrollEnabled" type="boolean" value="true"/>
+            <Property name="openIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="0" name="null"/>
             </Property>
-            <Property name="rootVisible" type="boolean" value="false"/>
+            <Property name="selectionMode" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="ListSelectionModel.SINGLE_SELECTION" type="code"/>
+            </Property>
           </Properties>
+          <Events>
+            <EventHandler event="treeCollapsed" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="jXTreeTable1TreeCollapsed"/>
+            <EventHandler event="treeExpanded" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="jXTreeTable1TreeExpanded"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

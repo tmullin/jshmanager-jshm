@@ -8,25 +8,18 @@ package jshm.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JDialog;
 import javax.swing.JMenuItem;
+import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
-import javax.swing.tree.TreeModel;
 
-import jshm.gui.datamodels.GhTiersAndSongDataRenderData;
-import jshm.gui.datamodels.GhTiersAndSongDataRowModel;
-import jshm.gui.datamodels.GhTiersAndSongDataTreeModel;
+import jshm.gui.datamodels.*;
 
-import org.netbeans.swing.outline.DefaultOutlineModel;
-import org.netbeans.swing.outline.OutlineModel;
+import org.jdesktop.swingx.treetable.TreeTableModel;
 
 /**
  *
- * @author  Tim
+ * @author Tim Mullin
  */
 public class GUITest extends javax.swing.JFrame {
 
@@ -46,7 +39,7 @@ public class GUITest extends javax.swing.JFrame {
 
         aboutDialog1 = new AboutDialog(this);
         jScrollPane1 = new javax.swing.JScrollPane();
-        outline1 = new org.netbeans.swing.outline.Outline();
+        jXTreeTable1 = new org.jdesktop.swingx.JXTreeTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -55,13 +48,32 @@ public class GUITest extends javax.swing.JFrame {
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
 
-        aboutDialog1.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                formComponentResized(evt);
+            }
+        });
 
-        outline1.setRenderDataProvider(new GhTiersAndSongDataRenderData());
-        outline1.setRootVisible(false);
-        jScrollPane1.setViewportView(outline1);
+        jXTreeTable1.setColumnControlVisible(true);
+        jXTreeTable1.setEditable(false);
+        jXTreeTable1.setHorizontalScrollEnabled(true);
+        jXTreeTable1.setOpenIcon(null);
+        jXTreeTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        jXTreeTable1.addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
+            public void treeCollapsed(javax.swing.event.TreeExpansionEvent evt) {
+                jXTreeTable1TreeCollapsed(evt);
+            }
+            public void treeExpanded(javax.swing.event.TreeExpansionEvent evt) {
+                jXTreeTable1TreeExpanded(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jXTreeTable1);
 
         fileMenu.setMnemonic('F');
         fileMenu.setText("File");
@@ -103,12 +115,16 @@ public class GUITest extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 722, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -124,6 +140,24 @@ private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN
 	this.aboutDialog1.setLocationRelativeTo(null);
 	this.aboutDialog1.setVisible(true);
 }//GEN-LAST:event_aboutMenuItemActionPerformed
+
+private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
+//	try {
+//		jXTreeTable1.packAll();
+//	} catch (Exception e) {}
+}//GEN-LAST:event_formComponentResized
+
+private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+	this.setLocationRelativeTo(null);
+}//GEN-LAST:event_formWindowOpened
+
+private void jXTreeTable1TreeExpanded(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_jXTreeTable1TreeExpanded
+	jXTreeTable1.packAll();
+}//GEN-LAST:event_jXTreeTable1TreeExpanded
+
+private void jXTreeTable1TreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_jXTreeTable1TreeCollapsed
+	jXTreeTable1.packAll();
+}//GEN-LAST:event_jXTreeTable1TreeCollapsed
 
 /**
  * Load the menu with all avaialable GH games.
@@ -204,16 +238,25 @@ private void songDataMenuItemActionPerformed(java.awt.event.ActionEvent evt, jsh
 		return;
 	}
 	
-	TreeModel treeModel = new GhTiersAndSongDataTreeModel(game, songs);
-	OutlineModel outlineModel = DefaultOutlineModel.createOutlineModel(
-		treeModel, new GhTiersAndSongDataRowModel(), true, "Song");
-
-	outline1.setModel(outlineModel);
+	TreeTableModel model = new GhSongDataTreeTableModel(game, songs);
+	jXTreeTable1.setTreeTableModel(model);
+	jXTreeTable1.packColumn(0, 25);
 }
 
 private void myScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt, jshm.gh.GhGame game, jshm.Difficulty difficulty) {
 	System.out.println("Menu Evt: " + evt + "\n" + game + "," + difficulty);
 	
+	java.util.List<jshm.gh.GhSong> songs = jshm.gh.GhSong.getSongs(game, difficulty);
+	java.util.List<jshm.gh.GhScore> scores = jshm.gh.GhScore.getScores(game, difficulty);
+	
+	if (scores.size() == 0) {
+		javax.swing.JOptionPane.showMessageDialog(this, "No scores for " + game + " on " + difficulty, "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+		return;
+	}
+	
+	GhMyScoresTreeTableModel model = new GhMyScoresTreeTableModel(game, songs, scores);
+	jXTreeTable1.setTreeTableModel(model);
+	model.setParent(jXTreeTable1);
 }
 
     /**
@@ -243,8 +286,8 @@ private void myScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt, jsh
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private org.jdesktop.swingx.JXTreeTable jXTreeTable1;
     private javax.swing.JMenu myScoresMenu;
-    private org.netbeans.swing.outline.Outline outline1;
     private javax.swing.JMenu songDataMenu;
     // End of variables declaration//GEN-END:variables
 

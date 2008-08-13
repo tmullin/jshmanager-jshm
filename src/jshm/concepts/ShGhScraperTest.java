@@ -24,7 +24,7 @@ public class ShGhScraperTest {
 		jshm.sh.Client.getAuthCookies("someuser", "somepass");
 		
 		List<GhScore> scores = 
-			GhScoreScraper.scrapeSummaries(
+			GhScoreScraper.scrapeLatest(
 				game, difficulty);
 		
 		for (Score s : scores) {

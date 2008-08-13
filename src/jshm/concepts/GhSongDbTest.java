@@ -22,49 +22,21 @@ public class GhSongDbTest {
 		
 		jshm.util.TestTimer.start();
 		
-		jshm.dataupdaters.GhSongUpdater.update(game, difficulty);
+//		jshm.dataupdaters.GhSongUpdater.update(game, difficulty);
+//		jshm.util.TestTimer.stop();
+//		
+//		printSongs();
+//		
+//		jshm.util.TestTimer.stop();
+		
+		jshm.sh.Client.getAuthCookies("someuser", "somepass");
+		jshm.dataupdaters.GhScoreUpdater.update(game, difficulty);
 		
 		jshm.util.TestTimer.stop();
 		
-		printSongs();
+		printScores();
 		
 		jshm.util.TestTimer.stop();
-		
-//		Part part = new Part();
-//		part.setInstrument(Instrument.GUITAR);
-//		part.setDifficulty(Difficulty.EXPERT);
-//		part.setHitPercent(1.0f);
-//		part.setStreak(551);
-//		
-//		GhScore score = new GhScore();
-//		score.setSong(songs.get(0));
-//		score.addPart(part);
-//		score.setCalculatedRating(7.2f);
-//		score.setDifficulty(Difficulty.EXPERT);
-//		score.setRating(5);
-//		score.setScore(210514);
-//		score.setStreak(551);
-//		
-//		System.out.println("new score: " + score);
-//		
-//        Session session = HibernateUtil.getCurrentSession();
-//        session.beginTransaction();
-//        session.save(score);
-//        session.getTransaction().commit();
-//        
-//        session = HibernateUtil.getCurrentSession();
-//	    session.beginTransaction();
-//	    List<GhScore> result = (List<GhScore>) session.createQuery("from GhScore").list();
-//	    session.getTransaction().commit();
-//	    
-//	    System.out.println("in db:");
-//	    for (GhScore s : result)
-//	    	System.out.println(s);
-	    
-//	    session = HibernateUtil.getCurrentSession();
-//        session.beginTransaction();
-//        session.delete(score);
-//        session.getTransaction().commit();
 	}
 	
 	static void printSongs() {
@@ -73,7 +45,17 @@ public class GhSongDbTest {
 	    List<GhSong> result = (List<GhSong>) session.createQuery("from GhSong").list();
 	    session.getTransaction().commit();
 	    
-	    for (Song s : result)
+	    for (GhSong s : result)
+	    	System.out.println(s);
+	}
+	
+	static void printScores() {
+	    Session session = HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    List<GhScore> result = (List<GhScore>) session.createQuery("from GhScore").list();
+	    session.getTransaction().commit();
+	    
+	    for (GhScore s : result)
 	    	System.out.println(s);
 	}
 }

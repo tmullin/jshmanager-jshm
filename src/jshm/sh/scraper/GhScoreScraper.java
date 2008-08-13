@@ -23,7 +23,7 @@ public class GhScoreScraper {
 		Formats.init();
 	}
 	
-	public static List<GhScore> scrapeSummaries(
+	public static List<GhScore> scrapeLatest(
 		final GhGame game, final Difficulty difficulty)
 	throws ScraperException {
 		if (Difficulty.CO_OP == difficulty)
@@ -76,7 +76,7 @@ public class GhScoreScraper {
 				throw new ScraperException("GhSong not found, scoreHeroId: " + data[2][0]);
 			
 			GhScore score = new GhScore();
-			score.setStatus(Score.Status.SUMMARY);
+			score.setStatus(Score.Status.SUBMITTED);
 			score.setSong(song);
 			
 			score.setScore(Integer.parseInt(data[5][0]));
@@ -130,5 +130,22 @@ public class GhScoreScraper {
 			
 			scores.add(score);
 		}
+	}
+	
+	
+	/**
+	 * This should retrieve <i>all</i> submitted scores for
+	 * the given game/difficulty. This will require one http
+	 * requests per song.
+	 * @param game
+	 * @param difficulty
+	 * @return
+	 * @throws ScraperException
+	 */
+	public static List<GhScore> scrapeAll(
+			final GhGame game, final Difficulty difficulty)
+		throws ScraperException {
+
+		throw new RuntimeException("not yet implemented");
 	}
 }

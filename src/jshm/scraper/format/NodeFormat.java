@@ -50,7 +50,13 @@ public class NodeFormat {
 	 * This actually gets the raw text the user is
 	 * interested in and should be overridden. getText()
 	 * is final to ensure that the formattingCallback gets
-	 * called once we have the text. 
+	 * called once we have the text.
+	 * 
+	 * <p>
+	 * When overridden, one may still need to call
+	 * {@link Translate#decode(String)} on whatever text they are
+	 * returning.
+	 * </p>
 	 * @param node
 	 * @return
 	 */
