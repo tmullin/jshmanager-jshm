@@ -14,7 +14,12 @@ public class JStatusBar extends JPanel {
 		
 		Insets insets = new Insets(0, 2, 0, 2);
 		javax.swing.border.Border b =
-			BorderFactory.createLoweredBevelBorder();
+			BorderFactory.createCompoundBorder(
+					BorderFactory.createMatteBorder(1, 0, 0, 0, UIManager.getColor("controlShadow")),
+					BorderFactory.createMatteBorder(1, 0, 0, 0, UIManager.getColor("controlLtHighlight")));
+//			BorderFactory.createCompoundBorder(
+//				BorderFactory.createEmptyBorder(5, 5, 5, 5),
+//				BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 		
 		c.insets = insets; c.weightx = 1.0; c.weighty = 1.0;
 		c.fill = GridBagConstraints.BOTH;

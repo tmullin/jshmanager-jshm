@@ -432,6 +432,8 @@ private void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 		
 		@Override
 		public void done() {
+			if (null == scores) return;
+			
 			loadMyScoresMenuItem.setEnabled(true);
 			loadSongDataMenuItem.setEnabled(true);
 			

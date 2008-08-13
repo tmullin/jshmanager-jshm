@@ -14,6 +14,7 @@ import jshm.gh.*;
 import jshm.gui.GuiUtil;
 import jshm.gui.renderers.GhMyScoresCellRenderer;
 import jshm.gui.renderers.GhMyScoresFcHighlighter;
+import jshm.gui.renderers.GhMyScoresNoCommentHighlighter;
 import jshm.gui.renderers.GhTierHighlighter;
 
 /**
@@ -112,6 +113,8 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 	    	new GhMyScoresFcHighlighter());
 	    parent.addHighlighter(
 	    	new GhTierHighlighter());
+	    parent.addHighlighter(
+	    	new GhMyScoresNoCommentHighlighter());
 	    
 	    GuiUtil.expandTreeFromDepth(parent, 2);
 	    
@@ -121,8 +124,10 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 	    parent.getColumnExt(4).setPrototypeValue("1000");
 	    parent.getColumnExt(5).setPrototypeValue("99999");
 	    parent.getColumnExt(6).setPrototypeValue("AAA9999999999");
+	    parent.getColumnExt(6).setVisible(false);
 	    parent.getColumnExt(7).setPrototypeValue("AAA9999999999");
 	    
+	    parent.setHorizontalScrollEnabled(false);
 	    parent.setAutoResizeMode(JXTreeTable.AUTO_RESIZE_OFF);
 	    parent.packAll();
 	}

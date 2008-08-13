@@ -1,12 +1,22 @@
 package jshm.sh;
 
 import org.apache.commons.httpclient.*;
-import org.apache.commons.httpclient.methods.*;
 
 import jshm.exceptions.*;
 import jshm.sh.URLs;
+import jshm.sh.client.HttpForm;
 
 public class Client {
+	private static HttpClient httpClient = null;
+	
+	public static HttpClient getHttpClient() {
+		if (null == httpClient) {
+			httpClient = new HttpClient();
+		}
+		
+		return httpClient;
+	}
+	
 	private static Cookie[] cookieCache = null;
 	
 	/**
@@ -48,12 +58,11 @@ public class Client {
 	 * @param userName
 	 * @param password
 	 * @return
-	 * @throws java.io.IOException
-	 * @throws ClientException
+	 * @throws Exception
 	 */
 	public static Cookie[] getAuthCookies(
 		final String userName, final String password)
-	throws java.io.IOException, ClientException {
+	throws Exception {
 		return getAuthCookies(userName, password, true);
 	}
 
@@ -69,44 +78,43 @@ public class Client {
 	 */
 	public static Cookie[] getAuthCookies(
 		final String userName, final String password, final boolean useCache)
-	throws java.io.IOException, ClientException {
+	throws Exception {
 		if (null != cookieCache && useCache) return cookieCache;
 		
-		HttpClient client = new HttpClient();
-		client.getHostConfiguration().setHost(URLs.DOMAIN);
+		new HttpForm((Object) URLs.LOGIN_URL,
+			"uname", userName,
+			"pass", password,
+			"remember", "1",
+			"submit", "Login") {
+			
+			@Override
+			public void afterSubmit(final int response, final HttpClient client, final HttpMethod method) throws Exception {
+				Cookie[] cookies = client.getState().getCookies();
+				
+				if (response == 302 && checkAuthCookies(cookies, userName)) {
+//					System.out.println("Validated Successfully!");
+					method.releaseConnection();
+					cookieCache = cookies;
+					return;
+				}
+				
+				String body = method.getResponseBodyAsString();
+				method.releaseConnection();
+				
+				if (body.contains("Invalid login, please try again.")) {
+					throw new ClientException("invalid login credentials");
+				}
+				
+				if (body.contains("Too many failed attempts, you must wait before trying again.")) {
+					throw new ClientException("too many failed login attempts");
+				}
+				
+				throw new ClientException("login failed, unknown error");
+
+			}
+		}.submit();
 		
-		PostMethod post = new PostMethod(URLs.LOGIN_URL);
-		post.setRequestBody(new NameValuePair[]{
-			new NameValuePair("uname", userName),
-			new NameValuePair("pass", password),
-			new NameValuePair("remember", "1"),
-			new NameValuePair("submit", "Login")
-		});
-		
-		int response = client.executeMethod(post);
-//		System.out.println("Login form post: " + post.getStatusLine().toString());
-		
-		Cookie[] cookies = client.getState().getCookies();
-		
-		if (response == 302 && checkAuthCookies(cookies, userName)) {
-//			System.out.println("Validated Successfully!");
-			post.releaseConnection();
-			cookieCache = cookies;
-			return cookies;
-		}
-		
-		String body = post.getResponseBodyAsString();
-		post.releaseConnection();
-		
-		if (body.contains("Invalid login, please try again.")) {
-			throw new ClientException("invalid login credentials");
-		}
-		
-		if (body.contains("Too many failed attempts, you must wait before trying again.")) {
-			throw new ClientException("too many failed login attempts");
-		}
-		
-		throw new ClientException("login failed, unknown error");
+		return cookieCache;
 	}
 	
 	/**
