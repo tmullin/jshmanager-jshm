@@ -10,6 +10,14 @@ public class Client {
 	private static Cookie[] cookieCache = null;
 	
 	/**
+	 * 
+	 * @return Whether we already have the auth cookies
+	 */
+	public static boolean hasAuthCookies() {
+		return null != cookieCache;
+	}
+	
+	/**
 	 *  
 	 * @return The auth cookies if they are cached or null
 	 * otherwise. This is useful to obtain the cookies
