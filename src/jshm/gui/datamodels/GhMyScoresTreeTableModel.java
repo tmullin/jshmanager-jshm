@@ -1,17 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package jshm.gui.datamodels;
 
-import java.sql.Date;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
-import javax.swing.table.TableColumnModel;
 
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
@@ -21,7 +14,7 @@ import jshm.gh.*;
 import jshm.gui.GuiUtil;
 import jshm.gui.renderers.GhMyScoresCellRenderer;
 import jshm.gui.renderers.GhMyScoresFcHighlighter;
-import jshm.gui.renderers.GhMyScoresTierHighlighter;
+import jshm.gui.renderers.GhTierHighlighter;
 
 /**
  *
@@ -110,15 +103,15 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 	public void setParent(JXTreeTable parent) {
 //		this.parent = parent;
 		
-	    TableColumnModel cm = parent.getColumnModel();
-	    cm.getColumn(5).setCellRenderer(new GhMyScoresCellRenderer());
+	    parent.getColumn(5).setCellRenderer(
+	    	new GhMyScoresCellRenderer());
 	    
 	    parent.addHighlighter(
 	    	HighlighterFactory.createSimpleStriping());
 	    parent.addHighlighter(
 	    	new GhMyScoresFcHighlighter());
 	    parent.addHighlighter(
-	    	new GhMyScoresTierHighlighter());
+	    	new GhTierHighlighter());
 	    
 	    GuiUtil.expandTreeFromDepth(parent, 2);
 	    
@@ -143,7 +136,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
     public Class<?> getColumnClass(int column) {
 		switch (column) {
 			case 2: return ImageIcon.class;
-			case 6: case 7: return Date.class;
+			case 6: case 7: return java.util.Date.class;
 			default: return String.class;
 		}
     }

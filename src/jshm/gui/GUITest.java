@@ -238,9 +238,9 @@ private void songDataMenuItemActionPerformed(java.awt.event.ActionEvent evt, jsh
 		return;
 	}
 	
-	TreeTableModel model = new GhSongDataTreeTableModel(game, songs);
+	GhSongDataTreeTableModel model = new GhSongDataTreeTableModel(game, songs);
 	jXTreeTable1.setTreeTableModel(model);
-	jXTreeTable1.packColumn(0, 25);
+	model.setParent(jXTreeTable1);
 }
 
 private void myScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt, jshm.gh.GhGame game, jshm.Difficulty difficulty) {
