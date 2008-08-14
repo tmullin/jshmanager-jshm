@@ -19,8 +19,21 @@ public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
     	super.getTableCellRendererComponent(
     		table, value, isSelected, hasFocus, row, column);
     	
+    	setIcon(null);
+    	
 		switch (column) {
-			case 5:
+			case 2:
+				if (value instanceof GhScore) {
+					GhScore score = (GhScore) value;
+					setIcon(score.getRatingIcon());
+					setText(
+						score.getCalculatedRating() != 0.0f
+						? "(" + score.getCalculatedRating() + ")"
+						: "");
+				}
+				break;
+				
+			case 4:
 				if (value instanceof GhScore) {
 					GhScore score = (GhScore) value;
 					

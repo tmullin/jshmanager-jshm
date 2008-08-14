@@ -103,9 +103,9 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 
 	public void setParent(JXTreeTable parent) {
 //		this.parent = parent;
-		
-	    parent.getColumn(5).setCellRenderer(
-	    	new GhMyScoresCellRenderer());
+		GhMyScoresCellRenderer renderer = new GhMyScoresCellRenderer();
+	    parent.getColumn(2).setCellRenderer(renderer);
+	    parent.getColumn(4).setCellRenderer(renderer);
 	    
 	    parent.addHighlighter(
 	    	HighlighterFactory.createSimpleStriping());
@@ -120,12 +120,11 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 	    
 	    parent.getColumnExt(1).setPrototypeValue("00000000000");
 	    parent.getColumnExt(2).setPrototypeValue(new ImageIcon(getClass().getResource("/jshm/resources/images/ratings/gh/8.gif")));
-	    parent.getColumnExt(3).setPrototypeValue("8888");
-	    parent.getColumnExt(4).setPrototypeValue("1000");
-	    parent.getColumnExt(5).setPrototypeValue("99999");
+	    parent.getColumnExt(3).setPrototypeValue("1000");
+	    parent.getColumnExt(4).setPrototypeValue("99999");
+	    parent.getColumnExt(5).setPrototypeValue("AAA9999999999");
+	    parent.getColumnExt(5).setVisible(false);
 	    parent.getColumnExt(6).setPrototypeValue("AAA9999999999");
-	    parent.getColumnExt(6).setVisible(false);
-	    parent.getColumnExt(7).setPrototypeValue("AAA9999999999");
 	    
 	    parent.setHorizontalScrollEnabled(false);
 	    parent.setAutoResizeMode(JXTreeTable.AUTO_RESIZE_OFF);
@@ -134,20 +133,19 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 	
 	@Override
 	public int getColumnCount() {
-		return 8;
+		return 7;
 	}
 
 	@Override
     public Class<?> getColumnClass(int column) {
 		switch (column) {
-			case 2: return ImageIcon.class;
-			case 6: case 7: return java.util.Date.class;
+			case 5: case 6: return java.util.Date.class;
 			default: return String.class;
 		}
     }
 	
 	private static final String[] COLUMN_NAMES = {
-		"Song/Comment", "Score", "Rating", " ", "%",
+		"Song/Comment", "Score", "Rating", "%",
 		"Streak", "Date Created", "Date Submitted"
 	};
 	
@@ -186,23 +184,19 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 				break;
 				
 			case 1: ret = NUM_FMT.format(score.getScore()); break;
-			case 2: ret = score.getRatingIcon(); break;
-			case 3: ret =
-				0.0f != score.getCalculatedRating()
-				? score.getCalculatedRating()
-				: "";
-				break;
+			
+			case 2:
+			case 4: ret = score; break;
 				
-			case 4:
+			case 3:
 				ret =
 					score.getHitPercent() != 0.0f
 					? (int) (score.getHitPercent() * 100)
 					: "";
 					break;
 					
-			case 5: ret = score; break;
-			case 6: ret = score.getCreationDate(); break;
-			case 7: ret = score.getSubmissionDate(); break;
+			case 5: ret = score.getCreationDate(); break;
+			case 6: ret = score.getSubmissionDate(); break;
 				
 			default: assert false;
 		}

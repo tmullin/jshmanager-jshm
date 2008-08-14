@@ -19,10 +19,10 @@ public class GhMyScoresFcHighlighter extends AbstractHighlighter {
 			public boolean isHighlighted(Component renderer,
 					ComponentAdapter adapter) {				
 				switch (adapter.column) {
-					case 4:
+					case 3:
 						return new Integer(100).equals(adapter.getValue());
 						
-					case 5:
+					case 4:
 						if (adapter.getValue() instanceof GhScore)
 							return ((GhScore) adapter.getValue()).isFullCombo();
 				}
