@@ -22,6 +22,23 @@ public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
     	setIcon(null);
     	
 		switch (column) {
+//			case 0:
+//				System.out.println(value.getClass().getName() + ": " + value);
+//				if (value instanceof GhScore) {
+//					String s = ((GhScore) value).getComment();
+//					
+//					if (s.isEmpty()) {
+//						setText("No Comment");
+//					} else if (s.length() > 40) {
+//						setText(s.substring(0, 40) + "...");
+//					} else {
+//						setText(s);
+//					}
+//				} else {				
+//					setText(value.toString());
+//				}
+//				break;
+				
 			case 2:
 				if (value instanceof GhScore) {
 					GhScore score = (GhScore) value;

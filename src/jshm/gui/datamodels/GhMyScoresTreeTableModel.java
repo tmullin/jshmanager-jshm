@@ -71,7 +71,13 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		}
 		
 		public String toString() {
-			return name;
+			int scores = 0;
+			
+			for (SongScores song : songs) {
+				scores += song.scores.size();
+			}
+			
+			return String.format("%s (%d %s)", name, scores, scores != 1 ? "scores" : "score");
 		}
 	}
 	
@@ -84,7 +90,9 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		}
 		
 		public String toString() {
-			return song.getTitle();
+			return String.format("%s (%d %s)",
+				song.getTitle(), scores.size(), scores.size() != 1 ? "scores" : "score");
+
 		}
 	}
 	
@@ -104,6 +112,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 	public void setParent(JXTreeTable parent) {
 //		this.parent = parent;
 		GhMyScoresCellRenderer renderer = new GhMyScoresCellRenderer();
+//		parent.getColumn(0).s6etCellRenderer(renderer);
 	    parent.getColumn(2).setCellRenderer(renderer);
 	    parent.getColumn(4).setCellRenderer(renderer);
 	    
@@ -178,13 +187,19 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		
 		switch (column) {
 			case 0:
-				ret = score.getComment();
-				if (((String) ret).isEmpty())
+				String s = score.getComment();
+				
+				if (s.isEmpty()) {
 					ret = "No Comment";
+				} else if (s.length() > 40) {
+					ret = s.substring(0, 40) + "...";
+				} else {
+					ret = s;
+				}
 				break;
 				
 			case 1: ret = NUM_FMT.format(score.getScore()); break;
-			
+		
 			case 2:
 			case 4: ret = score; break;
 				

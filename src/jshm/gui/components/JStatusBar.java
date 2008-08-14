@@ -9,14 +9,20 @@ public class JStatusBar extends JPanel {
 	//private JLabel extra = new JLabel("        ");
 	
 	public JStatusBar() {
+		this(" ");
+	}
+	
+	public JStatusBar(String str) {
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		
 		Insets insets = new Insets(0, 2, 0, 2);
 		javax.swing.border.Border b =
 			BorderFactory.createCompoundBorder(
+				BorderFactory.createCompoundBorder(	
 					BorderFactory.createMatteBorder(1, 0, 0, 0, UIManager.getColor("controlShadow")),
-					BorderFactory.createMatteBorder(1, 0, 0, 0, UIManager.getColor("controlLtHighlight")));
+					BorderFactory.createMatteBorder(1, 0, 0, 0, UIManager.getColor("controlLtHighlight"))),
+				BorderFactory.createEmptyBorder(5, 5, 5, 5));
 //			BorderFactory.createCompoundBorder(
 //				BorderFactory.createEmptyBorder(5, 5, 5, 5),
 //				BorderFactory.createBevelBorder(BevelBorder.LOWERED));
@@ -36,6 +42,8 @@ public class JStatusBar extends JPanel {
 		//c.gridx++; c.weightx = 0.0;
 		//extra.setBorder(b);
 		//add(extra, c);
+		
+		setText(str);
 	}
 	
 	public void setText(String str) {
