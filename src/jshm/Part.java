@@ -75,6 +75,11 @@ public class Part implements Comparable<Part> {
 	}
 
 	
+	@Transient
+	public boolean isSubmittable() {
+		return instrument != null && difficulty != null;
+	}
+	
 	// override object methods
 	
 	public String toString() {

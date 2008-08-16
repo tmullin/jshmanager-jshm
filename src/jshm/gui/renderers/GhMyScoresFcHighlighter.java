@@ -10,33 +10,50 @@ import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 
-public class GhMyScoresFcHighlighter extends AbstractHighlighter {
-	Color color = new Color(0x009900);
-	
+public class GhMyScoresFcHighlighter extends AbstractHighlighter {	
 	public GhMyScoresFcHighlighter() {
 		super(new HighlightPredicate() {
 			@Override
 			public boolean isHighlighted(Component renderer,
-					ComponentAdapter adapter) {				
-				switch (adapter.column) {
-					case 3:
-						return new Integer(100).equals(adapter.getValue());
-						
-					case 4:
-						if (adapter.getValue() instanceof GhScore)
-							return ((GhScore) adapter.getValue()).isFullCombo();
-				}
+					ComponentAdapter adapter) {	
 				
-				return false;
+				if (!(adapter.getValueAt(adapter.row, 1) instanceof GhScore)) return false;
+				
+				GhScore score = (GhScore) adapter.getValueAt(adapter.row, 1);
+				
+				return 1f == score.getHitPercent() || score.isFullCombo();
+				
+//				switch (adapter.column) {
+//					case 3:
+//						if (adapter.getValue() instanceof GhScore)
+//							return 1f == ((GhScore) adapter.getValue()).getHitPercent();
+//						
+//					case 4:
+//						if (adapter.getValue() instanceof GhScore)
+//							return ((GhScore) adapter.getValue()).isFullCombo();
+//				}
+				
+//				return false;
 			}
 		});
 	}
 	
+	Color fg = new Color(0x009900);
+	Color bg = new Color(0xcff6dd);
+	
 	@Override
 	protected Component doHighlight(Component component,
 			ComponentAdapter adapter) {
-		component.setForeground(color);
-		component.setFont(component.getFont().deriveFont(Font.BOLD));
+		
+		if (!adapter.isSelected())
+			component.setBackground(bg);
+		
+		if ((adapter.column == 3 && 1f == ((GhScore) adapter.getValue()).getHitPercent()) ||
+			(adapter.column == 4 && ((GhScore) adapter.getValue()).isFullCombo())) {
+			component.setForeground(fg);
+			component.setFont(component.getFont().deriveFont(Font.BOLD));	
+		}
+		
 		return component;
 	}
 

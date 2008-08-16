@@ -60,19 +60,15 @@ public class GhSongDataTreeTableModel extends AbstractTreeTableModel {
 
 	public void setParent(JXTreeTable parent) {
 //		this.parent = parent;
-		
-	    parent.addHighlighter(
-	    	HighlighterFactory.createSimpleStriping());
-	    parent.addHighlighter(
+
+	    parent.setHighlighters(
+	    	HighlighterFactory.createSimpleStriping(),
 	    	new GhTierHighlighter());
 	    
 	    parent.getColumnExt(1).setPrototypeValue("00000");
-	    parent.getColumnExt(2).setPrototypeValue("00000000");
-	    parent.getColumnExt(3).setPrototypeValue("00000000");
-	    parent.getColumnExt(4).setPrototypeValue("00000000");
-	    parent.getColumnExt(5).setPrototypeValue("00000000");
-	    parent.getColumnExt(6).setPrototypeValue("00000000");
-	    parent.getColumnExt(7).setPrototypeValue("00000000");
+	    
+	    for (int i = 2; i <= 7; i++)
+	    	parent.getColumnExt(i).setPrototypeValue("00000000");
 	    
 	    parent.setAutoResizeMode(JXTreeTable.AUTO_RESIZE_OFF);
 	    parent.packAll();

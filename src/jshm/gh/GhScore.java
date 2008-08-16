@@ -6,6 +6,10 @@ import javax.persistence.Transient;
 import javax.swing.ImageIcon;
 
 import jshm.Difficulty;
+import jshm.Instrument;
+import jshm.Part;
+import jshm.Score;
+
 import org.hibernate.validator.*;
 
 /**
@@ -16,6 +20,18 @@ import org.hibernate.validator.*;
  */
 @Entity
 public class GhScore extends jshm.Score {
+	public static GhScore createNewScoreTemplate(final GhSong song) {
+		GhScore s = new GhScore();
+		s.setStatus(Score.Status.TEMPLATE);
+		s.setGame(song.getGame());
+		s.setSong(song);
+		Part p = new Part();
+		p.setDifficulty(song.getDifficulty());
+		p.setInstrument(Instrument.GUITAR);
+		s.addPart(p);
+		return s;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static List<GhScore> getScores(final GhGame game, final Difficulty difficulty) {
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
@@ -47,6 +63,10 @@ public class GhScore extends jshm.Score {
 		if (streak < 0)
 			throw new IllegalArgumentException("streak must be >= 0");
 		this.streak = streak;
+		
+		if (getParts().size() == 1) {
+			getPart(1).setStreak(streak);
+		}
 	}
 	
 	@Override
@@ -72,12 +92,38 @@ public class GhScore extends jshm.Score {
 	@Transient
 	@Override
 	public ImageIcon getRatingIcon() {
-		int rating = Math.max(getRating(), (int) Math.floor(getCalculatedRating()));
-		return new javax.swing.ImageIcon(
-			GhScore.class.getResource(
-				"/jshm/resources/images/ratings/gh/" + rating + ".gif"));
+		return this.getRatingIcon(false);
 	}
 	
+	@Transient
+	public ImageIcon getRatingIcon(boolean ignoreCalculatedRating) {		
+		int rating = ignoreCalculatedRating
+		? getRating()
+		: Math.max(getRating(), (int) Math.floor(getCalculatedRating()));
+		
+		return getRatingIcon(rating);
+	}
+	
+	
+	private static final ImageIcon[] RATING_ICONS = new ImageIcon[7];
+	
+	public static ImageIcon getRatingIcon(final int rating) {
+		if (rating != 0 && (rating < 3 || 8 < rating))
+			throw new IllegalArgumentException("rating must be between 3 and 8 inclusive or 0");
+		
+		int index = rating;
+		
+		if (rating != 0)
+			index = rating - 2;
+		
+		if (null == RATING_ICONS[index]) {
+			RATING_ICONS[index] = new javax.swing.ImageIcon(
+				GhScore.class.getResource(
+					"/jshm/resources/images/ratings/gh/" + rating + ".gif"));
+		}
+		
+		return RATING_ICONS[index];
+	}
 	
 	// override object methods
 	

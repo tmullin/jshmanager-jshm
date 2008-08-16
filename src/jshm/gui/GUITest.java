@@ -6,6 +6,8 @@
 
 package jshm.gui;
 
+
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -14,14 +16,16 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
-import jshm.gui.datamodels.*;
-import jshm.gui.tasks.Task;
+import jshm.Score;
+import jshm.gh.GhScore;
+import jshm.gui.datamodels.GhMyScoresTreeTableModel;
+import jshm.gui.datamodels.GhSongDataTreeTableModel;
 
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXLoginDialog;
-import org.jdesktop.swingx.auth.LoginService;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
@@ -47,13 +51,15 @@ public class GUITest extends javax.swing.JFrame {
     private void initComponents() {
 
         aboutDialog1 = new AboutDialog(this);
+        statusBar1 = new jshm.gui.components.StatusBar();
         jScrollPane1 = new javax.swing.JScrollPane();
         jXTreeTable1 = new org.jdesktop.swingx.JXTreeTable();
-        jStatusBar1 = new jshm.gui.components.JStatusBar();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
         myScoresMenu = new javax.swing.JMenu();
+        addNewScoreMenuItem = new javax.swing.JMenuItem();
+        deleteSelectedScoreMenuItem = new javax.swing.JMenuItem();
         loadMyScoresMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
         songDataMenu = new javax.swing.JMenu();
@@ -73,11 +79,10 @@ public class GUITest extends javax.swing.JFrame {
                 formComponentResized(evt);
             }
         });
+        getContentPane().add(statusBar1, java.awt.BorderLayout.SOUTH);
 
         jXTreeTable1.setColumnControlVisible(true);
-        jXTreeTable1.setEditable(false);
-        jXTreeTable1.setHorizontalScrollEnabled(true);
-        jXTreeTable1.setOpenIcon(null);
+        jXTreeTable1.setPreferredScrollableViewportSize(new java.awt.Dimension(800, 600));
         jXTreeTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jXTreeTable1.addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
             public void treeCollapsed(javax.swing.event.TreeExpansionEvent evt) {
@@ -87,14 +92,19 @@ public class GUITest extends javax.swing.JFrame {
                 jXTreeTable1TreeExpanded(evt);
             }
         });
+        jXTreeTable1.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                jXTreeTable1ValueChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(jXTreeTable1);
 
         getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
-        getContentPane().add(jStatusBar1, java.awt.BorderLayout.SOUTH);
 
         fileMenu.setMnemonic('F');
         fileMenu.setText("File");
 
+        exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
         exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -106,8 +116,32 @@ public class GUITest extends javax.swing.JFrame {
 
         jMenuBar1.add(fileMenu);
 
+        myScoresMenu.setMnemonic('M');
         myScoresMenu.setText("My Scores");
 
+        addNewScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_INSERT, 0));
+        addNewScoreMenuItem.setMnemonic('n');
+        addNewScoreMenuItem.setText("Add new score...");
+        addNewScoreMenuItem.setEnabled(false);
+        addNewScoreMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addNewScoreMenuItemActionPerformed(evt);
+            }
+        });
+        myScoresMenu.add(addNewScoreMenuItem);
+
+        deleteSelectedScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
+        deleteSelectedScoreMenuItem.setMnemonic('D');
+        deleteSelectedScoreMenuItem.setText("Delete selected score");
+        deleteSelectedScoreMenuItem.setEnabled(false);
+        deleteSelectedScoreMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteSelectedScoreMenuItemActionPerformed(evt);
+            }
+        });
+        myScoresMenu.add(deleteSelectedScoreMenuItem);
+
+        loadMyScoresMenuItem.setMnemonic('L');
         loadMyScoresMenuItem.setText("Load from ScoreHero");
         loadMyScoresMenuItem.setEnabled(false);
         loadMyScoresMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -122,8 +156,10 @@ public class GUITest extends javax.swing.JFrame {
 
         jMenuBar1.add(myScoresMenu);
 
+        songDataMenu.setMnemonic('D');
         songDataMenu.setText("Song Data");
 
+        loadSongDataMenuItem.setMnemonic('L');
         loadSongDataMenuItem.setText("Load from ScoreHero");
         loadSongDataMenuItem.setEnabled(false);
         loadSongDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -138,8 +174,11 @@ public class GUITest extends javax.swing.JFrame {
 
         jMenuBar1.add(songDataMenu);
 
+        helpMenu.setMnemonic('H');
         helpMenu.setText("Help");
 
+        aboutMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        aboutMenuItem.setMnemonic('A');
         aboutMenuItem.setText("About");
         aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -175,75 +214,67 @@ private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event
 	this.setLocationRelativeTo(null);
 }//GEN-LAST:event_formWindowOpened
 
-private void jXTreeTable1TreeExpanded(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_jXTreeTable1TreeExpanded
-	jXTreeTable1.packAll();
-}//GEN-LAST:event_jXTreeTable1TreeExpanded
-
-private void jXTreeTable1TreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_jXTreeTable1TreeCollapsed
-	jXTreeTable1.packAll();
-}//GEN-LAST:event_jXTreeTable1TreeCollapsed
-
 private void loadMyScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadMyScoresMenuItemActionPerformed
-	new Task<Boolean, Void>(this, "Retriving scores from ScoreHero...", true) {
+	new SwingWorker<Boolean, Void>() {
 		@Override
 		protected Boolean doInBackground() throws Exception {
 			try {
 				if (!jshm.sh.Client.hasAuthCookies()) {
-					JXLoginDialog login = new JXLoginDialog(GUITest.this, "ScoreHero Login", true);
-					login.getPanel().setLoginService(new LoginService() {
-						@Override
-						public boolean authenticate(String name, char[] password,
-								String server) throws Exception {
-							
-							try {
-								jshm.sh.Client.getAuthCookies(
-									name, String.valueOf(password));
-								return true;
-							} catch (Exception e) {}
-							
-							return false;
-						}
-						
-					});
+					JXLoginDialog login = new ShLoginDialog(GUITest.this);					
 					login.setLocationRelativeTo(null);
 					login.setVisible(true);
 				}
-				
-				progmon.setProgress(25);
+			} catch (Exception e) {
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to login to ScoreHero", null, null, e, null, null);
+				JXErrorPane.showDialog(GUITest.this, ei);
+				return false;
+			}
+			
+			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			statusBar1.setText("Downloading score data from ScoreHero...");
+			
+			try {
 				jshm.dataupdaters.GhScoreUpdater.update(getCurGame(), getCurDiff());
-				progmon.setProgress(100);
 				return true;
 			} catch (Exception e) {
-				ErrorInfo ei = new ErrorInfo("Error", "An error has occured", null, null, e, null, null);
-				JXErrorPane.showDialog(GUITest.this, ei);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to download score data", null, null, e, null, null);
+				org.jdesktop.swingx.JXErrorPane.showDialog(GUITest.this, ei);
+			} finally {
+				statusBar1.setText("");
+				getContentPane().setCursor(Cursor.getDefaultCursor());
 			}
 			
 			return false;
 		}
 		
-		@Override
 		public void done() {
 			try {
-				if (get()) {
-					myScoresMenuItemActionPerformed(null,getCurGame(), getCurDiff());
-				}
+				if (get())
+					myScoresMenuItemActionPerformed(null, getCurGame(), getCurDiff());
 			} catch (Exception e) {
+				ErrorInfo ei = new ErrorInfo("Error", "Unknown error", null, null, e, null, null);
+				org.jdesktop.swingx.JXErrorPane.showDialog(GUITest.this, ei);
 			}
 		}
 	}.execute();
 }//GEN-LAST:event_loadMyScoresMenuItemActionPerformed
 
 private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadSongDataMenuItemActionPerformed
-	new Task<Boolean, Void>(this, "Retrieving song data from ScoreHero...", true) {
-
+	new SwingWorker<Boolean, Void>() {
 		@Override
 		protected Boolean doInBackground() throws Exception {
+			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			statusBar1.setText("Downloading song data from ScoreHero...");
+			
 			try {
 				jshm.dataupdaters.GhSongUpdater.update(getCurGame(), getCurDiff());
 				return true;
 			} catch (Exception e) {
-				ErrorInfo ei = new ErrorInfo("Error", "An error has occured", null, null, e, null, null);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to download song data", null, null, e, null, null);
 				org.jdesktop.swingx.JXErrorPane.showDialog(GUITest.this, ei);
+			} finally {
+				statusBar1.setText("");
+				getContentPane().setCursor(Cursor.getDefaultCursor());
 			}
 			
 			return false;
@@ -256,11 +287,47 @@ private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 					songDataMenuItemActionPerformed(null,getCurGame(), getCurDiff());
 				}
 			} catch (Exception e) {
+				ErrorInfo ei = new ErrorInfo("Error", "Unknown error", null, null, e, null, null);
+				org.jdesktop.swingx.JXErrorPane.showDialog(GUITest.this, ei);
 			}
-		}
-		
+		}	
 	}.execute();
 }//GEN-LAST:event_loadSongDataMenuItemActionPerformed
+
+private void jXTreeTable1TreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_jXTreeTable1TreeCollapsed
+	jXTreeTable1.packAll();
+}//GEN-LAST:event_jXTreeTable1TreeCollapsed
+
+private void jXTreeTable1TreeExpanded(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_jXTreeTable1TreeExpanded
+	jXTreeTable1.packAll();
+}//GEN-LAST:event_jXTreeTable1TreeExpanded
+
+private void jXTreeTable1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jXTreeTable1ValueChanged
+	System.out.println("now selected: " + evt.getPath());
+	Object o = evt.getPath().getLastPathComponent();
+	
+	addNewScoreMenuItem.setEnabled(
+		jXTreeTable1.getSelectedRowCount() > 0 &&
+		(o instanceof GhScore || o instanceof GhMyScoresTreeTableModel.SongScores));
+	deleteSelectedScoreMenuItem.setEnabled(
+		jXTreeTable1.getSelectedRowCount() > 0 &&
+		o instanceof GhScore &&
+		(((GhScore) o).getStatus() == Score.Status.NEW ||
+		 ((GhScore) o).getStatus() == Score.Status.TEMPLATE));
+}//GEN-LAST:event_jXTreeTable1ValueChanged
+
+private void addNewScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNewScoreMenuItemActionPerformed
+	GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) jXTreeTable1.getTreeTableModel(); 
+	model.createScoreTemplate(
+		jXTreeTable1.getPathForRow(jXTreeTable1.getSelectedRow()));
+//	jXTreeTable1.repaint();
+}//GEN-LAST:event_addNewScoreMenuItemActionPerformed
+
+private void deleteSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteSelectedScoreMenuItemActionPerformed
+	GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) jXTreeTable1.getTreeTableModel();
+	model.deleteScore(
+		jXTreeTable1.getPathForRow(jXTreeTable1.getSelectedRow()));
+}//GEN-LAST:event_deleteSelectedScoreMenuItemActionPerformed
 
 /**
  * Load the menu with all avaialable GH games.
@@ -271,7 +338,7 @@ private void initDynamicGameMenu(final javax.swing.JMenu menu) {
 		jshm.GameTitle.getTitlesBySeries(jshm.GameSeries.GUITAR_HERO);
 	
 	for (jshm.GameTitle ttl : titles) {		
-		System.out.println("Creating " + ttl);
+//		System.out.println("Creating " + ttl);
 		
 		javax.swing.JMenu ttlMenu = new javax.swing.JMenu(ttl.toString());
 		ttlMenu.setIcon(ttl.getIcon());
@@ -290,11 +357,11 @@ private void initDynamicGameMenu(final javax.swing.JMenu menu) {
 				gameMenu = ttlMenu;
 			}
 			
-			System.out.println("  Creating " + game.platform);
+//			System.out.println("  Creating " + game.platform);
 			for (final jshm.Difficulty diff : jshm.Difficulty.values()) {
 				if (diff == jshm.Difficulty.CO_OP) continue;
 				
-				System.out.println("    Creating " + diff);
+//				System.out.println("    Creating " + diff);
 				
 				JMenuItem diffItem = new JMenuItem(diff.toString());
 				diffItem.setIcon(diff.getIcon());
@@ -335,42 +402,48 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 	this.setCurGame(game);
 	this.setCurDiff(difficulty);
 	
-	this.jStatusBar1.setText("Viewing song data for " + game + " on " + difficulty);
-	
-	new Task<Void, Void>(this, "Retrieving song data...") {
+	new SwingWorker<Void, Void>() {
 		List<jshm.gh.GhSong> songs = null;
 		GhSongDataTreeTableModel model = null;
 		
 		@Override
 		protected Void doInBackground() throws Exception {
-			progmon.setProgress(1);
-			songs = jshm.gh.GhSong.getSongs(game, difficulty);
-			progmon.setProgress(50);
-			model = new GhSongDataTreeTableModel(game, songs);
+			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			statusBar1.setText("Loading song data from database...");
 			
-			progmon.setProgress(95);
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					jXTreeTable1.setTreeTableModel(model);
-					model.setParent(jXTreeTable1);
-					jXTreeTable1.repaint();
-				}
-			});
-			
-			progmon.setProgress(100);
+			try {
+				songs = jshm.gh.GhSong.getSongs(game, difficulty);
+				model = new GhSongDataTreeTableModel(game, songs);
+	
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run() {
+						jXTreeTable1.setTreeTableModel(model);
+						model.setParent(jXTreeTable1);
+						jXTreeTable1.repaint();
+					}
+				});
+			} catch (Exception e) {
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to load song data", null, null, e, null, null);
+				org.jdesktop.swingx.JXErrorPane.showDialog(GUITest.this, ei);
+			} finally {
+				getContentPane().setCursor(Cursor.getDefaultCursor());
+			}
 			
 			return null;
 		}
 		
 		@Override
 		public void done() {
+			if (null == songs) return;
+			
+			statusBar1.setText("Viewing song data for " + game + " on " + difficulty);
 			loadMyScoresMenuItem.setEnabled(true);
 			loadSongDataMenuItem.setEnabled(true);
 			
 			if (songs.size() == 0 && null != evt) { // if evt == null we're recursing
 				if (JOptionPane.YES_OPTION ==
 					JOptionPane.showConfirmDialog(
-						GUITest.this, "No songs are available.\nLoad from ScoreHero?", "",
+						GUITest.this, "No songs are available.\nDownload from ScoreHero?", "",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 					
 					loadSongDataMenuItemActionPerformed(null);
@@ -385,35 +458,37 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 private void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt, final jshm.gh.GhGame game, final jshm.Difficulty difficulty) {
 	this.setCurGame(game);
 	this.setCurDiff(difficulty);
-	this.jStatusBar1.setText("Viewing scores for " + game + " on " + difficulty);
 
-	new Task<Void, Void>(this, "Retrieving scores...") {
+	new SwingWorker<Void, Void>() {
 		List<jshm.gh.GhSong> songs = null;
 		List<jshm.gh.GhScore> scores = null;
 		GhMyScoresTreeTableModel model = null;
 		
 		@Override
 		protected Void doInBackground() throws Exception {
-			progmon.setNote("Loading song data..");
-			progmon.setProgress(1);
-			songs = jshm.gh.GhSong.getSongs(game, difficulty);
-			progmon.setNote("Loading score data..");
-			progmon.setProgress(33);			
-			scores = jshm.gh.GhScore.getScores(game, difficulty);
-			progmon.setProgress(67);
-			model = new GhMyScoresTreeTableModel(game, songs, scores);
+			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			statusBar1.setText("Loading score data from database...");
 			
-			progmon.setProgress(95);
-			
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					jXTreeTable1.setTreeTableModel(model);
-					model.setParent(jXTreeTable1);
-					jXTreeTable1.repaint();
-				}
-			});
-			
-			progmon.setProgress(100);
+			try {
+				songs = jshm.gh.GhSong.getSongs(game, difficulty);
+				scores = jshm.gh.GhScore.getScores(game, difficulty);
+				model = new GhMyScoresTreeTableModel(game, songs, scores);
+	
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run() {
+						if (null != model && null != jXTreeTable1) {
+							jXTreeTable1.setTreeTableModel(model);
+							model.setParent(jXTreeTable1);
+							jXTreeTable1.repaint();
+						}
+					}
+				});
+			} catch (Exception e) {
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to load score data", null, null, e, null, null);
+				org.jdesktop.swingx.JXErrorPane.showDialog(GUITest.this, ei);
+			} finally {
+				getContentPane().setCursor(Cursor.getDefaultCursor());
+			}
 			
 			return null;
 		}
@@ -422,19 +497,19 @@ private void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 		public void done() {
 			if (null == scores) return;
 			
+			statusBar1.setText("Viewing scores for " + game + " on " + difficulty);
 			loadMyScoresMenuItem.setEnabled(true);
 			loadSongDataMenuItem.setEnabled(true);
 			
 			if (scores.size() == 0 && null != evt) { // if evt == null we're recursing
 				if (JOptionPane.YES_OPTION ==
 					JOptionPane.showConfirmDialog(
-						GUITest.this, "No scores are available.\nLoad from ScoreHero?", "",
+						GUITest.this, "No scores are available.\nDownload from ScoreHero?", "",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 					
 					loadMyScoresMenuItemActionPerformed(null);
 				}
 
-				
 				return;
 			}
 		}
@@ -463,6 +538,8 @@ private void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent ev
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private jshm.gui.AboutDialog aboutDialog1;
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JMenuItem addNewScoreMenuItem;
+    private javax.swing.JMenuItem deleteSelectedScoreMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
@@ -470,12 +547,12 @@ private void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent ev
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private jshm.gui.components.JStatusBar jStatusBar1;
     private org.jdesktop.swingx.JXTreeTable jXTreeTable1;
     private javax.swing.JMenuItem loadMyScoresMenuItem;
     private javax.swing.JMenuItem loadSongDataMenuItem;
     private javax.swing.JMenu myScoresMenu;
     private javax.swing.JMenu songDataMenu;
+    private jshm.gui.components.StatusBar statusBar1;
     // End of variables declaration//GEN-END:variables
 
 	private jshm.gh.GhGame getCurGame() {

@@ -22,9 +22,13 @@ public class MyProgressBarUI extends BasicProgressBarUI {
     }
 	
 	private BufferedImage gradient = null;
+//	private int delta = 0;
 	
 	private void makeGradient() {
 		Dimension size = progressBar.getSize();
+		
+//		delta = size.width / getFrameCount();
+		
 		gradient = new BufferedImage(size.width * 2, size.height, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = (Graphics2D) gradient.getGraphics();
 		Shape shape = new Rectangle2D.Float(0, 0, gradient.getWidth(), gradient.getHeight());
@@ -45,10 +49,12 @@ public class MyProgressBarUI extends BasicProgressBarUI {
 		Graphics2D g2 = (Graphics2D) g;
 		Dimension size = progressBar.getSize();
 
+//		int startx = delta * getAnimationIndex();
+		
 		int startx = getBox(boxRect).x;
 		
 		g2.drawImage(gradient,
 			0, 0, size.width, size.height,
-			startx, 0, startx + size.width, size.height, null);
+			size.width - startx, 0, 2 * size.width - startx, size.height, null);
 	}
 }

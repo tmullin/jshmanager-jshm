@@ -16,12 +16,13 @@ public abstract class Score {
 	 *   <li>NEW - A newly entered score that hasn't been submitted to ScoreHero
 	 *   <li>SUBMITTED - A score that has been submitted to ScoreHero
 	 *   <li>DELETED - A score that has been submitted but was deleted on ScoreHero due to a new score overwriting it.
+	 *   <li>TEMPLATE - A score that exists as a filler row in the GUI for adding a new score
 	 * </ul>
 	 * @author Tim Mullin
 	 *
 	 */
 	public static enum Status {
-		NEW, SUBMITTED, DELETED
+		NEW, SUBMITTED, DELETED, TEMPLATE
 	}
 	
 	/**
@@ -169,7 +170,7 @@ public abstract class Score {
 	@Transient
 	public Part getPart(int index) {		
 		if (index < 1 || parts.size() < index)
-			return null;
+			throw new ArrayIndexOutOfBoundsException("index must be between 1 and " + parts.size() + ", got: " + index);
 		
 		Part ret = null;
 		Iterator<Part> it = parts.iterator();
@@ -333,6 +334,27 @@ public abstract class Score {
 		if (getGameTitle().supportsCalculatedRating())
 			throw new UnsupportedOperationException("supportsCalculableStars() is true but getCalculatedRating() is not overridden");
 		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * 
+	 * @return Whether this object is ok to submit to scorehero
+	 */
+	@Transient
+	public boolean isSubmittable() {
+		boolean ok =
+			getStatus() == Status.NEW &&
+			getScore() > 0 &&
+			getSong() != null &&
+			getParts().size() > 0;
+			
+		if (!ok) return false;
+		
+		for (Part p : getParts()) {
+			if (!p.isSubmittable()) return false;
+		}
+		
+		return true;
 	}
 	
 	@Transient

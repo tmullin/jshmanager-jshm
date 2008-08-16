@@ -15,52 +15,59 @@ public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
 
-    	// ensure we do what is normally done to render a cell first
-    	super.getTableCellRendererComponent(
-    		table, value, isSelected, hasFocus, row, column);
-    	
+//		System.out.println(row + "x" + column + ": " + value);
     	setIcon(null);
+    	    	    	
+    	super.getTableCellRendererComponent(
+       		table, value, isSelected, hasFocus, row, column);
     	
-		switch (column) {
-//			case 0:
-//				System.out.println(value.getClass().getName() + ": " + value);
-//				if (value instanceof GhScore) {
-//					String s = ((GhScore) value).getComment();
-//					
-//					if (s.isEmpty()) {
-//						setText("No Comment");
-//					} else if (s.length() > 40) {
-//						setText(s.substring(0, 40) + "...");
-//					} else {
-//						setText(s);
-//					}
-//				} else {				
-//					setText(value.toString());
-//				}
-//				break;
+    	if (value instanceof GhScore) {
+    		GhScore score = (GhScore) value;
+    	
+			switch (column) {
+				case 0:
+//					System.out.println(value.getClass().getName() + ": " + value);
+					String s = score.getComment();
+						
+					/*if (s.isEmpty()) {
+						setText("No Comment");
+					} else*/ if (s.length() > 40) {
+						setText(s.substring(0, 40) + "...");
+					} else {
+						setText(s);
+					}
+					break;
 				
-			case 2:
-				if (value instanceof GhScore) {
-					GhScore score = (GhScore) value;
+				case 1:
+					if (score.getScore() > 0)
+						setText(NUM_FMT.format(score.getScore()));
+					else
+						setText("");
+					break;
+					
+				case 2:
 					setIcon(score.getRatingIcon());
 					setText(
 						score.getCalculatedRating() != 0.0f
 						? "(" + score.getCalculatedRating() + ")"
 						: "");
-				}
-				break;
+					break;
 				
-			case 4:
-				if (value instanceof GhScore) {
-					GhScore score = (GhScore) value;
+				case 3:
+					setText(
+						score.getHitPercent() != 0.0f
+						? String.valueOf((int) (score.getHitPercent() * 100))
+						: "");
+					break;
 					
+				case 4:
 					if (score.getStreak() > 0)
 						setText(NUM_FMT.format(score.getStreak()));
 					else
 						setText("");
-				}
-				break;
-		}
+					break;
+			}
+    	}
 		
 		return this;
 	}

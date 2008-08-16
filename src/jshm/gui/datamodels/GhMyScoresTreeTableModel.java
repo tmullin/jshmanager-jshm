@@ -1,66 +1,77 @@
 package jshm.gui.datamodels;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+
+import jshm.Score;
+import jshm.gh.GhGame;
+import jshm.gh.GhScore;
+import jshm.gh.GhSong;
+import jshm.gui.GuiUtil;
+import jshm.gui.editors.GhMyScoresEditor;
+import jshm.gui.editors.GhMyScoresRatingEditor;
+import jshm.gui.renderers.GhMyScoresCellRenderer;
+import jshm.gui.renderers.GhMyScoresFcHighlighter;
+import jshm.gui.renderers.GhMyScoresNewScoreHighlighter;
+import jshm.gui.renderers.GhMyScoresNoCommentHighlighter;
+import jshm.gui.renderers.GhMyScoresTreeCellRenderer;
+import jshm.gui.renderers.GhTierHighlighter;
 
 import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.decorator.Highlighter;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
-import jshm.gh.*;
-import jshm.gui.GuiUtil;
-import jshm.gui.renderers.GhMyScoresCellRenderer;
-import jshm.gui.renderers.GhMyScoresFcHighlighter;
-import jshm.gui.renderers.GhMyScoresNoCommentHighlighter;
-import jshm.gui.renderers.GhTierHighlighter;
-
 /**
- *
+ * 
  * @author Tim Mullin
  */
 public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 	/*
-	 * + Tier Name 1
-	 * | \- Song Name 1
-	 * |    +  Score 1
-	 * |    \- Score 2
-	 * | \- Song Name 2
+	 * + Tier Name 1 | \- Song Name 1 | + Score 1 | \- Score 2 | \- Song Name 2
 	 * ...
 	 */
 	private class DataModel {
-		List<Tier> tiers = new ArrayList<Tier>();
-		
-		public DataModel(
-			final GhGame game,
-			final List<GhSong> songs,
-			final List<GhScore> scores) {
-	
+		List<Tier>	tiers	= new ArrayList<Tier>();
+
+		public DataModel(final GhGame game, final List<GhSong> songs,
+				final List<GhScore> scores) {
+
 			for (int i = 1; i <= game.getTierCount(); i++) {
 				tiers.add(new Tier(game.getTierName(i)));
 			}
-			
+
 			for (GhSong song : songs) {
-				tiers.get(song.getTierLevel() - 1).songs.add(new SongScores(song));
+				tiers.get(song.getTierLevel() - 1).songs.add(new SongScores(
+						song));
 			}
-			
+
 			for (GhScore score : scores) {
 				tiers.get(((GhSong) score.getSong()).getTierLevel() - 1)
-					.addScore(score);
+						.addScore(score);
 			}
+
+//			for (GhSong song : songs) {
+//				tiers.get(song.getTierLevel() - 1).addScore(
+//						GhScore.createNewScoreTemplate(song));
+//			}
 		}
 	}
-	
+
 	public class Tier {
-		public final String name;
-		public final List<SongScores> songs = new ArrayList<SongScores>();
-		
+		public final String				name;
+
+		public final List<SongScores>	songs	= new ArrayList<SongScores>();
+
 		public Tier(String name) {
 			this.name = name;
 		}
-		
+
 		public void addScore(GhScore score) {
 			for (SongScores ss : songs) {
 				if (ss.song.equals((GhSong) score.getSong())) {
@@ -70,172 +81,320 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 			}
 		}
 		
+		public void removeScore(GhScore score) {
+			for (SongScores ss : songs) {
+				if (ss.song.equals((GhSong) score.getSong())) {
+					ss.scores.remove(score);
+					return;
+				}
+			}
+		}
+
 		public String toString() {
 			int scores = 0;
-			
+
 			for (SongScores song : songs) {
 				scores += song.scores.size();
 			}
-			
-			return String.format("%s (%d %s)", name, scores, scores != 1 ? "scores" : "score");
+
+			return String.format("%s (%d %s)", name, scores,
+					scores != 1 ? "scores" : "score");
 		}
 	}
-	
+
 	public class SongScores {
-		public final GhSong song;
-		public final List<GhScore> scores = new ArrayList<GhScore>();
-		
+		public final GhSong			song;
+
+		public final List<GhScore>	scores	= new ArrayList<GhScore>();
+
 		public SongScores(GhSong song) {
 			this.song = song;
 		}
-		
+
 		public String toString() {
-			return String.format("%s (%d %s)",
-				song.getTitle(), scores.size(), scores.size() != 1 ? "scores" : "score");
+			return String.format("%s (%d %s)", song.getTitle(), scores.size(),
+					scores.size() != 1 ? "scores" : "score");
 
 		}
 	}
-	
-	
-//	private JXTreeTable parent;
-	private final DataModel model;
-	
-	public GhMyScoresTreeTableModel(
-		final GhGame game,
-		final List<GhSong> songs,
-		final List<GhScore> scores) {
-		
+
+	// private JXTreeTable parent;
+	private final DataModel	model;
+
+	public GhMyScoresTreeTableModel(final GhGame game,
+			final List<GhSong> songs, final List<GhScore> scores) {
+
 		super("ROOT");
 		this.model = new DataModel(game, songs, scores);
 	}
-
-	public void setParent(JXTreeTable parent) {
-//		this.parent = parent;
-		GhMyScoresCellRenderer renderer = new GhMyScoresCellRenderer();
-//		parent.getColumn(0).s6etCellRenderer(renderer);
-	    parent.getColumn(2).setCellRenderer(renderer);
-	    parent.getColumn(4).setCellRenderer(renderer);
-	    
-	    parent.addHighlighter(
-	    	HighlighterFactory.createSimpleStriping());
-	    parent.addHighlighter(
-	    	new GhMyScoresFcHighlighter());
-	    parent.addHighlighter(
-	    	new GhTierHighlighter());
-	    parent.addHighlighter(
-	    	new GhMyScoresNoCommentHighlighter());
-	    
-	    GuiUtil.expandTreeFromDepth(parent, 2);
-	    
-	    parent.getColumnExt(1).setPrototypeValue("00000000000");
-	    parent.getColumnExt(2).setPrototypeValue(new ImageIcon(getClass().getResource("/jshm/resources/images/ratings/gh/8.gif")));
-	    parent.getColumnExt(3).setPrototypeValue("1000");
-	    parent.getColumnExt(4).setPrototypeValue("99999");
-	    parent.getColumnExt(5).setPrototypeValue("AAA9999999999");
-	    parent.getColumnExt(5).setVisible(false);
-	    parent.getColumnExt(6).setPrototypeValue("AAA9999999999");
-	    
-	    parent.setHorizontalScrollEnabled(false);
-	    parent.setAutoResizeMode(JXTreeTable.AUTO_RESIZE_OFF);
-	    parent.packAll();
+	
+	public void createScoreTemplate(TreePath p) {
+		if (null == p) return;
+		
+		Object o = p.getLastPathComponent();
+		System.out.println("Selected: " + o);
+		
+		if (o instanceof GhScore) {
+			createScoreTemplate((GhScore) o);
+			p = p.getParentPath();
+		} else if (o instanceof SongScores) {
+			createScoreTemplate((SongScores) o);
+		}
+		
+		TreeModelEvent e = new TreeModelEvent(this, p);
+		
+		for (TreeModelListener l : getTreeModelListeners())
+			l.treeStructureChanged(e);
 	}
 	
+	private void createScoreTemplate(SongScores selectedSongScores) {
+		selectedSongScores.scores.add(
+			GhScore.createNewScoreTemplate(selectedSongScores.song));
+	}
+	
+	private void createScoreTemplate(GhScore selectedScore) {
+		GhSong song = (GhSong) selectedScore.getSong();
+		
+		model.tiers.get(song.getTierLevel() - 1)
+			.addScore(GhScore.createNewScoreTemplate(song));
+	}
+
+	public void deleteScore(TreePath p) {
+		if (!(p.getLastPathComponent() instanceof GhScore)) return;
+		
+		GhScore score = (GhScore) p.getLastPathComponent();
+		
+		switch (score.getStatus()) {
+			case NEW:
+				// TODO actually delete from db and fall through
+				
+			case TEMPLATE:
+				model.tiers.get(((GhSong) score.getSong()).getTierLevel() - 1)
+					.removeScore(score);
+				
+				TreeModelEvent e = new TreeModelEvent(this, p.getParentPath());
+				for (TreeModelListener l : getTreeModelListeners())
+					l.treeStructureChanged(e);
+				
+				break;
+				
+			default:
+				// ignore
+		}
+	}
+	
+	public void setParent(JXTreeTable parent) {
+		// this.parent = parent;
+		
+		GhMyScoresTreeCellRenderer treeRenderer = new GhMyScoresTreeCellRenderer();
+		parent.setTreeCellRenderer(treeRenderer);
+		
+		GhMyScoresCellRenderer renderer = new GhMyScoresCellRenderer();
+		
+		for (int i = 0; i <= 6; i++)
+			parent.getColumn(i).setCellRenderer(renderer);
+
+		Highlighter[] highlighters = new Highlighter[] {
+			HighlighterFactory.createSimpleStriping(),
+			new GhMyScoresFcHighlighter(),
+			new GhTierHighlighter(),
+			new GhMyScoresNoCommentHighlighter(),
+			new GhMyScoresNewScoreHighlighter()
+		};
+		
+		parent.setHighlighters(highlighters);
+
+		GuiUtil.expandTreeFromDepth(parent, 2);
+
+		Object[] prototypes = new Object[] {
+			"00000000000", GhScore.getRatingIcon(8),
+			"1000", "99999", "AAA9999999999", "AAA9999999999"
+		};
+		
+		for (int i = 1; i <= 6; i++)
+			parent.getColumnExt(i).setPrototypeValue(prototypes[i - 1]);
+
+		parent.getColumnExt(5).setVisible(false);
+
+		parent.setEditable(true);	
+
+		
+//		parent.setHierarchicalEditor(
+//			new GhMyScoresCommentEditor(   ));
+		GhMyScoresEditor editor = new GhMyScoresEditor();
+		parent.setDefaultEditor(GhScore.class, editor);
+//		parent.getColumn(0).setCellEditor(editor);
+//		parent.getColumn(1).setCellEditor(editor);
+		parent.getColumn(2).setCellEditor(new GhMyScoresRatingEditor());
+//		parent.getColumn(3).setCellEditor(editor);
+//		parent.getColumn(4).setCellEditor(editor);
+		
+		parent.setHorizontalScrollEnabled(false);
+		parent.setAutoResizeMode(JXTreeTable.AUTO_RESIZE_OFF);
+		parent.packAll();
+	}
+
 	@Override
 	public int getColumnCount() {
 		return 7;
 	}
 
 	@Override
-    public Class<?> getColumnClass(int column) {
+	public Class<?> getColumnClass(int column) {
 		switch (column) {
-			case 5: case 6: return java.util.Date.class;
-			default: return String.class;
+			case 0: return String.class;
+			case 1:	case 2: case 3: case 4:
+				return GhScore.class;
+			case 5:
+			case 6:
+				return java.util.Date.class;
+				
+			default:
+				assert false;
+//				return Object.class;
 		}
-    }
-	
-	private static final String[] COLUMN_NAMES = {
-		"Song/Comment", "Score", "Rating", "%",
-		"Streak", "Date Created", "Date Submitted"
-	};
-	
+		
+		return null;
+	}
+
+	private static final String[]	COLUMN_NAMES	= {
+		"Song/Comment",
+		"Score", "Rating", "%", "Streak", "Date Created", "Date Submitted" };
+
 	@Override
 	public String getColumnName(int arg0) {
 		return COLUMN_NAMES[arg0];
 	}
-	
-	
-	private final DecimalFormat NUM_FMT = new DecimalFormat("#,###");
-	
+
 	@Override
 	public Object getValueAt(Object node, int column) {
 		if (node instanceof Tier) {
-			if (column == 0) return node;
+			if (column == 0)
+				return node;
 			return "";
 		}
-		
+
 		if (node instanceof SongScores) {
 			if (column == 0)
 				return node;
 			return "";
 		}
-		
-		if (!(node instanceof GhScore)) return "";
+
+		if (!(node instanceof GhScore))
+			return "";
+
+		GhScore score = (GhScore) node;
+
+//		if (score.getStatus() == Score.Status.TEMPLATE) {
+//			switch (column) {
+//				case 0:
+//					ret = "Enter new score...";
+//					break;
+//			}
+//
+//			return ret;
+//		}
+
+		switch (column) {
+			case 0:
+				return score.getComment();
+			case 5:
+				return score.getCreationDate();
+			case 6:
+				return score.getSubmissionDate();
+
+			default:
+				return score;
+		}
+	}
+
+	public boolean isCellEditable(Object node, int column) {
+		if (!(node instanceof GhScore)) return false;
 		
 		GhScore score = (GhScore) node;
 		
-		Object ret = "";
-		
-		switch (column) {
-			case 0:
-				String s = score.getComment();
-				
-				if (s.isEmpty()) {
-					ret = "No Comment";
-				} else if (s.length() > 40) {
-					ret = s.substring(0, 40) + "...";
-				} else {
-					ret = s;
+		switch (score.getStatus()) {
+			case NEW:
+			case TEMPLATE:
+				switch (column) {
+					case 0: case 1: case 2: case 3: case 4:
+						return true;
 				}
+				
 				break;
-				
-			case 1: ret = NUM_FMT.format(score.getScore()); break;
-		
-			case 2:
-			case 4: ret = score; break;
-				
-			case 3:
-				ret =
-					score.getHitPercent() != 0.0f
-					? (int) (score.getHitPercent() * 100)
-					: "";
-					break;
-					
-			case 5: ret = score.getCreationDate(); break;
-			case 6: ret = score.getSubmissionDate(); break;
-				
-			default: assert false;
 		}
-		
-		if ("-1".equals(ret))
-			ret = "???";
-		
-		return ret;
+
+		return false;
 	}
 
+    public void setValueAt(Object value, Object node, int column) {
+    	System.out.println("setting col: " + column + " = " + value);
+		if (!(node instanceof GhScore)) return;
+		
+		GhScore score = (GhScore) node;
+		
+		switch (score.getStatus()) {
+			case NEW:
+			case TEMPLATE:
+				score.setStatus(Score.Status.NEW);
+				
+				switch (column) {
+					case 0: score.setComment(value.toString()); break;
+					case 1:
+						try {
+							score.setScore(Integer.parseInt(value.toString()));
+						} catch (NumberFormatException e) {}
+						break;
+						
+					case 2:
+						score.setRating(0);
+						
+						for (int i : new Integer[] {3, 4, 5})
+							if (GhScore.getRatingIcon(i) == value) {
+								score.setRating(i);
+								break;
+							}
+						break;
+						
+					case 3:
+						try {
+							score.getPart(1).setHitPercent(
+								Integer.parseInt(value.toString()) / 100.0f);
+						} catch (NumberFormatException e) {}
+						break;
+						
+					case 4:
+						try {
+							score.setStreak(
+								Integer.parseInt(value.toString()));
+						} catch (NumberFormatException e) {}
+						break;
+						
+					default:
+						throw new IllegalStateException("trying to set valut at a non-editable column: " + column);
+				}
+				
+				break;
+				
+			default:
+				throw new IllegalStateException("setValueAt() called on a non NEW/TEMPLATE score");
+		}
+    }
+	
 	@Override
 	public Object getChild(Object parent, int index) {
 		if (parent.equals(root)) {
 			return model.tiers.get(index);
 		}
-		
+
 		if (parent instanceof Tier) {
 			return ((Tier) parent).songs.get(index);
 		}
-		
+
 		if (parent instanceof SongScores) {
 			return ((SongScores) parent).scores.get(index);
 		}
-		
+
 		return null;
 	}
 
@@ -244,15 +403,15 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		if (parent.equals(root)) {
 			return model.tiers.size();
 		}
-		
+
 		if (parent instanceof Tier) {
 			return ((Tier) parent).songs.size();
 		}
-		
+
 		if (parent instanceof SongScores) {
 			return ((SongScores) parent).scores.size();
 		}
-		
+
 		return 0;
 	}
 
@@ -261,15 +420,15 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		if (parent.equals(root)) {
 			return model.tiers.indexOf(child);
 		}
-		
+
 		if (parent instanceof Tier) {
 			return ((Tier) parent).songs.indexOf(child);
 		}
-		
+
 		if (parent instanceof SongScores) {
 			return ((SongScores) parent).scores.indexOf(child);
 		}
-		
+
 		return -1;
 	}
 
