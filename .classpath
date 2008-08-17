@@ -33,7 +33,6 @@
 	<classpathentry kind="lib" path="lib/hibernate/hibernate-validator.jar" sourcepath="libsrc/hibernate/src.zip"/>
 	<classpathentry kind="lib" path="lib/hibernate/lucene-core-2.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/hsqldb.jar"/>
-	<classpathentry kind="lib" path="lib/Tidy.jar" sourcepath="libsrc/Tidy-src.zip"/>
 	<classpathentry kind="lib" path="lib/swinglabs/swingx-0.9.3.jar" sourcepath="libsrc/swinglabs/swingx-0.9.3-src.zip"/>
 	<classpathentry kind="lib" path="lib/swinglabs/swing-worker-1.2.jar" sourcepath="libsrc/swinglabs/swing-worker-src-1.2.zip"/>
 	<classpathentry kind="output" path="bin"/>
