@@ -122,6 +122,56 @@ public class GhSong extends jshm.Song {
 		return test;
 	}
 	
+	@Transient
+	public boolean canCalculateRating() {
+		return
+			fourStarCutoff != -1 &&
+			fiveStarCutoff != -1 &&
+			sixStarCutoff != -1 &&
+			sevenStarCutoff != -1 &&
+			eightStarCutoff != -1 &&
+			nineStarCutoff != -1;
+	}
+	
+	@Transient
+	public float getCalculatedRating(int score) {
+		if (!canCalculateRating()) return 0f;
+		
+		if (score >= nineStarCutoff)
+			return 9.0f;
+		
+		int majorRating = 0, highCutoff = 0, lowCutoff = 0;
+		
+		if (score >= eightStarCutoff) {
+			majorRating = 8;
+			highCutoff = nineStarCutoff;
+			lowCutoff = eightStarCutoff;
+		} else if (score >= sevenStarCutoff) {
+			majorRating = 7;
+			highCutoff = eightStarCutoff;
+			lowCutoff = sevenStarCutoff;
+		} else if (score >= sixStarCutoff){
+			majorRating = 6;
+			highCutoff = sevenStarCutoff;
+			lowCutoff = sixStarCutoff;
+		} else if (score >= fiveStarCutoff) {
+			majorRating = 5;
+			highCutoff = sixStarCutoff;
+			lowCutoff = fiveStarCutoff;
+		} else if (score >= fourStarCutoff) {
+			majorRating = 4;
+			highCutoff = fiveStarCutoff;
+			lowCutoff = fourStarCutoff;
+		} else {
+			return 3f;
+		}
+		
+		int scoreDiff = score - lowCutoff;
+		int cutoffDiff = highCutoff - lowCutoff;
+		
+		return majorRating + ((float) scoreDiff / (float) cutoffDiff);
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		if (o == this) return true;

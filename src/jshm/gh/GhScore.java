@@ -69,6 +69,18 @@ public class GhScore extends jshm.Score {
 		}
 	}
 	
+	/**
+	 * Set the score as well as the calculated rating automatically.
+	 */
+	@Override
+	public void setScore(int score) {
+		super.setScore(score);
+		
+		if (null != getSong())
+			setCalculatedRating(
+				((GhSong) getSong()).getCalculatedRating(score));
+	}
+	
 	@Override
 	public void setCalculatedRating(float calculatedRating) {
 		if (0.0f != calculatedRating &&
@@ -107,9 +119,14 @@ public class GhScore extends jshm.Score {
 	
 	private static final ImageIcon[] RATING_ICONS = new ImageIcon[7];
 	
-	public static ImageIcon getRatingIcon(final int rating) {
-		if (rating != 0 && (rating < 3 || 8 < rating))
-			throw new IllegalArgumentException("rating must be between 3 and 8 inclusive or 0");
+	public static ImageIcon getRatingIcon(int rating) {
+//		if (rating != 0 && (rating < 3 || 8 < rating))
+//			throw new IllegalArgumentException("rating must be between 3 and 8 inclusive or 0");
+		
+		if (rating != 0 && rating < 3)
+			rating = 3;
+		else if (rating > 8)
+			rating = 8;
 		
 		int index = rating;
 		
