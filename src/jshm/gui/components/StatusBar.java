@@ -23,11 +23,36 @@ public class StatusBar extends javax.swing.JPanel {
 		setText("");
     }
 	
-	public void setText(String str) {
+    public void setText(String str) {
+    	setText(str, false);
+    }
+    
+    /**
+     * 
+     * @param str The text to display in the progress bar.
+     * @param toggleProgress If <code>true</code> and <code>str</code>
+     * is not empty, the progress bar will be made visible in
+     * indeterminite mode, otherwise if <code>str</code> is empty, the
+     * progress bar will be hidden.
+     */
+	public void setText(String str, boolean toggleProgress) {
 		this.lastText = this.text;
 		this.text = str;
 		
-		textLabel.setText(this.text.isEmpty() ? "  " : this.text);
+		if (this.text.isEmpty()) {
+			textLabel.setText("  ");
+			
+			if (toggleProgress) {
+				setProgressVisible(false);
+			}
+		} else {
+			textLabel.setText(this.text);
+			
+			if (toggleProgress) {
+				getProgressBar().setIndeterminate(true);
+				setProgressVisible(true);
+			}
+		}
 	}
 	
 	public String getText() {

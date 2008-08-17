@@ -8,6 +8,7 @@ package jshm.gui;
 
 
 import java.awt.Cursor;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -21,6 +22,7 @@ import javax.swing.UIManager;
 
 import jshm.Score;
 import jshm.gh.GhScore;
+import jshm.gui.components.StatusBar;
 import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 import jshm.gui.datamodels.GhSongDataTreeTableModel;
 
@@ -36,9 +38,57 @@ public class GUITest extends javax.swing.JFrame {
 	private jshm.gh.GhGame curGame = null;
 	private jshm.Difficulty curDiff = null;
 	
+	private HoverHelp hh = null;
+	
     /** Creates new form GUITest */
     public GUITest() {
         initComponents();
+
+        hh = new HoverHelp(statusBar1);
+        hh.add(addNewScoreMenuItem,
+        	"Insert a new score for the selected song");
+        hh.add(deleteSelectedScoreMenuItem,
+        	"Delete the selected score if it hasn't yet been uploaded");
+        hh.add(loadMyScoresMenuItem,
+        	"Sync the local score list for the current game and difficulty to ScoreHero's");
+        hh.add(loadSongDataMenuItem,
+        	"Sync the local song list for the current game and difficulty to ScoreHero's (e.g. when there is new DLC)");
+        hh.add(jXTreeTable1, new HoverHelp.Callback() {
+			@Override
+			public String getMessage() {
+//				if (!jXTreeTable1.isEditing()) return null;
+				if (!(jXTreeTable1.getTreeTableModel() instanceof GhMyScoresTreeTableModel)) return null;
+				
+				Point p = jXTreeTable1.getMousePosition(true);
+				
+				if (null == p) return null;
+				
+				int row = jXTreeTable1.rowAtPoint(p);
+				int col = jXTreeTable1.columnAtPoint(p);
+				
+				if (!(jXTreeTable1.isCellEditable(row, col))) return null;
+				
+//				int editRow = jXTreeTable1.getEditingRow();
+//				int editCol = jXTreeTable1.getEditingColumn();
+//				
+//				if (row != editRow || col != editCol) return null;
+//				
+				switch (col) {
+					case 0:
+						return "Double-click to enter a comment for this score or leave blank";
+					case 1:
+						return "Double-click to enter a score that is greater than 0";
+					case 2:
+						return "Click to select the rating or leave blank (it will be calculated from the score if possible)";
+					case 3:
+						return "Double-click to enter a hit percentage between 1 and 100 or leave blank";
+					case 4:
+						return "Double-click to enter a note streak that is greater than 0 or leave blank";
+				}
+				
+				return null;
+			}
+        });
     }
 
     /** This method is called from within the constructor to
@@ -231,7 +281,7 @@ private void loadMyScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 			}
 			
 			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			statusBar1.setText("Downloading score data from ScoreHero...");
+			statusBar1.setText("Downloading score data from ScoreHero...", true);
 			
 			try {
 				jshm.dataupdaters.GhScoreUpdater.update(getCurGame(), getCurDiff());
@@ -240,7 +290,7 @@ private void loadMyScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 				ErrorInfo ei = new ErrorInfo("Error", "Failed to download score data", null, null, e, null, null);
 				org.jdesktop.swingx.JXErrorPane.showDialog(GUITest.this, ei);
 			} finally {
-				statusBar1.setText("");
+				statusBar1.setText("", true);
 				getContentPane().setCursor(Cursor.getDefaultCursor());
 			}
 			
@@ -264,7 +314,7 @@ private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 		@Override
 		protected Boolean doInBackground() throws Exception {
 			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			statusBar1.setText("Downloading song data from ScoreHero...");
+			statusBar1.setText("Downloading song data from ScoreHero...", true);
 			
 			try {
 				jshm.dataupdaters.GhSongUpdater.update(getCurGame(), getCurDiff());
@@ -273,7 +323,7 @@ private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 				ErrorInfo ei = new ErrorInfo("Error", "Failed to download song data", null, null, e, null, null);
 				org.jdesktop.swingx.JXErrorPane.showDialog(GUITest.this, ei);
 			} finally {
-				statusBar1.setText("");
+				statusBar1.setText("", true);
 				getContentPane().setCursor(Cursor.getDefaultCursor());
 			}
 			
@@ -303,7 +353,7 @@ private void jXTreeTable1TreeExpanded(javax.swing.event.TreeExpansionEvent evt) 
 }//GEN-LAST:event_jXTreeTable1TreeExpanded
 
 private void jXTreeTable1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jXTreeTable1ValueChanged
-	System.out.println("now selected: " + evt.getPath());
+//	System.out.println("now selected: " + evt.getPath());
 	Object o = evt.getPath().getLastPathComponent();
 	
 	addNewScoreMenuItem.setEnabled(
@@ -409,7 +459,7 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 		@Override
 		protected Void doInBackground() throws Exception {
 			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			statusBar1.setText("Loading song data from database...");
+			statusBar1.setText("Loading song data from database...", true);
 			
 			try {
 				songs = jshm.gh.GhSong.getSongs(game, difficulty);
@@ -427,6 +477,7 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 				org.jdesktop.swingx.JXErrorPane.showDialog(GUITest.this, ei);
 			} finally {
 				getContentPane().setCursor(Cursor.getDefaultCursor());
+				statusBar1.setText("", true);
 			}
 			
 			return null;
@@ -467,7 +518,7 @@ private void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 		@Override
 		protected Void doInBackground() throws Exception {
 			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			statusBar1.setText("Loading score data from database...");
+			statusBar1.setText("Loading score data from database...", true);
 			
 			try {
 				songs = jshm.gh.GhSong.getSongs(game, difficulty);
@@ -488,6 +539,7 @@ private void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 				org.jdesktop.swingx.JXErrorPane.showDialog(GUITest.this, ei);
 			} finally {
 				getContentPane().setCursor(Cursor.getDefaultCursor());
+				statusBar1.setText("", true);
 			}
 			
 			return null;
@@ -555,6 +607,10 @@ private void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent ev
     private jshm.gui.components.StatusBar statusBar1;
     // End of variables declaration//GEN-END:variables
 
+    public StatusBar getStatusBar() {
+    	return statusBar1;
+    }
+    
 	private jshm.gh.GhGame getCurGame() {
 		return curGame;
 	}

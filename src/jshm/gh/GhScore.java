@@ -64,9 +64,12 @@ public class GhScore extends jshm.Score {
 			throw new IllegalArgumentException("streak must be >= 0");
 		this.streak = streak;
 		
-		if (getParts().size() == 1) {
-			getPart(1).setStreak(streak);
-		}
+		// TODO check on LazyInitializationException
+		try {
+			if (getParts().size() == 1) {
+				getPart(1).setStreak(streak);
+			}
+		} catch (Exception e) {}
 	}
 	
 	/**

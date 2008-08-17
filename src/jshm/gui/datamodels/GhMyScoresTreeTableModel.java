@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import jshm.Score;
@@ -132,7 +131,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		if (null == p) return;
 		
 		Object o = p.getLastPathComponent();
-		System.out.println("Selected: " + o);
+//		System.out.println("Selected: " + o);
 		
 		if (o instanceof GhScore) {
 			createScoreTemplate((GhScore) o);
@@ -259,7 +258,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 
 	private static final String[]	COLUMN_NAMES	= {
 		"Song/Comment",
-		"Score", "Rating", "%", "Streak", "Date Created", "Date Submitted" };
+		"Score", "Rating (Calc)", "%", "Streak", "Date Created", "Date Submitted" };
 
 	@Override
 	public String getColumnName(int arg0) {
@@ -328,7 +327,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 	}
 
     public void setValueAt(Object value, Object node, int column) {
-    	System.out.println("setting col: " + column + " = " + value);
+//    	System.out.println("setting col: " + column + " = " + value);
 		if (!(node instanceof GhScore)) return;
 		
 		GhScore score = (GhScore) node;
@@ -343,7 +342,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 					case 1:
 						try {
 							score.setScore(Integer.parseInt(value.toString()));
-						} catch (NumberFormatException e) {}
+						} catch (Exception e) {}
 						break;
 						
 					case 2:
@@ -360,14 +359,14 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 						try {
 							score.getPart(1).setHitPercent(
 								Integer.parseInt(value.toString()) / 100.0f);
-						} catch (NumberFormatException e) {}
+						} catch (Exception e) {}
 						break;
 						
 					case 4:
 						try {
 							score.setStreak(
 								Integer.parseInt(value.toString()));
-						} catch (NumberFormatException e) {}
+						} catch (Exception e) {}
 						break;
 						
 					default:

@@ -5,6 +5,7 @@ import java.awt.Component;
 import javax.swing.DefaultCellEditor;
 import javax.swing.InputVerifier;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
@@ -15,42 +16,62 @@ public class GhMyScoresEditor extends DefaultCellEditor {
 		SCORE_VERIFIER = new InputVerifier() {
 			@Override
 			public boolean verify(JComponent input) {
+				boolean ret = false;
+				System.out.print("Verifying '" + ((JTextField) input).getText() + "'");
 				try {
 					int i = Integer.parseInt(
 						((JTextField) input).getText());
 					
-					return i > 0;
+					ret = i > 0;
 				} catch (NumberFormatException e) {}
 				
-				return false;
+				System.out.println(ret);
+				
+				if (!ret) {
+					JOptionPane.showMessageDialog(input, "Score must be > 0", "Error", JOptionPane.WARNING_MESSAGE);
+				}
+				
+				return ret;
 			}
 		},
 		
 		PERCENT_VERIFIER = new InputVerifier() {
 			@Override
 			public boolean verify(JComponent input) {
+				boolean ret = false;
+				
 				try {
 					String s = ((JTextField) input).getText();
 					if (s.isEmpty()) return true;
 					int i = Integer.parseInt(s);
-					return 0 <= i && i <= 100;
+					return 0 < i && i <= 100;
 				} catch (NumberFormatException e) {}
 				
-				return false;
+				if (!ret) {
+					JOptionPane.showMessageDialog(input, "Percent must be between 1 and 100 or left blank", "Error", JOptionPane.WARNING_MESSAGE);
+				}
+				
+				return ret;
 			}
 		},
 		
 		STREAK_VERIFIER = new InputVerifier() {
 			@Override
 			public boolean verify(JComponent input) {
+				boolean ret = false;
+				
 				try {
 					String s = ((JTextField) input).getText();
 					if (s.isEmpty()) return true;
 					int i = Integer.parseInt(s);
-					return 0 <= i;
+					return 0 < i;
 				} catch (NumberFormatException e) {}
 				
-				return false;
+				if (!ret) {
+					JOptionPane.showMessageDialog(input, "Streak must be > 0 or left blank", "Error", JOptionPane.WARNING_MESSAGE);
+				}
+				
+				return ret;
 			}
 		};
 		
@@ -62,7 +83,7 @@ public class GhMyScoresEditor extends DefaultCellEditor {
 			 boolean isSelected,
 			 int row, int column) {
    	
-    	System.out.println("edt " + column + ": " + value);
+//    	System.out.println("edt " + column + ": " + value);
     	
     	InputVerifier iv = null;
     	
@@ -79,7 +100,7 @@ public class GhMyScoresEditor extends DefaultCellEditor {
     				
     			case 3:
     				value = score.getPart(1).getHitPercent() != 0f
-    					? score.getPart(1).getHitPercent() : "";
+    					? (int) (score.getPart(1).getHitPercent() * 100) : "";
     				iv = PERCENT_VERIFIER;
     				break;
     				
@@ -90,16 +111,14 @@ public class GhMyScoresEditor extends DefaultCellEditor {
     				break;
     		}
     		
-    		System.out.println("edt " + column + " (new value): " + value);
+//    		System.out.println("edt " + column + " (new value): " + value);
     	}
     	
 		Component comp = super.getTableCellEditorComponent(
 			table, value,
 			isSelected, row, column);
 		
-		if (null != iv) {
-			((JComponent) comp).setInputVerifier(iv);
-		}
+		((JComponent) comp).setInputVerifier(iv);
 		
 		return comp;
 	}
