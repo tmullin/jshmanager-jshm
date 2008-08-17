@@ -119,11 +119,13 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 
 	// private JXTreeTable parent;
 	private final DataModel	model;
+	private final GhGame game;
 
 	public GhMyScoresTreeTableModel(final GhGame game,
 			final List<GhSong> songs, final List<GhScore> scores) {
 
 		super("ROOT");
+		this.game = game;
 		this.model = new DataModel(game, songs, scores);
 	}
 	
@@ -180,6 +182,59 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 			default:
 				// ignore
 		}
+	}
+	
+	/**
+	 * 
+	 * @return A new instance of {@link GhMyScoresTreeTableModel}
+	 * that contains only the new scores that this model contains.
+	 */
+	public GhMyScoresTreeTableModel createNewScoresModel() {
+		List<GhSong> songs = new ArrayList<GhSong>();
+		List<GhScore> newScores = new ArrayList<GhScore>();
+		
+		for (Tier t : model.tiers) {
+			for (SongScores ss : t.songs) {
+				for (GhScore s : ss.scores) {
+					if (s.getStatus() == Score.Status.NEW && s.isSubmittable()) {
+						newScores.add(s);
+						
+						if (!songs.contains(s.getSong()))
+							songs.add((GhSong) s.getSong());
+					}
+				}
+			}
+		}
+		
+		return new GhMyScoresTreeTableModel(this.game, songs, newScores);
+	}
+	
+	/**
+	 * 
+	 * @return The total number of scores this model contains.
+	 */
+	public int getScoreCount() {
+		int count = 0;
+		
+		for (Tier t : model.tiers) {
+			for (SongScores ss : t.songs) {
+				count += ss.scores.size();
+			}
+		}
+		
+		return count;
+	}
+	
+	public List<GhScore> getScores() {
+		List<GhScore> scores = new ArrayList<GhScore>();
+		
+		for (Tier t : model.tiers) {
+			for (SongScores ss : t.songs) {
+				scores.addAll(ss.scores);
+			}
+		}
+		
+		return scores;
 	}
 	
 	public void setParent(JXTreeTable parent) {

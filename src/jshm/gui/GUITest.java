@@ -25,10 +25,13 @@ import jshm.gh.GhScore;
 import jshm.gui.components.StatusBar;
 import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 import jshm.gui.datamodels.GhSongDataTreeTableModel;
+import jshm.gui.wizards.scoreupload.ScoreUploadWizard;
 
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXLoginDialog;
 import org.jdesktop.swingx.error.ErrorInfo;
+import org.netbeans.spi.wizard.Wizard;
+import org.netbeans.spi.wizard.WizardPage;
 
 /**
  *
@@ -111,6 +114,7 @@ public class GUITest extends javax.swing.JFrame {
         addNewScoreMenuItem = new javax.swing.JMenuItem();
         deleteSelectedScoreMenuItem = new javax.swing.JMenuItem();
         loadMyScoresMenuItem = new javax.swing.JMenuItem();
+        uploadScoresMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
         songDataMenu = new javax.swing.JMenu();
         loadSongDataMenuItem = new javax.swing.JMenuItem();
@@ -200,6 +204,15 @@ public class GUITest extends javax.swing.JFrame {
             }
         });
         myScoresMenu.add(loadMyScoresMenuItem);
+
+        uploadScoresMenuItem.setText("Upload to ScoreHero...");
+        uploadScoresMenuItem.setEnabled(false);
+        uploadScoresMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uploadScoresMenuItemActionPerformed(evt);
+            }
+        });
+        myScoresMenu.add(uploadScoresMenuItem);
         myScoresMenu.add(jSeparator1);
 
         initDynamicGameMenu(myScoresMenu);
@@ -379,6 +392,19 @@ private void deleteSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEve
 		jXTreeTable1.getPathForRow(jXTreeTable1.getSelectedRow()));
 }//GEN-LAST:event_deleteSelectedScoreMenuItemActionPerformed
 
+private void uploadScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadScoresMenuItemActionPerformed
+	GhMyScoresTreeTableModel newModel = 
+		((GhMyScoresTreeTableModel) jXTreeTable1.getTreeTableModel()).createNewScoresModel();
+	
+	if (newModel.getScoreCount() == 0) {
+		JOptionPane.showMessageDialog(this, "There are no new scores to upload", "Error", JOptionPane.WARNING_MESSAGE);
+		return;
+	}
+	
+	Wizard wiz = ScoreUploadWizard.createWizard(newModel);
+	wiz.show();
+}//GEN-LAST:event_uploadScoresMenuItemActionPerformed
+
 /**
  * Load the menu with all avaialable GH games.
  * @param menu
@@ -490,6 +516,7 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 			statusBar1.setText("Viewing song data for " + game + " on " + difficulty);
 			loadMyScoresMenuItem.setEnabled(true);
 			loadSongDataMenuItem.setEnabled(true);
+			uploadScoresMenuItem.setEnabled(false);
 			
 			if (songs.size() == 0 && null != evt) { // if evt == null we're recursing
 				if (JOptionPane.YES_OPTION ==
@@ -552,6 +579,7 @@ private void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 			statusBar1.setText("Viewing scores for " + game + " on " + difficulty);
 			loadMyScoresMenuItem.setEnabled(true);
 			loadSongDataMenuItem.setEnabled(true);
+			uploadScoresMenuItem.setEnabled(true);
 			
 			if (scores.size() == 0 && null != evt) { // if evt == null we're recursing
 				if (JOptionPane.YES_OPTION ==
@@ -605,6 +633,7 @@ private void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent ev
     private javax.swing.JMenu myScoresMenu;
     private javax.swing.JMenu songDataMenu;
     private jshm.gui.components.StatusBar statusBar1;
+    private javax.swing.JMenuItem uploadScoresMenuItem;
     // End of variables declaration//GEN-END:variables
 
     public StatusBar getStatusBar() {
