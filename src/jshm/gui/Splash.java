@@ -23,6 +23,10 @@ public class Splash extends JWindow {
 	JProgressBar progress;
 	JLabel status;
 	
+	public Splash() {
+		this("Loading...");
+	}
+	
 	public Splash(String statusText) {
 		this.setAlwaysOnTop(true);
 		setBackground(bg);
