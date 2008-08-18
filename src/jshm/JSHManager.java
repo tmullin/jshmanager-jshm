@@ -22,6 +22,7 @@ import jshm.hibernate.HibernateUtil;
 public class JSHManager {
 	static final Logger LOG = Logger.getLogger(JSHManager.class.getName());
 	static GUI gui = null;
+	static Splash splash = null;
 	
 	/**
 	 * Launches this application
@@ -29,7 +30,13 @@ public class JSHManager {
 	public static void main(String[] args) {
 		checkJREVersion();
 		
-		final Splash splash = new Splash();
+		splash = new Splash();
+		
+		try {
+			jshm.logging.Log.reloadConfig();
+		} catch (Exception e) {
+			fail("Unable to load logger configuration", e, -3);
+		}
 		
 		// Ensure any uncaught exceptions are logged so that bugs
 		// can be found more easily.
@@ -40,21 +47,17 @@ public class JSHManager {
 		});
 		
 		splash.setStatus("Checking data folder...");
-		
-		File dataDir = new File("data/db");
-		
-		if (!dataDir.exists()) {
-			LOG.fine("Creating data folders");
+				
+		for (String dir : new String[] {"db", "logs"}) {
+			File f = new File("data/" + dir);
+			if (f.exists()) continue;
+			
+			LOG.fine("Creating data folder: " + f.getPath());
 			
 			try {
-				dataDir.mkdirs();
+				f.mkdirs();
 			} catch (Exception e) {
-				LOG.log(Level.SEVERE, "Failed to create data folders", e);
-				splash.dispose();
-				ErrorInfo ei = new ErrorInfo("Error",
-					"Failed to create data folders", null, null, e, null, null);
-				org.jdesktop.swingx.JXErrorPane.showDialog(null, ei);
-				System.exit(-1);
+				fail("Failed to create data folders", e, -1);
 			}
 		}
 		
@@ -70,7 +73,7 @@ public class JSHManager {
 					UIManager.setLookAndFeel(
 						UIManager.getSystemLookAndFeelClassName());
 				} catch (Exception e) {
-					LOG.log(Level.INFO, "Couldn't set system look & feel (not fatal)", e);
+					LOG.log(Level.WARNING, "Couldn't set system look & feel (not fatal)", e);
 				}
 
 				gui = new GUI();
@@ -78,12 +81,13 @@ public class JSHManager {
 				gui.toFront();
 				
 				splash.dispose();
+				splash = null;
 			}
 		});
 	}
 	
 	public static void dispose() {
-		final Splash splash = new Splash("Shutting down...");
+		splash = new Splash("Shutting down...");
 		
 		if (null != gui)
 			gui.dispose();
@@ -91,6 +95,19 @@ public class JSHManager {
 		splash.dispose();
 		
 		System.exit(0);
+	}
+	
+	private static void fail(String message, Throwable thrown, int exitCode) {
+		LOG.log(Level.SEVERE, message, thrown);
+		
+		if (null != splash)
+			splash.dispose();
+		
+		ErrorInfo ei = new ErrorInfo("Error",
+			message, null, null, thrown, null, null);
+		org.jdesktop.swingx.JXErrorPane.showDialog(null, ei);
+		
+		System.exit(exitCode);
 	}
 	
 	public static final int MIN_JRE_MAJOR_VERSION = 1;
