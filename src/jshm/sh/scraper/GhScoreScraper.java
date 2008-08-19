@@ -146,6 +146,6 @@ public class GhScoreScraper {
 			final GhGame game, final Difficulty difficulty)
 		throws ScraperException {
 
-		throw new RuntimeException("not yet implemented");
+		throw new UnsupportedOperationException("not yet implemented");
 	}
 }

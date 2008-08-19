@@ -12,6 +12,8 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -32,13 +34,14 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXLoginDialog;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.netbeans.spi.wizard.Wizard;
-import org.netbeans.spi.wizard.WizardPage;
 
 /**
  *
  * @author Tim Mullin
  */
 public class GUI extends javax.swing.JFrame {
+	static final Logger LOG = Logger.getLogger(GUI.class.getName());
+	
 	private jshm.gh.GhGame curGame = null;
 	private jshm.Difficulty curDiff = null;
 	
@@ -290,7 +293,8 @@ private void loadMyScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 					login.setVisible(true);
 				}
 			} catch (Exception e) {
-				ErrorInfo ei = new ErrorInfo("Error", "Failed to login to ScoreHero", null, null, e, null, null);
+				LOG.log(Level.WARNING, "Failed to login to ScoreHero", e);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to login to ScoreHero", null, null, e, Level.WARNING, null);
 				JXErrorPane.showDialog(GUI.this, ei);
 				return false;
 			}
@@ -302,8 +306,9 @@ private void loadMyScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 				jshm.dataupdaters.GhScoreUpdater.update(getCurGame(), getCurDiff());
 				return true;
 			} catch (Exception e) {
+				LOG.log(Level.SEVERE, "Failed to download score data", e);
 				ErrorInfo ei = new ErrorInfo("Error", "Failed to download score data", null, null, e, null, null);
-				org.jdesktop.swingx.JXErrorPane.showDialog(GUI.this, ei);
+				JXErrorPane.showDialog(GUI.this, ei);
 			} finally {
 				statusBar1.setText("", true);
 				getContentPane().setCursor(Cursor.getDefaultCursor());
@@ -317,8 +322,9 @@ private void loadMyScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 				if (get())
 					myScoresMenuItemActionPerformed(null, getCurGame(), getCurDiff());
 			} catch (Exception e) {
+				LOG.log(Level.SEVERE, "Unknown error", e);
 				ErrorInfo ei = new ErrorInfo("Error", "Unknown error", null, null, e, null, null);
-				org.jdesktop.swingx.JXErrorPane.showDialog(GUI.this, ei);
+				JXErrorPane.showDialog(GUI.this, ei);
 			}
 		}
 	}.execute();
@@ -335,8 +341,9 @@ private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 				jshm.dataupdaters.GhSongUpdater.update(getCurGame(), getCurDiff());
 				return true;
 			} catch (Exception e) {
+				LOG.log(Level.SEVERE, "Failed to download song data ", e);
 				ErrorInfo ei = new ErrorInfo("Error", "Failed to download song data", null, null, e, null, null);
-				org.jdesktop.swingx.JXErrorPane.showDialog(GUI.this, ei);
+				JXErrorPane.showDialog(GUI.this, ei);
 			} finally {
 				statusBar1.setText("", true);
 				getContentPane().setCursor(Cursor.getDefaultCursor());
@@ -352,8 +359,9 @@ private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 					songDataMenuItemActionPerformed(null,getCurGame(), getCurDiff());
 				}
 			} catch (Exception e) {
+				LOG.log(Level.SEVERE, "Unknown error", e);
 				ErrorInfo ei = new ErrorInfo("Error", "Unknown error", null, null, e, null, null);
-				org.jdesktop.swingx.JXErrorPane.showDialog(GUI.this, ei);
+				JXErrorPane.showDialog(GUI.this, ei);
 			}
 		}	
 	}.execute();
@@ -501,8 +509,9 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 					}
 				});
 			} catch (Exception e) {
-				ErrorInfo ei = new ErrorInfo("Error", "Failed to load song data", null, null, e, null, null);
-				org.jdesktop.swingx.JXErrorPane.showDialog(GUI.this, ei);
+				LOG.log(Level.SEVERE, "Failed to load song data from database", e);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to load song data from database", null, null, e, null, null);
+				JXErrorPane.showDialog(GUI.this, ei);
 			} finally {
 				getContentPane().setCursor(Cursor.getDefaultCursor());
 				statusBar1.setText("", true);
@@ -564,7 +573,8 @@ private void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 					}
 				});
 			} catch (Exception e) {
-				ErrorInfo ei = new ErrorInfo("Error", "Failed to load score data", null, null, e, null, null);
+				LOG.log(Level.SEVERE, "Failed to load score data from database", e);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to load score data from database", null, null, e, null, null);
 				org.jdesktop.swingx.JXErrorPane.showDialog(GUI.this, ei);
 			} finally {
 				getContentPane().setCursor(Cursor.getDefaultCursor());

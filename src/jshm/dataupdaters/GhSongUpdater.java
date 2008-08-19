@@ -1,6 +1,7 @@
 package jshm.dataupdaters;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -17,6 +18,8 @@ import jshm.gh.*;
  *
  */
 public class GhSongUpdater {
+	static final Logger LOG = Logger.getLogger(GhSongUpdater.class.getName());
+	
 	public static void update(final GhGame game, final Difficulty difficulty) throws Exception {
 		List<GhSong> scrapedSongs =
 			jshm.sh.scraper.GhSongScraper.scrape(game, difficulty);
@@ -40,21 +43,22 @@ public class GhSongUpdater {
 			    
 			    if (null == result) {
 			    	// new insert
-			    	System.out.println("Inserting: " + song);
+			    	LOG.info("Inserting song: " + song);
 				    session.save(song);
 			    } else {
 			    	// update existing
 			    	if (result.update(song)) {
-				    	System.out.println("Updating: " + result);
+				    	LOG.info("Updating song: " + result);
 				    	session.update(result);
 			    	} else {
-			    		System.out.println("No changes: " + result);
+			    		LOG.finest("No changes to song: " + result);
 			    	}
 			    }
 
 			    tx.commit();
 			} catch (Exception e) {
 				if (null != tx) tx.rollback();
+				LOG.throwing("GhSongUpdater", "update", e);
 				throw e;
 			} finally {
 				if (session.isOpen())

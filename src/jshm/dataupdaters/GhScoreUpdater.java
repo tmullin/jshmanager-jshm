@@ -1,6 +1,7 @@
 package jshm.dataupdaters;
 
 import java.util.*;
+import java.util.logging.*;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -17,6 +18,8 @@ import jshm.gh.*;
  *
  */
 public class GhScoreUpdater {
+	static final Logger LOG = Logger.getLogger(GhScoreUpdater.class.getName());
+	
 	public static void update(final GhGame game, final Difficulty difficulty) throws Exception {
 		List<GhScore> scrapedScores =
 			jshm.sh.scraper.GhScoreScraper.scrapeLatest(game, difficulty);
@@ -40,15 +43,16 @@ public class GhScoreUpdater {
 			    
 			    if (null == result) {
 			    	// new insert
-			    	System.out.println("Inserting: " + score);
+			    	LOG.info("Inserting: " + score);
 				    session.save(score);
 			    } else {
-			    	System.out.println("Score already exists: " + result);
+			    	LOG.fine("Score already exists: " + result);
 			    }
 
 			    tx.commit();
 			} catch (Exception e) {
 				if (null != tx) tx.rollback();
+				LOG.throwing("GhScoreUpdater", "update", e);
 				throw e;
 			} finally {
 				if (session.isOpen())

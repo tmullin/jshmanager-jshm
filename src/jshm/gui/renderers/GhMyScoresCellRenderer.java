@@ -2,6 +2,8 @@ package jshm.gui.renderers;
 
 import java.awt.Component;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -10,6 +12,7 @@ import jshm.gh.GhScore;
 
 public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
 	private final DecimalFormat NUM_FMT = new DecimalFormat("#,###");
+	private final SimpleDateFormat DATE_FMT = new SimpleDateFormat("MM/dd/yy HH:mm");
 	
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
@@ -67,6 +70,11 @@ public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
 						setText("");
 					break;
 			}
+    	} else if (value instanceof Date) {
+    		switch (column) {
+				case 5: case 6:
+					setText(DATE_FMT.format((Date) value));
+    		}
     	}
 		
 		return this;

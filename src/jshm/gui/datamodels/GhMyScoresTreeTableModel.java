@@ -2,6 +2,7 @@ package jshm.gui.datamodels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.*;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -20,10 +21,15 @@ import jshm.gui.renderers.GhMyScoresNewScoreHighlighter;
 import jshm.gui.renderers.GhMyScoresNoCommentHighlighter;
 import jshm.gui.renderers.GhMyScoresTreeCellRenderer;
 import jshm.gui.renderers.GhTierHighlighter;
+import jshm.hibernate.HibernateUtil;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.decorator.Highlighter;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.error.ErrorInfo;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
 /**
@@ -31,6 +37,8 @@ import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
  * @author Tim Mullin
  */
 public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
+	static final Logger LOG = Logger.getLogger(GhMyScoresTreeTableModel.class.getName());
+	
 	/*
 	 * + Tier Name 1 | \- Song Name 1 | + Score 1 | \- Score 2 | \- Song Name 2
 	 * ...
@@ -167,7 +175,23 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		
 		switch (score.getStatus()) {
 			case NEW:
-				// TODO actually delete from db and fall through
+				Session sess = null;
+				Transaction tx = null;
+				
+				try {
+					sess = HibernateUtil.getCurrentSession();
+					tx = sess.beginTransaction();
+					sess.delete(score);
+					sess.getTransaction().commit();
+				} catch (Exception e) {
+					if (null != tx) tx.rollback();
+					LOG.log(Level.SEVERE, "Failed to delete score from database", e);
+					ErrorInfo ei = new ErrorInfo("Error", "Failed to delete score from database", null, null, e, null, null);
+					JXErrorPane.showDialog(null, ei);
+					return;
+				} finally {
+					if (sess.isOpen()) sess.close();
+				}
 				
 			case TEMPLATE:
 				model.tiers.get(((GhSong) score.getSong()).getTierLevel() - 1)
@@ -386,6 +410,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		if (!(node instanceof GhScore)) return;
 		
 		GhScore score = (GhScore) node;
+		String s = value.toString();
 		
 		switch (score.getStatus()) {
 			case NEW:
@@ -393,10 +418,12 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 				score.setStatus(Score.Status.NEW);
 				
 				switch (column) {
-					case 0: score.setComment(value.toString()); break;
+					case 0: score.setComment(s); break;
 					case 1:
 						try {
-							score.setScore(Integer.parseInt(value.toString()));
+							score.setScore(
+								s.isEmpty() ? 0 :
+								Integer.parseInt(s));
 						} catch (Exception e) {}
 						break;
 						
@@ -413,19 +440,38 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 					case 3:
 						try {
 							score.getPart(1).setHitPercent(
-								Integer.parseInt(value.toString()) / 100.0f);
+								s.isEmpty() ? 0f :
+								Integer.parseInt(s) / 100.0f);
 						} catch (Exception e) {}
 						break;
 						
 					case 4:
 						try {
 							score.setStreak(
-								Integer.parseInt(value.toString()));
+								s.isEmpty() ? 0 :
+								Integer.parseInt(s));
 						} catch (Exception e) {}
 						break;
 						
 					default:
 						throw new IllegalStateException("trying to set valut at a non-editable column: " + column);
+				}
+				
+				Session sess = null;
+				Transaction tx = null;
+				
+				try {
+					sess = HibernateUtil.getCurrentSession();
+					tx = sess.beginTransaction();
+					sess.saveOrUpdate(score);
+					sess.getTransaction().commit();
+				} catch (Exception e) {
+					if (null != tx) tx.rollback();
+					LOG.log(Level.SEVERE, "Failed to save to database", e);
+					ErrorInfo ei = new ErrorInfo("Error", "Failed to save to database", null, null, e, null, null);
+					JXErrorPane.showDialog(null, ei);
+				} finally {
+					if (sess.isOpen()) sess.close();
 				}
 				
 				break;
