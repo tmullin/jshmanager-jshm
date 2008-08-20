@@ -22,6 +22,39 @@ import jshm.hibernate.HibernateUtil;
  *
  */
 public class JSHManager {
+	public static final String APP_NAME = "JSHManager";
+	public static final int APP_MAJOR_VERSION = 0;
+	public static final int APP_MINOR_VERSION = 0;
+	public static final int APP_POINT_VERSION = 1;
+	public static final boolean APP_IS_BETA = true;
+	
+	public static final String APP_VERSION_STRING =
+		String.format("%s.%s.%s%s", APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_POINT_VERSION, APP_IS_BETA ? " beta" : "");
+	
+	public static final java.util.Date APP_DATE = initAppDate("$Date$");
+	public static final int APP_REVISION = initAppRevision("$Revision$");
+	
+	private static java.util.Date initAppDate(final String _APP_DATE) {
+		try {
+			// $Date: 2008-04-04 03:11:28 -0400 (Fri, 04 Apr 2008) $
+			return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z (EE, dd MMM yyyy)")
+				.parse(_APP_DATE);
+		} catch (java.text.ParseException e) {}
+		
+		return new java.util.Date();
+	}
+		
+	private static int initAppRevision(final String _APP_REVISION) {
+		try {
+			// $Revision: 123 $
+			return Integer.parseInt(_APP_REVISION.replaceAll("[^\\d]+", ""));
+		} catch (NumberFormatException e) {}
+		
+		return 0;
+	}
+	
+	
+	
 	static final Logger LOG = Logger.getLogger(JSHManager.class.getName());
 	static GUI gui = null;
 	static Splash splash = null;

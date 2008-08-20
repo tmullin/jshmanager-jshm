@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
@@ -96,8 +97,16 @@ public class GUI extends javax.swing.JFrame {
 				return null;
 			}
         });
+        
+        setTitle("");
     }
 
+    public void setTitle(String title) {
+    	super.setTitle(
+    		(title.isEmpty() ? "" : title + " - ") +
+    		JSHManager.APP_NAME + " " + JSHManager.APP_VERSION_STRING);
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -536,6 +545,9 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 			loadSongDataMenuItem.setEnabled(true);
 			uploadScoresMenuItem.setEnabled(false);
 			
+			GUI.this.setIconImage(game.title.getIcon().getImage());
+			GUI.this.setTitle(game + " on " + difficulty + " - Song Data");
+			
 			if (songs.size() == 0 && null != evt) { // if evt == null we're recursing
 				if (JOptionPane.YES_OPTION ==
 					JOptionPane.showConfirmDialog(
@@ -594,6 +606,9 @@ private void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 		@Override
 		public void done() {
 			if (null == scores) return;
+			
+			GUI.this.setIconImage(game.title.getIcon().getImage());
+			GUI.this.setTitle(game + " on " + difficulty + " - My Scores");
 			
 			statusBar1.setText("Viewing scores for " + game + " on " + difficulty);
 			loadMyScoresMenuItem.setEnabled(true);
