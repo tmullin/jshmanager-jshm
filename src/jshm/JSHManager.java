@@ -8,6 +8,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 import jshm.gui.GUI;
@@ -86,11 +88,40 @@ public class JSHManager {
 		});
 	}
 	
+	/**
+	 * This should be called when we want to exit the program.
+	 * It will handling cleaning up stuff.
+	 */
 	public static void dispose() {
 		splash = new Splash("Shutting down...");
 		
 		if (null != gui)
 			gui.dispose();
+		
+		splash.setStatus("Saving database...");
+		
+		Session sess = null;
+		Transaction tx = null;
+		
+		try {
+			sess = HibernateUtil.getCurrentSession();
+			tx = sess.beginTransaction();
+			sess.createSQLQuery("SHUTDOWN COMPACT");
+			tx.commit();
+			
+//			java.sql.Connection con = sess.connection();
+//			java.sql.Statement st = con.createStatement();
+//			st.execute("SHUTDOWN COMPACT");
+//			con.commit();
+//			st.close();
+//			con.close();
+//			sess.disconnect();
+
+		} catch (Exception e) {
+			LOG.log(Level.WARNING, "Error shutting down database", e);
+		} finally {
+//			if (!sess.isOpen()) sess.close();
+		}
 		
 		splash.dispose();
 		

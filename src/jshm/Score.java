@@ -4,7 +4,11 @@ import java.text.DateFormat;
 import java.util.*;
 import javax.persistence.*;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.*;
 
@@ -116,7 +120,7 @@ public abstract class Score {
 		}
 	}
 
-	@ManyToOne
+	@ManyToOne(optional=true)
 	public Song getSong() {
 		return song;
 	}
@@ -147,7 +151,9 @@ public abstract class Score {
 		this.score = score;
 	}
 
-	@OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name="score_id", nullable=false)
 	@OrderBy("instrument")
 	public Set<Part> getParts() {

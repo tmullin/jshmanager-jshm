@@ -126,8 +126,11 @@ public class GUI extends javax.swing.JFrame {
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
             }
@@ -414,6 +417,10 @@ private void uploadScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 	Wizard wiz = ScoreUploadWizard.createWizard(newModel);
 	wiz.show();
 }//GEN-LAST:event_uploadScoresMenuItemActionPerformed
+
+private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+	jshm.JSHManager.dispose();
+}//GEN-LAST:event_formWindowClosing
 
 /**
  * Load the menu with all avaialable GH games.

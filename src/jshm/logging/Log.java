@@ -9,6 +9,7 @@ public class Log {
 	
 	public static void reloadConfig() throws Exception {
 		Handler consoleHandler = new ConsoleHandler();
+		consoleHandler.setLevel(Level.ALL);
 		consoleHandler.setFormatter(new OneLineFormatter());
 		
 		Logger cur = Logger.getLogger("");
@@ -20,6 +21,7 @@ public class Log {
 		
 		Formatter fileFormatter = new FileFormatter();
 		Handler fileHandler = new FileHandler("data/logs/JSHManager.txt");
+		fileHandler.setLevel(Level.ALL);
 		fileHandler.setFormatter(fileFormatter);
 		
 		cur = Logger.getLogger("jshm");
@@ -27,6 +29,7 @@ public class Log {
 		cur.setLevel(DEBUG ? Level.ALL : Level.INFO);
 		
 		Handler hibernateHandler = new FileHandler("data/logs/Hibernate.txt");
+		hibernateHandler.setLevel(Level.ALL);
 		hibernateHandler.setFormatter(fileFormatter);
 		
 		cur = Logger.getLogger("org.hibernate");

@@ -3,12 +3,18 @@ package jshm.gui.wizards.scoreupload;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //import javax.swing.JOptionPane;
 
 import jshm.gh.GhScore;
+import jshm.gui.ShLoginDialog;
 import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.JXLoginDialog;
+import org.jdesktop.swingx.error.ErrorInfo;
 import org.netbeans.spi.wizard.ResultProgressHandle;
 import org.netbeans.spi.wizard.Summary;
 import org.netbeans.spi.wizard.Wizard;
@@ -19,6 +25,8 @@ import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
 
 @SuppressWarnings("unchecked")
 public class ScoreUploadWizard {
+	static final Logger LOG = Logger.getLogger(ScoreUploadWizard.class.getName());
+	
 	public static Wizard createWizard(GhMyScoresTreeTableModel model) {
 		final ScoreUploadWizard me = new ScoreUploadWizard();
 		
@@ -58,6 +66,12 @@ public class ScoreUploadWizard {
 		@Override
 		public void start(Map settings, ResultProgressHandle progress) {
 			try {
+				if (!jshm.sh.Client.hasAuthCookies()) {
+					JXLoginDialog login = new ShLoginDialog(null);					
+					login.setLocationRelativeTo(null);
+					login.setVisible(true);
+				}
+				
 				GhMyScoresTreeTableModel model =
 					(GhMyScoresTreeTableModel) settings.get("treeTableData");
 				
@@ -70,7 +84,9 @@ public class ScoreUploadWizard {
 					progress.setProgress(
 						String.format("Uploading score %s of %s", curIndex + 1, scoreCount),
 						curIndex, scoreCount);
-					Thread.sleep(1500); // TODO actually upload
+					
+					jshm.sh.GhApi.submitGhScore(s);
+					
 					resultStrings.add("Uploaded: " + s.getSong().getTitle() + " - " + s.getScore());
 				}
 				
@@ -79,7 +95,11 @@ public class ScoreUploadWizard {
 //						"Uploaded " + scoreCount + " score(s) successfuly.", null));
 						resultStrings.toArray(new String[0]), null));
 			} catch (Exception e) {
-				progress.failed(e.getMessage(), false);
+				LOG.log(Level.WARNING, "Failed to upload new score", e);
+				progress.failed("Failed to upload score: " + e.getMessage(), false);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to upload new score", null, null, e, null, null);
+				JXErrorPane.showDialog(null, ei);
+				return;
 			}
 		}
 	};

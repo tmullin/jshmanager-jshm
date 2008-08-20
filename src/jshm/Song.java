@@ -3,8 +3,6 @@ package jshm;
 import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.*;
 
@@ -15,7 +13,6 @@ import org.hibernate.validator.*;
  *
  */
 @Entity
-@OnDelete(action=OnDeleteAction.NO_ACTION)
 @Inheritance(strategy=InheritanceType.JOINED)
 public abstract class Song {
 	/**

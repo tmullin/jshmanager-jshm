@@ -30,6 +30,7 @@ public class GhGameTitle extends jshm.GameTitle {
 	private static final int
 		MIN_STARS			 = 3,
 		MAX_STARS			 = 5,
+		MIN_CALCULABLE_STARS = 0,
 		MAX_CALCULABLE_STARS = 9;
 	
 	@Override
@@ -45,6 +46,11 @@ public class GhGameTitle extends jshm.GameTitle {
 	@Override
 	public boolean supportsCalculatedRating() {
 		return true;
+	}
+	
+	@Override
+	public float getMinCalculatedRating() {
+		return MIN_CALCULABLE_STARS;
 	}
 	
 	@Override

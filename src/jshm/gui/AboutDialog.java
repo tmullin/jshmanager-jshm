@@ -91,7 +91,7 @@ private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 }//GEN-LAST:event_closeButtonActionPerformed
 
 private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-	System.out.println("activated");
+//	System.out.println("activated");
 	this.jLabel1.setIcon(Math.random() >= 0.5 ? STITCH1 : STITCH0);
 }//GEN-LAST:event_formWindowActivated
 

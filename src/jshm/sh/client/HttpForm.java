@@ -1,14 +1,19 @@
 package jshm.sh.client;
 
+import java.util.logging.Logger;
+
 import jshm.sh.Client;
 
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.*;
 
 public class HttpForm {
+	static final Logger LOG = Logger.getLogger(HttpForm.class.getName());
+	
 	public final String url;
 	public final NameValuePair[] data;
 	public final HttpMethod method;
+	public final String methodName;
 	
 	public HttpForm(final Object url, final String ... data) {
 		this("POST", url, data);
@@ -36,6 +41,8 @@ public class HttpForm {
 			this.data[i / 2] = new NameValuePair(data[i], data[i + 1]);
 		}
 		
+		this.methodName = method;
+		
 		if ("POST".equalsIgnoreCase(method.toString())) {
 			PostMethod postMethod = new PostMethod(this.url);
 			postMethod.setRequestBody(this.data);
@@ -50,6 +57,12 @@ public class HttpForm {
 	}
 	
 	public final void submit() throws Exception {
+		LOG.fine("Submitting form via " + methodName + " to " + url);
+		
+		for (NameValuePair nvp : data) {
+			LOG.finer("  " + nvp.getName() + "=" + nvp.getValue());
+		}
+		
 		HttpClient client = Client.getHttpClient();
 		int response = client.executeMethod(this.method);
 		this.afterSubmit(response, client, this.method);
@@ -57,12 +70,12 @@ public class HttpForm {
 	
 	/**
 	 * Will be called once the form is submitted. Can be overridden to perform
-	 * some action.
+	 * some action. If overridden, method.releaseConnection() should be called.
 	 * @param responseCode
 	 * @param client
 	 * @param method
 	 */
 	public void afterSubmit(final int response, final HttpClient client, final HttpMethod method) throws Exception {
-		
+		method.releaseConnection();
 	}
 }

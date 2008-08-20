@@ -32,7 +32,13 @@ public class GhScoreUpdater {
 				session = getCurrentSession();
 			    tx = session.beginTransaction();
 			    
-			    Example ex = Example.create(score);
+			    Example ex = Example.create(score)
+			    	.excludeProperty("comment")
+			    	.excludeProperty("calculatedRating")
+			    	.excludeProperty("rating")
+			    	.excludeProperty("creationDate")
+			    	.excludeProperty("submissionDate");
+			    
 			    GhScore result =
 			    	(GhScore)
 			    	session.createCriteria(GhScore.class).add(ex)
@@ -43,7 +49,7 @@ public class GhScoreUpdater {
 			    
 			    if (null == result) {
 			    	// new insert
-			    	LOG.info("Inserting: " + score);
+			    	LOG.info("Inserting score: " + score);
 				    session.save(score);
 			    } else {
 			    	LOG.fine("Score already exists: " + result);
