@@ -8,6 +8,7 @@ package jshm.gui;
 
 
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
@@ -23,6 +24,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
+import jshm.Config;
 import jshm.JSHManager;
 import jshm.Score;
 import jshm.gh.GhScore;
@@ -52,6 +54,14 @@ public class GUI extends javax.swing.JFrame {
     public GUI() {
         initComponents();
 
+        setTitle("");
+        setSize(Config.getInt("window.width"), Config.getInt("window.height"));
+        setLocation(Config.getInt("window.x"), Config.getInt("window.y"));
+        
+        if (Config.getBool("window.maximized")) {
+			setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        }
+        
         hh = new HoverHelp(statusBar1);
         hh.add(addNewScoreMenuItem,
         	"Insert a new score for the selected song");
@@ -97,14 +107,34 @@ public class GUI extends javax.swing.JFrame {
 				return null;
 			}
         });
-        
-        setTitle("");
     }
 
+    @Override
     public void setTitle(String title) {
     	super.setTitle(
     		(title.isEmpty() ? "" : title + " - ") +
     		JSHManager.APP_NAME + " " + JSHManager.APP_VERSION_STRING);
+    }
+    
+    @Override
+    public void dispose() {
+    	Dimension size = getSize();
+    	Point loc = getLocation();
+    	
+    	// no need to save this stuff if the frame is maximized
+    	if (JFrame.MAXIMIZED_BOTH !=
+    		(getExtendedState() & JFrame.MAXIMIZED_BOTH)) {
+    		Config.set("window.maximized", false);
+    		
+    		Config.set("window.width", size.width);
+    		Config.set("window.height", size.height);
+    		Config.set("window.x", loc.x);
+    		Config.set("window.y", loc.y);
+    	} else {
+    		Config.set("window.maximized", true);
+    	}	
+    	
+    	super.dispose();
     }
     
     /** This method is called from within the constructor to
@@ -427,7 +457,7 @@ private void uploadScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 	wiz.show();
 }//GEN-LAST:event_uploadScoresMenuItemActionPerformed
 
-private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing	
 	jshm.JSHManager.dispose();
 }//GEN-LAST:event_formWindowClosing
 

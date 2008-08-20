@@ -96,6 +96,9 @@ public class JSHManager {
 			}
 		}
 		
+		splash.setStatus("Loading configuration...");
+		Config.init();
+		
 		splash.setStatus("Initializing database...");
 		HibernateUtil.getCurrentSession();
 		
@@ -141,20 +144,12 @@ public class JSHManager {
 			tx = sess.beginTransaction();
 			sess.createSQLQuery("SHUTDOWN COMPACT");
 			tx.commit();
-			
-//			java.sql.Connection con = sess.connection();
-//			java.sql.Statement st = con.createStatement();
-//			st.execute("SHUTDOWN COMPACT");
-//			con.commit();
-//			st.close();
-//			con.close();
-//			sess.disconnect();
-
 		} catch (Exception e) {
 			LOG.log(Level.WARNING, "Error shutting down database", e);
-		} finally {
-//			if (!sess.isOpen()) sess.close();
 		}
+		
+		splash.setStatus("Saving configuration...");
+		Config.write();
 		
 		splash.dispose();
 		
