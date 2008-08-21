@@ -22,7 +22,7 @@
 			<fileset dir="${basedir}/Licenses" includes="**"/>
 		</copy>
 		
-		<zip destfile="${dist_dir}/${jshm.name}_v${jshm.major_version}.${jshm.minor_version}.${jshm.point_version}.${jshm.revision}.zip">
+		<zip destfile="${dist_dir}/${jshm.name}-${jshm.version}.zip">
 			<fileset 
 				dir="${dist_dir}"
 				includes="**"/>
@@ -36,11 +36,6 @@
 			classname="jshm.internal.tasks.JshmVersion" 
 			classpath="${bin_dir}"/>
 		<jshminfo/>
-		
-		<!-- extract all lib jars so we can repack them in a single jar >
-		<unzip dest="${bin_dir}">
-			<fileset refid="libs"/>
-		</unzip-->
 		
 		<jar 
 			destfile="${dist_dir}/${jshm.name}.jar" 

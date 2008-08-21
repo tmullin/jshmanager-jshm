@@ -8,7 +8,7 @@ Requirements:
 
 Installation:
 -------------
-Simply unzip JSHManager_vW.X.Y.Z.zip to a folder of your choice.
+Simply unzip JSHManager-W.X.Y.Z.zip to a folder of your choice.
 It is recommended to create a folder specifically for JSHManager
 (perhaps called "JSHManager") because it will create a sub-folder
 called "data" where settings and the database files will be stored.
