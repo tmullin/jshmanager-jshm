@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="all" name="JSHManager" basedir=".">
+	<property name="dist_dir" value="${basedir}/dist"/>
+	<property name="bin_dir" value="${basedir}/bin"/>
+	<property name="src_dir" value="${basedir}/src"/>
+	<property name="internal_src_dir" value="${basedir}/internal"/>
+	<property name="test_src_dir" value="${basedir}/test"/>
+	<property name="lib_dir" value="${basedir}/lib"/>
+	
+	<path id="classpath">
+		<fileset id="libs" dir="${lib_dir}" includes="**/*.jar"/>
+	</path>
+	
+	<target name="all" depends="clean,dist"/>
+	
+	<target name="dist" depends="jar">		
+		<copy todir="${dist_dir}">
+			<fileset 
+				dir="${basedir}"
+				includes="License.txt,ChangeLog.txt"/>
+		</copy>
+		
+		<zip destfile="${dist_dir}/${jshm.name}_v${jshm.major_version}.${jshm.minor_version}.${jshm.point_version}.${jshm.revision}.zip">
+			<fileset 
+				dir="${dist_dir}"
+				includes="${jshm.name}.jar,License.txt,ChangeLog.txt"/>
+		</zip>
+	</target>
+	
+	<target name="jar" depends="compile">
+		<mkdir dir="${dist_dir}"/>
+		<taskdef 
+			name="jshmversion" 
+			classname="jshm.internal.tasks.JshmVersion" 
+			classpath="${bin_dir}"/>
+		<jshmversion/>
+		
+		<!-- extract all lib jars so we can repack them in a single jar -->
+		<unzip dest="${bin_dir}">
+			<fileset refid="libs"/>
+		</unzip>
+		
+		<jar destfile="${dist_dir}/${jshm.name}.jar" compress="true">
+			<fileset 
+				dir="${bin_dir}" 
+				includes="antlr/**,javassist/**,javax/**,jshm/**,net/**,org/**" 
+				excludes="jshm/concepts/**,jshm/internal/**"/>
+			<manifest>
+				<attribute name="Main-Class" value="jshm.JSHManager"/>
+				<attribute name="SplashScreen-Image" value="jshm/resources/images/splash.png"/>
+
+				<section name="jshm">
+					<attribute name="Specification-Title" value="${jshm.name}"/>
+					<attribute name="Specification-Version" value="${jshm.version}"/>
+				</section>
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="compile" depends="resources">
+		<javac destdir="${bin_dir}">
+			<src path="${src_dir}"/>
+			<src path="${internal_src_dir}"/>
+			<include name="**"/>
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+	
+	<target name="resources">
+		<mkdir dir="${bin_dir}"/>
+		<copy todir="${bin_dir}/jshm/resources">
+			<fileset
+				dir="${src_dir}/jshm/resources" 
+				excludes="**/*_64.png,**/*.psd,**/psd/*"/>
+		</copy>
+		<copy todir="${bin_dir}/jshm/properties">
+			<fileset
+				dir="${src_dir}/jshm/properties"/>
+		</copy>
+		<copy todir="${bin_dir}/jshm/hibernate">
+			<fileset
+				dir="${src_dir}/jshm/hibernate"
+				includes="hibernate.xml.cfg"/>
+		</copy>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${dist_dir}"/>
+		<delete dir="${bin_dir}"/>
+	</target>
+</project>

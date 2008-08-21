@@ -49,7 +49,7 @@ public class JSHManager {
 	public static final boolean APP_IS_BETA = true;
 	
 	public static final String APP_VERSION_STRING =
-		String.format("%s.%s.%s%s", APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_POINT_VERSION, APP_IS_BETA ? " beta" : "");
+		String.format("%s.%s.%s%s", APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_POINT_VERSION, APP_IS_BETA ? "beta" : "");
 	
 	public static final java.util.Date APP_DATE = initAppDate("$Date$");
 	public static final int APP_REVISION = initAppRevision("$Revision$");
