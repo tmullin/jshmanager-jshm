@@ -16,36 +16,43 @@
 	
 	<target name="dist" depends="jar">		
 		<copy todir="${dist_dir}">
-			<fileset 
-				dir="${basedir}"
-				includes="License.txt,ChangeLog.txt"/>
+			<fileset dir="${basedir}" includes="*.txt"/>
+		</copy>
+		<copy todir="${dist_dir}/Licenses">
+			<fileset dir="${basedir}/Licenses" includes="**"/>
 		</copy>
 		
 		<zip destfile="${dist_dir}/${jshm.name}_v${jshm.major_version}.${jshm.minor_version}.${jshm.point_version}.${jshm.revision}.zip">
 			<fileset 
 				dir="${dist_dir}"
-				includes="${jshm.name}.jar,License.txt,ChangeLog.txt"/>
+				includes="**"/>
 		</zip>
 	</target>
 	
 	<target name="jar" depends="compile">
 		<mkdir dir="${dist_dir}"/>
 		<taskdef 
-			name="jshmversion" 
+			name="jshminfo" 
 			classname="jshm.internal.tasks.JshmVersion" 
 			classpath="${bin_dir}"/>
-		<jshmversion/>
+		<jshminfo/>
 		
-		<!-- extract all lib jars so we can repack them in a single jar -->
+		<!-- extract all lib jars so we can repack them in a single jar >
 		<unzip dest="${bin_dir}">
 			<fileset refid="libs"/>
-		</unzip>
+		</unzip-->
 		
-		<jar destfile="${dist_dir}/${jshm.name}.jar" compress="true">
+		<jar 
+			destfile="${dist_dir}/${jshm.name}.jar" 
+			compress="true">
+			
+			<zipgroupfileset dir="${lib_dir}" includes="**/*.jar"/>
+			
 			<fileset 
 				dir="${bin_dir}" 
-				includes="antlr/**,javassist/**,javax/**,jshm/**,net/**,org/**" 
+				includes="jshm/**" 
 				excludes="jshm/concepts/**,jshm/internal/**"/>
+			
 			<manifest>
 				<attribute name="Main-Class" value="jshm.JSHManager"/>
 				<attribute name="SplashScreen-Image" value="jshm/resources/images/splash.png"/>
@@ -56,6 +63,14 @@
 				</section>
 			</manifest>
 		</jar>
+		
+		<!-- get rid of the extra files from zipgroupfileset's shortcomings... -->
+		<zip destfile="${dist_dir}/tmp.jar">
+			<zipfileset
+				src="${dist_dir}/${jshm.name}.jar"
+				includes="antlr/**,javassist/**,javax/**,jshm/**,net/**,org/**,META-INF/MANIFEST.MF"/>
+		</zip>
+		<move file="${dist_dir}/tmp.jar" tofile="${dist_dir}/${jshm.name}.jar"/>
 	</target>
 	
 	<target name="compile" depends="resources">

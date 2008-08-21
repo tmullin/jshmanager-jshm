@@ -1,0 +1,9 @@
+JSHManager includes several 3rd-party libraries.
+Each's respective license can be found in the Licenses folder.
+
+Apache Commons - Apache License v2.0
+Hibernate - Lesser GNU Public License
+HTMLParser - Lesser GNU Public License
+SwingLabs - Lesser GNU Public License
+HSQLDB - HSQLDB License
+DOM4J - DOM4J License
