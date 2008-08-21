@@ -37,7 +37,7 @@ public class JSHManager {
 	private static java.util.Date initAppDate(final String _APP_DATE) {
 		try {
 			// $Date$
-			return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z (EE, dd MMM yyyy)")
+			return new java.text.SimpleDateFormat("$'Date': yyyy-MM-dd HH:mm:ss Z (EE, dd MMM yyyy) $")
 				.parse(_APP_DATE);
 		} catch (java.text.ParseException e) {}
 		

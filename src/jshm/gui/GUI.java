@@ -321,7 +321,7 @@ private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_formComponentResized
 
 private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-	this.setLocationRelativeTo(null);
+//	this.setLocationRelativeTo(null);
 }//GEN-LAST:event_formWindowOpened
 
 private void loadMyScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadMyScoresMenuItemActionPerformed
