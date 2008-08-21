@@ -87,12 +87,6 @@ public class JSHManager {
 		
 		splash = new Splash();
 		
-		try {
-			jshm.logging.Log.reloadConfig();
-		} catch (Exception e) {
-			fail("Unable to load logger configuration", e, -3);
-		}
-		
 		// Ensure any uncaught exceptions are logged so that bugs
 		// can be found more easily.
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -111,16 +105,29 @@ public class JSHManager {
 			
 			try {
 				f.mkdirs();
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				fail("Failed to create data folders", e, -1);
 			}
+		}
+		
+		// have to do this after creating the log folder because
+		// the logger won't make the dirs for us
+		try {
+			jshm.logging.Log.reloadConfig();
+		} catch (Throwable e) {
+			fail("Unable to load logger configuration", e, -3);
 		}
 		
 		splash.setStatus("Loading configuration...");
 		Config.init();
 		
 		splash.setStatus("Initializing database...");
-		HibernateUtil.getCurrentSession();
+		
+		try {
+			HibernateUtil.getCurrentSession();
+		} catch (Throwable e) {
+			fail("Unable to initialize database", e, -4);
+		}
 		
 		splash.setStatus("Loading user interface...");
 		
@@ -164,7 +171,7 @@ public class JSHManager {
 			tx = sess.beginTransaction();
 			sess.createSQLQuery("SHUTDOWN COMPACT");
 			tx.commit();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			LOG.log(Level.WARNING, "Error shutting down database", e);
 		}
 		
@@ -219,7 +226,7 @@ public class JSHManager {
 					"Error", JOptionPane.ERROR_MESSAGE);
 				System.exit(-2);
 		    }
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			JOptionPane.showMessageDialog(null,
 				"Unable to determine JRE version.\nThis program requires at least Java 1.6.0 to run.",
 				"Error", JOptionPane.ERROR_MESSAGE);

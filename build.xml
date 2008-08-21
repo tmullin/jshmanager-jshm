@@ -81,7 +81,7 @@
 		<copy todir="${bin_dir}/jshm/hibernate">
 			<fileset
 				dir="${src_dir}/jshm/hibernate"
-				includes="hibernate.xml.cfg"/>
+				includes="hibernate.cfg.xml"/>
 		</copy>
 	</target>
 	
