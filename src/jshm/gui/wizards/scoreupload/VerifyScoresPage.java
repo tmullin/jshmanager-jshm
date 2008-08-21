@@ -35,6 +35,7 @@ public class VerifyScoresPage extends WizardPage {
 	
 	public VerifyScoresPage(GhMyScoresTreeTableModel model) {
 		super("verifyScores", "Verify scores", false);
+		
 		tt = new JXTreeTable(model);
 		model.setParent(tt);
 		tt.setEditable(false);

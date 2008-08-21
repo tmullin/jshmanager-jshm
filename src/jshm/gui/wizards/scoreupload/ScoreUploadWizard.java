@@ -52,8 +52,7 @@ public class ScoreUploadWizard {
 		
 		return WizardPage.createWizard("Upload scores to ScoreHero",
 			new WizardPage[] {
-				new VerifyScoresPage(model),
-				new UploadScoresPage()
+				new VerifyScoresPage(model)
 			},
 			me.resultProducer);
 	}
@@ -114,7 +113,7 @@ public class ScoreUploadWizard {
 					Summary.create(
 //						"Uploaded " + scoreCount + " score(s) successfuly.", null));
 						resultStrings.toArray(new String[0]), null));
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				LOG.log(Level.WARNING, "Failed to upload new score", e);
 				progress.failed("Failed to upload score: " + e.getMessage(), false);
 				ErrorInfo ei = new ErrorInfo("Error", "Failed to upload new score", null, null, e, null, null);

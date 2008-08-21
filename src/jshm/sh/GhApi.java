@@ -56,12 +56,12 @@ public class GhApi {
 			
 			@Override
 			public void afterSubmit(final int response, final HttpClient client, final HttpMethod method) throws Exception {
-				// TODO figure out what scorehero does upon receiving invalid data
+				// TODO more vigorous error handing?
 				
 				String body = method.getResponseBodyAsString();
 				
-				LOG.finest("submitGhScore() result body:");
-				LOG.finest("\n" + body);
+//				LOG.finest("submitGhScore() result body:");
+//				LOG.finest("\n" + body);
 				method.releaseConnection();
 				
 				Matcher m = ERROR_PATTERN.matcher(body);
