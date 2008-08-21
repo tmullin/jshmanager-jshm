@@ -60,7 +60,10 @@ public class HttpForm {
 		LOG.fine("Submitting form via " + methodName + " to " + url);
 		
 		for (NameValuePair nvp : data) {
-			LOG.finer("  " + nvp.getName() + "=" + nvp.getValue());
+			LOG.finer("  " + nvp.getName() + "=" +
+				(nvp.getName().toLowerCase().contains("pass")
+				 ? "*****"
+				 : nvp.getValue()));
 		}
 		
 		HttpClient client = Client.getHttpClient();

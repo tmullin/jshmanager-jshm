@@ -19,7 +19,7 @@ import jshm.hibernate.HibernateUtil;
 /**
  * A Java-based program to manage one's ScoreHero.com account.
  * @author Tim Mullin
- *
+ * 
  */
 public class JSHManager {
 	public static final String APP_NAME = "JSHManager";
@@ -36,7 +36,7 @@ public class JSHManager {
 	
 	private static java.util.Date initAppDate(final String _APP_DATE) {
 		try {
-			// $Date: 2008-04-04 03:11:28 -0400 (Fri, 04 Apr 2008) $
+			// $Date$
 			return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z (EE, dd MMM yyyy)")
 				.parse(_APP_DATE);
 		} catch (java.text.ParseException e) {}
@@ -46,7 +46,7 @@ public class JSHManager {
 		
 	private static int initAppRevision(final String _APP_REVISION) {
 		try {
-			// $Revision: 123 $
+			// $Revision$
 			return Integer.parseInt(_APP_REVISION.replaceAll("[^\\d]+", ""));
 		} catch (NumberFormatException e) {}
 		

@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
+import jshm.util.Crypto;
+
 import org.jdesktop.swingx.JXLoginDialog;
 import org.jdesktop.swingx.JXLoginPane.SaveMode;
 import org.jdesktop.swingx.auth.LoginService;
@@ -87,7 +89,7 @@ public class ShLoginDialog extends JXLoginDialog {
 			
 			for (Object key : props.keySet()) {
 //				System.out.println("returning pass: " + key);
-				return props.getProperty(key.toString());
+				return Crypto.decrypt(props.getProperty(key.toString()));
 			}
 			
 //			System.out.println("returning blank pass");
@@ -105,14 +107,16 @@ public class ShLoginDialog extends JXLoginDialog {
 			}
 			
 			if (!props.containsKey(username)) return null;
-			return props.get(username).toString().toCharArray();
+			return Crypto.decrypt(
+				props.get(username).toString()).toCharArray();
 		}
 
 		@Override
 		public boolean set(String username, String server,
 				char[] password) {
 			props.clear();
-			props.setProperty(username, String.valueOf(password));
+			props.setProperty(username,
+				Crypto.encrypt(String.valueOf(password)));
 			
 			try {
 				props.store(new FileOutputStream("data/passwords.properties", false), "");
