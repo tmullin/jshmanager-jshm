@@ -105,4 +105,17 @@ public abstract class Song {
 			throw new IllegalArgumentException("title cannot be empty");
 		this.title = title;
 	}
+	
+	
+	// override object methods
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Song)) return false;
+		if (this == o) return true;
+		Song s = (Song) o;
+		return this.scoreHeroId == s.scoreHeroId &&
+			this.title.equals(s.title) &&
+			this.game.equals(s.game);
+	}
 }

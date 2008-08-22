@@ -22,6 +22,7 @@ package jshm.scraper;
 
 import org.htmlparser.Node;
 import org.htmlparser.util.*;
+import org.htmlparser.tags.TableHeader;
 import org.htmlparser.tags.TableRow;
 
 import jshm.exceptions.ScraperException;
@@ -48,7 +49,8 @@ public class TieredTabularDataExtractor {
         	TableRow tr = (TableRow) node;
         	String cssClass = tr.getAttribute("class");
         	
-        	if (dataTable.headerCssClass.equals(cssClass)) {
+        	if (dataTable.headerCssClass.equals(cssClass) ||
+        		(tr.getChildCount() > 0 && tr.getChild(0) instanceof TableHeader)) {
         		handler.handleHeaderRow(tr);
         		continue;
         	}

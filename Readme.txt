@@ -80,3 +80,8 @@ be saved to data/passwords.properties. While the password is encrypted, it
 should not be considered highly secure. Since this is an open-source program,
 anyone can obtain the source code to see how it is encrypted. It is encrypted
 so that it at least is not visible as plain-text.
+
+JSHManager logs various information in data/logs. JSHManager.txt contains
+logging data for the main program. Hibernate.txt contains logging data
+related to the database. When reporting problems, you may be asked to
+provide these.

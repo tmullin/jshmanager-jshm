@@ -42,7 +42,8 @@ public class GhScoreUpdater {
 	
 	public static void update(final GhGame game, final Difficulty difficulty) throws Exception {
 		List<GhScore> scrapedScores =
-			jshm.sh.scraper.GhScoreScraper.scrapeLatest(game, difficulty);
+//			jshm.sh.scraper.GhScoreScraper.scrapeLatest(game, difficulty);
+			jshm.sh.scraper.GhScoreScraper.scrapeAll(game, difficulty);
 		
 		for (GhScore score : scrapedScores) {
 			Session session = null;
@@ -57,7 +58,7 @@ public class GhScoreUpdater {
 			    	.excludeProperty("calculatedRating")
 			    	.excludeProperty("rating")
 			    	.excludeProperty("creationDate")
-			    	.excludeProperty("submissionDate");
+			    	/*.excludeProperty("submissionDate")*/;
 			    
 			    GhScore result =
 			    	(GhScore)

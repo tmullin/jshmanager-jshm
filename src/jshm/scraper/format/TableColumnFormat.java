@@ -28,6 +28,7 @@ import org.htmlparser.util.*;
 import org.htmlparser.nodes.*;
 import org.htmlparser.filters.NodeClassFilter;
 import org.htmlparser.tags.ImageTag;
+import org.htmlparser.tags.InputTag;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.tags.Span;
 import org.htmlparser.tags.TableColumn;
@@ -57,6 +58,9 @@ public class TableColumnFormat {
 		
 		addFormat("span", Span.class,
 			TagFormat.TITLE);
+		
+		addFormat("input", InputTag.class,
+			TagFormat.VALUE);
 		
 		jshm.sh.scraper.Formats.init();
 	}

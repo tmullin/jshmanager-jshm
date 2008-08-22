@@ -37,7 +37,8 @@ public class URLs {
 			SONG_STATS  = BASE + "/songstats.php?stat=%s&game=%s&diff=%s",
 			MANAGE_SCORES = BASE + "/manage_scores.php?game=%s&diff=%s",
 			TOP_SCORES = BASE + "/top_scores.php?game=%s&diff=%s",
-			INSERT_SCORE = BASE + "/insert_score.php?song=%s"
+			INSERT_SCORE = BASE + "/insert_score.php?song=%s",
+			DELETE_SCORES = BASE + "/delete_scores.php?song=%s"
 			;
 		
 		public static String getSongStatsUrl(final GhSongStat stat, final GhGame game, final Difficulty difficulty) {
@@ -54,6 +55,10 @@ public class URLs {
 		
 		public static String getInsertScoreUrl(final GhScore score) {
 			return String.format(INSERT_SCORE, score.getSong().getScoreHeroId());
+		}
+		
+		public static String getDeleteScoresUrl(final GhSong song) {
+			return String.format(DELETE_SCORES, song.getScoreHeroId());
 		}
 	}
 }

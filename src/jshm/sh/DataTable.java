@@ -78,7 +78,7 @@ public class DataTable {
 		"-|text~link=songid|text=int|img=rating~text=float|text=int|text=int|text|span"
 	),
 	GH_MANAGE_SCORES = new DataTable(3, 4, 11,
-		"-|-|link=songid~text|-|-|text=int|img=rating~text=float|text=int|text=int|text|span"
+		"-|text=int|link=songid~text|-|-|text=int|img=rating~text=float|text=int|text=int|text|span"
 	),
 	GH_STAR_CUTOFFS = new DataTable(3, 2, 7,
 		"link=songid|-|text|text=int,-,int|text=int|text=int|text"
@@ -88,7 +88,35 @@ public class DataTable {
 	),
 	GH_ALL_CUTOFFS = new DataTable(3, 2, 8,
 		"text|text=int|text=int|text=int|text=int|text=int|text=int|text=int"
-	)
+	),
+	GH_DELETE_SCORES = new DataTable(-1, -1, 6,
+		"input|text=int|img=rating~text=float|text=int|text=int|text"
+	) {
+		private transient NodeFilter[] filters = null;
+		
+		@Override
+		public NodeFilter[] getFilters() {
+			if (null == filters) {
+				TagNameFilter filter0 = new TagNameFilter("TABLE");
+				HasAttributeFilter filter1 = new HasAttributeFilter("border", "0");
+				HasAttributeFilter filter2 = new HasAttributeFilter("cellpadding", "5");
+				NodeFilter[] array0 = new NodeFilter[] {
+					filter0, filter1, filter2
+				};
+	
+				AndFilter filter3 = new AndFilter();
+				filter3.setPredicates(array0);
+	
+				HasParentFilter filter4 = new HasParentFilter();
+				filter4.setRecursive(false);
+				filter4.setParentFilter(filter3);
+	
+				filters = new NodeFilter[] { filter4 };
+			}
+			
+			return filters;
+		}
+	}
 	;
 	
 	public static final String DEFAULT_HEADER_CSS_CLASS = "headrow";

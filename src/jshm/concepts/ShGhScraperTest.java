@@ -21,17 +21,20 @@
 package jshm.concepts;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import jshm.Difficulty;
 import jshm.*;
 import jshm.gh.*;
+import jshm.gui.ShLoginDialog;
 import jshm.sh.scraper.*;
 
 public class ShGhScraperTest {
-	static final GhGame game = GhGame.GH3_XBOX360;
-	static final Difficulty difficulty = Difficulty.EXPERT;
+	static final GhGame game 			= GhGame.GH3_XBOX360;
+	static final Difficulty difficulty 	= Difficulty.EXPERT;
 	
 	public static void main(String[] args) throws Exception {
+		Logger.getLogger("").setLevel(Level.FINE);
 		jshm.util.TestTimer.start(true);
 		
 //		doSongs();
@@ -41,15 +44,14 @@ public class ShGhScraperTest {
 	}
 	
 	static void doScores() throws Exception {
-		jshm.sh.Client.getAuthCookies("someuser", "somepass");
+		new ShLoginDialog().setVisible(true);
 		
 		List<GhScore> scores = 
-			GhScoreScraper.scrapeLatest(
+			GhScoreScraper.scrapeAll(
 				game, difficulty);
-		
-		for (Score s : scores) {
+
+		for (GhScore s : scores)
 			System.out.println(s);
-		}
 	}
 	
 	static void doSongs() throws Exception {

@@ -37,6 +37,8 @@ public class TagFormat extends NodeFormat {
 		new TagFormat("href");
 	public static final TagFormat TITLE =
 		new TagFormat("title");
+	public static final TagFormat VALUE =
+		new TagFormat("value");
 	
 	protected String attribute;
 	

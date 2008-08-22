@@ -59,7 +59,7 @@ public class Part implements Comparable<Part> {
 	
 	public void setHitPercent(float hitPercent) {
 		if (hitPercent < 0.0f || 1.0f < hitPercent)
-			throw new IllegalArgumentException("hitPercent must be between 0.0f and 1.0f inclusive");
+			throw new IllegalArgumentException("hitPercent must be between 0.0f and 1.0f inclusive, got: " + hitPercent);
 		this.hitPercent = hitPercent;
 	}
 	
@@ -70,7 +70,7 @@ public class Part implements Comparable<Part> {
 	
 	public void setStreak(int streak) {
 		if (streak < 0)
-			throw new IllegalArgumentException("streak must be >= 0");
+			throw new IllegalArgumentException("streak must be >= 0, got: " + streak);
 		this.streak = streak;
 	}
 	
@@ -102,6 +102,26 @@ public class Part implements Comparable<Part> {
 	
 	// override object methods
 	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Part)) return false;
+		if (this == o) return true;
+		Part p = (Part) o;
+		
+//		boolean b1 = this.streak == p.streak;
+//		boolean b2 = (int) (this.hitPercent * 100) == (int) (p.hitPercent * 100);
+//		boolean b3 = this.instrument == p.instrument;
+//		boolean b4 = this.difficulty == p.difficulty;
+		
+		return 
+			this.streak == p.streak &&
+			(int) (this.hitPercent * 100) == (int) (p.hitPercent * 100) &&
+			this.instrument == p.instrument &&
+			this.difficulty == p.difficulty;
+			
+	}
+	
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(instrument);

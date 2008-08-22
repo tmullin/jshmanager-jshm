@@ -34,7 +34,7 @@ import org.jdesktop.swingx.auth.PasswordStore;
 
 public class ShLoginDialog extends JXLoginDialog {
 	public ShLoginDialog() {
-		this(null, false);
+		this(null, true);
 	}
 	
 	public ShLoginDialog(Frame owner) {

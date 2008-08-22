@@ -389,6 +389,26 @@ public abstract class Score {
 	// override object methods
 	
 	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Score)) return false;
+		if (this == o) return true;
+		Score s = (Score) o;
+		
+//		boolean b1 = this.parts.equals(s.parts);
+//		boolean b2 = this.parts.size() == s.parts.size();
+//		boolean b3 = this.getPart(1).equals(s.getPart(1));
+		
+		// TODO figure out why !this.parts.equals(s.parts)
+		
+		return 
+			this.song.equals(s.song) &&
+			this.score == s.score &&
+			this.submissionDate.equals(s.submissionDate) &&
+			this.parts.size() == s.parts.size();
+//			this.parts.equals(s.parts);
+	}
+	
+	@Override
 	public String toString() {
 		return toString(null);
 	}
