@@ -27,6 +27,19 @@
 				dir="${dist_dir}"
 				includes="**"/>
 		</zip>
+		
+		<!-- 7z a -bd -sfx7z.sfx out.exe *.txt *.jar Licenses/* -->
+		<exec executable="cmd" osfamily="Windows" dir="${dist_dir}">
+			<arg value="/c"/>
+			<arg value="7z"/>
+			<arg value="a"/>
+			<arg value="-bd"/>
+			<arg value="-sfx7z.sfx"/>
+			<arg value="${jshm.name}-${jshm.version}.exe"/>
+			<arg value="*.txt"/>
+			<arg value="*.jar"/>
+			<arg value="Licenses\*"/>
+		</exec>
 	</target>
 	
 	<target name="jar" depends="compile">

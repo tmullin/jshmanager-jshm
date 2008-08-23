@@ -46,7 +46,7 @@ public class JSHManager {
 	public static final int APP_MAJOR_VERSION = 0;
 	public static final int APP_MINOR_VERSION = 0;
 	public static final int APP_POINT_VERSION = 1;
-	public static final boolean APP_IS_BETA = true;
+	public static final boolean APP_IS_BETA = false;
 	
 	public static final String APP_VERSION_STRING =
 		String.format("%s.%s.%s%s", APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_POINT_VERSION, APP_IS_BETA ? " beta" : "");
