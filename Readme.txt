@@ -39,16 +39,25 @@ clicking "Load from ScoreHero" in the "Song Data" menu.
 
 Now you can download all of your existing scores that are currently on
 ScoreHero. To do so, select the appropriate game from the "My Scores" menu.
-Again, you will be prompted to download. Click "Yes". You should now
-be able to look at all of your scores within JSHManager. Enter your 
-ScoreHero account information when prompted. You can optionally save
-your password. Subsequent logins will already have the username and
-password fields filled in. Scores that you have gotten 100% on or that
-are FC'd will be highlighted green. You can download your scores again at
-a later point (if you add a new score from ScoreHero.com directly, for
-example) by clicking "Load from ScoreHero" in the "My Scores" menu.
+Again, you will be prompted to download. Click "Yes". A wizard will appear
+to guide you through the process. You must decide to download your latest
+scores or all of your scores. If you choose the latest, you will only download
+the scores that are visible on the Manage Scores page. If you choose all,
+every score for the current game that is stored on ScoreHero will be downloaded
+but this takes significantly longer than downloading just the latest scores.
+Generally, the first time you download scores you might want to download all
+scores. If you later enter a new score via the website and want to download it into
+JSHManager, you only need to download the latest scores, unless you have entered
+more than one new score for a given song.
 
-To add a new score, select the appropriate song and click "Add new score..."
+Once you decide, enter your ScoreHero account information when prompted. You
+can optionally save your password. If you do, Subsequent logins will already have the 
+username and password fields filled in and you will just have to press "Login".
+Scores that you have gotten 100% on or that are FC'd will be highlighted green. 
+You can download your scores again at a later point (if you add a new score from 
+the website, for example) by clicking "Load from ScoreHero" in the "My Scores" menu.
+
+To add a new score, select the appropriate song and click "Add new score"
 in the "My Scores" menu. Alteratively you can press the Insert key after
 selecting a song. New scores that are not yet on ScoreHero are highlighted
 blue. Double-click the new score row to edit the comment, score, percentage,
@@ -58,7 +67,7 @@ possible (it cannot be calculated if the cutoffs for a particular song
 are unknown).
 
 Once you have inserted some scores, you can upload them to ScoreHero by
-clicking "Upload to ScoreHero..." in the "My Scores" menu. A wizzard will
+clicking "Upload to ScoreHero" in the "My Scores" menu. A wizzard will
 appear to guide you through that process. Simply double check that your
 scores are correct and click "Finish".
 

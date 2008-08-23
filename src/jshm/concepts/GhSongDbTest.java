@@ -50,7 +50,7 @@ public class GhSongDbTest {
 //		jshm.util.TestTimer.stop();
 		
 		jshm.sh.Client.getAuthCookies("someuser", "somepass");
-		jshm.dataupdaters.GhScoreUpdater.update(game, difficulty);
+		jshm.dataupdaters.GhScoreUpdater.update(false, game, difficulty);
 		
 		jshm.util.TestTimer.stop();
 		

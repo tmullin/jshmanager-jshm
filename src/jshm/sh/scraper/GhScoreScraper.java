@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import org.htmlparser.util.NodeList;
+import org.netbeans.spi.wizard.ResultProgressHandle;
 
 import jshm.Difficulty;
 import jshm.Instrument;
@@ -46,6 +47,12 @@ public class GhScoreScraper {
 		Formats.init();
 	}
 	
+	public static List<GhScore> scrapeAll(
+			final GhGame game, final Difficulty difficulty)
+		throws ScraperException {
+		return scrapeAll(null, game, difficulty);
+	}
+	
 	/**
 	 * This should retrieve <i>all</i> submitted scores for
 	 * the given game/difficulty. This will require one http
@@ -56,11 +63,12 @@ public class GhScoreScraper {
 	 * @throws ScraperException
 	 */
 	public static List<GhScore> scrapeAll(
-			final GhGame game, final Difficulty difficulty)
+			final ResultProgressHandle progress, final GhGame game, final Difficulty difficulty)
 		throws ScraperException {
 		if (Difficulty.CO_OP == difficulty)
 			throw new IllegalArgumentException("co-op is not yet supported");
 		
+		if (null != progress) progress.setBusy("Scraping all scores");
 		LOG.info("Scraping all scores for " + game + " on " + difficulty);
 		
 		List<Integer> scoreCounts = new ArrayList<Integer>();
@@ -72,7 +80,13 @@ public class GhScoreScraper {
 		List<GhScore> ret =  new ArrayList<GhScore>();
 		
 		int i = 0;
+		final int totalSongs = scores.size();
 		for (GhScore s : scores) {
+			if (null != progress)
+				progress.setProgress(
+					String.format("Scraping %s of %s", i + 1, totalSongs),
+					i, totalSongs);
+			
 			// s is the latest score for a given song
 			// it will get added regardless
 			ret.add(s);
@@ -126,11 +140,18 @@ public class GhScoreScraper {
 	}
 	
 	public static List<GhScore> scrapeLatest(
-		final GhGame game, final Difficulty difficulty, final List<Integer> scoreCounts)
+			final GhGame game, final Difficulty difficulty, final List<Integer> scoreCounts)
+		throws ScraperException {
+		return scrapeLatest(null, game, difficulty, scoreCounts);
+	}
+	
+	public static List<GhScore> scrapeLatest(
+		final ResultProgressHandle progress, final GhGame game, final Difficulty difficulty, final List<Integer> scoreCounts)
 	throws ScraperException {
 		if (Difficulty.CO_OP == difficulty)
 			throw new IllegalArgumentException("co-op is not yet supported");
 		
+		if (null != progress) progress.setBusy("Scraping latest scores");
 		LOG.info("Scraping latest scores for " + game + " on " + difficulty);
 		
 		List<GhScore> scores = new ArrayList<GhScore>();

@@ -18,46 +18,51 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * -----LICENSE END-----
  */
-package jshm.gui.wizards.scoreupload;
+package jshm.gui.wizards.scoredownload;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//import javax.swing.JOptionPane;
-
-import jshm.gh.GhScore;
+import jshm.Difficulty;
+import jshm.dataupdaters.GhScoreUpdater;
+import jshm.gh.GhGame;
+import jshm.gui.GUI;
 import jshm.gui.ShLoginDialog;
-import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXLoginDialog;
 import org.jdesktop.swingx.error.ErrorInfo;
-import org.netbeans.spi.wizard.ResultProgressHandle;
-import org.netbeans.spi.wizard.Summary;
-import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.DeferredWizardResult;
+import org.netbeans.spi.wizard.ResultProgressHandle;
+import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardException;
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
 
 @SuppressWarnings("unchecked")
-public class ScoreUploadWizard {
-	static final Logger LOG = Logger.getLogger(ScoreUploadWizard.class.getName());
+public class ScoreDownloadWizard {
+	static final Logger LOG = Logger.getLogger(ScoreDownloadWizard.class.getName());
 	
-	public static Wizard createWizard(GhMyScoresTreeTableModel model) {
-		final ScoreUploadWizard me = new ScoreUploadWizard();
+	public static Wizard createWizard(final GUI gui, final GhGame game, final Difficulty difficulty) {
+		final ScoreDownloadWizard me = new ScoreDownloadWizard(gui, game, difficulty);
 		
-		return WizardPage.createWizard("Upload scores to ScoreHero",
+		return WizardPage.createWizard("Download scores from ScoreHero",
 			new WizardPage[] {
-				new VerifyScoresPage(model)
+				new DownloadModePage()
 			},
 			me.resultProducer);
 	}
 
-	private ScoreUploadWizard() {}
+	final GUI gui;
+	final GhGame game;
+	final Difficulty difficulty;
+	
+	private ScoreDownloadWizard(final GUI gui, final GhGame game, final Difficulty difficulty) {
+		this.gui = gui;
+		this.game = game;
+		this.difficulty = difficulty;
+	}
 	
 	private WizardResultProducer resultProducer = new WizardResultProducer() {
 		@Override
@@ -76,7 +81,8 @@ public class ScoreUploadWizard {
 //			for (Object key : wizardData.keySet()) {
 //				System.out.println("  " + key + ": " + wizardData.get(key).getClass().getName());
 //			}
-			
+//			
+//			return null;
 			return deferredResult;
 		}
 	};
@@ -90,44 +96,20 @@ public class ScoreUploadWizard {
 					login.setLocationRelativeTo(null);
 					login.setVisible(true);
 				}
+
+				boolean scrapeAll = false;
 				
-				GhMyScoresTreeTableModel model =
-					(GhMyScoresTreeTableModel) settings.get("treeTableData");
+				try {
+					scrapeAll = (Boolean) settings.get("all");
+				} catch (Exception e) {}
 				
-				List<String> resultStrings = new ArrayList<String>();
-				
-				int scoreCount = model.getScoreCount();
-				int curIndex = -1;
-				for (GhScore s : model.getScores()) {
-					curIndex++;
-					
-					try {
-						Thread.sleep(150);
-						
-						// try not to hammer SH too badly
-						if (curIndex % 5 == 4) {
-							Thread.sleep(2000);
-							LOG.fine("Sleeping so we don't spam SH");
-						}
-					} catch (InterruptedException e) {}
-					
-					progress.setProgress(
-						String.format("Uploading score %s of %s", curIndex + 1, scoreCount),
-						curIndex, scoreCount);
-					
-					jshm.sh.GhApi.submitGhScore(s);
-					
-					resultStrings.add("Uploaded: " + s.getSong().getTitle() + " - " + s.getScore());
-				}
-				
-				progress.finished(
-					Summary.create(
-//						"Uploaded " + scoreCount + " score(s) successfuly.", null));
-						resultStrings.toArray(new String[0]), null));
+				GhScoreUpdater.update(progress, scrapeAll, game, difficulty);
+				gui.myScoresMenuItemActionPerformed(null, game, difficulty);
+				progress.finished(null);
 			} catch (Throwable e) {
-				LOG.log(Level.WARNING, "Failed to upload new score", e);
-				progress.failed("Failed to upload score: " + e.getMessage(), false);
-				ErrorInfo ei = new ErrorInfo("Error", "Failed to upload new score", null, null, e, null, null);
+				LOG.log(Level.WARNING, "Failed to download scores", e);
+				progress.failed("Failed to download scores: " + e.getMessage(), false);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to download scores", null, null, e, null, null);
 				JXErrorPane.showDialog(null, ei);
 				return;
 			}

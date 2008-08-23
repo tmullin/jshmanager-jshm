@@ -26,6 +26,7 @@ import java.util.logging.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
+import org.netbeans.spi.wizard.ResultProgressHandle;
 
 import jshm.*;
 import static jshm.hibernate.HibernateUtil.getCurrentSession;
@@ -40,10 +41,15 @@ import jshm.gh.*;
 public class GhScoreUpdater {
 	static final Logger LOG = Logger.getLogger(GhScoreUpdater.class.getName());
 	
-	public static void update(final GhGame game, final Difficulty difficulty) throws Exception {
+	public static void update(final boolean scrapeAll, final GhGame game, final Difficulty difficulty) throws Exception {
+		update(null, scrapeAll, game, difficulty);
+	}
+	
+	public static void update(final ResultProgressHandle progress, final boolean scrapeAll, final GhGame game, final Difficulty difficulty) throws Exception {
 		List<GhScore> scrapedScores =
-//			jshm.sh.scraper.GhScoreScraper.scrapeLatest(game, difficulty);
-			jshm.sh.scraper.GhScoreScraper.scrapeAll(game, difficulty);
+			scrapeAll
+			? jshm.sh.scraper.GhScoreScraper.scrapeAll(progress, game, difficulty)
+			: jshm.sh.scraper.GhScoreScraper.scrapeLatest(progress, game, difficulty, null);
 		
 		for (GhScore score : scrapedScores) {
 			Session session = null;
@@ -58,7 +64,7 @@ public class GhScoreUpdater {
 			    	.excludeProperty("calculatedRating")
 			    	.excludeProperty("rating")
 			    	.excludeProperty("creationDate")
-			    	/*.excludeProperty("submissionDate")*/;
+			    	.excludeProperty("submissionDate");
 			    
 			    GhScore result =
 			    	(GhScore)
