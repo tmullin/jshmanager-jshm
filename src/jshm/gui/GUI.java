@@ -435,9 +435,9 @@ private void uploadScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 	wiz.show();
 }//GEN-LAST:event_uploadScoresMenuItemActionPerformed
 
-private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing	
+private void formWindowClosing(java.awt.event.WindowEvent evt) {                                    
 	jshm.JSHManager.dispose();
-}//GEN-LAST:event_formWindowClosing
+}                                  
 
 /**
  * Load the menu with all avaialable GH games.

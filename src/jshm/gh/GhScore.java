@@ -60,7 +60,7 @@ public class GhScore extends jshm.Score {
 			(List<GhScore>)
 			session.createQuery(
 				String.format(
-					"from GhScore where game='%s' and difficulty='%s'",
+					"from GhScore where game='%s' and difficulty='%s' order by score DESC",
 					game.toString(), difficulty.toString()))
 				.list();
 	    session.getTransaction().commit();

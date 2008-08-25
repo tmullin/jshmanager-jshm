@@ -52,6 +52,22 @@ public class GhSong extends jshm.Song {
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static String[] getOrderedSongTitles(final GhGame game, final Difficulty difficulty) {
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    List<String> result =
+			(List<String>)
+			session.createSQLQuery(
+				String.format(
+					"select title from Song where game='%s' and difficulty='%s' order by title ASC",
+					game.toString(), difficulty.toString()))
+				.list();
+	    session.getTransaction().commit();
+	    
+	    return result.toArray(new String[] {});
+	}
+	
 	public static GhSong getByScoreHeroId(final int id) {
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();

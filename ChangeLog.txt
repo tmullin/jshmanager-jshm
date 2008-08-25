@@ -1,5 +1,10 @@
 JSHManager ChangeLog
 
+Version 0.0.2
+-------------
+- Fixed downloading scores for GH1/80s/OT (games that are only on one system)
+- Scores are now sorted descending by points
+
 Version 0.0.1
 -------------
 - Initial release

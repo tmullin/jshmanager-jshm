@@ -28,17 +28,21 @@ import javax.swing.JTable;
 
 import jshm.gh.GhScore;
 
-public class GhMyScoresRatingEditor extends DefaultCellEditor {			
-	public GhMyScoresRatingEditor() {
-		super(
-			new JComboBox(
-				new Object[] {
+public class GhMyScoresRatingEditor extends DefaultCellEditor {		
+	public static JComboBox createRatingComboBox() {
+		return 
+		new JComboBox(
+			new Object[] {
 					GhScore.getRatingIcon(0),
 					GhScore.getRatingIcon(5),
 					GhScore.getRatingIcon(4),
 					GhScore.getRatingIcon(3)
 				}
-			));
+			);
+	}
+	
+	public GhMyScoresRatingEditor() {
+		super(createRatingComboBox());
 	}
 	
     public Component getTableCellEditorComponent(JTable table, Object value,
