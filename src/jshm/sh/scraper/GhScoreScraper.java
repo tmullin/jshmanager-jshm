@@ -157,7 +157,7 @@ public class GhScoreScraper {
 		List<GhScore> scores = new ArrayList<GhScore>();
 		
 		TieredTabularDataHandler handler =
-			new LatestScoresHandler(difficulty, scores, scoreCounts);
+			new LatestScoresHandler(game, difficulty, scores, scoreCounts);
 		
 		NodeList nodes = Scraper.scrape(
 			URLs.gh.getManageScoresUrl(game, difficulty),
@@ -178,15 +178,18 @@ public class GhScoreScraper {
 	}
 	
 	private static class LatestScoresHandler extends TieredTabularDataAdapter {
+		private final GhGame game;
 		private final Difficulty difficulty;
 		private final List<GhScore> scores;
 		private final List<Integer> scoreCounts;
 		
 		public LatestScoresHandler(
+			final GhGame game,
 			final Difficulty difficulty,
 			final List<GhScore> scores,
 			final List<Integer> scoreCounts) {
 			
+			this.game = game;
 			this.difficulty = difficulty;
 			this.scores = scores;
 			this.scoreCounts = scoreCounts;
@@ -194,7 +197,10 @@ public class GhScoreScraper {
 		
 		@Override
 		public DataTable getDataTable() {
-			return DataTable.GH_MANAGE_SCORES;
+			return 
+				game.title.platforms.length == 1
+				? DataTable.GH_MANAGE_SCORES_SINGLE_PLAT
+				: DataTable.GH_MANAGE_SCORES;
 		}
 		
 		// "-|text=int|link=songid~text|-|-|text=int|img=rating~text=float|text=int|text=int|text|text"
@@ -218,36 +224,48 @@ public class GhScoreScraper {
 			score.setStatus(Score.Status.SUBMITTED);
 			score.setSong(song);
 			
-			score.setScore(Integer.parseInt(data[5][0]));
+			int i = 4;
 			
-			if (data[6].length == 2 && !data[6][1].isEmpty()) {
+			if (getDataTable() == DataTable.GH_MANAGE_SCORES)
+				i++;
+			
+			// i = 4 or 5 for score
+			
+			score.setScore(Integer.parseInt(data[i][0]));
+			
+			i++; // i = 5 or 6 for rating
+			
+			if (data[i].length == 2 && !data[i][1].isEmpty()) {
 				// there is a calculated rating available
-				float f = Float.parseFloat(data[6][1]);
+				float f = Float.parseFloat(data[i][1]);
 				score.setCalculatedRating(f);
 				score.setRating(Math.min(5, (int) Math.floor(f)));
-			} else if (!data[6][0].isEmpty()) {
+			} else if (!data[i][0].isEmpty()) {
 				// assuming SH doesn't know the cuttoffs
 				// and the user put in his rating himself
 				// we have to infer from the image
-				int i = Integer.parseInt(data[6][0]);
-				score.setRating(i);
+				score.setRating(Integer.parseInt(data[i][0]));
 			} else {
 				// don't know the rating
 				score.setRating(0);
 			}
 			
+			i++; // i = 6 or 7 for %
+			
 			Part p = new Part();
 			p.setDifficulty(difficulty);
 			p.setInstrument(Instrument.GUITAR);
 			
-			if (!data[7][0].isEmpty()) {
+			if (!data[i][0].isEmpty()) {
 				p.setHitPercent(
-					Float.parseFloat(data[7][0]) / 100.0f);
+					Float.parseFloat(data[i][0]) / 100.0f);
 			}
 			
-			if (!data[8][0].isEmpty()) {
+			i++; // i = 7 or 8 for streak
+			
+			if (!data[i][0].isEmpty()) {
 				p.setStreak(
-					Integer.parseInt(data[8][0]));
+					Integer.parseInt(data[i][0]));
 				score.setStreak(p.getStreak());
 			}
 			
@@ -255,16 +273,20 @@ public class GhScoreScraper {
 			
 			score.setCreationDate(null);
 			
+			i++; // i = 8 or 9 for submit date
+			
 			// null date is fine
-//			if (!data[9][0].isEmpty()) {
+//			if (!data[i][0].isEmpty()) {
 				try {
-					Date date = DateFormats.GH_MANAGE_SCORES.parse(data[9][0]);
+					Date date = DateFormats.GH_MANAGE_SCORES.parse(data[i][0]);
 					score.setSubmissionDate(date);
 				} catch (Exception e) {}
 //			}
 			
-			if (!data[10][0].isEmpty() && !"N/A".equals(data[10][0])) {
-				score.setComment(data[10][0]);
+			i++; // i = 9 or 10 for comment
+				
+			if (!data[i][0].isEmpty() && !"N/A".equals(data[i][0])) {
+				score.setComment(data[i][0]);
 			}
 			
 			scores.add(score);

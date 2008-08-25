@@ -80,6 +80,9 @@ public class DataTable {
 	GH_MANAGE_SCORES = new DataTable(3, 4, 11,
 		"-|text=int|link=songid~text|-|-|text=int|img=rating~text=float|text=int|text=int|text|span"
 	),
+	GH_MANAGE_SCORES_SINGLE_PLAT = new DataTable(3, 3, 10,
+		"-|text=int|link=songid~text|-|text=int|img=rating~text=float|text=int|text=int|text|span"
+	),
 	GH_STAR_CUTOFFS = new DataTable(3, 2, 7,
 		"link=songid|-|text|text=int,-,int|text=int|text=int|text"
 	),
