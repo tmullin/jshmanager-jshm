@@ -39,6 +39,7 @@ import jshm.gui.renderers.GhMyScoresCellRenderer;
 import jshm.gui.renderers.GhMyScoresFcHighlighter;
 import jshm.gui.renderers.GhMyScoresNewScoreHighlighter;
 import jshm.gui.renderers.GhMyScoresNoCommentHighlighter;
+import jshm.gui.renderers.GhMyScoresPercentHighlighter;
 import jshm.gui.renderers.GhMyScoresTreeCellRenderer;
 import jshm.gui.renderers.GhTierHighlighter;
 import jshm.hibernate.HibernateUtil;
@@ -294,6 +295,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 
 		Highlighter[] highlighters = new Highlighter[] {
 			HighlighterFactory.createSimpleStriping(),
+			new GhMyScoresPercentHighlighter(),
 			new GhMyScoresFcHighlighter(),
 			new GhTierHighlighter(),
 			new GhMyScoresNoCommentHighlighter(),

@@ -3,6 +3,8 @@ JSHManager ChangeLog
 Version 0.0.3
 -------------
 - Selected rows can now be expanded/collapsed via the right/left arrow keys
+- Hit percentages are now orange between 80 and 99% and red when < 80%
+  (same as on ScoreHero)
 
 Version 0.0.2
 -------------
