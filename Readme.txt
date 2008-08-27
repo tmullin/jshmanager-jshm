@@ -24,6 +24,12 @@ where JSHManager.jar is located. Then run the patch jar from that directory.
 On Windows, you can generally double-click the jar file to run it. A log
 of the patching operation will be located in data/logs/Patcher.txt.
 
+NOTE: Each patch jar only updates the files that have changed from 
+the previous version. If you have 0.0.1 and want to upgrade to 0.0.3, for example,
+you must download and run both patches for 0.0.2 and 0.0.3 IN ORDER. 
+If there is ever a question about whether you've patched correctly, you 
+can download the latest full version and upgrade as described below.
+
 If you downlaoded the full version, just unzip the distribution file into
 your existing JSHManager directory and overrite any existing files
 if prompted.
