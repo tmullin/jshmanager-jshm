@@ -1,6 +1,12 @@
+jshm/gui/wizards/scoreupload/ScoreUploadWizard*.class
+jshm/gui/wizards/scoredownload/ScoreDownloadWizard*.class
 jshm/gui/GUI*.class
+
 jshm/gui/renderers/GhMyScoresPercentHighlighter*.class
 jshm/gui/editors/GhMyScoresEditor*.class
 jshm/gui/editors/GhMyScoresCommentEditor*.class
 jshm/gui/datamodels/GhMyScoresTreeTableModel*.class
+jshm/Config*.class
 jshm/JSHManager*.class
+jshm/sh/scraper/GhScoreScraper*.class
+jshm/util/Properties*.class
