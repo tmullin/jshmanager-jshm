@@ -166,11 +166,11 @@ public class Licenser {
 			String line = in.readLine();
 			
 			if ((ft == FileType.xml || ft == FileType.form) &&
-				line.startsWith("<?xml")) {
+				null != line && line.startsWith("<?xml")) {
 				line = in.readLine();
 			}
 			
-			if (line.equals(ft.PRE)) {
+			if (ft.PRE.equals(line)) {
 				line = in.readLine();
 				
 				if (line.equals(ft.LINE + ft.MARKER + LICENSE_START + ft.MARKER)) {
