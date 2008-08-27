@@ -43,7 +43,7 @@ On most Windows systems, you can simply double-click JSHManager.jar
 to start it, assuming Java has been installed correctly. You can also
 right-click on the jar to create a shortcut, if desired.
 
-Once JSHManager is running, you first must download the song data for
+Once JSHManager is running, you may optionally download the song data for
 the particular game and difficulty that you are interested in.
 From the "Song Data" menu, select the game, platform, and difficulty
 you want. The first time you access the song data for a given game,
@@ -52,6 +52,10 @@ You can come back to this screen to view the number of notes and cutoffs
 for each song. You can update the song data at a later point (if new DLC
 comes out, for example) by first selecting the game as before and then
 clicking "Load from ScoreHero" in the "Song Data" menu.
+
+If you skip this, the song data will automatically be downloaded when you 
+download your scores for the first time, but you may need to manually update 
+the score data when there is new DLC.
 
 Now you can download all of your existing scores that are currently on
 ScoreHero. To do so, select the appropriate game from the "My Scores" menu.
@@ -64,7 +68,8 @@ but this takes significantly longer than downloading just the latest scores.
 Generally, the first time you download scores you might want to download all
 scores. If you later enter a new score via the website and want to download it into
 JSHManager, you only need to download the latest scores, unless you have entered
-more than one new score for a given song.
+more than one new score for a given song. The song data for the current game/
+difficulty will be downloaded first, if necessary.
 
 Once you decide, enter your ScoreHero account information when prompted. You
 can optionally save your password. If you do, Subsequent logins will already have the 

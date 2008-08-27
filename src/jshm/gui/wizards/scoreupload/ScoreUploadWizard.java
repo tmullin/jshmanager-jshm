@@ -106,8 +106,8 @@ public class ScoreUploadWizard {
 						
 						// try not to hammer SH too badly
 						if (curIndex % 5 == 4) {
-							Thread.sleep(2000);
 							LOG.fine("Sleeping so we don't spam SH");
+							Thread.sleep(2000);
 						}
 					} catch (InterruptedException e) {}
 					

@@ -3,8 +3,15 @@ JSHManager ChangeLog
 Version 0.0.3
 -------------
 - Selected rows can now be expanded/collapsed via the right/left arrow keys
+- Table cells for new scores can be edited simply by beginning to type if
+  the cell is selected (has a dashed border around it). You can change the
+  selected cell with the arrow keys. Note there is still an issue when
+  editing the Comment cell causing text to be appended instead of replaced.
 - Hit percentages are now orange between 80 and 99% and red when < 80%
   (same as on ScoreHero)
+- Song data is now downloaded automatically the first time you try to
+  download scores for a particular game/difficulty. This means it is no
+  longer required to manually download song data unless new DLC comes out.
 
 Version 0.0.2
 -------------

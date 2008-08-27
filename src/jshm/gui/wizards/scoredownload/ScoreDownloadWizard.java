@@ -20,6 +20,7 @@
  */
 package jshm.gui.wizards.scoredownload;
 
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -97,6 +98,15 @@ public class ScoreDownloadWizard {
 					login.setVisible(true);
 				}
 
+				// TODO change to a select count(*) for efficiency
+				List<jshm.gh.GhSong> songs = jshm.gh.GhSong.getSongs(game, difficulty);
+				
+				if (songs.size() == 0) {
+					// need to load song data as well
+					progress.setBusy("Downloading song data");
+					jshm.dataupdaters.GhSongUpdater.update(game, difficulty);
+				}
+				
 				boolean scrapeAll = false;
 				
 				try {

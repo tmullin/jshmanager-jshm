@@ -44,7 +44,7 @@
                   <KeyStroke key="INSERT"/>
                 </Property>
                 <Property name="mnemonic" type="int" value="110"/>
-                <Property name="text" type="java.lang.String" value="Add new score..."/>
+                <Property name="text" type="java.lang.String" value="Add new score"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
@@ -64,10 +64,12 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteSelectedScoreMenuItemActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JSeparator" name="jSeparator3">
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="loadMyScoresMenuItem">
               <Properties>
                 <Property name="mnemonic" type="int" value="76"/>
-                <Property name="text" type="java.lang.String" value="Load from ScoreHero"/>
+                <Property name="text" type="java.lang.String" value="Download from ScoreHero"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
@@ -76,7 +78,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="uploadScoresMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Upload to ScoreHero..."/>
+                <Property name="text" type="java.lang.String" value="Upload to ScoreHero"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
@@ -99,7 +101,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="loadSongDataMenuItem">
               <Properties>
                 <Property name="mnemonic" type="int" value="76"/>
-                <Property name="text" type="java.lang.String" value="Load from ScoreHero"/>
+                <Property name="text" type="java.lang.String" value="Download from ScoreHero"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>

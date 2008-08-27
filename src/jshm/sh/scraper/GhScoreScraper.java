@@ -68,8 +68,8 @@ public class GhScoreScraper {
 		if (Difficulty.CO_OP == difficulty)
 			throw new IllegalArgumentException("co-op is not yet supported");
 		
-		if (null != progress) progress.setBusy("Scraping all scores");
-		LOG.info("Scraping all scores for " + game + " on " + difficulty);
+		if (null != progress) progress.setBusy("Downloading all scores");
+		LOG.info("Downloading all scores for " + game + " on " + difficulty);
 		
 		List<Integer> scoreCounts = new ArrayList<Integer>();
 		List<GhScore> scores = scrapeLatest(game, difficulty, scoreCounts);
@@ -84,7 +84,7 @@ public class GhScoreScraper {
 		for (GhScore s : scores) {
 			if (null != progress)
 				progress.setProgress(
-					String.format("Scraping %s of %s", i + 1, totalSongs),
+					String.format("Downloading %s of %s", i + 1, totalSongs),
 					i, totalSongs);
 			
 			// s is the latest score for a given song
@@ -99,8 +99,8 @@ public class GhScoreScraper {
 					
 					// try not to hammer SH too badly
 					if (i % 5 == 4) {
-						Thread.sleep(2000);
 						LOG.fine("Sleeping so we don't spam SH");
+						Thread.sleep(2000);
 					}
 				} catch (InterruptedException e) {}
 				
@@ -151,8 +151,8 @@ public class GhScoreScraper {
 		if (Difficulty.CO_OP == difficulty)
 			throw new IllegalArgumentException("co-op is not yet supported");
 		
-		if (null != progress) progress.setBusy("Scraping latest scores");
-		LOG.info("Scraping latest scores for " + game + " on " + difficulty);
+		if (null != progress) progress.setBusy("Downloading latest scores");
+		LOG.info("Downloading latest scores for " + game + " on " + difficulty);
 		
 		List<GhScore> scores = new ArrayList<GhScore>();
 		
@@ -301,7 +301,7 @@ public class GhScoreScraper {
 	 * @throws ScraperException
 	 */
 	public static List<GhScore> scrapeScoresForSong(final GhSong song) throws ScraperException {
-		LOG.info("Scraping additional scores for " + song);
+		LOG.info("Downloading additional scores for " + song);
 		
 		List<GhScore> scores = new ArrayList<GhScore>();
 		

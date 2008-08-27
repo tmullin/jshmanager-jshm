@@ -236,6 +236,7 @@ public class GUI extends javax.swing.JFrame {
         myScoresMenu = new javax.swing.JMenu();
         addNewScoreMenuItem = new javax.swing.JMenuItem();
         deleteSelectedScoreMenuItem = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JSeparator();
         loadMyScoresMenuItem = new javax.swing.JMenuItem();
         uploadScoresMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
@@ -301,7 +302,7 @@ public class GUI extends javax.swing.JFrame {
 
         addNewScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_INSERT, 0));
         addNewScoreMenuItem.setMnemonic('n');
-        addNewScoreMenuItem.setText("Add new score...");
+        addNewScoreMenuItem.setText("Add new score");
         addNewScoreMenuItem.setEnabled(false);
         addNewScoreMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -320,9 +321,10 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         myScoresMenu.add(deleteSelectedScoreMenuItem);
+        myScoresMenu.add(jSeparator3);
 
         loadMyScoresMenuItem.setMnemonic('L');
-        loadMyScoresMenuItem.setText("Load from ScoreHero");
+        loadMyScoresMenuItem.setText("Download from ScoreHero");
         loadMyScoresMenuItem.setEnabled(false);
         loadMyScoresMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -331,7 +333,7 @@ public class GUI extends javax.swing.JFrame {
         });
         myScoresMenu.add(loadMyScoresMenuItem);
 
-        uploadScoresMenuItem.setText("Upload to ScoreHero...");
+        uploadScoresMenuItem.setText("Upload to ScoreHero");
         uploadScoresMenuItem.setEnabled(false);
         uploadScoresMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -349,7 +351,7 @@ public class GUI extends javax.swing.JFrame {
         songDataMenu.setText("Song Data");
 
         loadSongDataMenuItem.setMnemonic('L');
-        loadSongDataMenuItem.setText("Load from ScoreHero");
+        loadSongDataMenuItem.setText("Download from ScoreHero");
         loadSongDataMenuItem.setEnabled(false);
         loadSongDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -641,17 +643,12 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		GhMyScoresTreeTableModel model = null;
 		
 		@Override
-		protected Void doInBackground() throws Exception {
-			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			statusBar1.setText("Loading score data from database...", true);
-			
+		protected Void doInBackground() throws Exception {			
 			try {
 				songs = jshm.gh.GhSong.getSongs(game, difficulty);
 				
-				if (songs.size() == 0) {
-					// TODO auto-download score data
-					throw new Exception("you must download the song data for this game/difficulty");
-				}
+				getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				statusBar1.setText("Loading score data from database...", true);
 				
 				scores = jshm.gh.GhScore.getScores(game, difficulty);
 				model = new GhMyScoresTreeTableModel(game, songs, scores);
@@ -735,6 +732,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
     private org.jdesktop.swingx.JXTreeTable jXTreeTable1;
     private javax.swing.JMenuItem loadMyScoresMenuItem;
     private javax.swing.JMenuItem loadSongDataMenuItem;
