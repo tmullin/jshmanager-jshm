@@ -134,10 +134,10 @@ public class GhMyScoresEditor extends DefaultCellEditor {
 //    		System.out.println("edt " + column + " (new value): " + value);
     	}
     	
-		Component comp = super.getTableCellEditorComponent(
+		JTextField comp = (JTextField) super.getTableCellEditorComponent(
 			table, value,
 			isSelected, row, column);
-		
+		comp.selectAll();
 //		((JComponent) comp).setInputVerifier(iv);
 		
 		return comp;

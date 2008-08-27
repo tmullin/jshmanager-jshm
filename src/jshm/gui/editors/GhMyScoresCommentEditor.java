@@ -23,6 +23,7 @@ package jshm.gui.editors;
 import java.awt.Component;
 
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 
 import jshm.gh.GhScore;
@@ -44,8 +45,11 @@ public class GhMyScoresCommentEditor extends TreeTableCellEditor {
 			value = ((GhScore) value).getComment();
 		}
 		
-		return super.getTableCellEditorComponent(
+		JTextField c = (JTextField) super.getTableCellEditorComponent(
 			table, value,
 			isSelected, row, column);
+		
+		c.selectAll();
+		return c;
     }
 }
