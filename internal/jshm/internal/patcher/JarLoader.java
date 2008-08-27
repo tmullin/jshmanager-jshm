@@ -6,7 +6,24 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.jar.*;
 
+/**
+ * This needs work...
+ * @author Tim Mullin
+ *
+ */
 public class JarLoader {
+	public static URLClassLoader getLoader(File jar) throws Exception {
+		File tmpJar = File.createTempFile(jar.getName(), null);
+		copy(jar, tmpJar);
+		tmpJar.deleteOnExit();
+		
+		return
+			new URLClassLoader(
+				new URL[] {
+					tmpJar.toURI()
+						.toURL()});
+	}
+	
 	/**
 	 * Loads all the classes in the provided jar file. The file is
 	 * copied to a temp file that will be deleted when the JVM exits
@@ -19,7 +36,8 @@ public class JarLoader {
 		copy(jar, tmpJar);
 		tmpJar.deleteOnExit();
 		
-		URLClassLoader loader = new URLClassLoader(new URL[] {tmpJar.toURI().toURL()});
+		URLClassLoader loader = getLoader(tmpJar);
+		
 		JarInputStream jis = new JarInputStream(new FileInputStream(tmpJar));
 		JarEntry entry = jis.getNextJarEntry();
 		int loadedCount = 0, totalCount = 0;

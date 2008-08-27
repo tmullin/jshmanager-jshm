@@ -1,0 +1,6 @@
+jshm/gui/GUI*.class
+jshm/gui/renderers/GhMyScoresPercentHighlighter*.class
+jshm/gui/editors/GhMyScoresEditor*.class
+jshm/gui/editors/GhMyScoresCommentEditor*.class
+jshm/gui/datamodels/GhMyScoresTreeTableModel*.class
+jshm/JSHManager*.class

@@ -14,18 +14,12 @@
 	
 	<target name="all" depends="clean,dist"/>
 	
-	<target name="dist" depends="jar">		
-		<copy todir="${dist_dir}">
-			<fileset dir="${basedir}" includes="*.txt"/>
-		</copy>
-		<copy todir="${dist_dir}/Licenses">
-			<fileset dir="${basedir}/Licenses" includes="**"/>
-		</copy>
-		
+	<target name="dist" depends="distfiles,jar,patch">
 		<zip destfile="${dist_dir}/${jshm.name}-${jshm.version}.zip">
 			<fileset 
 				dir="${dist_dir}"
-				includes="**"/>
+				includes="**"
+				excludes="${jshm.name}-patch-*.jar"/>
 		</zip>
 		
 		<!-- 7z a -bd -sfx7z.sfx out.exe *.txt *.jar Licenses/* -->
@@ -35,6 +29,7 @@
 			<arg value="a"/>
 			<arg value="-bd"/>
 			<arg value="-sfx7z.sfx"/>
+			<arg value="-x!${jshm.name}-patch-*.jar"/>
 			<arg value="${jshm.name}-${jshm.version}.exe"/>
 			<arg value="*.txt"/>
 			<arg value="*.jar"/>
@@ -42,13 +37,60 @@
 		</exec>
 	</target>
 	
-	<target name="jar" depends="compile">
+	<target name="distfiles">
 		<mkdir dir="${dist_dir}"/>
+		
+		<copy todir="${dist_dir}">
+			<fileset dir="${basedir}" includes="*.txt"/>
+		</copy>
+		<copy todir="${dist_dir}/Licenses">
+			<fileset dir="${basedir}/Licenses" includes="**"/>
+		</copy>
+	</target>
+	
+	<target name="jshminfo">
 		<taskdef 
 			name="jshminfo" 
 			classname="jshm.internal.tasks.JshmVersion" 
 			classpath="${bin_dir}"/>
 		<jshminfo/>
+	</target>
+	
+	<target name="patch" depends="compile,jshminfo,distfiles">
+		<mkdir dir="${dist_dir}"/>
+		
+		<jar
+			destfile="${dist_dir}/${jshm.name}-patch-${jshm.version}.jar"
+			compress="true">
+			
+			<!-- the patcher program itself -->
+			<fileset
+				dir="${bin_dir}"
+				includes="jshm/internal/patcher/**,jshm/logging/**"
+				excludes="jshm/internal/patcher/JarLoader*.class"/>
+			
+			<!-- the set of changed files within JSHManager.jar -->
+			<zipfileset
+				dir="${bin_dir}"
+				prefix="jar">
+				<includesfile name="${internal_src_dir}/jshm/internal/patcher/ChangedJarFiles.txt"/>
+			</zipfileset>
+			
+			<!-- the set of changed files in the program folder -->
+			<zipfileset
+				dir="${dist_dir}"
+				prefix="folder">
+				<includesfile name="${internal_src_dir}/jshm/internal/patcher/ChangedFolderFiles.txt"/>
+			</zipfileset>
+			
+			<manifest>
+				<attribute name="Main-Class" value="jshm.internal.patcher.Patcher"/>
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="jar" depends="compile,jshminfo">
+		<mkdir dir="${dist_dir}"/>
 		
 		<jar 
 			destfile="${dist_dir}/${jshm.name}.jar" 
@@ -82,7 +124,7 @@
 	</target>
 	
 	<target name="compile" depends="resources">
-		<javac destdir="${bin_dir}">
+		<javac destdir="${bin_dir}" debug="true">
 			<src path="${src_dir}"/>
 			<src path="${internal_src_dir}"/>
 			<include name="**"/>

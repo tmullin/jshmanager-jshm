@@ -17,8 +17,8 @@ import javax.swing.UIManager;
 
 import jshm.logging.FileFormatter;
 
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
+//import org.jdesktop.swingx.JXErrorPane;
+//import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * This class serves to replace files in an existing jar with the new patched
@@ -38,6 +38,7 @@ public class Patcher {
 		}
 	}
 	
+	static File patchJarFile = null;
 	static File progJarFile = null;
 	static PatcherGui gui = null;
 	final static Logger LOG = Logger.getLogger(Patcher.class.getName());
@@ -52,17 +53,18 @@ public class Patcher {
 		}
 		
 		try {
-			progJarFile = getProgJarFile();
+			progJarFile = getProgJarFile().getAbsoluteFile();
 			
 			gui = new PatcherGui();
 			gui.setLocationRelativeTo(null);
 			gui.setVisible(true);
 			configLogging();
 			
+			log("Current folder is " + progJarFile.getParentFile().getCanonicalPath());
 			log("Checking JSHManager.jar...");
-			JarLoader.load(progJarFile);
+//			JarLoader.load(progJarFile);
 			
-			try {
+//			try {
 				log("Checking patch file...");
 				String url = Patcher.class.getResource("/jshm/internal/patcher/Patcher.class").toExternalForm();
 				File f = getJarFileFromURL(url);
@@ -72,7 +74,9 @@ public class Patcher {
 					f = new File(URI.create(url));
 				}
 				
-				log("Using patch file " + f.getCanonicalPath());
+				patchJarFile = f;
+				
+				log("Using patch file " + patchJarFile.getCanonicalPath());
 				
 				JarFile patchJar = new JarFile(f);
 				
@@ -89,14 +93,19 @@ public class Patcher {
 				
 				log("Patching complete.", 1, 1);
 				gui.setClosedEnabled(true);
-			} catch (Throwable t) {
-				ErrorInfo ei = new ErrorInfo("Error", "Unknown error while patching", null, null, t, null, null);
-				JXErrorPane.showDialog(null, ei);
-				
-				gui.dispose();
-				System.exit(0);
-			}
+//			} catch (Throwable t) {
+//				LOG.log(Level.SEVERE, "Unknown error while patching", t);
+//				Class.forName("org.jdesktop.swingx.JXErrorPane", true, JarLoader.getLoader(patchJarFile));
+//				
+//				ErrorInfo ei = new ErrorInfo("Error", "Unknown error while patching", null, null, t, null, null);
+//				JXErrorPane.showDialog(null, ei);
+//				
+//				gui.dispose();
+//				System.exit(0);
+//			}
 		} catch (Throwable t) {
+			LOG.log(Level.SEVERE, "Unknown error while patching", t);
+			
 			StringWriter sw = new StringWriter();
 			t.printStackTrace(new PrintWriter(sw));
 			
