@@ -19,9 +19,16 @@ called "data" where settings and the database files will be stored.
 
 Upgrading:
 ----------
-To upgrade from a previous version, unzip the distribution file into
+If you downloaded a patch jar, ensure you saved it into the directory
+where JSHManager.jar is located. Then run the patch jar from that directory.
+On Windows, you can generally double-click the jar file to run it. A log
+of the patching operation will be located in data/logs/Patcher.txt.
+
+If you downlaoded the full version, just unzip the distribution file into
 your existing JSHManager directory and overrite any existing files
-if prompted. Your settings and data should not be affected.
+if prompted.
+
+Your settings and data should not be affected.
 
 
 Getting Started:

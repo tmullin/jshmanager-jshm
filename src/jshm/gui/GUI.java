@@ -32,17 +32,22 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
+import javax.swing.tree.TreePath;
 
 import jshm.Config;
 import jshm.JSHManager;
@@ -74,6 +79,61 @@ public class GUI extends javax.swing.JFrame {
     public GUI() {
         initComponents();
 
+//        System.out.println("Action keys:");
+//        for (Object o : jXTreeTable1.getActionMap().allKeys()) {
+//        	System.out.println(o);
+//        }
+//        
+//        System.out.println("\nInput keys:");
+//        for (KeyStroke o : 
+//        	jXTreeTable1
+//        		.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+//        			.allKeys()) {
+//        	System.out.println(o + ": " + jXTreeTable1.getInputMap().get(o));
+//        }
+        
+        
+        // fix the tree table so that pressing left/right arrow will collapse/expand the current
+        // row while maintaining cell selection on leaf rows
+        
+        jXTreeTable1.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "expandCurrentRow");
+        jXTreeTable1.getActionMap().put("expandCurrentRow", new AbstractAction() {
+        	Action parent = jXTreeTable1.getActionMap().get("selectNextColumnCell");
+        	
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = jXTreeTable1.getSelectedRow();
+				if (row == -1) return;
+				TreePath p = jXTreeTable1.getPathForRow(row);
+				
+				if (jXTreeTable1.getTreeTableModel().isLeaf(p.getLastPathComponent())) {
+					parent.actionPerformed(e);
+				} else {
+					jXTreeTable1.expandRow(row);
+				}
+			}
+        });
+        
+        jXTreeTable1.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "collapseCurrentRow");
+        jXTreeTable1.getActionMap().put("collapseCurrentRow", new AbstractAction() {
+        	Action parent = jXTreeTable1.getActionMap().get("selectPreviousColumnCell");
+        	
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = jXTreeTable1.getSelectedRow();
+				if (row == -1) return;
+				TreePath p = jXTreeTable1.getPathForRow(row);
+				
+				if (jXTreeTable1.getTreeTableModel().isLeaf(p.getLastPathComponent())) {
+					parent.actionPerformed(e);
+				} else {
+					jXTreeTable1.collapseRow(row);
+				}
+			}
+        });
+        
+        
+        
         setTitle("");
         setSize(Config.getInt("window.width"), Config.getInt("window.height"));
         setLocation(Config.getInt("window.x"), Config.getInt("window.y"));

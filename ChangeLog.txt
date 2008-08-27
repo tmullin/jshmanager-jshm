@@ -1,5 +1,9 @@
 JSHManager ChangeLog
 
+Version 0.0.3
+-------------
+- Selected rows can now be expanded/collapsed via the right/left arrow keys
+
 Version 0.0.2
 -------------
 - Fixed downloading scores for GH1/80s/OT (games that are only on one system)
