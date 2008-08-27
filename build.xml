@@ -60,14 +60,13 @@
 		<mkdir dir="${dist_dir}"/>
 		
 		<jar
-			destfile="${dist_dir}/${jshm.name}-patch-${jshm.version}.jar"
+			destfile="${dist_dir}/${jshm.name}-patch-${jshm.last_version}-to-${jshm.version}.jar"
 			compress="true">
 			
 			<!-- the patcher program itself -->
 			<fileset
 				dir="${bin_dir}"
-				includes="jshm/internal/patcher/**,jshm/logging/**"
-				excludes="jshm/internal/patcher/JarLoader*.class"/>
+				includes="jshm/internal/patcher/**,jshm/logging/**,jshm/util/Properties*.class"/>
 			
 			<!-- the set of changed files within JSHManager.jar -->
 			<zipfileset
@@ -157,6 +156,11 @@
 			<fileset
 				dir="${src_dir}/jshm/hibernate"
 				includes="hibernate.cfg.xml"/>
+		</copy>
+		<copy todir="${bin_dir}/jshm/internal/patcher">
+			<fileset
+				dir="${internal_src_dir}/jshm/internal/patcher"
+				includes="*.properties"/>
 		</copy>
 	</target>
 	

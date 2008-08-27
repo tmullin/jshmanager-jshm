@@ -648,8 +648,10 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			try {
 				songs = jshm.gh.GhSong.getSongs(game, difficulty);
 				
-				if (songs.size() == 0)
+				if (songs.size() == 0) {
+					// TODO auto-download score data
 					throw new Exception("you must download the song data for this game/difficulty");
+				}
 				
 				scores = jshm.gh.GhScore.getScores(game, difficulty);
 				model = new GhMyScoresTreeTableModel(game, songs, scores);

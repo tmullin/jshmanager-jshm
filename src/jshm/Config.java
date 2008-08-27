@@ -22,7 +22,6 @@ package jshm;
 
 import jshm.util.Properties;
 
-import java.util.*;
 import java.util.logging.*;
 import java.io.*;
 
@@ -100,20 +99,7 @@ public class Config {
 	 * @return
 	 */
 	public static String[] getArray(String propertyName) {
-		if (!propertyName.endsWith("."))
-			propertyName += ".";
-		
-		ArrayList<String> out = new ArrayList<String>();
-		
-		for (int i = 0; ; i++) {
-			try {
-				out.add(get(propertyName + i));
-			} catch (NullPointerException e) {
-				break;
-			}
-		}
-		
-		return out.toArray(new String[] {});
+		return p.getArray(propertyName);
 	}
 	
 	/**
@@ -122,15 +108,8 @@ public class Config {
 	 * @param propertyName
 	 * @param values
 	 */
-	public static void setArray(String propertyName, String[] values) {
-		if (!propertyName.endsWith("."))
-			propertyName += ".";
-		
-		clearKeys(propertyName);
-		
-		for (int i = 0; i < values.length; i++) {
-			set(propertyName + i, values[i]);
-		}
+	public static void setArray(String propertyName, String ... values) {
+		p.setArray(propertyName, values);
 	}
 	
 	/**
@@ -139,12 +118,7 @@ public class Config {
 	 * @param removeKeys
 	 */
 	public static void clearKeys(String ... removeKeys) {
-		String[] keys = p.keySet().toArray(new String[] {});
-		for (String key : keys) {
-			for (String removeKey : removeKeys)
-				if (key.startsWith(removeKey))
-					p.remove(key);
-		}
+		p.clearKeys(removeKeys);
 	}
 	
 	public static void restoreDefaults(String ... restoreKeys) {

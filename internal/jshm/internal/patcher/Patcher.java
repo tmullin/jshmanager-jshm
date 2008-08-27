@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import jshm.logging.FileFormatter;
+import jshm.util.Properties;
 
 //import org.jdesktop.swingx.JXErrorPane;
 //import org.jdesktop.swingx.error.ErrorInfo;
@@ -36,8 +37,25 @@ public class Patcher {
 			this.name = name;
 			this.inStream = inStream;
 		}
+		
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			
+			String oname = null;
+			
+			if (o instanceof PatchEntry)
+				oname = ((PatchEntry) o).name;
+			else if (o instanceof String)
+				oname = (String) o;
+			else
+				return false;
+			
+			return this.name.equals(oname);
+		}
 	}
 	
+	static Properties props = new Properties();
 	static File patchJarFile = null;
 	static File progJarFile = null;
 	static PatcherGui gui = null;
@@ -61,6 +79,7 @@ public class Patcher {
 			configLogging();
 			
 			log("Current folder is " + progJarFile.getParentFile().getCanonicalPath());
+									
 			log("Checking JSHManager.jar...");
 //			JarLoader.load(progJarFile);
 			
@@ -79,17 +98,31 @@ public class Patcher {
 				log("Using patch file " + patchJarFile.getCanonicalPath());
 				
 				JarFile patchJar = new JarFile(f);
+				JarEntry propsEntry = patchJar.getJarEntry("jshm/internal/patcher/Patcher.properties");
+				
+				if (null != propsEntry) {
+					props.load(
+						patchJar.getInputStream(propsEntry));
+				}
+				
+				log("Loaded " + props.keySet().size() + " patcher properties");
+				
+				for (Object key : props.keySet()) {
+					log("  " + key + "=" + props.get(key));
+				}
 				
 				log("Patching JSHManager.jar...");
 				
 				addFilesToExistingZip(
 					progJarFile,
-					getPatchEntries(patchJar, "jar/"));
+					getPatchEntries(patchJar, "jar/"),
+					Arrays.asList(props.getArray("jardelete")));
 				
 				log("Patching main directory...");
 				patchMainDir(
 					progJarFile.getParentFile(),
-					getPatchEntries(patchJar, "folder/"));
+					getPatchEntries(patchJar, "folder/"),
+					Arrays.asList(props.getArray("folderdelete")));
 				
 				log("Patching complete.", 1, 1);
 				gui.setClosedEnabled(true);
@@ -197,10 +230,19 @@ public class Patcher {
 		return ret;
 	}
 
-	public static void patchMainDir(final File dir, final List<PatchEntry> entries) throws Exception {
+	public static void patchMainDir(final File dir, final List<PatchEntry> entries, final List<String> delete) throws Exception {
 		if (!dir.isDirectory()) throw new IllegalArgumentException("dir is not a directory: " + dir.getCanonicalPath());
 		
 		int i = 0;
+		for (String s : delete) {
+			File cur = new File(dir, s);
+			log(
+				String.format("Deleting %s (%s of %s)", s, i + 1, delete.size()));
+			cur.delete();
+			i++;
+		}
+		
+		i = 0;
 		for (PatchEntry e : entries) {
 			File cur = new File(dir, e.name);
 			log(
@@ -211,7 +253,7 @@ public class Patcher {
 		}
 	}
 	
-	public static void addFilesToExistingZip(final File zipFile, final List<PatchEntry> entries)
+	public static void addFilesToExistingZip(final File zipFile, final List<PatchEntry> entries, final List<String> delete)
 			throws IOException {
 		// get a temp file
 		File tempFile = File.createTempFile(zipFile.getName(), null);
@@ -225,7 +267,7 @@ public class Patcher {
 					+ tempFile.getAbsolutePath());
 		}
 		
-		log("Copying unchanged files...");
+//		log("Copying files...");
 		
 		byte[] buf = new byte[1024];
 
@@ -234,15 +276,25 @@ public class Patcher {
 
 		ZipEntry entry = zin.getNextEntry();
 		int unchangedCount = 0;
+		int deletedCount = 0;
 		while (entry != null) {
 			String name = entry.getName();
 			boolean notInFiles = true;
 			
+			// don't copy file so it can be overridden
 			for (PatchEntry e : entries) {
 				if (e.name.equals(name)) {
 					notInFiles = false;
 					break;
 				}
+			}
+			
+			// don't copy file so it can be deleted
+			if (notInFiles && delete.contains(name)) {
+				deletedCount++;
+				log(
+					String.format("Deleting %s (%s of %s)", name, deletedCount, delete.size()));
+				notInFiles = false;
 			}
 			
 			if (notInFiles) {

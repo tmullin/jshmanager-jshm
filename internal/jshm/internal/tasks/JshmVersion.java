@@ -31,6 +31,7 @@ import org.apache.tools.ant.*;
  *
  */
 public class JshmVersion extends Task {
+	@Override
 	public void execute() throws BuildException {
 		Project p = getProject();
 		
@@ -44,6 +45,7 @@ public class JshmVersion extends Task {
 		log("Setting JSHM version to " + version, Project.MSG_INFO);
 		p.setProperty("jshm.name", JSHManager.APP_NAME);
 		p.setProperty("jshm.version", version);
+		p.setProperty("jshm.last_version", JSHManager.APP_LAST_VERSION);
 		p.setProperty("jshm.major_version", String.valueOf(JSHManager.APP_MAJOR_VERSION));
 		p.setProperty("jshm.minor_version", String.valueOf(JSHManager.APP_MINOR_VERSION));
 		p.setProperty("jshm.point_version", String.valueOf(JSHManager.APP_POINT_VERSION));
