@@ -20,6 +20,9 @@
  */
 package jshm.scraper;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.htmlparser.*;
 import org.htmlparser.http.*;
 import org.htmlparser.beans.FilterBean;
@@ -33,18 +36,18 @@ import org.htmlparser.util.*;
  *
  */
 public class Scraper {
-	public static NodeList scrape(final String url, final jshm.sh.DataTable dataTable) {
+	public static NodeList scrape(final String url, final jshm.sh.DataTable dataTable) throws ParserException {
 		return scrape(url, dataTable.getFilters(), true);
 	}
 	
-	public static NodeList scrape(final String url, final jshm.sh.DataTable dataTable, final boolean removeWhitespace) {
+	public static NodeList scrape(final String url, final jshm.sh.DataTable dataTable, final boolean removeWhitespace) throws ParserException {
 		return scrape(url, dataTable.getFilters(), removeWhitespace);
 	}
 	
 	public static NodeList scrape(
 			final String url,
 			final jshm.sh.DataTable dataTable,
-			final org.apache.commons.httpclient.Cookie[] cookies) {
+			final org.apache.commons.httpclient.Cookie[] cookies) throws ParserException {
 			
 			return scrape(url, dataTable.getFilters(), true, cookies);
 		}
@@ -53,16 +56,16 @@ public class Scraper {
 		final String url,
 		final jshm.sh.DataTable dataTable,
 		final boolean removeWhitespace,
-		final org.apache.commons.httpclient.Cookie[] cookies) {
+		final org.apache.commons.httpclient.Cookie[] cookies) throws ParserException {
 		
 		return scrape(url, dataTable.getFilters(), removeWhitespace, cookies);
 	}
 	
-	public static NodeList scrape(final String url, final NodeFilter[] filters) {
+	public static NodeList scrape(final String url, final NodeFilter[] filters) throws ParserException {
 		return scrape(url, filters, true);
 	}
 	
-	public static NodeList scrape(final String url, final NodeFilter[] filters, final boolean removeWhitespace) {
+	public static NodeList scrape(final String url, final NodeFilter[] filters, final boolean removeWhitespace) throws ParserException {
 		return scrape(url, filters, removeWhitespace, null);
 	}
 	
@@ -78,15 +81,18 @@ public class Scraper {
 	 * @param cookies Any cookies that should be passed along with
 	 * the request
 	 * @return
+	 * @throws ParserException 
 	 */
 	public static NodeList scrape(
 		final String url,
 		final NodeFilter[] filters,
 		final boolean removeWhitespace,
-		final org.apache.commons.httpclient.Cookie[] cookies) {
-		
-        FilterBean bean = new FilterBean ();
-        bean.setFilters (filters);
+		final org.apache.commons.httpclient.Cookie[] cookies) throws ParserException {
+				
+        FilterBean bean = new FilterBean();
+        bean.getParser().setFeedback(PARSER_FEEDBACK);
+        
+        bean.setFilters(filters);
         
         // set cookies if necessary
         if (null != cookies) {
@@ -118,5 +124,26 @@ public class Scraper {
         }
         
         return nodes;
+	}
+	
+	public static final MyParserFeedback PARSER_FEEDBACK = new MyParserFeedback();
+	
+	public static class MyParserFeedback implements ParserFeedback {
+		final Logger LOG = Logger.getLogger("org.htmlparser");
+		
+		@Override
+		public void error(String message, ParserException e) {
+			LOG.log(Level.SEVERE, message, e);
+		}
+
+		@Override
+		public void info(String message) {
+			LOG.info(message);
+		}
+
+		@Override
+		public void warning(String message) {
+			LOG.warning(message);
+		}
 	}
 }

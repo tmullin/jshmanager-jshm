@@ -43,7 +43,7 @@ public class GhSongScraper {
 	
 	public static List<GhSong> scrape(
 		final GhGame game, final Difficulty difficulty)
-	throws ScraperException {
+	throws ScraperException, ParserException {
 		
 		List<GhSong> songs = new ArrayList<GhSong>();
 		

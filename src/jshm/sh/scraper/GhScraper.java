@@ -67,11 +67,11 @@ public class GhScraper {
         filters[0] = filter7;
 	}
 	
-	public static NodeList scrape(String url) {
+	public static NodeList scrape(String url) throws ParserException {
 		return scrape(url, true);
 	}
 	
-	public static NodeList scrape(String url, boolean removeWhitespace) {
+	public static NodeList scrape(String url, boolean removeWhitespace) throws ParserException {
         return Scraper.scrape(url, filters, removeWhitespace);
 	}
 }

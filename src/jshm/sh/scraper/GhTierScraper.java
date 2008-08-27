@@ -23,6 +23,7 @@ package jshm.sh.scraper;
 import java.util.*;
 
 import org.htmlparser.util.NodeList;
+import org.htmlparser.util.ParserException;
 
 import jshm.Difficulty;
 import jshm.exceptions.*;
@@ -33,7 +34,7 @@ import jshm.sh.*;
 
 public class GhTierScraper {
 	public static List<String> scrape(GhGame game)
-	throws ScraperException {
+	throws ScraperException, ParserException {
 		final Difficulty difficulty = Difficulty.EXPERT;
 		
         List<String> tiers = new ArrayList<String>();

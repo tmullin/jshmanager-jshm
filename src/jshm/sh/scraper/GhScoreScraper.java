@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import org.htmlparser.util.NodeList;
+import org.htmlparser.util.ParserException;
 import org.netbeans.spi.wizard.ResultProgressHandle;
 
 import jshm.Difficulty;
@@ -49,7 +50,7 @@ public class GhScoreScraper {
 	
 	public static List<GhScore> scrapeAll(
 			final GhGame game, final Difficulty difficulty)
-		throws ScraperException {
+		throws ScraperException, ParserException {
 		return scrapeAll(null, game, difficulty);
 	}
 	
@@ -61,10 +62,11 @@ public class GhScoreScraper {
 	 * @param difficulty
 	 * @return
 	 * @throws ScraperException
+	 * @throws ParserException 
 	 */
 	public static List<GhScore> scrapeAll(
 			final ResultProgressHandle progress, final GhGame game, final Difficulty difficulty)
-		throws ScraperException {
+		throws ScraperException, ParserException {
 		if (Difficulty.CO_OP == difficulty)
 			throw new IllegalArgumentException("co-op is not yet supported");
 		
@@ -135,19 +137,19 @@ public class GhScoreScraper {
 	}
 	
 	public static List<GhScore> scrapeLatest(
-			final GhGame game, final Difficulty difficulty) throws ScraperException {
+			final GhGame game, final Difficulty difficulty) throws ScraperException, ParserException {
 		return scrapeLatest(game, difficulty, null);
 	}
 	
 	public static List<GhScore> scrapeLatest(
 			final GhGame game, final Difficulty difficulty, final List<Integer> scoreCounts)
-		throws ScraperException {
+		throws ScraperException, ParserException {
 		return scrapeLatest(null, game, difficulty, scoreCounts);
 	}
 	
 	public static List<GhScore> scrapeLatest(
 		final ResultProgressHandle progress, final GhGame game, final Difficulty difficulty, final List<Integer> scoreCounts)
-	throws ScraperException {
+	throws ScraperException, ParserException {
 		if (Difficulty.CO_OP == difficulty)
 			throw new IllegalArgumentException("co-op is not yet supported");
 		
@@ -299,8 +301,9 @@ public class GhScoreScraper {
 	 * @param song
 	 * @return A List of of all scores for the given song
 	 * @throws ScraperException
+	 * @throws ParserException 
 	 */
-	public static List<GhScore> scrapeScoresForSong(final GhSong song) throws ScraperException {
+	public static List<GhScore> scrapeScoresForSong(final GhSong song) throws ScraperException, ParserException {
 		LOG.info("Downloading additional scores for " + song);
 		
 		List<GhScore> scores = new ArrayList<GhScore>();

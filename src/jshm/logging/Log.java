@@ -28,17 +28,18 @@ public class Log {
 	public static final boolean DEBUG = true;
 	
 	public static void reloadConfig() throws Exception {
+		// all logging
 		Handler consoleHandler = new ConsoleHandler();
 		consoleHandler.setLevel(Level.ALL);
 		consoleHandler.setFormatter(new OneLineFormatter());
 		
 		Logger cur = Logger.getLogger("");
-		
-		for (Handler h : cur.getHandlers())
-			cur.removeHandler(h);
+		removeHandlers(cur);
 		
 		cur.addHandler(consoleHandler);
 		
+		
+		// jshm logging
 		Formatter fileFormatter = new FileFormatter();
 		Handler fileHandler = new FileHandler("data/logs/JSHManager.txt");
 		fileHandler.setLevel(Level.ALL);
@@ -48,17 +49,54 @@ public class Log {
 		cur.addHandler(fileHandler);
 		cur.setLevel(DEBUG ? Level.ALL : Level.INFO);
 		
+		
+		// hibernate logging
 		Handler hibernateHandler = new FileHandler("data/logs/Hibernate.txt");
 		hibernateHandler.setLevel(Level.ALL);
 		hibernateHandler.setFormatter(fileFormatter);
 		
 		cur = Logger.getLogger("org.hibernate");
-		
-		for (Handler h : cur.getHandlers())
-			cur.removeHandler(h);
+		removeHandlers(cur);
 		
 		cur.addHandler(hibernateHandler);
 		cur.setLevel(DEBUG ? Level.INFO : Level.WARNING);
+		
+		
+		// HttpClient logging
+		Handler httpClientHandler = new FileHandler("data/logs/HttpClient.txt");
+		httpClientHandler.setLevel(Level.ALL);
+		httpClientHandler.setFormatter(fileFormatter);
+		
+//		cur = Logger.getLogger("httpclient.wire");
+		cur = Logger.getLogger("httpclient.wire.header");
+		removeHandlers(cur);
+		
+		cur.addHandler(httpClientHandler);
+		cur.setLevel(DEBUG ? Level.ALL : Level.INFO);
+		
+		cur = Logger.getLogger("org.apache.commons.httpclient");
+		removeHandlers(cur);
+		
+		cur.addHandler(httpClientHandler);
+		cur.setLevel(DEBUG ? Level.FINER : Level.INFO);
+		
+		
+		// HtmlParser logging
+		Handler htmlParserHandler = new FileHandler("data/logs/HtmlParser.txt");
+		htmlParserHandler.setLevel(Level.ALL);
+		htmlParserHandler.setFormatter(fileFormatter);
+
+		cur = Logger.getLogger("org.htmlparser");
+		removeHandlers(cur);
+		
+		cur.addHandler(httpClientHandler);
+		cur.setLevel(DEBUG ? Level.ALL : Level.INFO);
+	}
+	
+	public static Logger removeHandlers(final Logger logger) {
+		for (Handler h : logger.getHandlers())
+			logger.removeHandler(h);
+		return logger;
 	}
 	
 //	public static void reloadConfig() {

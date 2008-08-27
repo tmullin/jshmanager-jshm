@@ -22,6 +22,7 @@ package jshm.sh.scraper;
 
 import org.htmlparser.NodeFilter;
 import org.htmlparser.util.NodeList;
+import org.htmlparser.util.ParserException;
 
 /**
  * This class is a helper for scraping stuff from ScoreHero
@@ -30,11 +31,11 @@ import org.htmlparser.util.NodeList;
  *
  */
 public class ShScraper {
-	public static NodeList scrape(final String url, final NodeFilter[] filters) {
+	public static NodeList scrape(final String url, final NodeFilter[] filters) throws ParserException {
 		return scrape(url, filters, true);
 	}
 	
-	public static NodeList scrape(final String url, final NodeFilter[] filters, final boolean removeWhitespace) {
+	public static NodeList scrape(final String url, final NodeFilter[] filters, final boolean removeWhitespace) throws ParserException {
 		return jshm.scraper.Scraper.scrape(url, filters, removeWhitespace, jshm.sh.Client.getAuthCookies());
 	}
 }
