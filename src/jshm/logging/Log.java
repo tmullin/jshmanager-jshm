@@ -41,12 +41,12 @@ public class Log {
 		
 		// jshm logging
 		Formatter fileFormatter = new FileFormatter();
-		Handler fileHandler = new FileHandler("data/logs/JSHManager.txt");
-		fileHandler.setLevel(Level.ALL);
-		fileHandler.setFormatter(fileFormatter);
+		Handler jshmHandler = new FileHandler("data/logs/JSHManager.txt");
+		jshmHandler.setLevel(Level.ALL);
+		jshmHandler.setFormatter(fileFormatter);
 		
 		cur = Logger.getLogger("jshm");
-		cur.addHandler(fileHandler);
+		cur.addHandler(jshmHandler);
 		cur.setLevel(DEBUG ? Level.ALL : Level.INFO);
 		
 		
@@ -89,7 +89,19 @@ public class Log {
 		cur = Logger.getLogger("org.htmlparser");
 		removeHandlers(cur);
 		
-		cur.addHandler(httpClientHandler);
+		cur.addHandler(htmlParserHandler);
+		cur.setLevel(DEBUG ? Level.ALL : Level.INFO);
+		
+		
+		// SwingX logging
+		Handler swingxHandler = new FileHandler("data/logs/SwingX.txt");
+		swingxHandler.setLevel(Level.ALL);
+		swingxHandler.setFormatter(fileFormatter);
+
+		cur = Logger.getLogger("org.jdesktop.swingx");
+		removeHandlers(cur);
+		
+		cur.addHandler(swingxHandler);
 		cur.setLevel(DEBUG ? Level.ALL : Level.INFO);
 	}
 	
@@ -98,28 +110,4 @@ public class Log {
 			logger.removeHandler(h);
 		return logger;
 	}
-	
-//	public static void reloadConfig() {
-//		try {
-//			String props =
-//				/*(Config.getInstance() != null && Config.getInstance().getBool("general.debug")
-//						 ?*/ "logging.debug.properties" /* : "logging.properties") */;
-//			
-////			System.out.println("Reading: " + props);
-//			
-//			InputStream in =
-//				Log.class.getResourceAsStream("/jshm/properties/" + props);
-//			LogManager.getLogManager().readConfiguration(in);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	public static void setLevel(Level level) {
-//		setLevel("jshm", level);
-//	}
-//	
-//	public static void setLevel(String logger, Level level) {
-//		Logger.getLogger(logger).setLevel(level);
-//	}
 }

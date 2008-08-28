@@ -27,7 +27,10 @@ import java.util.logging.*;
 
 /**
  * This formatter is intended for console logging. It's format is:<br>
- * <code>[HH:mm:ss][Level][Thread][Logger]: Message</code>.
+ * <pre>[HH:mm:ss][Level][Logger.method()]
+ *  Message</pre>
+ *  
+ * ...yes it should be renamed.
  * @author Tim Mullin
  *
  */
@@ -35,7 +38,7 @@ public class OneLineFormatter extends Formatter {
 	static final SimpleDateFormat df =
 		new SimpleDateFormat("HH:mm:ss");
 	static final String fmt =
-		"[%s][%-7s][%s][%s]: %s" + System.getProperty("line.separator");
+		"[%s][%-7s][%s.%s()]\n  %s\n";
 	
 	Date dt = new Date();
 	
@@ -46,9 +49,9 @@ public class OneLineFormatter extends Formatter {
 		sb.append(String.format(
 			fmt,
 			getDateFormat().format(dt),
-			r.getLevel().toString(),
-			Thread.currentThread().getName(),
+			r.getLevel(),
 			r.getLoggerName(),
+			r.getSourceMethodName(),
 			r.getMessage()
 		));	
 		

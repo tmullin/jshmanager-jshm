@@ -36,6 +36,8 @@ import org.htmlparser.util.*;
  *
  */
 public class Scraper {
+	static final Logger LOG = Logger.getLogger(Scraper.class.getName());
+	
 	public static NodeList scrape(final String url, final jshm.sh.DataTable dataTable) throws ParserException {
 		return scrape(url, dataTable.getFilters(), true);
 	}
@@ -88,7 +90,9 @@ public class Scraper {
 		final NodeFilter[] filters,
 		final boolean removeWhitespace,
 		final org.apache.commons.httpclient.Cookie[] cookies) throws ParserException {
-				
+		
+		LOG.finest("entered Scraper.scrape()");
+		
         FilterBean bean = new FilterBean();
         bean.getParser().setFeedback(PARSER_FEEDBACK);
         
@@ -96,20 +100,26 @@ public class Scraper {
         
         // set cookies if necessary
         if (null != cookies) {
+        	LOG.fine("Setting cookies");
         	ConnectionManager cm = Parser.getConnectionManager();
         	Cookie cookie = null;
         	
         	// have to convert from commons cookie to htmlparser cookie
         	for (org.apache.commons.httpclient.Cookie c : cookies) {
+        		LOG.finer("  " + c);
         		cookie = new Cookie(c.getName(), c.getValue());
         		cm.setCookie(cookie, c.getDomain());
         	}
         }
         
+        LOG.finest("calling bean.setURL()");
         bean.setURL(url);
+        LOG.finest("calling bean.getNodes()");
         NodeList nodes = bean.getNodes();
         
         if (removeWhitespace) {
+        	LOG.finer("Removing whitespace from retrieved nodes");
+        	
 	        // now filter out text nodes that only have whitespace {{{
 	        RegexFilter filter8 = new RegexFilter ();
 	        filter8.setStrategy (RegexFilter.MATCH);
@@ -120,9 +130,11 @@ public class Scraper {
 	        });
 	        NotFilter filter11 = new NotFilter(filter10);
 
+	        LOG.finest("calling nodes.keepAllNodesThatMatch()");
 	        nodes.keepAllNodesThatMatch(filter11, true);
         }
         
+        LOG.finest("returning from Scraper.scrape()");
         return nodes;
 	}
 	

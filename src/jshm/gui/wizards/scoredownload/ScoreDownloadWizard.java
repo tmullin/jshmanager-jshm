@@ -93,9 +93,11 @@ public class ScoreDownloadWizard {
 		public void start(Map settings, ResultProgressHandle progress) {
 			try {
 				if (!jshm.sh.Client.hasAuthCookies()) {
+					LOG.finer("Showing login dialog to get auth cookies");
 					JXLoginDialog login = new ShLoginDialog(null);					
 					login.setLocationRelativeTo(null);
 					login.setVisible(true);
+					LOG.finest("Returned from login dialog");
 				}
 
 				// TODO change to a select count(*) for efficiency
@@ -103,6 +105,7 @@ public class ScoreDownloadWizard {
 				
 				if (songs.size() == 0) {
 					// need to load song data as well
+					LOG.fine("Downloading song data first");
 					progress.setBusy("Downloading song data");
 					jshm.dataupdaters.GhSongUpdater.update(game, difficulty);
 				}

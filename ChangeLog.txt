@@ -1,5 +1,9 @@
 JSHManager ChangeLog
 
+Version 0.0.4
+-------------
+- Additional logging information is stored in data/logs.
+
 Version 0.0.3
 -------------
 - Selected rows can now be expanded/collapsed via the right/left arrow keys

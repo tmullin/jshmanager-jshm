@@ -109,28 +109,35 @@ public class Client {
 			
 			@Override
 			public void afterSubmit(final int response, final HttpClient client, final HttpMethod method) throws Exception {
+				HttpForm.LOG.finest("entered getAuthCookies().HttpForm.afterSubmit()");
+				
 				Cookie[] cookies = client.getState().getCookies();
 				
 				if (response == 302 && checkAuthCookies(cookies, userName)) {
 //					System.out.println("Validated Successfully!");
 					method.releaseConnection();
 					cookieCache = cookies;
+					HttpForm.LOG.finest("exiting getAuthCookies().HttpForm.afterSubmit()");
 					return;
 				}
 				
 				String body = method.getResponseBodyAsString();
 				method.releaseConnection();
 				
-				if (body.contains("Invalid login, please try again.")) {
-					throw new ClientException("invalid login credentials");
+				try {
+					if (body.contains("Invalid login, please try again.")) {
+						throw new ClientException("invalid login credentials");
+					}
+					
+					if (body.contains("Too many failed attempts, you must wait before trying again.")) {
+						throw new ClientException("too many failed login attempts");
+					}
+					
+					throw new ClientException("login failed, unknown error");
+				} catch (Exception t) {
+					LOG.throwing("Client", "getAuthCookies().HttpClient.afterSubmit()", t);
+					throw t;
 				}
-				
-				if (body.contains("Too many failed attempts, you must wait before trying again.")) {
-					throw new ClientException("too many failed login attempts");
-				}
-				
-				throw new ClientException("login failed, unknown error");
-
 			}
 		}.submit();
 		

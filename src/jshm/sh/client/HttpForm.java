@@ -28,7 +28,7 @@ import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.*;
 
 public class HttpForm {
-	static final Logger LOG = Logger.getLogger(HttpForm.class.getName());
+	public static final Logger LOG = Logger.getLogger(HttpForm.class.getName());
 	
 	public final String url;
 	public final NameValuePair[] data;
@@ -86,9 +86,14 @@ public class HttpForm {
 				 : nvp.getValue()));
 		}
 		
+		LOG.finest("calling getHttpClient()");
 		HttpClient client = Client.getHttpClient();
+		LOG.finest("executing method");
 		int response = client.executeMethod(this.method);
+		LOG.fine("Received " + response + " response code");
 		this.afterSubmit(response, client, this.method);
+		
+		LOG.finest("exiting HttpForm.submit()");
 	}
 	
 	/**

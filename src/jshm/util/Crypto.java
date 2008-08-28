@@ -78,24 +78,36 @@ public class Crypto {
 	}
 	
 	public static String encrypt(String clearText) {
+		LOG.finest("entered Crypto.encrypt()");
+		
 		try {
+			LOG.finest("initting encryption cipher");
 			cipher.init(Cipher.ENCRYPT_MODE, key);
-			return new String(cipher.doFinal(clearText.getBytes()));
+			LOG.finest("encrypting clearText");
+			clearText = new String(cipher.doFinal(clearText.getBytes()));
+			LOG.finest("encryption succeeded");
 		} catch (Throwable e) {
 			LOG.log(Level.WARNING, "Unable to encrypt string", e);
 		}
 		
+		LOG.finest("exiting Crypto.encrypt()");
 		return clearText;
 	}
 	
 	public static String decrypt(String cipherText) {
+		LOG.finest("entered Crypto.decrypt()");
+		
 		try {
+			LOG.finest("initting decryption cipher");
 			cipher.init(Cipher.DECRYPT_MODE, key);
-			return new String(cipher.doFinal(cipherText.getBytes()));
+			LOG.finest("decrypting cipherText");
+			cipherText = new String(cipher.doFinal(cipherText.getBytes()));
+			LOG.finest("decryption succeeded");
 		} catch (Throwable e) {
 			LOG.log(Level.WARNING, "Unable to decrypt string", e);
 		}
 		
+		LOG.finest("exiting Crypto.decrypt()");
 		return cipherText;
 	}
 	

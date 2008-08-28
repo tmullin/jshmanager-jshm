@@ -24,6 +24,7 @@ import java.awt.Frame;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import jshm.util.Crypto;
 
@@ -33,6 +34,8 @@ import org.jdesktop.swingx.auth.LoginService;
 import org.jdesktop.swingx.auth.PasswordStore;
 
 public class ShLoginDialog extends JXLoginDialog {
+	static final Logger LOG = Logger.getLogger(ShLoginDialog.class.getName());
+	
 	public ShLoginDialog() {
 		this(null, true);
 	}
@@ -77,6 +80,7 @@ public class ShLoginDialog extends JXLoginDialog {
 		Properties props = new Properties();
 		
 		public void load() throws Exception {
+			LOG.finest("Loading password from data/passwords.properties");
 			props.load(new FileInputStream("data/passwords.properties"));
 		}
 		
@@ -118,6 +122,8 @@ public class ShLoginDialog extends JXLoginDialog {
 		
 		@Override
 		public char[] get(String username, String server) {
+			LOG.finer("Retrieving password for " + username);
+			
 			if (props.isEmpty()) {
 				try {
 					load();
@@ -134,9 +140,12 @@ public class ShLoginDialog extends JXLoginDialog {
 		@Override
 		public boolean set(String username, String server,
 				char[] password) {
+			LOG.finer("Setting password for " + username);
 			props.clear();
 			props.setProperty(username,
 				Crypto.encrypt(String.valueOf(password)));
+			
+			LOG.finest("  encrypted=" + props.getProperty(username));
 			
 			try {
 				props.store(new FileOutputStream("data/passwords.properties", false), "");
