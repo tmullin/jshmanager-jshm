@@ -37,11 +37,17 @@ public class DownloadModePage extends WizardPage {
 		this.setLongDescription("Select how to download your scores");
 		
 		ButtonGroup group = new ButtonGroup();
-		latestButton = new JRadioButton("<html>Download latest scores.<br>Only one HTTP request is required but only the latest scores from the manage scores page are retrieved.");
+		latestButton = new JRadioButton(
+			"<html>Download latest scores.<br>" +
+			"Only one HTTP request is required but only the latest scores<br>" +
+			"from the manage scores page are retrieved.");
 		latestButton.setSelected(true);
 		latestButton.setName("latest");
 		group.add(latestButton);
-		allButton = new JRadioButton("<html>Download all scores.<br>One HTTP request is required per song but all scores will be retrieved.<br>This can take more than a minute to complete.");
+		allButton = new JRadioButton(
+			"<html>Download all scores.<br>" +
+			"One HTTP request is required per song but all scores will be retrieved.<br>" +
+			"This can take more than a minute to complete.");
 		allButton.setName("all");
 		group.add(allButton);
 		

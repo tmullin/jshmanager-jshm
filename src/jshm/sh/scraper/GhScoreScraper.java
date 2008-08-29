@@ -220,7 +220,7 @@ public class GhScoreScraper {
 			if (null != scoreCounts)
 				scoreCounts.add(Integer.parseInt(data[1][0]));
 			
-			LOG.finest("scoreCount for + " + data[2][1] + " = " + data[1][0]);
+			LOG.finest("scoreCount for " + data[2][1] + " = " + data[1][0]);
 			
 			GhScore score = new GhScore();
 			score.setStatus(Score.Status.SUBMITTED);
@@ -241,6 +241,7 @@ public class GhScoreScraper {
 			if (data[i].length >= 2) {
 				for (int j = 1; j < data[i].length && j < 3; j++) {
 					if (null == data[i][j] || data[i][j].isEmpty()) break;
+					
 					if (data[i][j].startsWith("pic:"))
 						score.setImageUrl(data[i][j].substring(4));
 					else if (data[i][j].startsWith("vid:"))
