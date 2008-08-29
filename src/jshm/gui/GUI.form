@@ -77,7 +77,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="loadMyScoresMenuItem">
               <Properties>
                 <Property name="mnemonic" type="int" value="76"/>
-                <Property name="text" type="java.lang.String" value="Download from ScoreHero"/>
+                <Property name="text" type="java.lang.String" value="Download from ScoreHero..."/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
@@ -87,11 +87,24 @@
             <MenuItem class="javax.swing.JMenuItem" name="uploadScoresMenuItem">
               <Properties>
                 <Property name="mnemonic" type="int" value="85"/>
-                <Property name="text" type="java.lang.String" value="Upload to ScoreHero"/>
+                <Property name="text" type="java.lang.String" value="Upload to ScoreHero..."/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uploadScoresMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="uploadSelectedScoreMenuItem">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+U"/>
+                </Property>
+                <Property name="mnemonic" type="int" value="83"/>
+                <Property name="text" type="java.lang.String" value="Upload Selected Score"/>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uploadSelectedScoreMenuItemActionPerformed"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="jSeparator1">
@@ -110,7 +123,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="loadSongDataMenuItem">
               <Properties>
                 <Property name="mnemonic" type="int" value="76"/>
-                <Property name="text" type="java.lang.String" value="Download from ScoreHero"/>
+                <Property name="text" type="java.lang.String" value="Download from ScoreHero..."/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
@@ -157,7 +170,7 @@
             <Menu class="javax.swing.JMenu" name="viewLogMenu">
               <Properties>
                 <Property name="mnemonic" type="int" value="103"/>
-                <Property name="text" type="java.lang.String" value="View Log..."/>
+                <Property name="text" type="java.lang.String" value="View Log"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initDynamicGameMenu(viewLogMenu);"/>

@@ -29,6 +29,7 @@ package jshm.gui;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,6 +37,8 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,6 +65,8 @@ import jshm.gui.wizards.scoredownload.ScoreDownloadWizard;
 import jshm.gui.wizards.scoreupload.ScoreUploadWizard;
 
 import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.JXLoginDialog;
+import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.netbeans.spi.wizard.Wizard;
 
@@ -251,6 +256,7 @@ public class GUI extends javax.swing.JFrame {
         jSeparator3 = new javax.swing.JSeparator();
         loadMyScoresMenuItem = new javax.swing.JMenuItem();
         uploadScoresMenuItem = new javax.swing.JMenuItem();
+        uploadSelectedScoreMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
         songDataMenu = new javax.swing.JMenu();
         loadSongDataMenuItem = new javax.swing.JMenuItem();
@@ -343,7 +349,7 @@ public class GUI extends javax.swing.JFrame {
         myScoresMenu.add(jSeparator3);
 
         loadMyScoresMenuItem.setMnemonic('L');
-        loadMyScoresMenuItem.setText("Download from ScoreHero");
+        loadMyScoresMenuItem.setText("Download from ScoreHero...");
         loadMyScoresMenuItem.setEnabled(false);
         loadMyScoresMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -353,7 +359,7 @@ public class GUI extends javax.swing.JFrame {
         myScoresMenu.add(loadMyScoresMenuItem);
 
         uploadScoresMenuItem.setMnemonic('U');
-        uploadScoresMenuItem.setText("Upload to ScoreHero");
+        uploadScoresMenuItem.setText("Upload to ScoreHero...");
         uploadScoresMenuItem.setEnabled(false);
         uploadScoresMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -361,6 +367,17 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         myScoresMenu.add(uploadScoresMenuItem);
+
+        uploadSelectedScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.CTRL_MASK));
+        uploadSelectedScoreMenuItem.setMnemonic('S');
+        uploadSelectedScoreMenuItem.setText("Upload Selected Score");
+        uploadSelectedScoreMenuItem.setEnabled(false);
+        uploadSelectedScoreMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uploadSelectedScoreMenuItemActionPerformed(evt);
+            }
+        });
+        myScoresMenu.add(uploadSelectedScoreMenuItem);
         myScoresMenu.add(jSeparator1);
 
         initDynamicGameMenu(myScoresMenu);
@@ -371,7 +388,7 @@ public class GUI extends javax.swing.JFrame {
         songDataMenu.setText("Song Data");
 
         loadSongDataMenuItem.setMnemonic('L');
-        loadSongDataMenuItem.setText("Download from ScoreHero");
+        loadSongDataMenuItem.setText("Download from ScoreHero...");
         loadSongDataMenuItem.setEnabled(false);
         loadSongDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -416,7 +433,7 @@ public class GUI extends javax.swing.JFrame {
         helpMenu.add(licenseMenuItem);
 
         viewLogMenu.setMnemonic('g');
-        viewLogMenu.setText("View Log...");
+        viewLogMenu.setText("View Log");
 
         initDynamicGameMenu(viewLogMenu);
 
@@ -514,16 +531,23 @@ private void jXTreeTable1TreeExpanded(javax.swing.event.TreeExpansionEvent evt) 
 
 private void jXTreeTable1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jXTreeTable1ValueChanged
 //	System.out.println("now selected: " + evt.getPath());
-	Object o = evt.getPath().getLastPathComponent();
+	final Object o = evt.getPath().getLastPathComponent();
+	final boolean goodRowCount = jXTreeTable1.getSelectedRowCount() == 1;
+	final boolean isGhScore = o instanceof GhScore;
+	final GhScore score = isGhScore ? (GhScore) o : null;
 	
 	addNewScoreMenuItem.setEnabled(
-		jXTreeTable1.getSelectedRowCount() > 0 &&
-		(o instanceof GhScore || o instanceof GhMyScoresTreeTableModel.SongScores));
+		goodRowCount &&
+		(isGhScore || o instanceof GhMyScoresTreeTableModel.SongScores));
 	deleteSelectedScoreMenuItem.setEnabled(
-		jXTreeTable1.getSelectedRowCount() > 0 &&
-		o instanceof GhScore &&
-		(((GhScore) o).getStatus() == Score.Status.NEW ||
-		 ((GhScore) o).getStatus() == Score.Status.TEMPLATE));
+		goodRowCount &&
+		isGhScore &&
+		(score.getStatus() == Score.Status.NEW ||
+		 score.getStatus() == Score.Status.TEMPLATE));
+	uploadSelectedScoreMenuItem.setEnabled(
+		goodRowCount &&
+		isGhScore &&
+		score.getStatus() == Score.Status.NEW);
 }//GEN-LAST:event_jXTreeTable1ValueChanged
 
 private void addNewScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNewScoreMenuItemActionPerformed
@@ -563,6 +587,65 @@ private void changeLogMenuItemActionPerformed(java.awt.event.ActionEvent evt) {/
 private void licenseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_licenseMenuItemActionPerformed
 	showTextFileViewer("License.txt");
 }//GEN-LAST:event_licenseMenuItemActionPerformed
+
+private void uploadSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadSelectedScoreMenuItemActionPerformed
+	final Object selected =
+		// not obscure at all....
+		((JXTree) jXTreeTable1.getCellRenderer(0, jXTreeTable1.getHierarchicalColumn()))
+			.getSelectionPath().getLastPathComponent();
+	
+	if (!(selected instanceof GhScore)) {
+		LOG.fine("Expecting selected to be a GhScore but it was a " + selected.getClass().getName());
+		return;
+	}
+	
+	new SwingWorker<Void, Void>() {
+		@Override
+		protected Void doInBackground() throws Exception {
+			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			statusBar1.setText("Uploading score to ScoreHero...", true);
+			
+			try {
+				if (!jshm.sh.Client.hasAuthCookies()) {
+					JXLoginDialog login = new ShLoginDialog(null);					
+					login.setLocationRelativeTo(GUI.this);
+					login.setVisible(true);
+				}
+				
+				GhScore score = (GhScore) selected;
+				jshm.sh.GhApi.submitGhScore(score);
+				statusBar1.setText(true, "Uploaded " + score.getSong().getTitle() + " (" + score.getScore() + ") successfully");
+			} catch (Exception e) {
+				LOG.log(Level.SEVERE, "Failed to upload score", e);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to upload score", null, null, e, null, null);
+				JXErrorPane.showDialog(GUI.this, ei);
+				statusBar1.revertText();
+			} finally {
+				statusBar1.setProgressVisible(false);
+				getContentPane().setCursor(Cursor.getDefaultCursor());
+			}
+			
+			return null;
+		}
+		
+		@Override
+		public void done() {
+			// let the message be seen for a couple of seconds
+			new Timer().schedule(new TimerTask() {
+				@Override
+				public void run() {
+					if (!EventQueue.isDispatchThread()) {
+						EventQueue.invokeLater(this);
+						return;
+					}
+
+					statusBar1.revertText();
+				}
+			}, 3000);
+		}
+		
+	}.execute();
+}//GEN-LAST:event_uploadSelectedScoreMenuItemActionPerformed
 
 public void showTextFileViewer(final String file) {
 	try {
@@ -850,6 +933,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private jshm.gui.components.StatusBar statusBar1;
     private jshm.gui.TextFileViewerDialog textFileViewerDialog1;
     private javax.swing.JMenuItem uploadScoresMenuItem;
+    private javax.swing.JMenuItem uploadSelectedScoreMenuItem;
     private javax.swing.JMenu viewLogMenu;
     // End of variables declaration//GEN-END:variables
 

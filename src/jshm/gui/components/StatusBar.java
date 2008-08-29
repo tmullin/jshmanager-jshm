@@ -26,6 +26,8 @@
 
 package jshm.gui.components;
 
+import java.util.logging.Logger;
+
 import javax.swing.JProgressBar;
 
 /**
@@ -33,6 +35,8 @@ import javax.swing.JProgressBar;
  * @author  Tim
  */
 public class StatusBar extends javax.swing.JPanel {
+	static final Logger LOG = Logger.getLogger(StatusBar.class.getName());
+	
 	String text = "";
 	String lastText = "";
 	
@@ -47,17 +51,31 @@ public class StatusBar extends javax.swing.JPanel {
     	setText(str, false);
     }
     
+    public void setText(boolean revertFirst, String str) {
+    	setText(revertFirst, str, false);
+    }
+    
+    public void setText(String str, boolean toggleProgress) {
+    	setText(false, str, toggleProgress);
+    }
+    
     /**
      * 
+     * @param revertFirst Whether to call revertText() before setting the text.
      * @param str The text to display in the progress bar.
      * @param toggleProgress If <code>true</code> and <code>str</code>
      * is not empty, the progress bar will be made visible in
      * indeterminite mode, otherwise if <code>str</code> is empty, the
      * progress bar will be hidden.
      */
-	public void setText(String str, boolean toggleProgress) {
+	public void setText(boolean revertFirst, String str, boolean toggleProgress) {
+		if (revertFirst) revertText();
+		
 		this.lastText = this.text;
 		this.text = str;
+		
+		LOG.finer(
+			String.format("Setting text to \"%s\" (last=\"%s\")", this.text, this.lastText));
 		
 		if (this.text.isEmpty()) {
 			textLabel.setText("  ");
@@ -87,6 +105,8 @@ public class StatusBar extends javax.swing.JPanel {
 		this.text = this.lastText;
 		this.lastText = "";
 		
+		LOG.finer("Reverting text to \"" + this.text + "\"");
+		
 		textLabel.setText(this.text.isEmpty() ? "  " : this.text);
 	}
 	
@@ -95,6 +115,7 @@ public class StatusBar extends javax.swing.JPanel {
 	}
 	
 	public void setProgressVisible(boolean value) {
+		LOG.finer("Setting progress visible to " + value);
 		progSeparator.setVisible(value);
 		jProgressBar1.setVisible(value);
 	}

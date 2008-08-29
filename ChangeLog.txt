@@ -8,6 +8,9 @@ Version 0.0.4
   to the Help menu.
 - Picture and video links are now saved when scores are downloaded. This
   will be utilized in a future version.
+- New scores can now be uploaded individually by first selecting the score
+  and clicking "Upload Selected Score" in the "My Scores" menu or by
+  pressing CTRL+U.
 
 Version 0.0.3
 -------------
