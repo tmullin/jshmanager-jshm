@@ -6,6 +6,8 @@ Version 0.0.4
 - Corrected calculated rating rounding to be consistent with ScoreHero.
 - Quick access to the Readme, ChangeLog, License, and logs has been added
   to the Help menu.
+- Picture and video links are now saved when scores are downloaded. This
+  will be utilized in a future version.
 
 Version 0.0.3
 -------------

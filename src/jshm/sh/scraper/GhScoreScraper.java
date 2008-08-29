@@ -235,6 +235,20 @@ public class GhScoreScraper {
 			
 			score.setScore(Integer.parseInt(data[i][0]));
 			
+			
+			// check for pic/vid links
+			
+			if (data[i].length >= 2) {
+				for (int j = 1; j < data[i].length && j < 3; j++) {
+					if (null == data[i][j] || data[i][j].isEmpty()) break;
+					if (data[i][j].startsWith("pic:"))
+						score.setImageUrl(data[i][j].substring(4));
+					else if (data[i][j].startsWith("vid:"))
+						score.setVideoUrl(data[i][j].substring(4));
+				}
+			}
+			
+			
 			i++; // i = 5 or 6 for rating
 			
 			if (data[i].length == 2 && !data[i][1].isEmpty()) {

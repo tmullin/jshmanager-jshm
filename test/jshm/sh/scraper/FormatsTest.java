@@ -20,6 +20,10 @@
  */
 package jshm.sh.scraper;
 
+import org.htmlparser.nodes.TextNode;
+import org.htmlparser.tags.ImageTag;
+import org.htmlparser.tags.TableTag;
+import org.htmlparser.util.NodeList;
 import org.junit.*;
 
 import static org.junit.Assert.*;
@@ -41,5 +45,23 @@ public class FormatsTest extends jshm.scraper.format.TagFormatTest {
 	@Test public void songIdTest2() {
 		node.setAttribute("href", "another/value/that/doesnt/match");
 		assertEquals("", Formats.SONG_ID_HREF.getText(node));
+	}
+	
+	@Test public void picVidTest1() {
+		node.setAttribute("href", "http://www.google.com");
+		node.setChildren(new NodeList(new TextNode("12,345")));
+		assertEquals("pic:http://www.google.com", Formats.PIC_VID_LINK.getText(node));
+	}
+	
+	@Test public void picVidTest2() {
+		node.setAttribute("href", "http://www.youtube.com");
+		node.setChildren(new NodeList(new ImageTag()));
+		assertEquals("vid:http://www.youtube.com", Formats.PIC_VID_LINK.getText(node));
+	}
+	
+	@Test public void picVidTest3() {
+		node.setAttribute("href", "http://www.youtube.com");
+		node.setChildren(new NodeList(new TableTag()));
+		assertEquals("", Formats.PIC_VID_LINK.getText(node));
 	}
 }

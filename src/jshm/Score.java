@@ -457,6 +457,11 @@ public abstract class Score {
 		sb.append(",sdate=");
 		sb.append(submissionDate == null ? null : DateFormat.getInstance().format(submissionDate));
 		
+		sb.append(",pic=");
+		sb.append(imageUrl);
+		sb.append(",vid=");
+		sb.append(videoUrl);
+		
 		return sb.toString();
 	}
 }

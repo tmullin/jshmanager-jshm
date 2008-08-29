@@ -27,6 +27,11 @@ public class Print {
 	 */
 	public static <T> void print(T[][] data) {
 		for (T[] cur : data) {
+			if (null == cur) {
+				System.out.println("(null)");
+				continue;
+			}
+			
 			for (T s : cur) {
 				System.out.print(s);
 				System.out.print(',');

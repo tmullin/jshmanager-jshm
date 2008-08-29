@@ -20,8 +20,11 @@
  */
 package jshm.sh.scraper;
 
+import org.htmlparser.Node;
+import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.ImageTag;
 import org.htmlparser.tags.LinkTag;
+import org.htmlparser.util.NodeList;
 
 import jshm.scraper.format.RegexFormatCallback;
 import jshm.scraper.format.TableColumnFormat;
@@ -43,10 +46,42 @@ public class Formats {
 		new RegexFormatCallback("^.*song=(\\d+).*$", 1)
 	);
 	
+	public static final TagFormat PIC_VID_LINK = new TagFormat("href") {
+		/**
+		 * This requires extra processing to see if the link's child
+		 * is a text node or an image node for the pic or vid link
+		 * respectively.
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected String getTextInternal(final Node node) {
+			String ret = super.getTextInternal(node);
+			
+			NodeList children = node.getChildren();
+			
+			if (children.size() != 1) return "";
+			
+			if (children.elementAt(0) instanceof TextNode) {
+				// if the child is a text node, it is the
+				// score's link, which links to the picture url
+				ret = "pic:" + ret;
+			} else if (children.elementAt(0) instanceof ImageTag) {
+				// if the child is an image, it is the camera image
+				// link, which links to the video url
+				ret = "vid:" + ret;
+			} else {
+				ret = "";
+			}
+			
+			return ret;
+		}
+	};
+	
 	static {
 		TableColumnFormat.addFormat("link", LinkTag.class,
 			TagFormat.HREF,
-			"songid", SONG_ID_HREF);
+			"songid", SONG_ID_HREF,
+			"picvid", PIC_VID_LINK);
 			
 		TableColumnFormat.addFormat("img", ImageTag.class,
 			TagFormat.SRC,
