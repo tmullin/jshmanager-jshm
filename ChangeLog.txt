@@ -3,6 +3,7 @@ JSHManager ChangeLog
 Version 0.0.4
 -------------
 - Additional logging information is stored in data/logs.
+- Corrected calculated rating rounding to be consistent with ScoreHero.
 
 Version 0.0.3
 -------------

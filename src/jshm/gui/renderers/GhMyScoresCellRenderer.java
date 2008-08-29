@@ -72,7 +72,9 @@ public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
 					setIcon(score.getRatingIcon());
 					setText(
 						score.getCalculatedRating() != 0.0f
-						? String.format("(%01.1f)", score.getCalculatedRating())
+						? String.format("(%01.1f)", 
+							(float) ((int) (score.getCalculatedRating() * 10)) / 10.0f
+						  )
 						: "");
 					break;
 				

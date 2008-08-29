@@ -21,6 +21,8 @@
 package jshm.gh;
 
 import java.util.List;
+import java.util.logging.Logger;
+
 import javax.persistence.*;
 
 import org.hibernate.validator.*;
@@ -36,8 +38,12 @@ import jshm.Difficulty;
  */
 @Entity
 public class GhSong extends jshm.Song {
+	static final Logger LOG = Logger.getLogger(GhSong.class.getName());
+	
 	@SuppressWarnings("unchecked")
 	public static List<GhSong> getSongs(final GhGame game, final Difficulty difficulty) {
+		LOG.finer("Querying database for all songs for " + game + " on " + difficulty);
+		
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
 	    List<GhSong> result =
@@ -69,6 +75,8 @@ public class GhSong extends jshm.Song {
 	}
 	
 	public static GhSong getByScoreHeroId(final int id) {
+		LOG.finer("Querying database for song with scoreHeroId=" + id);
+		
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
 	    GhSong result =
@@ -171,7 +179,12 @@ public class GhSong extends jshm.Song {
 	
 	@Transient
 	public float getCalculatedRating(int score) {
-		if (!canCalculateRating()) return 0f;
+		LOG.finer("Calculating rating for \"" + this.getTitle() + "\", score=" + score);
+		
+		if (!canCalculateRating()) {
+			LOG.finer("Can't calculate rating, returning 0");
+			return 0f;
+		}
 		
 		if (score >= nineStarCutoff)
 			return 9.0f;
@@ -205,7 +218,10 @@ public class GhSong extends jshm.Song {
 		int scoreDiff = score - lowCutoff;
 		int cutoffDiff = highCutoff - lowCutoff;
 		
-		return majorRating + ((float) scoreDiff / (float) cutoffDiff);
+		float ret = majorRating + ((float) scoreDiff / (float) cutoffDiff);
+		
+		LOG.finer("Returning " + ret);
+		return ret;
 	}
 	
 	@Override
