@@ -4,6 +4,8 @@ Version 0.0.4
 -------------
 - Additional logging information is stored in data/logs.
 - Corrected calculated rating rounding to be consistent with ScoreHero.
+- Quick access to the Readme, ChangeLog, License, and logs has been added
+  to the Help menu.
 
 Version 0.0.3
 -------------

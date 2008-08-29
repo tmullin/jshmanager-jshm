@@ -200,6 +200,8 @@ public class GUI extends javax.swing.JFrame {
     
     @Override
     public void dispose() {
+    	LOG.finer("Saving GUI's location and size");
+    	
     	Dimension size = getSize();
     	Point loc = getLocation();
     	
@@ -215,6 +217,13 @@ public class GUI extends javax.swing.JFrame {
     	} else {
     		Config.set("window.maximized", true);
     	}	
+    	
+    	
+    	LOG.finer("Saving TextFileViewer's size");
+    	
+    	size = textFileViewerDialog1.getSize();
+		Config.set("window.textfileviewer.width", size.width);
+		Config.set("window.textfileviewer.height", size.height);
     	
     	super.dispose();
     }

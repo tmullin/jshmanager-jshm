@@ -9,6 +9,8 @@ package jshm.gui;
 import java.io.File;
 import java.io.IOException;
 
+import jshm.Config;
+
 /**
  *
  * @author  Tim
@@ -23,6 +25,12 @@ public class TextFileViewerDialog extends javax.swing.JDialog {
     public TextFileViewerDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+        try {
+        	setSize(Config.getInt("window.textfileviewer.width"), Config.getInt("window.textfileviewer.height"));
+        } catch (NullPointerException e) {
+        	GUI.LOG.finest("No saved size for TextFileViewer");
+        }
     }
 
 	public void setVisible(final File file) throws IOException {
