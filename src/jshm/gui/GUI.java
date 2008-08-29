@@ -33,6 +33,8 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -227,6 +229,7 @@ public class GUI extends javax.swing.JFrame {
     private void initComponents() {
 
         aboutDialog1 = new AboutDialog(this);
+        textFileViewerDialog1 = new TextFileViewerDialog(this, true);
         statusBar1 = new jshm.gui.components.StatusBar();
         jScrollPane1 = new javax.swing.JScrollPane();
         jXTreeTable1 = new org.jdesktop.swingx.JXTreeTable();
@@ -244,7 +247,14 @@ public class GUI extends javax.swing.JFrame {
         loadSongDataMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
         helpMenu = new javax.swing.JMenu();
+        readmeMenuItem = new javax.swing.JMenuItem();
+        changeLogMenuItem = new javax.swing.JMenuItem();
+        licenseMenuItem = new javax.swing.JMenuItem();
+        viewLogMenu = new javax.swing.JMenu();
+        jSeparator4 = new javax.swing.JSeparator();
         aboutMenuItem = new javax.swing.JMenuItem();
+
+        textFileViewerDialog1.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -333,6 +343,7 @@ public class GUI extends javax.swing.JFrame {
         });
         myScoresMenu.add(loadMyScoresMenuItem);
 
+        uploadScoresMenuItem.setMnemonic('U');
         uploadScoresMenuItem.setText("Upload to ScoreHero");
         uploadScoresMenuItem.setEnabled(false);
         uploadScoresMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -367,6 +378,41 @@ public class GUI extends javax.swing.JFrame {
 
         helpMenu.setMnemonic('H');
         helpMenu.setText("Help");
+
+        readmeMenuItem.setMnemonic('R');
+        readmeMenuItem.setText("View Readme");
+        readmeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                readmeMenuItemActionPerformed(evt);
+            }
+        });
+        helpMenu.add(readmeMenuItem);
+
+        changeLogMenuItem.setMnemonic('C');
+        changeLogMenuItem.setText("View ChangeLog");
+        changeLogMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeLogMenuItemActionPerformed(evt);
+            }
+        });
+        helpMenu.add(changeLogMenuItem);
+
+        licenseMenuItem.setMnemonic('L');
+        licenseMenuItem.setText("View License");
+        licenseMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                licenseMenuItemActionPerformed(evt);
+            }
+        });
+        helpMenu.add(licenseMenuItem);
+
+        viewLogMenu.setMnemonic('g');
+        viewLogMenu.setText("View Log...");
+
+        initDynamicGameMenu(viewLogMenu);
+
+        helpMenu.add(viewLogMenu);
+        helpMenu.add(jSeparator4);
 
         aboutMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         aboutMenuItem.setMnemonic('A');
@@ -497,6 +543,28 @@ private void uploadScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 	wiz.show();
 }//GEN-LAST:event_uploadScoresMenuItemActionPerformed
 
+private void readmeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readmeMenuItemActionPerformed
+	showTextFileViewer("Readme.txt");
+}//GEN-LAST:event_readmeMenuItemActionPerformed
+
+private void changeLogMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeLogMenuItemActionPerformed
+	showTextFileViewer("ChangeLog.txt");
+}//GEN-LAST:event_changeLogMenuItemActionPerformed
+
+private void licenseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_licenseMenuItemActionPerformed
+	showTextFileViewer("License.txt");
+}//GEN-LAST:event_licenseMenuItemActionPerformed
+
+public void showTextFileViewer(final String file) {
+	try {
+		textFileViewerDialog1.setVisible(new File(file));
+	} catch (Exception e) {
+		LOG.log(Level.WARNING, "Unknown error displaying TextFileViewer", e);
+		ErrorInfo ei = new ErrorInfo("Error", "Unknown error displaying TextFileViewer", null, null, e, null, null);
+		JXErrorPane.showDialog(GUI.this, ei);
+	}
+}
+
 private void formWindowClosing(java.awt.event.WindowEvent evt) {                                    
 	jshm.JSHManager.dispose();
 }                                  
@@ -506,6 +574,34 @@ private void formWindowClosing(java.awt.event.WindowEvent evt) {
  * @param menu
  */
 private void initDynamicGameMenu(final javax.swing.JMenu menu) {
+	if (menu == viewLogMenu) {
+		try {
+			final File logDir = new File("data/logs");
+			String[] files = logDir.list(new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String name) {
+					return name.endsWith(".txt");
+				}
+			});
+			
+			for (final String s : files) {
+				JMenuItem item = new JMenuItem(s);
+				item.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						showTextFileViewer(logDir.getPath() + "/" + s);
+					}
+				});
+				
+				viewLogMenu.add(item);
+			}
+		} catch (Exception e) {
+			LOG.log(Level.WARNING, "Error initializing View Log menu", e);
+		}
+		
+		return;
+	}
+	
 	java.util.List<jshm.GameTitle> titles =
 		jshm.GameTitle.getTitlesBySeries(jshm.GameSeries.GUITAR_HERO);
 	
@@ -724,6 +820,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private jshm.gui.AboutDialog aboutDialog1;
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem addNewScoreMenuItem;
+    private javax.swing.JMenuItem changeLogMenuItem;
     private javax.swing.JMenuItem deleteSelectedScoreMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
@@ -733,13 +830,18 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
     private org.jdesktop.swingx.JXTreeTable jXTreeTable1;
+    private javax.swing.JMenuItem licenseMenuItem;
     private javax.swing.JMenuItem loadMyScoresMenuItem;
     private javax.swing.JMenuItem loadSongDataMenuItem;
     private javax.swing.JMenu myScoresMenu;
+    private javax.swing.JMenuItem readmeMenuItem;
     private javax.swing.JMenu songDataMenu;
     private jshm.gui.components.StatusBar statusBar1;
+    private jshm.gui.TextFileViewerDialog textFileViewerDialog1;
     private javax.swing.JMenuItem uploadScoresMenuItem;
+    private javax.swing.JMenu viewLogMenu;
     // End of variables declaration//GEN-END:variables
 
     public StatusBar getStatusBar() {
