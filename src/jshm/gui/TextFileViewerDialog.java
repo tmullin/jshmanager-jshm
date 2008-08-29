@@ -56,6 +56,7 @@ public class TextFileViewerDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        jTextPane1.setEditable(false);
         jTextPane1.setPreferredSize(new java.awt.Dimension(700, 500));
         jScrollPane1.setViewportView(jTextPane1);
 
