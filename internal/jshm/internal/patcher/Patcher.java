@@ -35,11 +35,11 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
+
 import jshm.logging.FileFormatter;
 import jshm.util.Properties;
-
-//import org.jdesktop.swingx.JXErrorPane;
-//import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * This class serves to replace files in an existing jar with the new patched
@@ -184,15 +184,16 @@ public class Patcher {
 				if (unattended) {
 					LOG.finer("Disposing GUI due to unattended switch");
 					gui.dispose();
+					System.exit(0);
 				}
 				
-				System.exit(0);
+				// don't exit, attended so leave the gui showing so
+				// they can see the log
 			} catch (Throwable t) {
 				LOG.log(Level.SEVERE, "Unknown error while patching", t);
-//				Class.forName("org.jdesktop.swingx.JXErrorPane", true, JarLoader.getLoader(patchJarFile));
-				
-//				org.jdesktop.swingx.error.ErrorInfo ei = new org.jdesktop.swingx.error.ErrorInfo("Error", "Unknown error while patching", null, null, t, null, null);
-//				org.jdesktop.swingx.JXErrorPane.showDialog(null, ei);
+
+				ErrorInfo ei = new org.jdesktop.swingx.error.ErrorInfo("Error", "Unknown error while patching", null, null, t, null, null);
+				JXErrorPane.showDialog(null, ei);
 				
 				gui.dispose();
 				System.exit(-1);
