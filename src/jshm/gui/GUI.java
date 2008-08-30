@@ -599,6 +599,13 @@ private void uploadSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEve
 		return;
 	}
 	
+	if (!((GhScore) selected).isSubmittable()) {
+		JOptionPane.showMessageDialog(this,
+			"That score cannot be uploaded.",
+			"Error", JOptionPane.WARNING_MESSAGE);
+		return;
+	}
+	
 	new SwingWorker<Void, Void>() {
 		@Override
 		protected Void doInBackground() throws Exception {
