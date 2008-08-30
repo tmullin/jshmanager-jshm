@@ -21,6 +21,8 @@
 package jshm;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +32,6 @@ import javax.swing.UIManager;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.jdesktop.swingx.error.ErrorInfo;
 
 import jshm.gui.GUI;
 import jshm.gui.Splash;
@@ -42,39 +43,40 @@ import jshm.hibernate.HibernateUtil;
  * 
  */
 public class JSHManager {
-	public static final String APP_NAME = "JSHManager";
-	public static final int APP_MAJOR_VERSION = 0;
-	public static final int APP_MINOR_VERSION = 0;
-	public static final int APP_POINT_VERSION = 4;
-	public static final boolean APP_IS_BETA = true;
-	
-	public static final String APP_VERSION_STRING =
-		String.format("%s.%s.%s%s", APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_POINT_VERSION, APP_IS_BETA ? " beta" : "");
-	
-	public static final String APP_LAST_VERSION = "0.0.2";
-	
-	public static final java.util.Date APP_DATE = initAppDate("$Date$");
-	public static final int APP_REVISION = initAppRevision("$Revision$");
-	
-	private static java.util.Date initAppDate(final String _APP_DATE) {
-		try {
-			// $Date$
-			return new java.text.SimpleDateFormat("$'Date': yyyy-MM-dd HH:mm:ss Z (EE, dd MMM yyyy) $")
-				.parse(_APP_DATE);
-		} catch (java.text.ParseException e) {}
+	public static class Version {
+		public static final String NAME = "JSHManager";
+		public static final int MAJOR = 0;
+		public static final int MINOR = 0;
+		public static final int POINT = 4;
+		public static final boolean IS_BETA = true;
 		
-		return new java.util.Date();
+		public static final String STRING =
+			String.format("%s.%s.%s%s", MAJOR, MINOR, POINT, IS_BETA ? " beta" : "");
+		
+		public static final String LAST = "0.0.3";
+		
+		public static final java.util.Date DATE = initDate("$Date$");
+		public static final int REVISION = initRevision("$Revision$");
+		
+		private static java.util.Date initDate(final String _APP_DATE) {
+			try {
+				// $Date$
+				return new java.text.SimpleDateFormat("$'Date': yyyy-MM-dd HH:mm:ss Z (EE, dd MMM yyyy) $")
+					.parse(_APP_DATE);
+			} catch (java.text.ParseException e) {}
+			
+			return new java.util.Date();
+		}
+			
+		private static int initRevision(final String _APP_REVISION) {
+			try {
+				// $Revision$
+				return Integer.parseInt(_APP_REVISION.replaceAll("[^\\d]+", ""));
+			} catch (NumberFormatException e) {}
+			
+			return 0;
+		}
 	}
-		
-	private static int initAppRevision(final String _APP_REVISION) {
-		try {
-			// $Revision$
-			return Integer.parseInt(_APP_REVISION.replaceAll("[^\\d]+", ""));
-		} catch (NumberFormatException e) {}
-		
-		return 0;
-	}
-	
 	
 	
 	static final Logger LOG = Logger.getLogger(JSHManager.class.getName());
@@ -85,72 +87,76 @@ public class JSHManager {
 	 * Launches this application
 	 */
 	public static void main(String[] args) {
-		checkJREVersion();
-		
-		splash = new Splash();
-		
-		// Ensure any uncaught exceptions are logged so that bugs
-		// can be found more easily.
-		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-			public void uncaughtException(Thread thread, Throwable thrown) {
-				LOG.log(Level.WARNING, "Exception in thread \"" + thread.getName() + "\"", thrown);
-			}
-		});
-		
-		splash.setStatus("Checking data folder...");
-				
-		for (String dir : new String[] {"db", "logs"}) {
-			File f = new File("data/" + dir);
-			if (f.exists()) continue;
+		try {
+			checkJREVersion();
 			
-			LOG.fine("Creating data folder: " + f.getPath());
+			splash = new Splash();
+			
+			// Ensure any uncaught exceptions are logged so that bugs
+			// can be found more easily.
+			Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+				public void uncaughtException(Thread thread, Throwable thrown) {
+					LOG.log(Level.WARNING, "Exception in thread \"" + thread.getName() + "\"", thrown);
+				}
+			});
+			
+			splash.setStatus("Checking data folder...");
+					
+			for (String dir : new String[] {"db", "logs"}) {
+				File f = new File("data/" + dir);
+				if (f.exists()) continue;
+				
+				LOG.fine("Creating data folder: " + f.getPath());
+				
+				try {
+					f.mkdirs();
+				} catch (Throwable e) {
+					fail("Failed to create data folders", e, -1);
+				}
+			}
+			
+			// have to do this after creating the log folder because
+			// the logger won't make the dirs for us
+			try {
+				jshm.logging.Log.reloadConfig();
+			} catch (Throwable e) {
+				fail("Unable to load logger configuration", e, -3);
+			}
+			
+			splash.setStatus("Loading configuration...");
+			Config.init();
+			
+			splash.setStatus("Initializing database...");
 			
 			try {
-				f.mkdirs();
+				HibernateUtil.getCurrentSession();
 			} catch (Throwable e) {
-				fail("Failed to create data folders", e, -1);
+				fail("Unable to initialize database", e, -4);
 			}
-		}
-		
-		// have to do this after creating the log folder because
-		// the logger won't make the dirs for us
-		try {
-			jshm.logging.Log.reloadConfig();
-		} catch (Throwable e) {
-			fail("Unable to load logger configuration", e, -3);
-		}
-		
-		splash.setStatus("Loading configuration...");
-		Config.init();
-		
-		splash.setStatus("Initializing database...");
-		
-		try {
-			HibernateUtil.getCurrentSession();
-		} catch (Throwable e) {
-			fail("Unable to initialize database", e, -4);
-		}
-		
-		splash.setStatus("Loading user interface...");
-		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {				
-				try {
-					// Set the Look & Feel to match the current system
-					UIManager.setLookAndFeel(
-						UIManager.getSystemLookAndFeelClassName());
-				} catch (Exception e) {
-					LOG.log(Level.WARNING, "Couldn't set system look & feel (not fatal)", e);
+			
+			splash.setStatus("Loading user interface...");
+			
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {				
+					try {
+						// Set the Look & Feel to match the current system
+						UIManager.setLookAndFeel(
+							UIManager.getSystemLookAndFeelClassName());
+					} catch (Exception e) {
+						LOG.log(Level.WARNING, "Couldn't set system look & feel (not fatal)", e);
+					}
+	
+					gui = new GUI();
+					gui.setVisible(true);
+					gui.toFront();
+					
+					splash.dispose();
+					splash = null;
 				}
-
-				gui = new GUI();
-				gui.setVisible(true);
-				gui.toFront();
-				
-				splash.dispose();
-				splash = null;
-			}
-		});
+			});
+		} catch (Throwable t) {
+			fail("Unknown error", t, -42);
+		}
 	}
 	
 	/**
@@ -173,7 +179,7 @@ public class JSHManager {
 			tx = sess.beginTransaction();
 			sess.createSQLQuery("SHUTDOWN COMPACT");
 			tx.commit();
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			LOG.log(Level.WARNING, "Error shutting down database", e);
 		}
 		
@@ -191,9 +197,22 @@ public class JSHManager {
 		if (null != splash)
 			splash.dispose();
 		
-		ErrorInfo ei = new ErrorInfo("Error",
-			message, null, null, thrown, null, null);
-		org.jdesktop.swingx.JXErrorPane.showDialog(null, ei);
+		try {
+			org.jdesktop.swingx.error.ErrorInfo ei = new org.jdesktop.swingx.error.ErrorInfo("Error",
+				message, null, null, thrown, null, null);
+			org.jdesktop.swingx.JXErrorPane.showDialog(null, ei);
+		} catch (Exception t) {
+			// in case there was a ClassNotFound or something
+			
+			LOG.log(Level.SEVERE, "Error displaying JXErrorPane", t);
+			
+			StringWriter sw = new StringWriter();
+			thrown.printStackTrace(new PrintWriter(sw));
+			
+			JOptionPane.showMessageDialog(null,
+				sw.toString(),
+				message, JOptionPane.ERROR_MESSAGE);
+		}
 		
 		System.exit(exitCode);
 	}

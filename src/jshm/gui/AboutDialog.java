@@ -48,11 +48,11 @@ public class AboutDialog extends javax.swing.JDialog {
 	
 	public AboutDialog(java.awt.Frame parent) {
 		this(parent, true);
-		this.versionLabel.setText(JSHManager.APP_VERSION_STRING);
+		this.versionLabel.setText(JSHManager.Version.STRING);
 		this.dateLabel.setText(
 			new SimpleDateFormat("EE, dd MMM yyyy HH:mm:ss")
-				.format(JSHManager.APP_DATE));
-		this.revisionLabel.setText(String.valueOf(JSHManager.APP_REVISION));
+				.format(JSHManager.Version.DATE));
+		this.revisionLabel.setText(String.valueOf(JSHManager.Version.REVISION));
 	}
 	
     /** Creates new form AboutDialog */

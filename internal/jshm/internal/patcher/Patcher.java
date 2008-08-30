@@ -38,8 +38,8 @@ import javax.swing.UIManager;
 import jshm.logging.FileFormatter;
 import jshm.util.Properties;
 
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
+//import org.jdesktop.swingx.JXErrorPane;
+//import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * This class serves to replace files in an existing jar with the new patched
@@ -81,6 +81,9 @@ public class Patcher {
 	static PatcherGui gui = null;
 	final static Logger LOG = Logger.getLogger(Patcher.class.getName());
 	
+	static boolean unattended = false;
+	static boolean restartJshm = false;
+	
 	public static void main(String[] args) throws Exception {
 		try {
 			// Set the Look & Feel to match the current system
@@ -88,6 +91,16 @@ public class Patcher {
 				UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
 //			LOG.log(Level.WARNING, "Couldn't set system look & feel (not fatal)", e);
+		}
+		
+		for (String s : args) {
+			if (s.equalsIgnoreCase("-u") || s.equalsIgnoreCase("-unattended")) {
+				unattended = true;
+				LOG.finer("Got unattended switch");
+			} else if (s.equalsIgnoreCase("-r") || s.equalsIgnoreCase("-restartjshm")) {
+				restartJshm = true;
+				LOG.finer("Got restart jshm switch");
+			}
 		}
 		
 		try {
@@ -148,15 +161,32 @@ public class Patcher {
 				
 				log("Patching complete.", 1, 1);
 				gui.setClosedEnabled(true);
+				
+				if (restartJshm) {
+					log("Restarting JSHManager...");
+					jshm.util.Exec.execNoOutput(
+						progJarFile.getAbsoluteFile().getParentFile(),
+						"java",
+						"-jar",
+						progJarFile.getName()
+					);
+				}
+				
+				if (unattended) {
+					LOG.finer("Disposing GUI due to unattended switch");
+					gui.dispose();
+				}
+				
+				System.exit(0);
 			} catch (Throwable t) {
 				LOG.log(Level.SEVERE, "Unknown error while patching", t);
 //				Class.forName("org.jdesktop.swingx.JXErrorPane", true, JarLoader.getLoader(patchJarFile));
 				
-				ErrorInfo ei = new ErrorInfo("Error", "Unknown error while patching", null, null, t, null, null);
-				JXErrorPane.showDialog(null, ei);
+//				org.jdesktop.swingx.error.ErrorInfo ei = new org.jdesktop.swingx.error.ErrorInfo("Error", "Unknown error while patching", null, null, t, null, null);
+//				org.jdesktop.swingx.JXErrorPane.showDialog(null, ei);
 				
 				gui.dispose();
-				System.exit(0);
+				System.exit(-1);
 			}
 		} catch (Throwable t) {
 			LOG.log(Level.SEVERE, "Unknown error while patching", t);
@@ -169,7 +199,7 @@ public class Patcher {
 				"Error", JOptionPane.ERROR_MESSAGE);
 			
 			gui.dispose();
-			System.exit(0);
+			System.exit(-1);
 		}
 	}
 

@@ -1,5 +1,6 @@
 package jshm.util;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -9,6 +10,10 @@ import java.util.*;
  */
 public class Exec {
 	public static boolean IS_WINDOWS = System.getProperty("os.name").contains("Windows");
+	
+	public static void execNoOutput(String ... rawCmd) throws Exception {
+		execNoOutput(null, rawCmd);
+	}
 	
 	/**
 	 * Executes the supplied command going through the OS's shell.
@@ -21,7 +26,10 @@ public class Exec {
 	 * @param rawCmd
 	 * @throws Exception
 	 */
-	public static void execNoOutput(String ... rawCmd) throws Exception {
+	public static void execNoOutput(File workingDir, String ... rawCmd) throws Exception {
+		if (null == rawCmd || rawCmd.length < 1)
+			throw new IllegalArgumentException("rawCmd cannot be null and must have at least 1 element");
+			
 		List<String> cmd = new ArrayList<String>();
 		
 		if (IS_WINDOWS) {
@@ -42,6 +50,6 @@ public class Exec {
 		
 		cmd.add("2>&1");
 		
-		Runtime.getRuntime().exec(cmd.toArray(new String[0]));
+		Runtime.getRuntime().exec(cmd.toArray(new String[0]), null, workingDir);
 	}
 }

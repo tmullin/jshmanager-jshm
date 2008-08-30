@@ -198,7 +198,6 @@ public class PatcherGui extends javax.swing.JFrame {
 private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
 	if (closeButton.isEnabled()) {
 		this.dispose();
-		System.exit(0);
 	}
 }//GEN-LAST:event_formWindowClosing
 
@@ -221,6 +220,11 @@ private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         		}
         		
         		PatcherGui gui = new PatcherGui();
+                gui.addWindowListener(new java.awt.event.WindowAdapter() {
+                    public void windowClosing(java.awt.event.WindowEvent evt) {
+                        System.exit(0);
+                    }
+                });
         		gui.setClosedEnabled(true);
         		gui.setLocationRelativeTo(null);
         		gui.setVisible(true);

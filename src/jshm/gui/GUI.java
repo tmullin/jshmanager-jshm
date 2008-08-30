@@ -200,7 +200,7 @@ public class GUI extends javax.swing.JFrame {
     public void setTitle(String title) {
     	super.setTitle(
     		(title.isEmpty() ? "" : title + " - ") +
-    		JSHManager.APP_NAME + " " + JSHManager.APP_VERSION_STRING);
+    		JSHManager.Version.NAME + " " + JSHManager.Version.STRING);
     }
     
     @Override

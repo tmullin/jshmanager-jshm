@@ -36,19 +36,19 @@ public class JshmVersion extends Task {
 		Project p = getProject();
 		
 		String version = String.format("%s.%s.%s.%s%s",
-			JSHManager.APP_MAJOR_VERSION,
-			JSHManager.APP_MINOR_VERSION,
-			JSHManager.APP_POINT_VERSION,
-			JSHManager.APP_REVISION,
-			JSHManager.APP_IS_BETA ? "beta" : "");
+			JSHManager.Version.MAJOR,
+			JSHManager.Version.MINOR,
+			JSHManager.Version.POINT,
+			JSHManager.Version.REVISION,
+			JSHManager.Version.IS_BETA ? "beta" : "");
 		
 		log("Setting JSHM version to " + version, Project.MSG_INFO);
-		p.setProperty("jshm.name", JSHManager.APP_NAME);
+		p.setProperty("jshm.name", JSHManager.Version.NAME);
 		p.setProperty("jshm.version", version);
-		p.setProperty("jshm.last_version", JSHManager.APP_LAST_VERSION);
-		p.setProperty("jshm.major_version", String.valueOf(JSHManager.APP_MAJOR_VERSION));
-		p.setProperty("jshm.minor_version", String.valueOf(JSHManager.APP_MINOR_VERSION));
-		p.setProperty("jshm.point_version", String.valueOf(JSHManager.APP_POINT_VERSION));
-		p.setProperty("jshm.revision", String.valueOf(JSHManager.APP_REVISION));
+		p.setProperty("jshm.last_version", JSHManager.Version.LAST);
+		p.setProperty("jshm.major_version", String.valueOf(JSHManager.Version.MAJOR));
+		p.setProperty("jshm.minor_version", String.valueOf(JSHManager.Version.MINOR));
+		p.setProperty("jshm.point_version", String.valueOf(JSHManager.Version.POINT));
+		p.setProperty("jshm.revision", String.valueOf(JSHManager.Version.REVISION));
 	}
 }

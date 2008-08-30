@@ -66,7 +66,7 @@
 			<!-- the patcher program itself -->
 			<fileset
 				dir="${bin_dir}"
-				includes="jshm/internal/patcher/**,jshm/logging/**,jshm/util/Properties*.class"/>
+				includes="jshm/internal/patcher/**,jshm/logging/**,jshm/util/Properties*.class,jshm/util/Exec*.class"/>
 			
 			<!-- the set of changed files within JSHManager.jar -->
 			<zipfileset
