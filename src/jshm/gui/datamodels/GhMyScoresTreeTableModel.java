@@ -20,6 +20,12 @@
  */
 package jshm.gui.datamodels;
 
+import java.awt.Cursor;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -147,7 +153,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		}
 	}
 
-	// private JXTreeTable parent;
+	private JXTreeTable parent;
 	private final DataModel	model;
 	private final GhGame game;
 
@@ -283,8 +289,69 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		return scores;
 	}
 	
+	private MouseListener myParentMouseListener = new MouseAdapter() {
+		// TODO figure out if it's possible to determine whether the
+		// score was clicked for the image url or if the video icon
+		// was clicked for the video url
+		public void mouseClicked(MouseEvent e) {
+			int row = parent.rowAtPoint(e.getPoint());
+			int column = parent.columnAtPoint(e.getPoint());
+			
+			if (1 != column) return;
+			
+			Object o = parent.getModel().getValueAt(row, column);
+			
+			if (!(o instanceof GhScore)) return;
+			
+			GhScore score = (GhScore) o;
+			
+			// preference is given to the video link
+			// if both are present
+			String url =
+				!score.getVideoUrl().isEmpty()
+				? score.getVideoUrl()
+				: !score.getImageUrl().isEmpty()
+				  ? score.getImageUrl()
+				  : null;
+				  
+			if (null != url) {
+				try {
+					jshm.util.Util.openURL(url);
+				} catch (Throwable t) {
+					LOG.log(Level.SEVERE, "Failed to launch external browser ", e);
+					ErrorInfo ei = new ErrorInfo("Error", "Failed to launch external browser", null, null, t, null, null);
+					JXErrorPane.showDialog(null, ei);
+				}
+			}
+		}
+	};
+	
+	private MouseMotionListener myParentMouseMotionListener = new MouseMotionAdapter() {
+		public void mouseMoved(MouseEvent e) {
+			int row = parent.rowAtPoint(e.getPoint());
+			int column = parent.columnAtPoint(e.getPoint());
+			
+			Cursor newCursor = null; //Cursor.getDefaultCursor();
+			
+			Object o = parent.getModel().getValueAt(row, column);
+			
+			if (o instanceof GhScore) {
+				GhScore score = (GhScore) o;
+				
+				if (score.getStatus() != Score.Status.NEW && 
+					(!score.getImageUrl().isEmpty() || !score.getVideoUrl().isEmpty())) {
+					newCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
+				}
+			}
+			
+			parent.setCursor(newCursor);
+		}
+	};
+	
+	// TODO some of the stuff in here might not necessary fit 
+	// as part of the "data model"/mvc stuff...
 	public void setParent(final JXTreeTable parent) {
-		// this.parent = parent;
+		this.parent = parent;
 		
 		GhMyScoresTreeCellRenderer treeRenderer = new GhMyScoresTreeCellRenderer();
 		parent.setTreeCellRenderer(treeRenderer);
@@ -294,6 +361,11 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		for (int i = 0; i <= 6; i++)
 			parent.getColumn(i).setCellRenderer(renderer);
 
+		parent.removeMouseListener(myParentMouseListener);
+		parent.addMouseListener(myParentMouseListener);
+		parent.removeMouseMotionListener(myParentMouseMotionListener);
+		parent.addMouseMotionListener(myParentMouseMotionListener);
+		
 		Highlighter[] highlighters = new Highlighter[] {
 			HighlighterFactory.createSimpleStriping(),
 			new GhMyScoresPercentHighlighter(),

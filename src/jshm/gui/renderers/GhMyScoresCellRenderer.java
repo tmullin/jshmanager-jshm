@@ -66,7 +66,7 @@ public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
 					if (score.getScore() > 0) {
 						String formattedScore = NUM_FMT.format(score.getScore());
 						if (!score.getImageUrl().isEmpty()) {
-							formattedScore = "<html><u>" + formattedScore + "</u>";
+							formattedScore = "<html><font color=blue><u>" + formattedScore + "</u></font>";
 						}
 						setText(formattedScore);
 						
