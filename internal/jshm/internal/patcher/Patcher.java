@@ -85,22 +85,31 @@ public class Patcher {
 	static boolean restartJshm = false;
 	
 	public static void main(String[] args) throws Exception {
-		try {
-			// Set the Look & Feel to match the current system
-			UIManager.setLookAndFeel(
-				UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
-//			LOG.log(Level.WARNING, "Couldn't set system look & feel (not fatal)", e);
-		}
-		
 		for (String s : args) {
-			if (s.equalsIgnoreCase("-u") || s.equalsIgnoreCase("-unattended")) {
+			if (s.equals("?") || s.equals("-?") || s.equals("/?") || 
+				s.equalsIgnoreCase("-h") || s.equalsIgnoreCase("-help")) {
+				System.out.println(
+					"Usage: java -jar JSHManager-patch-a.b.c-to-x.y.z.r.jar [-u] [-r] [-h]\n" +
+					"    -u|-unattended    Automatically close the patcher after completion\n" +
+					"    -r|-restartjshm   Automatically restart JSHManager after completion\n" +
+					"    -h|-help          Display this message"
+				);
+				System.exit(0);
+			} else if (s.equalsIgnoreCase("-u") || s.equalsIgnoreCase("-unattended")) {
 				unattended = true;
 				LOG.finer("Got unattended switch");
 			} else if (s.equalsIgnoreCase("-r") || s.equalsIgnoreCase("-restartjshm")) {
 				restartJshm = true;
 				LOG.finer("Got restart jshm switch");
 			}
+		}
+		
+		try {
+			// Set the Look & Feel to match the current system
+			UIManager.setLookAndFeel(
+				UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+//			LOG.log(Level.WARNING, "Couldn't set system look & feel (not fatal)", e);
 		}
 		
 		try {
