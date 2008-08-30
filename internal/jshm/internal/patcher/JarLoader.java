@@ -21,68 +21,21 @@
 package jshm.internal.patcher;
 
 import java.io.*;
+import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.jar.*;
 
 /**
- * This needs work...
+ * 
  * @author Tim Mullin
  *
  */
 public class JarLoader {
-	public static URLClassLoader getLoader(File jar) throws Exception {
-		File tmpJar = File.createTempFile(jar.getName(), null);
-		copy(jar, tmpJar);
-		tmpJar.deleteOnExit();
-		
-		return
-			new URLClassLoader(
-				new URL[] {
-					tmpJar.toURI()
-						.toURL()});
-	}
-	
-	/**
-	 * Loads all the classes in the provided jar file. The file is
-	 * copied to a temp file that will be deleted when the JVM exits
-	 * so that the original file is not locked.
-	 * @param jar
-	 * @throws Exception
-	 */
-	public static void load(File jar) throws Exception {
-		File tmpJar = File.createTempFile(jar.getName(), null);
-		copy(jar, tmpJar);
-		tmpJar.deleteOnExit();
-		
-		URLClassLoader loader = getLoader(tmpJar);
-		
-		JarInputStream jis = new JarInputStream(new FileInputStream(tmpJar));
-		JarEntry entry = jis.getNextJarEntry();
-		int loadedCount = 0, totalCount = 0;
-
-		while (null != entry) {
-			String name = entry.getName();
-
-			if (name.endsWith(".class")) {
-				totalCount++;
-				name = name.substring(0, name.length() - 6);
-				name = name.replace('/', '.');
-
-				try {
-					loader.loadClass(name);
-					loadedCount++;
-				} catch (Throwable e) {
-					System.out.printf("Failed to load %s. %s: %s\n",
-						name, e.getClass().getName(), e.getMessage());
-				}
-			}
-
-			entry = jis.getNextJarEntry();
-		}
-		
-		System.out.printf("Loaded %s of %s successfully.\n", loadedCount, totalCount);
+	public static void addFileToClasspath(File file) throws Exception {	
+		Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{ URL.class }); //$NON-NLS-1$
+		method.setAccessible(true);
+		method.invoke(ClassLoader.getSystemClassLoader(), new Object[]{ file.toURI().toURL() });
 	}
 	
 	public static void copy(InputStream source, File dest) throws IOException {

@@ -405,6 +405,7 @@ public class GUI extends javax.swing.JFrame {
         helpMenu.setMnemonic('H');
         helpMenu.setText("Help");
 
+        readmeMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         readmeMenuItem.setMnemonic('R');
         readmeMenuItem.setText("View Readme");
         readmeMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -440,7 +441,6 @@ public class GUI extends javax.swing.JFrame {
         helpMenu.add(viewLogMenu);
         helpMenu.add(jSeparator4);
 
-        aboutMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         aboutMenuItem.setMnemonic('A');
         aboutMenuItem.setText("About");
         aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {

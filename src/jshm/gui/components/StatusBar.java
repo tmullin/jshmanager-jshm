@@ -108,6 +108,7 @@ public class StatusBar extends javax.swing.JPanel {
 		LOG.finer("Reverting text to \"" + this.text + "\"");
 		
 		textLabel.setText(this.text.isEmpty() ? "  " : this.text);
+		setProgressVisible(false);
 	}
 	
 	public JProgressBar getProgressBar() {

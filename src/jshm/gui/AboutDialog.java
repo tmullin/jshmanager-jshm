@@ -26,9 +26,12 @@
 
 package jshm.gui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 
 import javax.swing.ImageIcon;
+
 import jshm.JSHManager;
 
 /**
@@ -172,6 +175,26 @@ private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:ev
 //	System.out.println("activated");
 	this.stitchLabel.setIcon(Math.random() >= 0.5 ? STITCH1 : STITCH0);
 }//GEN-LAST:event_formWindowActivated
+
+	public static void main(String args[]) {
+	    java.awt.EventQueue.invokeLater(new Runnable() {
+	        public void run() {
+	            AboutDialog dialog = new AboutDialog(new javax.swing.JFrame(), true);
+	            dialog.setLocationRelativeTo(null);
+	            dialog.closeButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						System.exit(0);
+					}
+	            });
+	            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+	                public void windowClosing(java.awt.event.WindowEvent e) {
+	                    System.exit(0);
+	                }
+	            });
+	            dialog.setVisible(true);
+	        }
+	    });
+	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;

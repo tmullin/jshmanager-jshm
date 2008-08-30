@@ -38,8 +38,8 @@ import javax.swing.UIManager;
 import jshm.logging.FileFormatter;
 import jshm.util.Properties;
 
-//import org.jdesktop.swingx.JXErrorPane;
-//import org.jdesktop.swingx.error.ErrorInfo;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * This class serves to replace files in an existing jar with the new patched
@@ -101,9 +101,11 @@ public class Patcher {
 			log("Current folder is " + progJarFile.getParentFile().getCanonicalPath());
 									
 			log("Checking JSHManager.jar...");
-//			JarLoader.load(progJarFile);
+			JarLoader.addFileToClasspath(progJarFile);
 			
-//			try {
+			try {
+//				if (true) throw new Exception("text");
+				
 				log("Checking patch file...");
 				String url = Patcher.class.getResource("/jshm/internal/patcher/Patcher.class").toExternalForm();
 				File f = getJarFileFromURL(url);
@@ -146,16 +148,16 @@ public class Patcher {
 				
 				log("Patching complete.", 1, 1);
 				gui.setClosedEnabled(true);
-//			} catch (Throwable t) {
-//				LOG.log(Level.SEVERE, "Unknown error while patching", t);
+			} catch (Throwable t) {
+				LOG.log(Level.SEVERE, "Unknown error while patching", t);
 //				Class.forName("org.jdesktop.swingx.JXErrorPane", true, JarLoader.getLoader(patchJarFile));
-//				
-//				ErrorInfo ei = new ErrorInfo("Error", "Unknown error while patching", null, null, t, null, null);
-//				JXErrorPane.showDialog(null, ei);
-//				
-//				gui.dispose();
-//				System.exit(0);
-//			}
+				
+				ErrorInfo ei = new ErrorInfo("Error", "Unknown error while patching", null, null, t, null, null);
+				JXErrorPane.showDialog(null, ei);
+				
+				gui.dispose();
+				System.exit(0);
+			}
 		} catch (Throwable t) {
 			LOG.log(Level.SEVERE, "Unknown error while patching", t);
 			
