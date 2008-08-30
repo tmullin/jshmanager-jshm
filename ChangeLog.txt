@@ -12,9 +12,8 @@ Version 0.0.4
   and clicking "Upload Selected Score" in the "My Scores" menu or by
   pressing CTRL+U.
 - The way passwords are stored has been changed to fix potential issues on
-  some systems. If you previously saved your password, YOU MUST MANUALLY
-  DELETE data/passwords.properties and re-save your password the next time
-  you need to log in to ScoreHero.
+  some systems. If you previously saved your password, you will be required
+  to re-save your password the next time you need to log in to ScoreHero.
 
 Version 0.0.3
 -------------

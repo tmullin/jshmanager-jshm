@@ -106,9 +106,9 @@ duplicate entries.
 Notes:
 ------
 If you choose to save your password after logging in to ScoreHero, it will
-be saved to data/passwords.properties. While the password is encrypted, it
+be saved to data/passwords.properties. The password is encoded but it
 should not be considered highly secure. Since this is an open-source program,
-anyone can obtain the source code to see how it is encrypted. It is encrypted
+anyone can obtain the source code to see how it is encoded. It is encoded
 so that it at least is not visible as plain-text.
 
 JSHManager logs various information in data/logs. JSHManager.txt contains

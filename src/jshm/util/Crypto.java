@@ -21,6 +21,7 @@
 package jshm.util;
 
 import java.util.Scanner;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.codec.binary.Base64;
@@ -48,7 +49,17 @@ public class Crypto {
 		LOG.finest("entered Crypto.decrypt()");
 		
 		LOG.finer("Base64 decoding cipherText");
-		cipherText = new String(Base64.decodeBase64(cipherText.getBytes()));
+		
+		try {
+			cipherText = new String(Base64.decodeBase64(cipherText.getBytes()));
+		} catch (ArrayIndexOutOfBoundsException e) {
+			// this is only necessary to deal with passwords that were
+			// previously encoded via the old javax.crypto.* method
+			
+			LOG.info("Clearing password to handle new storage mechanism");
+			LOG.log(Level.FINER, "Exception from old password", e);
+			cipherText = "";
+		}
 		
 		LOG.finest("exiting Crypto.decrypt()");
 		return cipherText;
