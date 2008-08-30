@@ -25,6 +25,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -45,7 +46,7 @@ public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
        		table, value, isSelected, hasFocus, row, column);
     	
     	if (value instanceof GhScore) {
-    		GhScore score = (GhScore) value;
+    		final GhScore score = (GhScore) value;
     	
 			switch (column) {
 				case 0:
@@ -62,13 +63,26 @@ public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
 					break;
 				
 				case 1:
-					if (score.getScore() > 0)
-						setText(NUM_FMT.format(score.getScore()));
-					else
+					if (score.getScore() > 0) {
+						String formattedScore = NUM_FMT.format(score.getScore());
+						if (!score.getImageUrl().isEmpty()) {
+							formattedScore = "<html><u>" + formattedScore + "</u>";
+						}
+						setText(formattedScore);
+						
+						if (!score.getVideoUrl().isEmpty()) {
+							setHorizontalTextPosition(LEFT);
+							setIcon(
+								new ImageIcon(
+									GhMyScoresCellRenderer.class.getResource("/jshm/resources/images/video.gif")));
+						}
+					} else {
 						setText("");
+					}
 					break;
 					
 				case 2:
+					setHorizontalTextPosition(RIGHT);
 					setIcon(score.getRatingIcon());
 					setText(
 						score.getCalculatedRating() != 0.0f

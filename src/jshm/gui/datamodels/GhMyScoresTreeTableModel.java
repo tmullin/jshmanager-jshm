@@ -22,7 +22,8 @@ package jshm.gui.datamodels;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -282,7 +283,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		return scores;
 	}
 	
-	public void setParent(JXTreeTable parent) {
+	public void setParent(final JXTreeTable parent) {
 		// this.parent = parent;
 		
 		GhMyScoresTreeCellRenderer treeRenderer = new GhMyScoresTreeCellRenderer();
