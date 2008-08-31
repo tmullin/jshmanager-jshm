@@ -47,6 +47,7 @@ import jshm.gh.GhSong;
 import jshm.gui.editors.GhMyScoresRatingEditor;
 import jshm.gui.renderers.ScoreEditorSongComboRenderer;
 import jshm.hibernate.HibernateUtil;
+import org.jdesktop.swingx.JXCollapsiblePane;
 
 /**
  *
@@ -182,6 +183,7 @@ public class ScoreEditorPanel extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
+        hideButton = new javax.swing.JButton();
 
         scoreField.setEditable(false);
 
@@ -257,6 +259,13 @@ public class ScoreEditorPanel extends javax.swing.JPanel {
         jLabel8.setLabelFor(ratingCombo);
         jLabel8.setText("Rating:");
 
+        hideButton.setText("Hide");
+        hideButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hideButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -286,7 +295,9 @@ public class ScoreEditorPanel extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(newButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(saveButton))
+                                .addComponent(saveButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(hideButton))
                             .addComponent(songCombo, 0, 316, Short.MAX_VALUE))
                         .addGap(16, 16, 16)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -314,7 +325,8 @@ public class ScoreEditorPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(newButton)
-                            .addComponent(saveButton))
+                            .addComponent(saveButton)
+                            .addComponent(hideButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
@@ -450,9 +462,19 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 	}
 }//GEN-LAST:event_saveButtonActionPerformed
 
+private void hideButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hideButtonActionPerformed
+	try {
+		java.awt.Container parent = getParent().getParent().getParent();
+		if (parent instanceof JXCollapsiblePane) {
+			((JXCollapsiblePane) parent).setCollapsed(true);
+		}
+	} catch (Exception e) {}
+}//GEN-LAST:event_hideButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField commentField;
+    private javax.swing.JButton hideButton;
     private javax.swing.JTextField imageUrlField;
     private javax.swing.JButton imageUrlOpenButton;
     private javax.swing.JLabel jLabel1;

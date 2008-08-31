@@ -113,7 +113,7 @@ public class GhMyScoresEditor extends DefaultCellEditor {
     	
 //    	InputVerifier iv = null;
     	
-    	if (value instanceof GhScore) { 
+    	if (value instanceof GhScore) {
     		GhScore score = (GhScore) value;
     		
     		switch (column) {

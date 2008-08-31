@@ -46,6 +46,8 @@
                               <Component id="newButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="saveButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="hideButton" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="songCombo" pref="316" max="32767" attributes="0"/>
                       </Group>
@@ -84,6 +86,7 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="newButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="saveButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="hideButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -280,6 +283,14 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Rating:"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="hideButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Hide"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hideButtonActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

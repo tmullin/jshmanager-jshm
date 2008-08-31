@@ -394,7 +394,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 //			new GhMyScoresCommentEditor(   ));
 		GhMyScoresEditor editor = new GhMyScoresEditor();
 		parent.setDefaultEditor(GhScore.class, editor);
-//		parent.getColumn(0).setCellEditor(editor);
+//		parent.getColumn(0).setCellEditor(editor); // has no effect....
 //		parent.getColumn(1).setCellEditor(editor);
 		parent.getColumn(2).setCellEditor(new GhMyScoresRatingEditor());
 //		parent.getColumn(3).setCellEditor(editor);
