@@ -45,6 +45,7 @@ public class GhScoreUpdater {
 		update(null, scrapeAll, game, difficulty);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void update(final ResultProgressHandle progress, final boolean scrapeAll, final GhGame game, final Difficulty difficulty) throws Exception {
 		List<GhScore> scrapedScores =
 			scrapeAll
@@ -59,6 +60,8 @@ public class GhScoreUpdater {
 				session = getCurrentSession();
 			    tx = session.beginTransaction();
 			    
+			    // TODO fix submission date comparison to prevent
+			    // getting more than 1 result back
 			    Example ex = Example.create(score)
 			    	.excludeProperty("comment")
 			    	.excludeProperty("calculatedRating")
@@ -66,20 +69,30 @@ public class GhScoreUpdater {
 			    	.excludeProperty("creationDate")
 			    	.excludeProperty("submissionDate");
 			    
-			    GhScore result =
-			    	(GhScore)
+			    List<GhScore> result =
+			    	(List<GhScore>)
 			    	session.createCriteria(GhScore.class).add(ex)
-			    		.uniqueResult();
+			    		.list();
 			    
 		    	session = getCurrentSession();
 			    session.beginTransaction();
 			    
-			    if (null == result) {
-			    	// new insert
-			    	LOG.info("Inserting score: " + score);
-				    session.save(score);
-			    } else {
-			    	LOG.fine("Score already exists: " + result);
+			    switch (result.size()) {
+			    	case 0:
+				    	// new insert
+				    	LOG.info("Inserting score: " + score);
+					    session.save(score);
+					    break;
+			    		
+			    	default:
+			    		LOG.warning("Found more than 1 existing score");
+			    		LOG.warning("  Scraped: " + score);
+			    		for (GhScore s : result)
+			    			LOG.warning("    In DB: " + s);
+//			    		throw new IllegalStateException("found more than 1 existing score, found " + result.size());
+			    		
+			    	case 1:
+			    		LOG.fine("Score already exists: " + result.get(0));
 			    }
 
 			    tx.commit();
