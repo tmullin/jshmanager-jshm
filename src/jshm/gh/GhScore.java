@@ -40,15 +40,17 @@ import org.hibernate.validator.*;
  */
 @Entity
 public class GhScore extends jshm.Score {
+	public static GhScore createNewScoreTemplate() {
+		return createNewScoreTemplate(null);
+	}
+	
 	public static GhScore createNewScoreTemplate(final GhSong song) {
 		GhScore s = new GhScore();
 		s.setStatus(Score.Status.TEMPLATE);
-		s.setGame(song.getGame());
-		s.setSong(song);
 		Part p = new Part();
-		p.setDifficulty(song.getDifficulty());
 		p.setInstrument(Instrument.GUITAR);
 		s.addPart(p);
+		s.setSong(song);
 		return s;
 	}
 	

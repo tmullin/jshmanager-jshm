@@ -13,6 +13,16 @@ Version 0.0.4
 - The way passwords are stored has been changed to fix potential issues on
   some systems. If you previously saved your password, you will be required
   to re-save your password the next time you need to log in to ScoreHero.
+- A new editor has been added that allows an image/video URL to be specified.
+  This can be shown/hidden by clicking "Toggle Editor" in the "My Scores" menu
+  or by pressing CTRL+E. When the editor is displayed, you can add a new score
+  by clicking the "New" button on the editor panel. You can specify the song
+  via the auto-completing text field without having to navigate to the song
+  in the tree view of the scores.
+- Scores with image/video URLs are now distinguished by blue, underlined
+  text/a camera icon. Clicking on the score will launch an external browser
+  to the video URL, if present, or the image URL (clicking on a new score will
+  NOT launch a browser so that you can still quickly edit the score).
 
 Version 0.0.3
 -------------

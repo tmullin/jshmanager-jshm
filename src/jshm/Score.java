@@ -133,10 +133,13 @@ public abstract class Score {
 	
 	public void setSong(Song song) {
 		this.song = song;
-		this.game = song.getGame();
 		
-		if (Difficulty.Strategy.BY_SONG == getGameTitle().getDifficultyStrategy()) {
-			this.difficulty = song.getDifficulty();
+		if (null != song) {
+			this.game = song.getGame();
+			
+			if (Difficulty.Strategy.BY_SONG == getGameTitle().getDifficultyStrategy()) {
+				setDifficulty(song.getDifficulty());
+			}
 		}
 	}
 
@@ -147,7 +150,7 @@ public abstract class Score {
 	
 	@Transient
 	public GameTitle getGameTitle() {
-		return getSong().getGameTitle();
+		return getSong() != null ? getSong().getGameTitle() : null;
 	}
 	
 	@NotNull
@@ -156,8 +159,17 @@ public abstract class Score {
 		return difficulty;
 	}
 	
+	/**
+	 * Sets the difficulty for this score as well as the difficulty
+	 * for the first part if there is exactly 1 part.
+	 * @param difficulty
+	 */
 	public void setDifficulty(Difficulty difficulty) {
 		this.difficulty = difficulty;
+		
+		if (parts.size() == 1) {
+			getPart(1).setDifficulty(difficulty);
+		}
 	}
 
 	@Min(0)

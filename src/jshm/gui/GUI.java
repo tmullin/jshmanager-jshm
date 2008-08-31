@@ -58,6 +58,7 @@ import jshm.Config;
 import jshm.JSHManager;
 import jshm.Score;
 import jshm.gh.GhScore;
+import jshm.gh.GhSong;
 import jshm.gui.components.StatusBar;
 import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 import jshm.gui.datamodels.GhSongDataTreeTableModel;
@@ -248,7 +249,7 @@ public class GUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jXTreeTable1 = new org.jdesktop.swingx.JXTreeTable();
         editorCollapsiblePane = new org.jdesktop.swingx.JXCollapsiblePane();
-        scoreEditorPanel1 = new jshm.gui.ScoreEditorPanel();
+        scoreEditorPanel1 = new ScoreEditorPanel(this);
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -359,6 +360,7 @@ public class GUI extends javax.swing.JFrame {
         toggleEditorMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
         toggleEditorMenuItem.setMnemonic('E');
         toggleEditorMenuItem.setText("Toggle Editor");
+        toggleEditorMenuItem.setEnabled(false);
         toggleEditorMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 toggleEditorMenuItemActionPerformed(evt);
@@ -569,6 +571,11 @@ private void jXTreeTable1ValueChanged(javax.swing.event.TreeSelectionEvent evt) 
 		score.getStatus() == Score.Status.NEW);
 	
 	scoreEditorPanel1.setScore(score);
+	
+	if (o instanceof GhMyScoresTreeTableModel.SongScores) {
+		scoreEditorPanel1.setSong(
+			((GhMyScoresTreeTableModel.SongScores) o).song);
+	}
 }//GEN-LAST:event_jXTreeTable1ValueChanged
 
 private void addNewScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNewScoreMenuItemActionPerformed
@@ -836,6 +843,8 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 			loadMyScoresMenuItem.setEnabled(true);
 			loadSongDataMenuItem.setEnabled(true);
 			uploadScoresMenuItem.setEnabled(false);
+			editorCollapsiblePane.setCollapsed(true);
+			toggleEditorMenuItem.setEnabled(false);
 			
 			GUI.this.setIconImage(game.title.getIcon().getImage());
 			GUI.this.setTitle(game + " on " + difficulty + " - Song Data");
@@ -860,21 +869,23 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 	this.setCurDiff(difficulty);
 
 	new SwingWorker<Void, Void>() {
-		List<jshm.gh.GhSong> songs = null;
-		List<jshm.gh.GhScore> scores = null;
+		List<GhSong> songs = null;
+		List<GhScore> scores = null;
 		GhMyScoresTreeTableModel model = null;
 		
 		@Override
 		protected Void doInBackground() throws Exception {			
 			try {
-				songs = jshm.gh.GhSong.getSongs(game, difficulty);
+				songs = GhSong.getSongs(game, difficulty);
 				
 				getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				statusBar1.setText("Loading score data from database...", true);
 				
-				scores = jshm.gh.GhScore.getScores(game, difficulty);
+				scores = GhScore.getScores(game, difficulty);
 				model = new GhMyScoresTreeTableModel(game, songs, scores);
 	
+				final List<GhSong> orderedSongs = GhSong.getSongsOrderedByTitles(game, difficulty);
+				
 				SwingUtilities.invokeAndWait(new Runnable() {
 					public void run() {
 						if (null != model && null != jXTreeTable1) {
@@ -882,6 +893,8 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 							model.setParent(jXTreeTable1);
 							jXTreeTable1.repaint();
 						}
+						
+						scoreEditorPanel1.setSongs(orderedSongs);
 					}
 				});
 			} catch (Exception e) {
@@ -907,6 +920,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			loadMyScoresMenuItem.setEnabled(true);
 			loadSongDataMenuItem.setEnabled(true);
 			uploadScoresMenuItem.setEnabled(true);
+			toggleEditorMenuItem.setEnabled(true);
 			
 			if (scores.size() == 0 && null != evt) { // if evt == null we're recursing
 				if (JOptionPane.YES_OPTION ==
@@ -978,7 +992,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     	return statusBar1;
     }
     
-	private jshm.gh.GhGame getCurGame() {
+	public jshm.gh.GhGame getCurGame() {
 		return curGame;
 	}
 
@@ -986,7 +1000,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		this.curGame = curGame;
 	}
 
-	private jshm.Difficulty getCurDiff() {
+	public jshm.Difficulty getCurDiff() {
 		return curDiff;
 	}
 

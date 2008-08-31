@@ -305,6 +305,10 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 			
 			GhScore score = (GhScore) o;
 			
+			// can still double-click to edit score without opening
+			// a browser window
+			if (score.getStatus() == Score.Status.NEW) return;
+			
 			// preference is given to the video link
 			// if both are present
 			String url =

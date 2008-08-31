@@ -26,17 +26,43 @@
 
 package jshm.gui;
 
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ListCellRenderer;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
+import org.jdesktop.swingx.error.ErrorInfo;
+
+import jshm.Score;
 import jshm.gh.GhScore;
+import jshm.gh.GhSong;
 import jshm.gui.editors.GhMyScoresRatingEditor;
+import jshm.gui.renderers.ScoreEditorSongComboRenderer;
+import jshm.hibernate.HibernateUtil;
 
 /**
  *
  * @author  Tim
  */
 public class ScoreEditorPanel extends javax.swing.JPanel {
-
+	static final Logger LOG = Logger.getLogger(ScoreEditorPanel.class.getName());
+	
+	private GUI gui;
+	
+	public ScoreEditorPanel() {
+		this(null);
+	}
+	
     /** Creates new form ScoreEditorPanel */
-    public ScoreEditorPanel() {
+    public ScoreEditorPanel(GUI gui) {
+    	this.gui = gui;
         initComponents();
     }
 
@@ -51,17 +77,56 @@ public class ScoreEditorPanel extends javax.swing.JPanel {
 		commentField.setEditable(b);
 		imageUrlField.setEditable(b);
 		videoUrlField.setEditable(b);
+		saveButton.setEnabled(b);
+	}
+	
+	private final ListCellRenderer SONG_COMBO_RENDERER = new ScoreEditorSongComboRenderer();
+	private static final String SELECT_A_SONG = "Type a song name...";
+	private static final ObjectToStringConverter SONG_COMBO_CONVERTER = new ObjectToStringConverter() {
+		@Override
+		public String getPreferredStringForItem(Object item) {
+			if (null == item) return null;
+			if (item instanceof GhSong)
+				return ((GhSong) item).getTitle();
+			return item.toString();
+		}
+	};
+	
+	public void setSongs(List<GhSong> songs) {
+		songCombo.setRenderer(SONG_COMBO_RENDERER);
+		DefaultComboBoxModel model = (DefaultComboBoxModel) songCombo.getModel();
+		model.removeAllElements();
+		
+		model.addElement(SELECT_A_SONG);
+		for (GhSong s : songs)
+			model.addElement(s);
+		
+		AutoCompleteDecorator.decorate(songCombo, SONG_COMBO_CONVERTER);
+		
+		newButton.setEnabled(true);
+	}
+	
+	private GhScore score = null;
+	
+	public void setSong(GhSong song) {
+		songCombo.setSelectedItem(song);
 	}
 	
 	public void setScore(final GhScore score) {
+		this.score = score;
+		
 		if (null != score) {
 			switch (score.getStatus()) {
 				case NEW:
 				case TEMPLATE:
-					setEnabled(true); break;
+					setEnabled(true);
+					saveButton.setEnabled(true);
+					break;
 					
 				default:
-					setEnabled(false); break;
+					setEnabled(false);
+					saveButton.setEnabled(false);
+					break;
 			}
 			
 			imageUrlOpenButton.setEnabled(true);
@@ -72,11 +137,11 @@ public class ScoreEditorPanel extends javax.swing.JPanel {
 			videoUrlOpenButton.setEnabled(false);
 		}
 		
-		songCombo.setSelectedItem(null != score ? score.getSong().getTitle() : "");
-		scoreField.setText(null != score ? String.valueOf(score.getScore()) : "");
+		songCombo.setSelectedItem(null != score && null != score.getSong() ? score.getSong() : SELECT_A_SONG);
+		scoreField.setText(null != score && score.getScore() > 0 ? String.valueOf(score.getScore()) : "");
 		ratingCombo.setSelectedItem(null != score ? score.getRatingIcon(true) : GhScore.getRatingIcon(0));
-		percentField.setText(null != score ? String.valueOf((int) (score.getHitPercent() * 100)) : "");
-		streakField.setText(null != score ? String.valueOf(score.getStreak()) : "");
+		percentField.setText(null != score && score.getHitPercent() != 0f ? String.valueOf((int) (score.getHitPercent() * 100)) : "");
+		streakField.setText(null != score && score.getStreak() > 0 ? String.valueOf(score.getStreak()) : "");
 		commentField.setText(null != score ? score.getComment() : "");
 		imageUrlField.setText(null != score ? score.getImageUrl() : "");
 		videoUrlField.setText(null != score ? score.getVideoUrl() : "");
@@ -135,7 +200,6 @@ public class ScoreEditorPanel extends javax.swing.JPanel {
 
         videoUrlField.setEditable(false);
 
-        songCombo.setEditable(true);
         songCombo.setEnabled(false);
 
         imageUrlOpenButton.setText("Open...");
@@ -292,11 +356,92 @@ private void videoUrlOpenButtonActionPerformed(java.awt.event.ActionEvent evt) {
 }//GEN-LAST:event_videoUrlOpenButtonActionPerformed
 
 private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
-// TODO add your handling code here:
+//	boolean wasNullScore = null == score;
+	GhSong lastSong =
+		songCombo.getSelectedItem() instanceof GhSong
+		? (GhSong) songCombo.getSelectedItem() : null;
+		
+	setScore(GhScore.createNewScoreTemplate());
+	
+	if (/*wasNullScore &&*/ null != lastSong) {
+		setSong(lastSong);
+	}
 }//GEN-LAST:event_newButtonActionPerformed
 
 private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-// TODO add your handling code here:
+	try {
+		switch (score.getStatus()) {
+			case NEW:
+			case TEMPLATE:
+				score.setStatus(Score.Status.NEW);
+				
+				if (!(songCombo.getSelectedItem() instanceof GhSong))
+					throw new IllegalArgumentException("You must select a song");
+				
+				score.setSong((GhSong) songCombo.getSelectedItem());
+				score.setComment(commentField.getText().trim());
+				score.setImageUrl(imageUrlField.getText().trim());
+				score.setVideoUrl(videoUrlField.getText().trim());
+	
+				try {
+					String s = scoreField.getText();
+					score.setScore(
+						s.isEmpty() ? 0 :
+						Integer.parseInt(s));
+				} catch (Exception e) {
+					throw new NumberFormatException("Invalid score: " + scoreField.getText());
+				}
+	
+				score.setRating(0);
+				
+				for (int i : new Integer[] {3, 4, 5})
+					if (GhScore.getRatingIcon(i) == ratingCombo.getSelectedItem()) {
+						score.setRating(i);
+						break;
+					}
+	
+				try {
+					String s = percentField.getText();
+					score.getPart(1).setHitPercent(
+						s.isEmpty() ? 0f :
+						Integer.parseInt(s) / 100.0f);
+				} catch (Exception e) {
+					throw new NumberFormatException("Invalid percent: " + percentField.getText());
+				}
+	
+				try {
+					String s = streakField.getText();
+					score.setStreak(
+						s.isEmpty() ? 0 :
+						Integer.parseInt(s));
+				} catch (Exception e) {
+					throw new NumberFormatException("Invalid streak: " + streakField.getText());
+				}
+				
+				Session sess = null;
+				Transaction tx = null;
+				
+				try {
+					sess = HibernateUtil.getCurrentSession();
+					tx = sess.beginTransaction();
+					sess.saveOrUpdate(score);
+					sess.getTransaction().commit();
+				} catch (Exception e) {
+					LOG.log(Level.WARNING, "Error saving to database", e);
+					if (null != tx) tx.rollback();
+					throw e;
+				} finally {
+					if (sess.isOpen()) sess.close();
+				}
+				
+				setScore(null);
+				gui.myScoresMenuItemActionPerformed(null, gui.getCurGame(), gui.getCurDiff());
+		}
+	} catch (Throwable t) {
+		LOG.log(Level.WARNING, "Failed to save score", t);
+		ErrorInfo ei = new ErrorInfo("Error", "Failed to save score", null, null, t, null, null);
+		JXErrorPane.showDialog(null, ei);
+	}
 }//GEN-LAST:event_saveButtonActionPerformed
 
 
