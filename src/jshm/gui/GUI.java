@@ -247,12 +247,15 @@ public class GUI extends javax.swing.JFrame {
         statusBar1 = new jshm.gui.components.StatusBar();
         jScrollPane1 = new javax.swing.JScrollPane();
         jXTreeTable1 = new org.jdesktop.swingx.JXTreeTable();
+        editorCollapsiblePane = new org.jdesktop.swingx.JXCollapsiblePane();
+        scoreEditorPanel1 = new jshm.gui.ScoreEditorPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
         myScoresMenu = new javax.swing.JMenu();
         addNewScoreMenuItem = new javax.swing.JMenuItem();
         deleteSelectedScoreMenuItem = new javax.swing.JMenuItem();
+        toggleEditorMenuItem = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JSeparator();
         loadMyScoresMenuItem = new javax.swing.JMenuItem();
         uploadScoresMenuItem = new javax.swing.JMenuItem();
@@ -307,6 +310,12 @@ public class GUI extends javax.swing.JFrame {
 
         getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
+        editorCollapsiblePane.setCollapsed(true);
+        editorCollapsiblePane.getContentPane().setLayout(new java.awt.BorderLayout());
+        editorCollapsiblePane.getContentPane().add(scoreEditorPanel1, java.awt.BorderLayout.CENTER);
+
+        getContentPane().add(editorCollapsiblePane, java.awt.BorderLayout.NORTH);
+
         fileMenu.setMnemonic('F');
         fileMenu.setText("File");
 
@@ -346,6 +355,16 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         myScoresMenu.add(deleteSelectedScoreMenuItem);
+
+        toggleEditorMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+        toggleEditorMenuItem.setMnemonic('E');
+        toggleEditorMenuItem.setText("Toggle Editor");
+        toggleEditorMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                toggleEditorMenuItemActionPerformed(evt);
+            }
+        });
+        myScoresMenu.add(toggleEditorMenuItem);
         myScoresMenu.add(jSeparator3);
 
         loadMyScoresMenuItem.setMnemonic('L');
@@ -548,6 +567,8 @@ private void jXTreeTable1ValueChanged(javax.swing.event.TreeSelectionEvent evt) 
 		goodRowCount &&
 		isGhScore &&
 		score.getStatus() == Score.Status.NEW);
+	
+	scoreEditorPanel1.setScore(score);
 }//GEN-LAST:event_jXTreeTable1ValueChanged
 
 private void addNewScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNewScoreMenuItemActionPerformed
@@ -561,6 +582,7 @@ private void deleteSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEve
 	GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) jXTreeTable1.getTreeTableModel();
 	model.deleteScore(
 		jXTreeTable1.getPathForRow(jXTreeTable1.getSelectedRow()));
+	scoreEditorPanel1.setScore(null);
 }//GEN-LAST:event_deleteSelectedScoreMenuItemActionPerformed
 
 private void uploadScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadScoresMenuItemActionPerformed
@@ -653,6 +675,11 @@ private void uploadSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEve
 		
 	}.execute();
 }//GEN-LAST:event_uploadSelectedScoreMenuItemActionPerformed
+
+private void toggleEditorMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleEditorMenuItemActionPerformed
+	editorCollapsiblePane.setCollapsed(
+		!editorCollapsiblePane.isCollapsed());
+}//GEN-LAST:event_toggleEditorMenuItemActionPerformed
 
 public void showTextFileViewer(final String file) {
 	try {
@@ -921,6 +948,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JMenuItem addNewScoreMenuItem;
     private javax.swing.JMenuItem changeLogMenuItem;
     private javax.swing.JMenuItem deleteSelectedScoreMenuItem;
+    private org.jdesktop.swingx.JXCollapsiblePane editorCollapsiblePane;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
@@ -936,9 +964,11 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JMenuItem loadSongDataMenuItem;
     private javax.swing.JMenu myScoresMenu;
     private javax.swing.JMenuItem readmeMenuItem;
+    private jshm.gui.ScoreEditorPanel scoreEditorPanel1;
     private javax.swing.JMenu songDataMenu;
     private jshm.gui.components.StatusBar statusBar1;
     private jshm.gui.TextFileViewerDialog textFileViewerDialog1;
+    private javax.swing.JMenuItem toggleEditorMenuItem;
     private javax.swing.JMenuItem uploadScoresMenuItem;
     private javax.swing.JMenuItem uploadSelectedScoreMenuItem;
     private javax.swing.JMenu viewLogMenu;

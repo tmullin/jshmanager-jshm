@@ -1,7 +1,11 @@
 package jshm.util;
 
 import java.lang.reflect.Method;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * Contains various random utilities.
@@ -10,6 +14,16 @@ import java.util.logging.Logger;
  */
 public class Util {
 	static final Logger LOG = Logger.getLogger(Util.class.getName());
+	
+	public static void openURL(String url) {
+		try {
+			openURL(url, true);
+		} catch (Throwable t) {
+			LOG.log(Level.SEVERE, "Failed to launch external browser ", t);
+			ErrorInfo ei = new ErrorInfo("Error", "Failed to launch external browser", null, null, t, null, null);
+			JXErrorPane.showDialog(null, ei);
+		}
+	}
 	
 /////////////////////////////////////////////////////////
 //  Bare Bones Browser Launch                          //
@@ -23,7 +37,9 @@ public class Util {
 //  Public Domain Software -- Free to Use as You Like  //
 /////////////////////////////////////////////////////////
 
-	public static void openURL(String url) throws Exception {
+	// the boolean arg serves to distinguish this method that throws
+	// an exception upon error from the above that handles an error
+	public static void openURL(String url, boolean b) throws Exception {
 		LOG.finer("Opening URL: " + url);
 		
 		String osName = System.getProperty("os.name");

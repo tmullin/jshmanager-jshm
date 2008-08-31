@@ -315,13 +315,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 				  : null;
 				  
 			if (null != url) {
-				try {
-					jshm.util.Util.openURL(url);
-				} catch (Throwable t) {
-					LOG.log(Level.SEVERE, "Failed to launch external browser ", e);
-					ErrorInfo ei = new ErrorInfo("Error", "Failed to launch external browser", null, null, t, null, null);
-					JXErrorPane.showDialog(null, ei);
-				}
+				jshm.util.Util.openURL(url);
 			}
 		}
 	};
@@ -335,7 +329,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 			
 			Object o = parent.getModel().getValueAt(row, column);
 			
-			if (o instanceof GhScore) {
+			if (1 == column && o instanceof GhScore) {
 				GhScore score = (GhScore) o;
 				
 				if (score.getStatus() != Score.Status.NEW && 
