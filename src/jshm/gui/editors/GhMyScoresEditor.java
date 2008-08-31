@@ -30,6 +30,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import jshm.gh.GhScore;
+import jshm.gui.EditPopupMenu;
 
 public class GhMyScoresEditor extends DefaultCellEditor {
 //	private static final InputVerifier
@@ -99,6 +100,11 @@ public class GhMyScoresEditor extends DefaultCellEditor {
 		super(new JTextField());
 	}
 	
+	public boolean stopCellEditing() {
+		EditPopupMenu.remove((JTextField) getComponent());
+		return super.stopCellEditing();
+	}
+	
     public Component getTableCellEditorComponent(JTable table, Object value,
 			 boolean isSelected,
 			 int row, int column) {
@@ -139,6 +145,8 @@ public class GhMyScoresEditor extends DefaultCellEditor {
 			isSelected, row, column);
 		comp.selectAll();
 //		((JComponent) comp).setInputVerifier(iv);
+		
+		EditPopupMenu.add(comp);
 		
 		return comp;
 	}

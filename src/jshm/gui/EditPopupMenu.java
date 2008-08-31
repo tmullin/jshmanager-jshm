@@ -66,16 +66,20 @@ public class EditPopupMenu extends JPopupMenu implements ActionListener, MouseLi
 	}
 	
 	private void checkEnabled() {
-		cutMenuItem.setEnabled(null != comp && comp.isEditable() && null != comp.getSelectedText());
-		copyMenuItem.setEnabled(null != comp && null != comp.getSelectedText());
-		pasteMenuItem.setEnabled(null != comp && comp.isEditable() && cb.isDataFlavorAvailable(DataFlavor.stringFlavor));
+		final boolean compNotNull = null != comp;
+		final boolean compIsEditable = compNotNull && comp.isEditable();
+		final boolean selectedNotNull = compNotNull && null != comp.getSelectedText();
+		
+		cutMenuItem.setEnabled(compIsEditable && selectedNotNull);
+		copyMenuItem.setEnabled(selectedNotNull);
+		pasteMenuItem.setEnabled(compIsEditable && cb.isDataFlavorAvailable(DataFlavor.stringFlavor));
 		selectAllMenuItem.setEnabled(
-			null != comp &&
+			compNotNull &&
 			null != comp.getText() && !comp.getText().isEmpty() &&
-			(null == comp.getSelectedText() ||
+			(!selectedNotNull ||
 			 comp.getSelectedText().length() != comp.getText().length())
 		);
-		deleteMenuItem.setEnabled(null != comp && comp.isEditable());
+		deleteMenuItem.setEnabled(compIsEditable && selectedNotNull);
 	}
 	
 	/**
