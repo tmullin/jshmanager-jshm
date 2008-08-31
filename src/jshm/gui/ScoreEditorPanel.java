@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ListCellRenderer;
+import javax.swing.text.JTextComponent;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -64,6 +65,11 @@ public class ScoreEditorPanel extends javax.swing.JPanel {
     public ScoreEditorPanel(GUI gui) {
     	this.gui = gui;
         initComponents();
+        
+        for (JTextComponent c : new JTextComponent[] {
+        	scoreField, percentField, streakField, commentField, imageUrlField, videoUrlField}) {
+        	EditPopupMenu.add(c);
+        }
     }
 
 	@Override

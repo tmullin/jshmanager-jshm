@@ -26,6 +26,8 @@ public class TextFileViewerDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         
+        EditPopupMenu.add(jTextPane1);
+        
         try {
         	setSize(Config.getInt("window.textfileviewer.width"), Config.getInt("window.textfileviewer.height"));
         } catch (NullPointerException e) {
