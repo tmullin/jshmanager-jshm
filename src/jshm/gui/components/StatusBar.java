@@ -26,7 +26,7 @@
 
 package jshm.gui.components;
 
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 import javax.swing.JProgressBar;
 
@@ -49,7 +49,7 @@ import javax.swing.JProgressBar;
  * @author Tim Mullin
  */
 public class StatusBar extends javax.swing.JPanel {
-	static final Logger LOG = Logger.getLogger(StatusBar.class.getName());
+//	static final Logger LOG = Logger.getLogger(StatusBar.class.getName());
 	
 	String text = "";
 	String tempText = ""; // for when the status bar is temporarily changed
@@ -141,7 +141,6 @@ public class StatusBar extends javax.swing.JPanel {
 	}
 	
 	public void setProgressVisible(boolean value) {
-		LOG.finer("Setting progress visible to " + value);
 		progSeparator.setVisible(value);
 		jProgressBar1.setVisible(value);
 	}

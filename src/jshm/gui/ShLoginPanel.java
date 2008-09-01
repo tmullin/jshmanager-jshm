@@ -20,6 +20,7 @@
  */
 package jshm.gui;
 
+import java.awt.Component;
 import java.awt.Frame;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -28,31 +29,34 @@ import java.util.logging.Logger;
 
 import jshm.util.Crypto;
 
-import org.jdesktop.swingx.JXLoginDialog;
-import org.jdesktop.swingx.JXLoginPane.SaveMode;
+import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.auth.LoginService;
 import org.jdesktop.swingx.auth.PasswordStore;
 
-public class ShLoginDialog extends JXLoginDialog {
-	static final Logger LOG = Logger.getLogger(ShLoginDialog.class.getName());
+public class ShLoginPanel extends JXLoginPane {
+	static final Logger LOG = Logger.getLogger(ShLoginPanel.class.getName());
 	
-	public ShLoginDialog() {
-		this(null, true);
+	public static Status showDialog() {
+		return showDialog(null);
 	}
 	
-	public ShLoginDialog(Frame owner) {
-		this(owner, true);
+	public static Status showDialog(Component parent) {
+		return JXLoginPane.showLoginDialog(parent, new ShLoginPanel());
 	}
 	
-	public ShLoginDialog(Frame owner, boolean modal) {
-		super(owner, "ScoreHero Login", modal);
+	public ShLoginPanel() {
+		this(null);
+	}
+	
+	public ShLoginPanel(Frame owner) {
+		super();
 		
-		getPanel().setPasswordStore(PASS_STORE);
-		getPanel().setSaveMode(SaveMode.PASSWORD);
-		getPanel().setUserName(PASS_STORE.getUsername());
-		getPanel().setPassword(PASS_STORE.getPassword().toCharArray());
+		setPasswordStore(PASS_STORE);
+		setSaveMode(SaveMode.PASSWORD);
+		setUserName(PASS_STORE.getUsername());
+		setPassword(PASS_STORE.getPassword().toCharArray());
 		
-		getPanel().setLoginService(new LoginService() {
+		setLoginService(new LoginService() {
 			@Override
 			public boolean authenticate(String name, char[] password,
 					String server) throws Exception {
@@ -65,8 +69,8 @@ public class ShLoginDialog extends JXLoginDialog {
 		});
 
 		try {
-			getPanel().setUserName(
-				getPanel().getUserNameStore().getUserNames()[0]);
+			setUserName(
+				getUserNameStore().getUserNames()[0]);
 		} catch (ArrayIndexOutOfBoundsException e) {}
 	}
 	

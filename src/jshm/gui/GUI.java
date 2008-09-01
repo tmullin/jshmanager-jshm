@@ -66,7 +66,6 @@ import jshm.gui.wizards.scoredownload.ScoreDownloadWizard;
 import jshm.gui.wizards.scoreupload.ScoreUploadWizard;
 
 import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.JXLoginDialog;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.netbeans.spi.wizard.Wizard;
@@ -205,15 +204,18 @@ public class GUI extends javax.swing.JFrame {
     }
     
     @Override
-    public void dispose() {
-    	LOG.finer("Saving GUI's location and size");
-    	
+    public void dispose() {    	
     	Dimension size = getSize();
     	Point loc = getLocation();
+    	final boolean isMaximized = JFrame.MAXIMIZED_BOTH ==
+    		(getExtendedState() & JFrame.MAXIMIZED_BOTH);
+    	
+    	LOG.finer(
+    		String.format("Saving GUI's location %s and size %s, maximized=%s",
+    		loc, size, isMaximized));
     	
     	// no need to save this stuff if the frame is maximized
-    	if (JFrame.MAXIMIZED_BOTH !=
-    		(getExtendedState() & JFrame.MAXIMIZED_BOTH)) {
+    	if (!isMaximized) {
     		Config.set("window.maximized", false);
     		
     		Config.set("window.width", size.width);
@@ -224,10 +226,8 @@ public class GUI extends javax.swing.JFrame {
     		Config.set("window.maximized", true);
     	}	
     	
-    	
-    	LOG.finer("Saving TextFileViewer's size");
-    	
     	size = textFileViewerDialog1.getSize();
+    	LOG.finer("Saving TextFileViewer's size " + size);
 		Config.set("window.textfileviewer.width", size.width);
 		Config.set("window.textfileviewer.height", size.height);
     	
@@ -643,9 +643,7 @@ private void uploadSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEve
 			
 			try {
 				if (!jshm.sh.Client.hasAuthCookies()) {
-					JXLoginDialog login = new ShLoginDialog(null);					
-					login.setLocationRelativeTo(GUI.this);
-					login.setVisible(true);
+					ShLoginPanel.showDialog(GUI.this);
 				}
 				
 				GhScore score = (GhScore) selected;

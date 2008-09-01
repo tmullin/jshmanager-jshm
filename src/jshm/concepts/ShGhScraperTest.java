@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 
 import jshm.*;
 import jshm.gh.*;
-import jshm.gui.ShLoginDialog;
+import jshm.gui.ShLoginPanel;
 import jshm.sh.scraper.*;
 
 public class ShGhScraperTest {
@@ -44,7 +44,7 @@ public class ShGhScraperTest {
 	}
 	
 	static void doScores() throws Exception {
-		new ShLoginDialog().setVisible(true);
+		ShLoginPanel.showDialog();
 		
 		List<GhScore> scores = 
 			GhScoreScraper.scrapeAll(

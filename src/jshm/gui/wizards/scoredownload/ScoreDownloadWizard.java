@@ -29,10 +29,9 @@ import jshm.Difficulty;
 import jshm.dataupdaters.GhScoreUpdater;
 import jshm.gh.GhGame;
 import jshm.gui.GUI;
-import jshm.gui.ShLoginDialog;
+import jshm.gui.ShLoginPanel;
 
 import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.JXLoginDialog;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.netbeans.spi.wizard.DeferredWizardResult;
 import org.netbeans.spi.wizard.ResultProgressHandle;
@@ -94,9 +93,7 @@ public class ScoreDownloadWizard {
 			try {
 				if (!jshm.sh.Client.hasAuthCookies()) {
 					LOG.finer("Showing login dialog to get auth cookies");
-					JXLoginDialog login = new ShLoginDialog(null);					
-					login.setLocationRelativeTo(null);
-					login.setVisible(true);
+					ShLoginPanel.showDialog();
 					LOG.finest("Returned from login dialog");
 				}
 

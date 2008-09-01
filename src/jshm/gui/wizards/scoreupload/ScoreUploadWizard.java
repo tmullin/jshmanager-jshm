@@ -29,11 +29,10 @@ import java.util.logging.Logger;
 //import javax.swing.JOptionPane;
 
 import jshm.gh.GhScore;
-import jshm.gui.ShLoginDialog;
+import jshm.gui.ShLoginPanel;
 import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 
 import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.JXLoginDialog;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.netbeans.spi.wizard.ResultProgressHandle;
 import org.netbeans.spi.wizard.Summary;
@@ -86,9 +85,7 @@ public class ScoreUploadWizard {
 		public void start(Map settings, ResultProgressHandle progress) {
 			try {
 				if (!jshm.sh.Client.hasAuthCookies()) {
-					JXLoginDialog login = new ShLoginDialog(null);					
-					login.setLocationRelativeTo(null);
-					login.setVisible(true);
+					ShLoginPanel.showDialog();
 				}
 				
 				GhMyScoresTreeTableModel model =
