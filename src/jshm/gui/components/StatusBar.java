@@ -31,14 +31,28 @@ import java.util.logging.Logger;
 import javax.swing.JProgressBar;
 
 /**
- *
- * @author  Tim
+ * A status is a component, generally along the bottom of a window,
+ * that tells the user various information.
+ * <p>
+ * This status bar has two strings associated with it. A main string and
+ * a temporary string. The main string is always shown unless the temporary
+ * string has been set. Once whatever operation completes that set the
+ * temporary string, it can revert the text to display the main string
+ * again.
+ * </p><p>
+ * There is also a progress bar that can be utilized to show an
+ * operations's progress. Booleans can be passed to the set*Text() methods
+ * to conveniently show/hide the progress in an indeterminate mode.
+ * Retrieve the progress bar via {@link #getProgressBar()} if you want to
+ * manually set actual progress values.
+ * </p>
+ * @author Tim Mullin
  */
 public class StatusBar extends javax.swing.JPanel {
 	static final Logger LOG = Logger.getLogger(StatusBar.class.getName());
 	
 	String text = "";
-	String lastText = "";
+	String tempText = ""; // for when the status bar is temporarily changed
 	
     /** Creates new form StatusBar */
     public StatusBar() {
@@ -46,69 +60,80 @@ public class StatusBar extends javax.swing.JPanel {
 		setProgressVisible(false);
 		setText("");
     }
-	
+    
+    /**
+     * Sets the progress bar's text to <code>str</code>. The 
+     * temporary text is cleared.
+     * @param str
+     * @see #setTempText(String)
+     */
     public void setText(String str) {
     	setText(str, false);
     }
     
-    public void setText(boolean revertFirst, String str) {
-    	setText(revertFirst, str, false);
-    }
-    
-    public void setText(String str, boolean toggleProgress) {
-    	setText(false, str, toggleProgress);
-    }
-    
     /**
-     * 
-     * @param revertFirst Whether to call revertText() before setting the text.
-     * @param str The text to display in the progress bar.
-     * @param toggleProgress If <code>true</code> and <code>str</code>
-     * is not empty, the progress bar will be made visible in
-     * indeterminite mode, otherwise if <code>str</code> is empty, the
-     * progress bar will be hidden.
+     * Sets the progress bar's text to <code>str</code>. The 
+     * temporary text is cleared.
+     * @param str
+     * @param showProgress
+     * @see #setTempText(String, boolean)
      */
-	public void setText(boolean revertFirst, String str, boolean toggleProgress) {
-		if (revertFirst) revertText();
+	public void setText(String str, boolean showProgress) {
+		setText(str, showProgress, false);
+	}
+	
+	private void setText(String str, boolean showProgress, boolean isTemp) {
+		if (!isTemp) this.text = str;
+		this.tempText = isTemp ? str : "";
+		String display = isTemp ? this.tempText : this.text;
 		
-		this.lastText = this.text;
-		this.text = str;
-		
-		LOG.finer(
-			String.format("Setting text to \"%s\" (last=\"%s\")", this.text, this.lastText));
-		
-		if (this.text.isEmpty()) {
+		if (display.isEmpty()) {
 			textLabel.setText("  ");
-			
-			if (toggleProgress) {
-				setProgressVisible(false);
-			}
 		} else {
-			textLabel.setText(this.text);
-			
-			if (toggleProgress) {
-				getProgressBar().setIndeterminate(true);
-				setProgressVisible(true);
-			}
+			textLabel.setText(display);
 		}
+		
+		if (showProgress) {
+			getProgressBar().setIndeterminate(true);
+			setProgressVisible(true);
+		} else {
+			setProgressVisible(false);
+		}
+	}
+	
+    /**
+     * Sets the progress bar's temporary text to <code>str</code>. The 
+     * main text is not changed.
+     * @param str
+     * @see #setText(String)
+     * @see #revertText()
+     */
+	public void setTempText(String str) {
+		setTempText(str, false);
+	}
+	
+    /**
+     * Sets the progress bar's temporary text to <code>str</code>. The 
+     * main text is not changed.
+     * @param str
+     * @param showProgress
+     * @see #setText(String, boolean)
+     * @see #revertText()
+     */
+	public void setTempText(String str, boolean showProgress) {
+		setText(str, showProgress, true);
 	}
 	
 	public String getText() {
 		return this.text;
 	}
 	
-	public String getLastText() {
-		return this.lastText;
+	public String getTempText() {
+		return this.tempText;
 	}
 	
 	public void revertText() {
-		this.text = this.lastText;
-		this.lastText = "";
-		
-		LOG.finer("Reverting text to \"" + this.text + "\"");
-		
-		textLabel.setText(this.text.isEmpty() ? "  " : this.text);
-		setProgressVisible(false);
+		setText(text);
 	}
 	
 	public JProgressBar getProgressBar() {

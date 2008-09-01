@@ -510,7 +510,7 @@ private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 		@Override
 		protected Boolean doInBackground() throws Exception {
 			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			statusBar1.setText("Downloading song data from ScoreHero...", true);
+			statusBar1.setTempText("Downloading song data from ScoreHero...", true);
 			
 			try {
 				jshm.dataupdaters.GhSongUpdater.update(getCurGame(), getCurDiff());
@@ -520,7 +520,7 @@ private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 				ErrorInfo ei = new ErrorInfo("Error", "Failed to download song data", null, null, e, null, null);
 				JXErrorPane.showDialog(GUI.this, ei);
 			} finally {
-				statusBar1.setText("", true);
+				statusBar1.revertText();
 				getContentPane().setCursor(Cursor.getDefaultCursor());
 			}
 			
@@ -639,7 +639,7 @@ private void uploadSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEve
 		@Override
 		protected Void doInBackground() throws Exception {
 			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			statusBar1.setText("Uploading score to ScoreHero...", true);
+			statusBar1.setTempText("Uploading score to ScoreHero...", true);
 			
 			try {
 				if (!jshm.sh.Client.hasAuthCookies()) {
@@ -650,7 +650,7 @@ private void uploadSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEve
 				
 				GhScore score = (GhScore) selected;
 				jshm.sh.GhApi.submitGhScore(score);
-				statusBar1.setText(true, "Uploaded " + score.getSong().getTitle() + " (" + score.getScore() + ") successfully");
+				statusBar1.setTempText("Uploaded " + score.getSong().getTitle() + " (" + score.getScore() + ") successfully");
 			} catch (Exception e) {
 				LOG.log(Level.SEVERE, "Failed to upload score", e);
 				ErrorInfo ei = new ErrorInfo("Error", "Failed to upload score", null, null, e, null, null);
@@ -810,7 +810,7 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 		@Override
 		protected Void doInBackground() throws Exception {
 			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			statusBar1.setText("Loading song data from database...", true);
+			statusBar1.setTempText("Loading song data from database...", true);
 			
 			try {
 				songs = jshm.gh.GhSong.getSongs(game, difficulty);
@@ -829,7 +829,7 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 				JXErrorPane.showDialog(GUI.this, ei);
 			} finally {
 				getContentPane().setCursor(Cursor.getDefaultCursor());
-				statusBar1.setText("", true);
+				statusBar1.revertText();
 			}
 			
 			return null;
@@ -879,7 +879,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 				songs = GhSong.getSongs(game, difficulty);
 				
 				getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-				statusBar1.setText("Loading score data from database...", true);
+				statusBar1.setTempText("Loading score data from database...", true);
 				
 				scores = GhScore.getScores(game, difficulty);
 				model = new GhMyScoresTreeTableModel(game, songs, scores);
@@ -903,7 +903,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 				org.jdesktop.swingx.JXErrorPane.showDialog(GUI.this, ei);
 			} finally {
 				getContentPane().setCursor(Cursor.getDefaultCursor());
-				statusBar1.setText("", true);
+				statusBar1.revertText();
 			}
 			
 			return null;

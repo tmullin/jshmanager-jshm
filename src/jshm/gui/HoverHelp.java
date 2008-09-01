@@ -77,7 +77,7 @@ public class HoverHelp implements MouseListener, MouseMotionListener {
 		msg = simpleMap.get(src);
 		
 		if (null != msg && !msg.isEmpty()) {
-			status.setText(msg);
+			status.setTempText(msg);
 			isHelpShowing = true;
 		}
 	}
@@ -98,7 +98,7 @@ public class HoverHelp implements MouseListener, MouseMotionListener {
 				if (isHelpShowing)
 					status.revertText();
 				
-				status.setText(msg);
+				status.setTempText(msg);
 				isHelpShowing = true;
 			}
 		}
