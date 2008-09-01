@@ -505,7 +505,7 @@ private void loadMyScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 	wiz.show();
 }//GEN-LAST:event_loadMyScoresMenuItemActionPerformed
 
-private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadSongDataMenuItemActionPerformed
+private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadSongDataMenuItemActionPerformed	
 	new SwingWorker<Boolean, Void>() {
 		@Override
 		protected Boolean doInBackground() throws Exception {
@@ -800,6 +800,8 @@ private void initDynamicGameMenu(final javax.swing.JMenu menu) {
 private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent evt, final jshm.gh.GhGame game, final jshm.Difficulty difficulty) {
 	this.setCurGame(game);
 	this.setCurDiff(difficulty);
+	scoreEditorPanel1.setScore(null);
+	editorCollapsiblePane.setCollapsed(true);
 	
 	new SwingWorker<Void, Void>() {
 		List<jshm.gh.GhSong> songs = null;
@@ -865,7 +867,8 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt, final jshm.gh.GhGame game, final jshm.Difficulty difficulty) {
 	this.setCurGame(game);
 	this.setCurDiff(difficulty);
-
+	scoreEditorPanel1.setScore(null);
+	
 	new SwingWorker<Void, Void>() {
 		List<GhSong> songs = null;
 		List<GhScore> scores = null;

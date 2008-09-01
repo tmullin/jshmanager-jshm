@@ -294,6 +294,9 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		// score was clicked for the image url or if the video icon
 		// was clicked for the video url
 		public void mouseClicked(MouseEvent e) {
+			if (e.getClickCount() != 1 || e.getButton() != MouseEvent.BUTTON1)
+				return;
+			
 			int row = parent.rowAtPoint(e.getPoint());
 			int column = parent.columnAtPoint(e.getPoint());
 			

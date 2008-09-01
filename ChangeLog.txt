@@ -20,7 +20,7 @@ Version 0.0.4
   via the auto-completing text field without having to navigate to the song
   in the tree view of the scores.
 - Scores with image/video URLs are now distinguished by blue, underlined
-  text/a camera icon. Clicking on the score will launch an external browser
+  text and/or a camera icon. Clicking on the score will launch an external browser
   to the video URL, if present, or the image URL (clicking on a new score will
   NOT launch a browser so that you can still quickly edit the score).
 - Fixed an error that sometimes caused a NonUniqueResultException to occur while
