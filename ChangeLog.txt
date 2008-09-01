@@ -25,6 +25,8 @@ Version 0.0.4
   NOT launch a browser so that you can still quickly edit the score).
 - Fixed an error that sometimes caused a NonUniqueResultException to occur while
   trying to download scores from ScoreHero.
+- The login dialog has been changed in order to fix an issue that caused JSHManager
+  to hang after logging in to ScoreHero on Linux systems.
 
 Version 0.0.3
 -------------

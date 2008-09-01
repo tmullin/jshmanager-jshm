@@ -643,7 +643,7 @@ private void uploadSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEve
 			
 			try {
 				if (!jshm.sh.Client.hasAuthCookies()) {
-					ShLoginPanel.showDialog(GUI.this);
+					LoginDialog.showDialog(GUI.this);
 				}
 				
 				GhScore score = (GhScore) selected;

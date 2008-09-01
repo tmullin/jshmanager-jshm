@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 //import javax.swing.JOptionPane;
 
 import jshm.gh.GhScore;
-import jshm.gui.ShLoginPanel;
+import jshm.gui.LoginDialog;
 import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 
 import org.jdesktop.swingx.JXErrorPane;
@@ -85,7 +85,7 @@ public class ScoreUploadWizard {
 		public void start(Map settings, ResultProgressHandle progress) {
 			try {
 				if (!jshm.sh.Client.hasAuthCookies()) {
-					ShLoginPanel.showDialog();
+					LoginDialog.showDialog();
 				}
 				
 				GhMyScoresTreeTableModel model =
