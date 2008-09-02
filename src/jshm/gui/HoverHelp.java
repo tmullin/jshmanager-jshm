@@ -20,12 +20,13 @@
  */
 package jshm.gui;
 
-import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.JComponent;
 
 import jshm.gui.components.StatusBar;
 
@@ -38,28 +39,60 @@ import jshm.gui.components.StatusBar;
  *
  */
 public class HoverHelp implements MouseListener, MouseMotionListener {
-	final Map<Component, String> simpleMap = new HashMap<Component, String>();
-	final Map<Component, Callback> callbackMap = new HashMap<Component, Callback>();
-	final StatusBar status;
-	
+	final Map<JComponent, String> simpleMap = new HashMap<JComponent, String>();
+	final Map<JComponent, Callback> callbackMap = new HashMap<JComponent, Callback>();
+	StatusBar status;
+
 	boolean isHelpShowing = false;
+	
+	public HoverHelp() {
+		this(null);
+	}
 	
 	public HoverHelp(StatusBar status) {
 		this.status = status;
 	}
 	
-	public void add(Component c, String message) {
+	public StatusBar getStatus() {
+		return status;
+	}
+
+	public void setStatus(StatusBar status) {
+		this.status = status;
+	}
+	
+	/**
+	 * Adds/replaces the specified component, calling c.getTooltipText()
+	 * whenever the text needs to be retrieved.
+	 * @param c
+	 */
+	public void add(JComponent c) {
+		add(c, new TooltipCallback(c), false);
+	}
+	
+	/**
+	 * Adds/replaces the specified component with a fixed string.
+	 * @param c
+	 * @param message
+	 */
+	public void add(JComponent c, String message) {
 		simpleMap.put(c, message);
 		c.addMouseListener(this);
 	}
 	
-	public void add(Component c, Callback cb) {
-		callbackMap.put(c, cb);
-		c.addMouseListener(this);
-		c.addMouseMotionListener(this);
+	public void add(JComponent c, Callback cb) {
+		add(c, cb, true);
 	}
 	
-	public void remove(Component c) {
+	public void add(JComponent c, Callback cb, boolean addMouseMotionListener) {
+		callbackMap.put(c, cb);
+		c.addMouseListener(this);
+		
+		if (addMouseMotionListener)
+			c.addMouseMotionListener(this);
+	}
+	
+	public void remove(JComponent c) {
 		if (null != callbackMap.remove(c))
 			c.removeMouseMotionListener(this);
 		else {
@@ -71,19 +104,27 @@ public class HoverHelp implements MouseListener, MouseMotionListener {
 	
 	@Override
 	public void mouseEntered(MouseEvent e) {
+		if (null == status) return;
+		
 		Object src = e.getSource();
 		String msg = "";
 
 		msg = simpleMap.get(src);
 		
-		if (null != msg && !msg.isEmpty()) {
-			status.setTempText(msg);
-			isHelpShowing = true;
+		if (null != msg) {
+			if (!msg.isEmpty()) {
+				status.setTempText(msg);
+				isHelpShowing = true;
+			}
+		} else {
+			mouseMoved(e);
 		}
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
+		if (null == status) return;
+		
 		Object src = e.getSource();
 		
 		String msg = callbackMap.get(src).getMessage();
@@ -106,6 +147,8 @@ public class HoverHelp implements MouseListener, MouseMotionListener {
 	
 	@Override
 	public void mouseExited(MouseEvent e) {
+		if (null == status) return;
+		
 		if (isHelpShowing) {
 			status.revertText();
 			isHelpShowing = false;
@@ -132,7 +175,20 @@ public class HoverHelp implements MouseListener, MouseMotionListener {
 		// ignore
 	}
 	
+	
 	public static interface Callback {
 		public String getMessage();
+	}
+	
+	public static class TooltipCallback implements Callback {
+		JComponent c;
+		
+		public TooltipCallback(JComponent c) {
+			this.c = c;
+		}
+		
+		public String getMessage() {
+			return c.getToolTipText();
+		}
 	}
 }

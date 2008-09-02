@@ -87,6 +87,8 @@ public class GUI extends javax.swing.JFrame {
 	
     /** Creates new form GUITest */
     public GUI() {
+    	hh = new HoverHelp();
+    	
         initComponents();
 
 //        System.out.println("Action keys:");
@@ -152,7 +154,9 @@ public class GUI extends javax.swing.JFrame {
 			setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         }
         
-        hh = new HoverHelp(statusBar1);
+        hh.setStatus(statusBar1);
+        
+        // TODO move this text to the tooltip for each item
         hh.add(addNewScoreMenuItem,
         	"Insert a new score for the selected song");
         hh.add(deleteSelectedScoreMenuItem,
@@ -861,6 +865,9 @@ private void initForumsMenu(final JMenu menu, final jshm.sh.links.Link linkRoot)
 						a.actionPerformed(null);
 					}
 				});
+				
+				subMenu.setToolTipText(f.getUrl());
+				hh.add(subMenu);
 			}
 			
 			menu.add(subMenu);
@@ -869,8 +876,12 @@ private void initForumsMenu(final JMenu menu, final jshm.sh.links.Link linkRoot)
 			JMenuItem item = new JMenuItem(f.name);
 			item.setIcon(f.getIcon());
 			
-			if (null != a)
+			if (null != a) {
 				item.addActionListener(a);
+				item.setToolTipText(f.getUrl());
+				hh.add(item);
+			}
+			
 			menu.add(item);
 		}
 	}
