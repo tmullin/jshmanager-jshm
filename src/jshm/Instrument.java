@@ -28,6 +28,19 @@ public enum Instrument {
 	DRUMS,
 	VOCALS;
 	
+	private transient javax.swing.ImageIcon icon = null;
+	
+	public javax.swing.ImageIcon getIcon() {
+		if (null == icon) {
+			try {
+				icon = new javax.swing.ImageIcon(
+					Instrument.class.getResource("/jshm/resources/images/instruments/" + this.toString() + "_32.png"));
+			} catch (Exception e) {}
+		}
+		
+		return icon;
+	}
+	
 	public static enum Group {
 		GUITAR(1, Instrument.GUITAR),
 		BASS(2, Instrument.BASS),

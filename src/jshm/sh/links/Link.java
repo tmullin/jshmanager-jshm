@@ -17,7 +17,8 @@ public class Link {
 		.add(ManageScoreLink.GH_ROOT);
 	
 	public static final Link RB_ROOT = new Link("RB_ROOT")
-		.add(ForumLink.RB_ROOT);
+		.add(ForumLink.RB_ROOT)
+		.add(ManageScoreLink.RB_ROOT);
 	
 	
 	public final String name;
