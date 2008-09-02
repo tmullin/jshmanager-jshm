@@ -268,7 +268,8 @@ public class GUI extends javax.swing.JFrame {
         songDataMenu = new javax.swing.JMenu();
         loadSongDataMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
-        forumsMenu = new javax.swing.JMenu();
+        ghForumsMenu = new javax.swing.JMenu();
+        rbForumsMenu = new javax.swing.JMenu();
         helpMenu = new javax.swing.JMenu();
         readmeMenuItem = new javax.swing.JMenuItem();
         changeLogMenuItem = new javax.swing.JMenuItem();
@@ -427,12 +428,18 @@ public class GUI extends javax.swing.JFrame {
 
         jMenuBar1.add(songDataMenu);
 
-        forumsMenu.setMnemonic('r');
-        forumsMenu.setText("Forums");
+        ghForumsMenu.setMnemonic('r');
+        ghForumsMenu.setText("GH Forums");
 
-        initForumsMenu(forumsMenu);
+        initForumsMenu(ghForumsMenu);
 
-        jMenuBar1.add(forumsMenu);
+        jMenuBar1.add(ghForumsMenu);
+
+        rbForumsMenu.setText("RB Forums");
+
+        initForumsMenu(rbForumsMenu);
+
+        jMenuBar1.add(rbForumsMenu);
 
         helpMenu.setMnemonic('H');
         helpMenu.setText("Help");
@@ -808,11 +815,14 @@ private void initDynamicGameMenu(final javax.swing.JMenu menu) {
 	}
 }
 
-private void initForumsMenu(JMenu menu) {
-	initForumsMenu(menu, jshm.sh.ShForum.GH_ROOT.getChildren());
+private void initForumsMenu(final JMenu menu) {
+	initForumsMenu(menu,
+		(menu == ghForumsMenu
+		 ? jshm.sh.ShForum.GH_ROOT
+		 : jshm.sh.ShForum.RB_ROOT).getChildren());
 }
 
-private void initForumsMenu(JMenu menu, List<jshm.sh.ShForum> forums) {
+private void initForumsMenu(final JMenu menu, final List<jshm.sh.ShForum> forums) {
 	for (final jshm.sh.ShForum f : forums) {
 		final Action a = 
 		f.getUrl() != null
@@ -1029,7 +1039,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private org.jdesktop.swingx.JXCollapsiblePane editorCollapsiblePane;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
-    private javax.swing.JMenu forumsMenu;
+    private javax.swing.JMenu ghForumsMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -1042,6 +1052,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JMenuItem loadMyScoresMenuItem;
     private javax.swing.JMenuItem loadSongDataMenuItem;
     private javax.swing.JMenu myScoresMenu;
+    private javax.swing.JMenu rbForumsMenu;
     private javax.swing.JMenuItem readmeMenuItem;
     private jshm.gui.ScoreEditorPanel scoreEditorPanel1;
     private javax.swing.JMenu songDataMenu;

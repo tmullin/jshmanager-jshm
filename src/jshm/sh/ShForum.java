@@ -11,7 +11,7 @@ import java.util.List;
  *
  */
 public class ShForum {
-	public static final ShForum GH_ROOT = new ShForum("Index")
+	public static final ShForum GH_ROOT = new ShForum("ROOT")
 		.add(new ShForum("ScoreHero")
 			.add("Website Discussion", 1)
 			.add("Bug Reports", 10)
@@ -109,6 +109,61 @@ public class ShForum {
 			.add("Thread Hall of Fame", 31)
 		);
 	
+	public static final ShForum RB_ROOT = new ShForum("ROOT", true)
+		.add(new ShForum("ScoreHero")
+			.add("Website Discussion", 1009)
+			.add("Bug Reports", 1010)
+		)
+		.add(new ShForum("Rock Band")
+			.add("Official Rock Band News", 1012)
+			.add(new ShForum("Technique, Style, and Gameplay", 1001)
+				.add("Guitar/Bass", 1002)
+				.add("Drums", 1003)
+				.add("Vocals", 1004)
+				.add("Multitasking", 1042)
+			)
+			.add("Accomplishments", 1005)
+			.add("Rivalries", 1006)
+			.add(new ShForum("Leagues", 1041)
+				.add("Past Seasons", 1043)
+			)
+			.add("Tournaments and Events", 1007)
+			.add("Will Rock For Food", 1040)
+			.add("Misc RB Game Discussion", 1008)
+		)
+		.add(new ShForum("Homebrew Projects")
+			.add("Hardware", 1038)
+			.add("Software", 1039)
+		)
+		.add(new ShForum("Overdrive FAQs")
+			.add(new ShForum("Guitar", 1013)
+				.add("Easy", 1018)
+				.add("Medium", 1019)
+				.add("Hard", 1020)
+				.add("Expert", 1021)
+			)
+			.add(new ShForum("Bass", 1014)
+				.add("Easy", 1022)
+				.add("Medium", 1023)
+				.add("Hard", 1024)
+				.add("Expert", 1025)
+			)
+			.add(new ShForum("Drums", 1015)
+				.add("Easy", 1026)
+				.add("Medium", 1027)
+				.add("Hard", 1028)
+				.add("Expert", 1029)
+			)
+			.add("Vocals", 1016)
+			.add(new ShForum("Full Band", 1017)
+				.add("Easy", 1034)
+				.add("Medium", 1035)
+				.add("Hard", 1036)
+				.add("Expert", 1037)
+			)
+		)
+	;
+	
 //	static {
 //		System.out.println(GH_ROOT);
 //	}
@@ -125,7 +180,11 @@ public class ShForum {
 	private List<ShForum> children = new ArrayList<ShForum>();
 	
 	public ShForum(String name) {
-		this(name, -1);
+		this(name, false);
+	}
+	
+	public ShForum(String name, boolean isRb) {
+		this(name, -1, isRb);
 	}
 	
 	public ShForum(String name, int forumId) {
@@ -191,9 +250,16 @@ public class ShForum {
 	}
 	
 	public ShForum add(ShForum f) {
-		f.baseUrl = this.baseUrl;
+		f.setBaseUrlRecursively(this.baseUrl);
 		children.add(f);
 		return this;
+	}
+	
+	private void setBaseUrlRecursively(String newUrl) {
+		this.baseUrl = newUrl;
+		
+		for (ShForum f : children)
+			f.setBaseUrlRecursively(newUrl);
 	}
 	
 	public String toString() {

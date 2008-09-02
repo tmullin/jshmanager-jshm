@@ -147,13 +147,21 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="forumsMenu">
+        <Menu class="javax.swing.JMenu" name="ghForumsMenu">
           <Properties>
             <Property name="mnemonic" type="int" value="114"/>
-            <Property name="text" type="java.lang.String" value="Forums"/>
+            <Property name="text" type="java.lang.String" value="GH Forums"/>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initForumsMenu(forumsMenu);"/>
+            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initForumsMenu(ghForumsMenu);"/>
+          </AuxValues>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="rbForumsMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="RB Forums"/>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initForumsMenu(rbForumsMenu);"/>
           </AuxValues>
         </Menu>
         <Menu class="javax.swing.JMenu" name="helpMenu">
