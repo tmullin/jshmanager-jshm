@@ -14,7 +14,8 @@ import javax.swing.Icon;
 public class Link {
 	public static final Link GH_ROOT = new Link("GH_ROOT")
 		.add(ForumLink.GH_ROOT)
-		.add(ManageScoreLink.GH_ROOT);
+		.add(ManageScoreLink.GH_ROOT)
+		.add(ScoreDatabaseLink.GH_ROOT);
 	
 	public static final Link RB_ROOT = new Link("RB_ROOT")
 		.add(ForumLink.RB_ROOT)
