@@ -20,6 +20,8 @@
  */
 package jshm.sh.scraper;
 
+import jshm.scraper.format.TagFormatTest;
+
 import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.ImageTag;
 import org.htmlparser.tags.TableTag;
@@ -28,7 +30,7 @@ import org.junit.*;
 
 import static org.junit.Assert.*;
 
-public class FormatsTest extends jshm.scraper.format.TagFormatTest {	
+public class FormatsTest extends TagFormatTest {	
 	@Test public void starRatingTest1() {
 		assertEquals("6", Formats.STAR_RATING_SRC.getText(node));
 	}

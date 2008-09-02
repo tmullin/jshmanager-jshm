@@ -34,6 +34,8 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.List;
@@ -45,6 +47,7 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
@@ -265,6 +268,7 @@ public class GUI extends javax.swing.JFrame {
         songDataMenu = new javax.swing.JMenu();
         loadSongDataMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
+        forumsMenu = new javax.swing.JMenu();
         helpMenu = new javax.swing.JMenu();
         readmeMenuItem = new javax.swing.JMenuItem();
         changeLogMenuItem = new javax.swing.JMenuItem();
@@ -423,6 +427,13 @@ public class GUI extends javax.swing.JFrame {
 
         jMenuBar1.add(songDataMenu);
 
+        forumsMenu.setMnemonic('r');
+        forumsMenu.setText("Forums");
+
+        initForumsMenu(forumsMenu);
+
+        jMenuBar1.add(forumsMenu);
+
         helpMenu.setMnemonic('H');
         helpMenu.setText("Help");
 
@@ -505,7 +516,7 @@ private void loadMyScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 	wiz.show();
 }//GEN-LAST:event_loadMyScoresMenuItemActionPerformed
 
-private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadSongDataMenuItemActionPerformed	
+private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                      
 	new SwingWorker<Boolean, Void>() {
 		@Override
 		protected Boolean doInBackground() throws Exception {
@@ -540,7 +551,7 @@ private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 			}
 		}	
 	}.execute();
-}//GEN-LAST:event_loadSongDataMenuItemActionPerformed
+}                                                    
 
 private void jXTreeTable1TreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_jXTreeTable1TreeCollapsed
 	jXTreeTable1.packAll();
@@ -797,6 +808,58 @@ private void initDynamicGameMenu(final javax.swing.JMenu menu) {
 	}
 }
 
+private void initForumsMenu(JMenu menu) {
+	initForumsMenu(menu, jshm.sh.ShForum.GH_ROOT.getChildren());
+}
+
+private void initForumsMenu(JMenu menu, List<jshm.sh.ShForum> forums) {
+	for (final jshm.sh.ShForum f : forums) {
+		final Action a = 
+		f.getUrl() != null
+		? new AbstractAction(f.name) {
+			public void actionPerformed(ActionEvent e) {
+				jshm.util.Util.openURL(f.getUrl());
+			}
+		}
+		: null;
+		
+		if (f.hasChildren()) {
+			final JMenu subMenu = new JMenu(f.name);			
+			if (null != a) {
+				// TODO figure out how to get this to work with kb navigation
+				
+				// has no effect
+//				subMenu.addActionListener(a);
+//				subMenu.setAction(a);
+//				subMenu.getActionMap().put("doClick", a);
+				
+//				for (Object key : subMenu.getActionMap().allKeys()) {
+//					System.out.println(key + "=" + subMenu.getActionMap().get(key));
+//				}
+//				if (true) return;
+				
+				// a JMenu with children simply expands the child menu
+				// without considering that we might want something else
+				// to happen when pressing the menu item
+				subMenu.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent evt) {
+						if (evt.getClickCount() != 1 || evt.getButton() != MouseEvent.BUTTON1) return;
+						a.actionPerformed(null);
+					}
+				});
+			}
+			
+			menu.add(subMenu);
+			initForumsMenu(subMenu, f.getChildren());
+		} else {			
+			JMenuItem item = new JMenuItem(f.name);
+			if (null != a)
+				item.addActionListener(a);
+			menu.add(item);
+		}
+	}
+}
+
 private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent evt, final jshm.gh.GhGame game, final jshm.Difficulty difficulty) {
 	this.setCurGame(game);
 	this.setCurDiff(difficulty);
@@ -966,6 +1029,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private org.jdesktop.swingx.JXCollapsiblePane editorCollapsiblePane;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenu forumsMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;

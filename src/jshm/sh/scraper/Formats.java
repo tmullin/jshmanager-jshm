@@ -23,7 +23,6 @@ package jshm.sh.scraper;
 import org.htmlparser.Node;
 import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.ImageTag;
-import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 
 import jshm.scraper.format.RegexFormatCallback;
@@ -77,14 +76,17 @@ public class Formats {
 		}
 	};
 	
+//	public static final TagFormat FORUM_ID_HREF = new TagFormat(
+//		"href",
+//		new RegexFormatCallback("^.*f=(\\d+)$", 1)
+//	);
+	
 	static {
-		TableColumnFormat.addFormat("link", LinkTag.class,
-			TagFormat.HREF,
+		TableColumnFormat.addFormat("link",
 			"songid", SONG_ID_HREF,
 			"picvid", PIC_VID_LINK);
 			
-		TableColumnFormat.addFormat("img", ImageTag.class,
-			TagFormat.SRC,
+		TableColumnFormat.addFormat("img",
 			"rating", STAR_RATING_SRC);
 	}
 	

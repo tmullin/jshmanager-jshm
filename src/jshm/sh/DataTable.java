@@ -92,6 +92,7 @@ public class DataTable {
 	GH_ALL_CUTOFFS = new DataTable(3, 2, 8,
 		"text|text=int|text=int|text=int|text=int|text=int|text=int|text=int"
 	),
+	
 	GH_DELETE_SCORES = new DataTable(-1, -1, 6,
 		"input|text=int|img=rating~text=float|text=int|text=int|text"
 	) {
@@ -119,7 +120,10 @@ public class DataTable {
 			
 			return filters;
 		}
-	}
+	} //,
+	
+//	GH_FORUM_INDEX = new DataTable(2, 2, 5,
+//		"-|text=,~link=forumid,-,-,subforums|-|-|-")
 	;
 	
 	public static final String DEFAULT_HEADER_CSS_CLASS = "headrow";

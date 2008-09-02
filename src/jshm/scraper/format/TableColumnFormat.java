@@ -67,7 +67,7 @@ public class TableColumnFormat {
 
 	/**
 	 * Edits a format that {@link #factory(String)} is able to parse.
-	 * @param typeName The format name to edit. Built-in types include "text", "img", "link".
+	 * @param typeName The format name to edit. Built-in types include "text", "img", "link", "span", "input".
 	 * @param args See {@link #addFormat(String, Class, Object[])} for details. 
 	 */
 	public static void addFormat(final String typeName, final Object ... args) {
@@ -100,7 +100,6 @@ public class TableColumnFormat {
 			? ARG_MAP.get(typeName)
 			: new HashMap<String, NodeFormat>();
 			
-		boolean didDefault = false;
 		int i = 0;
 		
 		// if the first arg is a NodeFormat, then it is to be
@@ -112,7 +111,6 @@ public class TableColumnFormat {
 			}
 			
 			tmp.put("", (NodeFormat) args[i]);
-			didDefault = true;
 			i++;
 		} else if ((args.length & 1) != 0) {
 			throw new IllegalArgumentException("args must have an even number of elements when the first is not the default format");
@@ -128,12 +126,9 @@ public class TableColumnFormat {
 			NodeFormat fmt = (NodeFormat) args[j + 1];
 			
 			tmp.put(key, fmt);
-			
-			if ("".equals(key))
-				didDefault = true;
 		}
 		
-		if (!didDefault)
+		if (!tmp.containsKey(""))
 			throw new IllegalArgumentException("args must contain a default format");
 		
 		ARG_MAP.put(typeName, tmp);
