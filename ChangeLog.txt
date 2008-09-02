@@ -27,7 +27,8 @@ Version 0.0.4
   trying to download scores from ScoreHero.
 - The login dialog has been changed in order to fix an issue that caused JSHManager
   to hang after logging in to ScoreHero on Linux systems.
-- Added new menus to quickly access the ScoreHero forums.
+- Added new menus similar to rckr's YUI menus (thanks) to quickly open ScoreHero
+  in your browser.
 
 Version 0.0.3
 -------------

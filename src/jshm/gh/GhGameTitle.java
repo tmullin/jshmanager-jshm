@@ -26,16 +26,19 @@ public class GhGameTitle extends jshm.GameTitle {
 	public static void init() {}
 	
 	public static final GhGameTitle
-		GH1  = new GhGameTitle("GH1", Platform.PS2),
-		GH2  = new GhGameTitle("GH2", Platform.PS2, Platform.XBOX360),
-		GH80 = new GhGameTitle("GH80", Platform.PS2),
-		GH3  = new GhGameTitle("GH3", Platform.PS2, Platform.XBOX360, Platform.PS3, Platform.WII, Platform.PC),
-		GHOT = new GhGameTitle("GHOT", Platform.DS),
-		GHA  = new GhGameTitle("GHA", Platform.PS2, Platform.XBOX360, Platform.PS3, Platform.WII)
+		GH1  = new GhGameTitle("GH1", 1, Platform.PS2),
+		GH2  = new GhGameTitle("GH2", 2, Platform.PS2, Platform.XBOX360),
+		GH80 = new GhGameTitle("GH80", 3, Platform.PS2),
+		GH3  = new GhGameTitle("GH3", 4, Platform.PS2, Platform.XBOX360, Platform.PS3, Platform.WII, Platform.PC),
+		GHOT = new GhGameTitle("GHOT", 5, Platform.DS),
+		GHA  = new GhGameTitle("GHA", 6, Platform.PS2, Platform.XBOX360, Platform.PS3, Platform.WII)
 	;
 	
-	private GhGameTitle(final String title, final Platform ... platforms) {
+	public final int scoreHeroGroupId;
+	
+	private GhGameTitle(final String title, final int scoreHerGroupId, final Platform ... platforms) {
 		super(GameSeries.GUITAR_HERO, title, platforms);
+		this.scoreHeroGroupId = scoreHerGroupId;
 	}
 	
 	public static final Instrument.Group SINGLE_PLAYER_GROUP = Instrument.Group.GUITAR;
