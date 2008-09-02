@@ -1,19 +1,15 @@
 package jshm.sh.links;
 
-import jshm.*;
+import jshm.Difficulty;
+import jshm.Instrument;
+import jshm.Platform;
 import jshm.sh.RbPlatform;
+import jshm.sh.URLs;
 
-public class ManageScoreLink {
-	public static final Link GH_ROOT =
-		new GhGamesTemplate("Manage Scores", "manage_scores.php?&game=%s&diff=%s")
-		.add("Manage Teams", "http://www.scorehero.com/teams.php");
-	
-	
-	public static final Link RB_ROOT = new Link("Manage Scores", "http://rockband.scorehero.com/manage_scores.php");
-	
-	static {
-		final String RB_URL_FMT = "http://rockband.scorehero.com/manage_scores.php?platform=%s&size=%s&group=%s&diff=%s";
-		
+public class RbTemplate extends Link {
+	RbTemplate(final String name, final String urlFmt) {
+		super(name);
+
 		for (Platform p : new Platform[] {Platform.PS2, Platform.XBOX360, Platform.PS3, Platform.WII}) {
 			Link platLink = new Link(p.toString(), p.getIcon());
 			
@@ -33,7 +29,7 @@ public class ManageScoreLink {
 						if (Difficulty.CO_OP == d) continue;
 						
 						Link diffLink = new Link(d.toString(),
-							String.format(RB_URL_FMT, RbPlatform.getId(p), groupSize, g.id, d.scoreHeroId),
+							String.format(URLs.rb.BASE + "/" + urlFmt + "platform=%s&size=%s&group=%s&diff=%s", RbPlatform.getId(p), groupSize, g.id, d.scoreHeroId),
 							d.getIcon());
 						groupLink.add(diffLink);
 					}
@@ -45,9 +41,7 @@ public class ManageScoreLink {
 				platLink.add(sizeLink);
 			}
 			
-			RB_ROOT.add(platLink);
+			add(platLink);
 		}
-		
-		RB_ROOT.add("Manage Teams", "http://rockband.scorehero.com/teams.php");
 	}
 }

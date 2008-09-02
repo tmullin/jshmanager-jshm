@@ -31,7 +31,7 @@ class GhGamesTemplate extends Link {
 				for (Difficulty d : Difficulty.values()) {
 					Link diffLink = new Link(
 						d.toString(),
-						String.format(URLs.BASE + "/" + urlFmt, g.scoreHeroId, d.scoreHeroId),
+						String.format(URLs.BASE + "/" + urlFmt + "game=%s&diff=%s", g.scoreHeroId, d.scoreHeroId),
 						d.getIcon());
 					gameLink.add(diffLink);
 				}

@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.swing.Icon;
 
+import jshm.sh.URLs;
+
 /**
  * This represents the tree-like structure of a menu containing
  * links, like rckr's YUI menus.
@@ -13,13 +15,22 @@ import javax.swing.Icon;
  */
 public class Link {
 	public static final Link GH_ROOT = new Link("GH_ROOT")
+		.add("Home", URLs.BASE)
 		.add(ForumLink.GH_ROOT)
-		.add(ManageScoreLink.GH_ROOT)
-		.add(ScoreDatabaseLink.GH_ROOT);
+		.add(new GhGamesTemplate("Manage Scores", "manage_scores.php?")
+			.add("Manage Teams", URLs.BASE + "/teams.php"))
+		.add(ScoreDatabaseLink.GH_ROOT)
+		.add("Leagues", URLs.BASE + "/leagues/")
+		.add("Custom Songs", URLs.BASE + "/custom_songs.php")
+		.add("Store", URLs.BASE + "/store.php");
 	
 	public static final Link RB_ROOT = new Link("RB_ROOT")
+		.add("Home", URLs.rb.BASE)
 		.add(ForumLink.RB_ROOT)
-		.add(ManageScoreLink.RB_ROOT);
+		.add(new Link("Manage Scores", URLs.rb.BASE + "/manage_scores.php")
+			.add(new RbTemplate("Manage Scores", "manage_scores.php?"))
+			.add("Manage Teams", URLs.rb.BASE + "/teams.php"))
+		.add(ScoreDatabaseLink.RB_ROOT);
 	
 	
 	public final String name;

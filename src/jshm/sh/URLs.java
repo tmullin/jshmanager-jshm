@@ -61,4 +61,11 @@ public class URLs {
 			return String.format(DELETE_SCORES, song.getScoreHeroId());
 		}
 	}
+	
+	public static class rb {
+		public static final String
+			DOMAIN = "rockband." + ROOT_DOMAIN,
+			BASE = "http://" + DOMAIN
+			;
+	}
 }

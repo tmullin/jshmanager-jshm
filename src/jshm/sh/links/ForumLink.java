@@ -5,6 +5,7 @@ import javax.swing.Icon;
 import jshm.Difficulty;
 import jshm.Instrument;
 import jshm.gh.GhGameTitle;
+import jshm.sh.URLs;
 
 /**
  * This represents the tree-like structure of SH's forum
@@ -13,15 +14,20 @@ import jshm.gh.GhGameTitle;
  *
  */
 public class ForumLink extends Link {
-	public static final ForumLink GH_ROOT = new ForumLink("Forums")
+	public static final String
+		GH_BASE = URLs.BASE + "/forum/",
+		RB_BASE = URLs.rb.BASE + "/forum/",
+		FORUM_FORMAT = "%sviewforum.php?f=%s";
+	
+	public static final Link GH_ROOT = new ForumLink("Forums")
 		.add(new ForumLink("ScoreHero")
 			.add("Website Discussion", 1)
 			.add("Bug Reports", 10)
 		)
-		.add(new ForumLink("Guita rHero")
+		.add(new ForumLink("Guitar Hero")
 			.add("Official Guitar Hero News", 47)
 			.add("Technique, Style, and Gameplay", 3)
-			.add("*****", 4)
+			.add("Accomplishments", 4)
 			.add("Rivalries", 15)
 			.add(new ForumLink("Leagues", 32)
 				.add("Past Seasons", 35)
@@ -109,9 +115,11 @@ public class ForumLink extends Link {
 			)
 			.add("General Chat", 2)
 			.add("Thread Hall of Fame", 31)
-		);
+		)
+		.add("JSHManager Thread", GH_BASE + "viewtopic.php?t=74670");
 	
-	public static final ForumLink RB_ROOT = new ForumLink("Forums", true)
+	
+	public static final Link RB_ROOT = new ForumLink("Forums", true)
 		.add(new ForumLink("ScoreHero")
 			.add("Website Discussion", 1009)
 			.add("Bug Reports", 1010)
@@ -169,11 +177,6 @@ public class ForumLink extends Link {
 //	static {
 //		System.out.println(GH_ROOT);
 //	}
-	
-	public static final String
-		GH_BASE = "http://www.scorehero.com/forum/",
-		RB_BASE = "http://rockband.scorehero.com/forum/",
-		FORUM_FORMAT = "%sviewforum.php?f=%s";
 	
 	public final int forumId;
 	private String baseUrl;
