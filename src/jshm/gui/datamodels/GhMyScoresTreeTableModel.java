@@ -197,12 +197,18 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 	}
 
 	public void deleteScore(TreePath p) {
+		deleteScore(p, false);
+	}
+	
+	public void deleteScore(TreePath p, boolean deleteFromScoreHero) {
 		if (!(p.getLastPathComponent() instanceof GhScore)) return;
 		
 		GhScore score = (GhScore) p.getLastPathComponent();
 		
 		switch (score.getStatus()) {
 			case NEW:
+			case SUBMITTED:
+			case DELETED:
 				Session sess = null;
 				Transaction tx = null;
 				
@@ -231,8 +237,6 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 				
 				break;
 				
-			default:
-				// ignore
 		}
 	}
 	

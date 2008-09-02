@@ -584,9 +584,7 @@ private void jXTreeTable1ValueChanged(javax.swing.event.TreeSelectionEvent evt) 
 		(isGhScore || o instanceof GhMyScoresTreeTableModel.SongScores));
 	deleteSelectedScoreMenuItem.setEnabled(
 		goodRowCount &&
-		isGhScore &&
-		(score.getStatus() == Score.Status.NEW ||
-		 score.getStatus() == Score.Status.TEMPLATE));
+		isGhScore);
 	uploadSelectedScoreMenuItem.setEnabled(
 		goodRowCount &&
 		isGhScore &&
@@ -609,8 +607,26 @@ private void addNewScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) 
 
 private void deleteSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteSelectedScoreMenuItemActionPerformed
 	GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) jXTreeTable1.getTreeTableModel();
-	model.deleteScore(
-		jXTreeTable1.getPathForRow(jXTreeTable1.getSelectedRow()));
+	TreePath path = jXTreeTable1.getPathForRow(jXTreeTable1.getSelectedRow());
+	
+	GhScore score = (GhScore) path.getLastPathComponent();
+	
+	switch (score.getStatus()) {
+		case NEW:
+		case TEMPLATE:
+			break;
+			
+		default:
+			if (JOptionPane.YES_OPTION !=
+				JOptionPane.showConfirmDialog(this,
+					"Are you sure you want to delete the\n" +
+					"selected score from the local database?\n" +
+					"(It will not be deleted from ScoreHero)",
+					"Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))
+				return;
+	}
+	
+	model.deleteScore(path);
 	scoreEditorPanel1.setScore(null);
 }//GEN-LAST:event_deleteSelectedScoreMenuItemActionPerformed
 

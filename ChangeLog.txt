@@ -29,6 +29,10 @@ Version 0.0.4
   to hang after logging in to ScoreHero on Linux systems.
 - Added new menus similar to rckr's YUI menus (thanks) to quickly open ScoreHero
   in your browser.
+- Any score can now be deleted (not just new, unsubmitted scores) from the
+  local database (you can not yet delete scores from ScoreHero's website
+  via JSHManager). A confirmation dialog will appear when deleting scores
+  that have already been submitted.
 
 Version 0.0.3
 -------------
