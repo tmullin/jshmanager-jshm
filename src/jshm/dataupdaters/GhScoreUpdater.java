@@ -67,7 +67,9 @@ public class GhScoreUpdater {
 			    	.excludeProperty("calculatedRating")
 			    	.excludeProperty("rating")
 			    	.excludeProperty("creationDate")
-			    	.excludeProperty("submissionDate");
+			    	.excludeProperty("submissionDate")
+			    	.excludeProperty("imageUrl")
+			    	.excludeProperty("videoUrl");
 			    
 			    List<GhScore> result =
 			    	(List<GhScore>)
