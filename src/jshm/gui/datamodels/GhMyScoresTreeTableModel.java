@@ -152,7 +152,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		}
 	}
 
-	private JXTreeTable parent;
+	private static JXTreeTable parent;
 	private final DataModel	model;
 	private final GhGame game;
 
@@ -292,11 +292,12 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		return scores;
 	}
 	
-	private MouseListener myParentMouseListener = new MouseAdapter() {
+	private static MouseListener myParentMouseListener = new MouseAdapter() {
 		// TODO figure out if it's possible to determine whether the
 		// score was clicked for the image url or if the video icon
 		// was clicked for the video url
 		public void mouseClicked(MouseEvent e) {
+//			System.out.println(e);
 			if (e.getClickCount() != 1 || e.getButton() != MouseEvent.BUTTON1)
 				return;
 			
@@ -330,7 +331,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		}
 	};
 	
-	private MouseMotionListener myParentMouseMotionListener = new MouseMotionAdapter() {
+	private static MouseMotionListener myParentMouseMotionListener = new MouseMotionAdapter() {
 		public void mouseMoved(MouseEvent e) {
 			int row = parent.rowAtPoint(e.getPoint());
 			int column = parent.columnAtPoint(e.getPoint());
@@ -355,7 +356,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 	// TODO some of the stuff in here might not necessary fit 
 	// as part of the "data model"/mvc stuff...
 	public void setParent(final JXTreeTable parent) {
-		this.parent = parent;
+		GhMyScoresTreeTableModel.parent = parent;
 		
 		GhMyScoresTreeCellRenderer treeRenderer = new GhMyScoresTreeCellRenderer();
 		parent.setTreeCellRenderer(treeRenderer);
