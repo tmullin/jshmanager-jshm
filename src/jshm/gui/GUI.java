@@ -157,14 +157,9 @@ public class GUI extends javax.swing.JFrame {
         hh.setStatus(statusBar1);
         
         // TODO move this text to the tooltip for each item
-        hh.add(addNewScoreMenuItem,
-        	"Insert a new score for the selected song");
-        hh.add(deleteSelectedScoreMenuItem,
-        	"Delete the selected score if it hasn't yet been uploaded");
-        hh.add(loadMyScoresMenuItem,
-        	"Sync the local score list for the current game and difficulty to ScoreHero's");
-        hh.add(loadSongDataMenuItem,
-        	"Sync the local song list for the current game and difficulty to ScoreHero's (e.g. when there is new DLC)");
+        hh.add(addNewScoreMenuItem);
+        hh.add(loadMyScoresMenuItem);
+        hh.add(loadSongDataMenuItem);
         hh.add(jXTreeTable1, new HoverHelp.Callback() {
 			@Override
 			public String getMessage() {
@@ -347,6 +342,7 @@ public class GUI extends javax.swing.JFrame {
         addNewScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_INSERT, 0));
         addNewScoreMenuItem.setMnemonic('n');
         addNewScoreMenuItem.setText("Add new score");
+        addNewScoreMenuItem.setToolTipText("Insert a new score for the selected song");
         addNewScoreMenuItem.setEnabled(false);
         addNewScoreMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -380,6 +376,7 @@ public class GUI extends javax.swing.JFrame {
 
         loadMyScoresMenuItem.setMnemonic('L');
         loadMyScoresMenuItem.setText("Download from ScoreHero...");
+        loadMyScoresMenuItem.setToolTipText("Sync the local score list for the current game and difficulty to ScoreHero's");
         loadMyScoresMenuItem.setEnabled(false);
         loadMyScoresMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -419,6 +416,7 @@ public class GUI extends javax.swing.JFrame {
 
         loadSongDataMenuItem.setMnemonic('L');
         loadSongDataMenuItem.setText("Download from ScoreHero...");
+        loadSongDataMenuItem.setToolTipText("Sync the local song list for the current game and difficulty to ScoreHero's (e.g. when there is new DLC)");
         loadSongDataMenuItem.setEnabled(false);
         loadSongDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -528,7 +526,7 @@ private void loadMyScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 }//GEN-LAST:event_loadMyScoresMenuItemActionPerformed
 
 private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                      
-	new SwingWorker<Boolean, Void>() {
+	new SwingWorker<Boolean, Void>() {		
 		@Override
 		protected Boolean doInBackground() throws Exception {
 			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -553,7 +551,7 @@ private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 		public void done() {
 			try {
 				if (get()) {
-					songDataMenuItemActionPerformed(null,getCurGame(), getCurDiff());
+					songDataMenuItemActionPerformed(null, getCurGame(), getCurDiff());
 				}
 			} catch (Exception e) {
 				LOG.log(Level.SEVERE, "Unknown error", e);
@@ -903,7 +901,7 @@ private void initForumsMenu(final JMenu menu, final jshm.sh.links.Link linkRoot)
 	}
 }
 
-private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent evt, final jshm.gh.GhGame game, final jshm.Difficulty difficulty) {
+private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent evt, final jshm.gh.GhGame game, final jshm.Difficulty difficulty) {	
 	this.setCurGame(game);
 	this.setCurDiff(difficulty);
 	scoreEditorPanel1.setScore(null);
@@ -971,6 +969,11 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 }
 
 public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt, final jshm.gh.GhGame game, final jshm.Difficulty difficulty) {
+//	final List<TreePath> expandedPaths = 
+//		getCurGame() == game && getCurDiff() == difficulty
+//		? GuiUtil.getExpandedPaths(jXTreeTable1)
+//		: null;
+	
 	this.setCurGame(game);
 	this.setCurDiff(difficulty);
 	scoreEditorPanel1.setScore(null);
@@ -998,6 +1001,14 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 						if (null != model && null != jXTreeTable1) {
 							jXTreeTable1.setTreeTableModel(model);
 							model.setParent(jXTreeTable1);
+							
+							// TODO this doesn't work
+//							if (null != expandedPaths) {
+//								GuiUtil.restoreExpandedPaths(jXTreeTable1, expandedPaths);
+//							} else {
+								GuiUtil.expandTreeFromDepth(jXTreeTable1, 2);
+//							}
+							
 							jXTreeTable1.repaint();
 						}
 						

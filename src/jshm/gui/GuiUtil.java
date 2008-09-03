@@ -20,6 +20,9 @@
  */
 package jshm.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.JXTreeTable;
@@ -85,6 +88,47 @@ public class GuiUtil {
 			collapseTreeToDepth(tree, model, child,
 				path.pathByAddingChild(child),
 				curDepth, stopDepth);
+		}
+	}
+	
+	
+	public static List<TreePath> getExpandedPaths(final JXTreeTable tree) {
+		final TreeTableModel model = tree.getTreeTableModel();
+		final List<TreePath> paths = new ArrayList<TreePath>();
+		
+		getExpandedPaths(tree, model, new TreePath(model.getRoot()), paths);
+		
+		for (TreePath p : paths)
+			System.out.println(p);
+		
+		return paths;
+	}
+	
+	
+	private static void getExpandedPaths(JXTreeTable tree, TreeTableModel model, TreePath path, List<TreePath> paths) {
+//		System.out.println("Checking: " + path);
+		
+		Object parent = path.getLastPathComponent();
+		final int childCount = model.getChildCount(parent);
+		
+		for (int i = 0; i < childCount; i++) {
+			Object curNode = model.getChild(parent, i);
+			TreePath curPath = path.pathByAddingChild(curNode);
+			
+			if (model.isLeaf(curNode)) continue;
+			
+			if (tree.isExpanded(curPath))
+				paths.add(curPath);
+			
+			getExpandedPaths(tree, model, curPath, paths);	
+		}
+	}
+	
+	public static void restoreExpandedPaths(final JXTreeTable tree, final List<TreePath> paths) {
+//		System.out.println("Restoring " + paths.size());
+		
+		for (TreePath p : paths) {
+			tree.expandPath(p);
 		}
 	}
 }

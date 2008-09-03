@@ -39,7 +39,6 @@ import jshm.Score;
 import jshm.gh.GhGame;
 import jshm.gh.GhScore;
 import jshm.gh.GhSong;
-import jshm.gui.GuiUtil;
 import jshm.gui.editors.GhMyScoresEditor;
 import jshm.gui.editors.GhMyScoresRatingEditor;
 import jshm.gui.renderers.GhMyScoresCellRenderer;
@@ -381,8 +380,6 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		};
 		
 		parent.setHighlighters(highlighters);
-
-		GuiUtil.expandTreeFromDepth(parent, 2);
 
 		Object[] prototypes = new Object[] {
 			"00000000000", GhScore.getRatingIcon(8),

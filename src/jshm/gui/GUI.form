@@ -53,6 +53,7 @@
                 </Property>
                 <Property name="mnemonic" type="int" value="110"/>
                 <Property name="text" type="java.lang.String" value="Add new score"/>
+                <Property name="toolTipText" type="java.lang.String" value="Insert a new score for the selected song"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
@@ -91,6 +92,7 @@
               <Properties>
                 <Property name="mnemonic" type="int" value="76"/>
                 <Property name="text" type="java.lang.String" value="Download from ScoreHero..."/>
+                <Property name="toolTipText" type="java.lang.String" value="Sync the local score list for the current game and difficulty to ScoreHero&apos;s"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
@@ -137,6 +139,7 @@
               <Properties>
                 <Property name="mnemonic" type="int" value="76"/>
                 <Property name="text" type="java.lang.String" value="Download from ScoreHero..."/>
+                <Property name="toolTipText" type="java.lang.String" value="Sync the local song list for the current game and difficulty to ScoreHero&apos;s (e.g. when there is new DLC)"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
