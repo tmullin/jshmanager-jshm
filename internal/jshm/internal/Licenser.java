@@ -35,8 +35,8 @@ public class Licenser {
 	static enum FileType {
 		java("/*", " * ", "*/"),
 		properties("#", "# ", "#"),
-		xml("<!--", "  ", "-->", "__"),
-		form("<!--", "  ", "-->", "__");
+		xml("<!--", "  ", "-->", "__")/*,
+		form("<!--", "  ", "-->", "__")*/; // neatbeans clobbers the license
 		
 		public final String
 			PRE, LINE, POST, MARKER;
@@ -89,8 +89,8 @@ public class Licenser {
 			return f.isDirectory() ||
 				name.endsWith(".java") ||
 				name.endsWith(".properties") ||
-				name.endsWith(".xml") ||
-				name.endsWith(".form");
+				name.endsWith(".xml") /*||
+				name.endsWith(".form")*/; // netbeans clobbers the license
 		}
 	};
 	
@@ -120,7 +120,7 @@ public class Licenser {
 			in = new BufferedReader(new FileReader(f));
 			out = new PrintWriter(new FileWriter(to));
 			
-			if (ft == FileType.xml || ft == FileType.form) {
+			if (ft == FileType.xml /*|| ft == FileType.form*/) {
 				in.mark(1024);
 				line = in.readLine();
 				
@@ -165,7 +165,7 @@ public class Licenser {
 		try {
 			String line = in.readLine();
 			
-			if ((ft == FileType.xml || ft == FileType.form) &&
+			if ((ft == FileType.xml /*|| ft == FileType.form*/) &&
 				null != line && line.startsWith("<?xml")) {
 				line = in.readLine();
 			}
