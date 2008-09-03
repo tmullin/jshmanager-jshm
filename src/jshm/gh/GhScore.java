@@ -84,12 +84,15 @@ public class GhScore extends jshm.Score {
 	public void setStreak(final int streak) {
 		if (streak < 0)
 			throw new IllegalArgumentException("streak must be >= 0");
+		int old = this.streak;
 		this.streak = streak;
+		pcs.firePropertyChange("streak", old, streak);
 		
 		// TODO check on LazyInitializationException
 		try {
 			if (getParts().size() == 1) {
-				getPart(1).setStreak(streak);
+//				getPart(1).setStreak(streak);
+				setPartStreak(1, streak);
 			}
 		} catch (Exception e) {}
 	}
@@ -113,7 +116,9 @@ public class GhScore extends jshm.Score {
 			 getGameTitle().getMaxCalculatedRating() < calculatedRating))
 			throw new IllegalArgumentException("calculatedRating must be 0 or between " + getGameTitle().getMinCalculatedRating() + " and " + getGameTitle().getMaxCalculatedRating());
 		
+		float old = this.calculatedRating;
 		this.calculatedRating = calculatedRating;
+		pcs.firePropertyChange("calculatedRating", old, calculatedRating);
 	}
 
 	@Override

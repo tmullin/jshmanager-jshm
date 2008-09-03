@@ -26,11 +26,14 @@
 
 package jshm.gui;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.text.JTextComponent;
 
@@ -53,7 +56,7 @@ import org.jdesktop.swingx.JXCollapsiblePane;
  *
  * @author  Tim
  */
-public class ScoreEditorPanel extends javax.swing.JPanel {
+public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChangeListener {
 	static final Logger LOG = Logger.getLogger(ScoreEditorPanel.class.getName());
 	
 	private GUI gui;
@@ -119,10 +122,47 @@ public class ScoreEditorPanel extends javax.swing.JPanel {
 		songCombo.setSelectedItem(song);
 	}
 	
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		final GhScore score = (GhScore) evt.getSource();
+		final String name = evt.getPropertyName();
+		final Object newValue = evt.getNewValue();
+		
+		JTextField field = null;
+		
+		if (name.equals("score")) {
+			field = scoreField;
+		} else if (name.equals("streak")) {
+			field = streakField;
+		} else if (name.equals("comment")) {
+			field = commentField;
+		} else if (name.equals("imageUrl")) {
+			field = imageUrlField;
+		} else if (name.equals("videoUrl")) {
+			field = videoUrlField;
+		} else if (name.equals("rating")) {
+			ratingCombo.setSelectedItem(score.getRatingIcon(true));
+			return;
+		} else if (name.equals("part1HitPercent")) {
+			float f = (Float) newValue;
+			percentField.setText(0.0f != f ? String.valueOf((int) (f * 100)) : "");
+			return;
+		}
+		
+		if (null != field) {
+			field.setText(!newValue.equals(0) ? newValue.toString() : "");
+		}
+	}
+	
 	public void setScore(final GhScore score) {
+		if (null != this.score)
+			this.score.removePropertyChangeListener(this);
+		
 		this.score = score;
 		
 		if (null != score) {
+			score.addPropertyChangeListener(this);
+			
 			switch (score.getStatus()) {
 				case NEW:
 				case TEMPLATE:
@@ -420,7 +460,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 	
 				try {
 					String s = percentField.getText();
-					score.getPart(1).setHitPercent(
+					score.setPartHitPercent(1,
 						s.isEmpty() ? 0f :
 						Integer.parseInt(s) / 100.0f);
 				} catch (Exception e) {
@@ -495,5 +535,4 @@ private void hideButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JTextField videoUrlField;
     private javax.swing.JButton videoUrlOpenButton;
     // End of variables declaration//GEN-END:variables
-
 }

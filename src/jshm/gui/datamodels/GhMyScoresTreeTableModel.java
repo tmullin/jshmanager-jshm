@@ -536,7 +536,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 						
 					case 3:
 						try {
-							score.getPart(1).setHitPercent(
+							score.setPartHitPercent(1,
 								s.isEmpty() ? 0f :
 								Integer.parseInt(s) / 100.0f);
 						} catch (Exception e) {}

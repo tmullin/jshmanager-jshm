@@ -21,6 +21,7 @@
 package jshm;
 
 import java.text.DateFormat;
+import java.beans.*;
 import java.util.*;
 import javax.persistence.*;
 
@@ -180,7 +181,9 @@ public abstract class Score {
 	public void setScore(int score) {
 		if (score < 0)
 			throw new IllegalArgumentException("score must be >= 0");
+		int old = this.score;
 		this.score = score;
+		pcs.firePropertyChange("score", old, score);
 	}
 
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
@@ -198,6 +201,22 @@ public abstract class Score {
 	
 	public void addPart(Part part) {
 		this.parts.add(part);
+	}
+	
+	public void setPartStreak(int index, int streak) {
+		Part p = getPart(index);
+		
+		int old = p.getStreak();
+		p.setStreak(streak);
+		pcs.firePropertyChange("part" + index + "Streak", old, streak);
+	}
+	
+	public void setPartHitPercent(int index, float percent) {
+		Part p = getPart(index);
+		
+		float old = p.getHitPercent();
+		p.setHitPercent(percent);
+		pcs.firePropertyChange("part" + index + "HitPercent", old, percent);
 	}
 	
 	/**
@@ -286,8 +305,10 @@ public abstract class Score {
 //		if (rating != 0 &&
 //			(rating < getGame().title.getMinRating() ||
 //			 getGame().title.getMaxRating() < rating))
-//			throw new IllegalArgumentException("rating must be 0 or between " + getGame().title.getMinRating() + " and " + getGame().title.getMaxRating());
+//			throw new IllegalArgumetException("rating must be 0 or between " + getGame().title.getMinRating() + " and " + getGame().title.getMaxRating());
+		int old = this.rating;
 		this.rating = rating;
+		pcs.firePropertyChange("rating", old, rating);
 	}
 
 	/**
@@ -328,7 +349,9 @@ public abstract class Score {
 	public void setComment(String comment) {
 		if (null == comment)
 			throw new IllegalArgumentException("comment cannot be null");
+		String old = this.comment;
 		this.comment = comment;
+		pcs.firePropertyChange("comment", old, comment);
 	}
 
 	@NotNull
@@ -343,7 +366,9 @@ public abstract class Score {
 
 	// TODO validate for empty or a url
 	public void setImageUrl(String imageUrl) {
+		String old = this.imageUrl;
 		this.imageUrl = imageUrl;
+		pcs.firePropertyChange("imageUrl", old, imageUrl);
 	}
 
 	@NotNull
@@ -352,7 +377,9 @@ public abstract class Score {
 	}
 
 	public void setVideoUrl(String videoUrl) {
+		String old = this.videoUrl;
 		this.videoUrl = videoUrl;
+		pcs.firePropertyChange("videoUrl", old, videoUrl);
 	}
 	
 	public void setCalculatedRating(float calculatedRating) {
@@ -477,4 +504,33 @@ public abstract class Score {
 		
 		return sb.toString();
 	}
+	
+	
+	
+	// implement property change support
+	
+	@Transient
+	protected final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	
+	public void addPropertyChangeListener(
+			PropertyChangeListener listener) {
+		pcs.addPropertyChangeListener(listener);
+	}
+	
+    public void addPropertyChangeListener(
+            String propertyName,
+            PropertyChangeListener listener) {
+    	pcs.addPropertyChangeListener(propertyName, listener);
+    }
+    
+    public void removePropertyChangeListener(
+			PropertyChangeListener listener) {
+    	pcs.removePropertyChangeListener(listener);
+    }
+    
+    public void removePropertyChangeListener(
+            String propertyName,
+            PropertyChangeListener listener) {
+    	pcs.removePropertyChangeListener(propertyName, listener);
+    }
 }
