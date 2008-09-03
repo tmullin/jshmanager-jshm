@@ -6,6 +6,7 @@ import jshm.Difficulty;
 import jshm.Game;
 import jshm.GameSeries;
 import jshm.GameTitle;
+import jshm.gh.GhGameTitle;
 import jshm.sh.URLs;
 
 class GhGamesTemplate extends Link {	
@@ -13,6 +14,8 @@ class GhGamesTemplate extends Link {
 		super(name);
 		
 		for (GameTitle t : GameTitle.getTitlesBySeries(GameSeries.GUITAR_HERO)) {
+			GhGameTitle tt = (GhGameTitle) t;
+			
 			Link ttlLink = new Link(t.title);
 			ttlLink.icon = t.getIcon();
 			
@@ -39,6 +42,21 @@ class GhGamesTemplate extends Link {
 				if (gameLink != ttlLink) {
 					ttlLink.add(gameLink);
 				}
+			}
+			
+			// create "All" item
+			if (games.size() > 1) {
+				Link allLink = new Link("All");
+				
+				for (Difficulty d : Difficulty.values()) {
+					Link diffLink = new Link(
+						d.toString(),
+						String.format(URLs.BASE + "/" + urlFmt + "group=%s&game=0&diff=%s", tt.scoreHeroGroupId, d.scoreHeroId),
+						d.getIcon());
+					allLink.add(diffLink);
+				}
+				
+				ttlLink.add(allLink);
 			}
 			
 			add(ttlLink);
