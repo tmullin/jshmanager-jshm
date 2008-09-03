@@ -452,7 +452,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 					if (sess.isOpen()) sess.close();
 				}
 				
-				setScore(null);
+//				setScore(null);
 				gui.myScoresMenuItemActionPerformed(null, gui.getCurGame(), gui.getCurDiff());
 		}
 	} catch (Throwable t) {

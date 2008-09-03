@@ -572,7 +572,13 @@ private void jXTreeTable1TreeExpanded(javax.swing.event.TreeExpansionEvent evt) 
 
 private void jXTreeTable1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jXTreeTable1ValueChanged
 //	System.out.println("now selected: " + evt.getPath());
-	final Object o = evt.getPath().getLastPathComponent();
+	// evt seems out of date sometimes
+//	final Object o = evt.getPath().getLastPathComponent();
+	final int row = jXTreeTable1.getSelectedRow();
+	final Object o =
+		row != -1 
+		? jXTreeTable1.getPathForRow(row).getLastPathComponent()
+		: null;
 	final boolean goodRowCount = jXTreeTable1.getSelectedRowCount() == 1;
 	final boolean isGhScore = o instanceof GhScore;
 	final GhScore score = isGhScore ? (GhScore) o : null;

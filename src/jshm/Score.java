@@ -415,7 +415,8 @@ public abstract class Score {
 		return 
 			this.song.equals(s.song) &&
 			this.score == s.score &&
-			this.submissionDate.equals(s.submissionDate) &&
+			((null == this.submissionDate && null == s.submissionDate) ||
+			 (this.submissionDate.equals(s.submissionDate))) &&
 			this.parts.size() == s.parts.size();
 //			this.parts.equals(s.parts);
 	}
