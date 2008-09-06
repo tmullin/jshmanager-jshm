@@ -20,9 +20,13 @@
  */
 package jshm.gui;
 
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.JXTreeTable;
@@ -130,5 +134,31 @@ public class GuiUtil {
 		for (TreePath p : paths) {
 			tree.expandPath(p);
 		}
+	}
+	
+	
+	
+	
+	// icon stuff
+	
+	public final static javax.swing.ImageIcon resizeIcon(ImageIcon icon, float scale) {
+		return resizeIcon(icon, (int) (scale * icon.getIconWidth()), (int) (scale * icon.getIconHeight()));
+	}
+	
+	/**
+	 * Resize an ImageIcon to the specified size.
+	 * @param icon The ImageIcon to resize
+	 * @param width The new width
+	 * @param height The new height
+	 */
+	public final static javax.swing.ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
+		System.out.println("Resizing to " + width + "x" + height);
+		Image img = icon.getImage();
+		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		
+		Graphics g = bi.createGraphics();
+		g.drawImage(img, 0, 0, width, height, null);
+		
+		return new javax.swing.ImageIcon(bi);
 	}
 }
