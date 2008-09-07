@@ -10,8 +10,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 
@@ -21,12 +26,28 @@ import javax.swing.event.MouseInputAdapter;
  */
 public class ImageViewer extends javax.swing.JFrame {
 	ImagePainter imagePainter = new ImagePainter();
-	Image image = null;
+	BufferedImage image = null;
 	float scale = 1f;
 	
     /** Creates new form ImageViewer */
     public ImageViewer() {
         initComponents();
+        
+        imagePainter.addMouseWheelListener(new MouseWheelListener() {
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				if (e.isControlDown()) {
+					if (e.getWheelRotation() < 0) {
+						zoomInButtonActionPerformed(null);
+					} else {
+						zoomOutButtonActionPerformed(null);
+					}
+					
+					e.consume();
+				} else {
+					imageScrollPane.dispatchEvent(e);
+				}
+			}
+        });
         
         ActionMap aMap = getRootPane().getActionMap();
         aMap.put("imageZoomIn", new AbstractAction() {
@@ -46,11 +67,21 @@ public class ImageViewer extends javax.swing.JFrame {
 
 	public void setText(String text) {
 		if (null == text || text.isEmpty()) {
+			Container cp = getContentPane();
+			cp.remove(jSplitPane1);
+			cp.add(imageScrollPane, BorderLayout.CENTER);
+			cp.validate();
 			textPane.setText("");
-			textPane.setVisible(false);
 		} else {
+			if (textPane.getText().isEmpty()) {
+				jSplitPane1.setBottomComponent(imageScrollPane);
+				Container cp = getContentPane();
+				cp.remove(imageScrollPane);
+				cp.add(jSplitPane1, BorderLayout.CENTER);
+				cp.validate();	
+			}
+			
 			textPane.setText(text);
-			textPane.setVisible(true);
 		}
 	}
 	
@@ -58,19 +89,52 @@ public class ImageViewer extends javax.swing.JFrame {
 		try {
 			setImage(new URL(url));
 		} catch (MalformedURLException e) {
-			setImage((ImageIcon) null);
+			setImage((Image) null);
 			e.printStackTrace();
 		}
 	}
 	
-	public void setImage(URL url) {
-		setImage(
-			url != null ? new ImageIcon(url) : (ImageIcon) null);
+	public void setImage(final URL url) {
+		if (null == url) {
+			setImage((Image) null);
+			return;
+		}
+		
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					final BufferedImage im = ImageIO.read(url);
+					
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							setImage(im);
+						}
+					});
+				} catch (Exception e) {
+					setImage((Image) null);
+				}
+			}
+		}).start();
 	}
 	
 	public void setImage(ImageIcon icon) {
-		image = icon.getImage();
+		setImage(icon.getImage());
+	}
+	
+	public void setImage(Image image) {
+		if (null == image) {
+			this.image = null;
+		} else if (image instanceof BufferedImage) {
+			this.image = (BufferedImage) image;
+		} else {
+			this.image = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_RGB);
+			this.image.getGraphics().drawImage(image, 
+				0, 0, this.image.getWidth(), this.image.getHeight(), 
+				0, 0, this.image.getWidth(), this.image.getHeight(), null);
+		}
+		
 		scale = 1f;
+		getContentPane().validate();
 		imagePainter.repaint();
 	}
 	
@@ -222,6 +286,7 @@ private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             	ImageViewer iv = new ImageViewer();
             	iv.setLocationRelativeTo(null);
             	iv.setVisible(true);
+            	iv.setText(null);
             	iv.setImage("http://i24.photobucket.com/albums/c45/bbloot/CherubRock.gif");
             }
         });
@@ -307,6 +372,7 @@ private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 			if (null == image) return;
 			
 			Graphics2D g2 = (Graphics2D) g;
+			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 			
 			float iscale = 1f / scale;
 			Rectangle clip = g2.getClipBounds();
