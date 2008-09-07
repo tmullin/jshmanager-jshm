@@ -340,6 +340,7 @@ public class GUI extends javax.swing.JFrame {
         myScoresMenu.setText("My Scores");
 
         addNewScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_INSERT, 0));
+        addNewScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/add32.png"))); // NOI18N
         addNewScoreMenuItem.setMnemonic('n');
         addNewScoreMenuItem.setText("Add new score");
         addNewScoreMenuItem.setToolTipText("Insert a new score for the selected song");
@@ -352,6 +353,7 @@ public class GUI extends javax.swing.JFrame {
         myScoresMenu.add(addNewScoreMenuItem);
 
         deleteSelectedScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
+        deleteSelectedScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/delete32.png"))); // NOI18N
         deleteSelectedScoreMenuItem.setMnemonic('D');
         deleteSelectedScoreMenuItem.setText("Delete selected score");
         deleteSelectedScoreMenuItem.setEnabled(false);
@@ -363,6 +365,7 @@ public class GUI extends javax.swing.JFrame {
         myScoresMenu.add(deleteSelectedScoreMenuItem);
 
         toggleEditorMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+        toggleEditorMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/edit32.png"))); // NOI18N
         toggleEditorMenuItem.setMnemonic('E');
         toggleEditorMenuItem.setText("Toggle Editor");
         toggleEditorMenuItem.setEnabled(false);
@@ -374,6 +377,7 @@ public class GUI extends javax.swing.JFrame {
         myScoresMenu.add(toggleEditorMenuItem);
         myScoresMenu.add(jSeparator3);
 
+        loadMyScoresMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/down32.png"))); // NOI18N
         loadMyScoresMenuItem.setMnemonic('L');
         loadMyScoresMenuItem.setText("Download from ScoreHero...");
         loadMyScoresMenuItem.setToolTipText("Sync the local score list for the current game and difficulty to ScoreHero's");
@@ -385,6 +389,7 @@ public class GUI extends javax.swing.JFrame {
         });
         myScoresMenu.add(loadMyScoresMenuItem);
 
+        uploadScoresMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/up32.png"))); // NOI18N
         uploadScoresMenuItem.setMnemonic('U');
         uploadScoresMenuItem.setText("Upload to ScoreHero...");
         uploadScoresMenuItem.setEnabled(false);
@@ -396,6 +401,7 @@ public class GUI extends javax.swing.JFrame {
         myScoresMenu.add(uploadScoresMenuItem);
 
         uploadSelectedScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.CTRL_MASK));
+        uploadSelectedScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/up32.png"))); // NOI18N
         uploadSelectedScoreMenuItem.setMnemonic('S');
         uploadSelectedScoreMenuItem.setText("Upload Selected Score");
         uploadSelectedScoreMenuItem.setEnabled(false);
@@ -414,6 +420,7 @@ public class GUI extends javax.swing.JFrame {
         songDataMenu.setMnemonic('D');
         songDataMenu.setText("Song Data");
 
+        loadSongDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/down32.png"))); // NOI18N
         loadSongDataMenuItem.setMnemonic('L');
         loadSongDataMenuItem.setText("Download from ScoreHero...");
         loadSongDataMenuItem.setToolTipText("Sync the local song list for the current game and difficulty to ScoreHero's (e.g. when there is new DLC)");
@@ -482,6 +489,7 @@ public class GUI extends javax.swing.JFrame {
         helpMenu.add(viewLogMenu);
         helpMenu.add(jSeparator4);
 
+        aboutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/infoabout32.png"))); // NOI18N
         aboutMenuItem.setMnemonic('A');
         aboutMenuItem.setText("About");
         aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
