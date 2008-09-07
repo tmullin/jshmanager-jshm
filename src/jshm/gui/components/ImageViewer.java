@@ -1,10 +1,4 @@
-/*
- * ImageViewer.java
- *
- * Created on September 5, 2008, 10:46 PM
- */
-
-package jshm.gui;
+package jshm.gui.components;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -25,6 +19,25 @@ import javax.swing.event.MouseInputAdapter;
  * @author  Tim
  */
 public class ImageViewer extends javax.swing.JFrame {
+	final Action
+		ZOOM_IN_ACTION = new AbstractAction("Zoom In", new ImageIcon(ImageViewer.class.getResource("/jshm/resources/images/toolbar/zoomin32.png"))) {
+			public void actionPerformed(ActionEvent e) {
+				int newScale = Math.min(zoomSlider.getValue() + 25, zoomSlider.getMaximum());
+				zoomSlider.setValue(newScale);
+			}
+	    },
+	    ZOOM_OUT_ACTION = new AbstractAction("Zoom Out", new ImageIcon(ImageViewer.class.getResource("/jshm/resources/images/toolbar/zoomout32.png"))) {
+			public void actionPerformed(ActionEvent e) {
+				int newScale = Math.max(zoomSlider.getValue() - 25, zoomSlider.getMinimum());
+				zoomSlider.setValue(newScale);
+			}
+		},
+		RESET_ZOOM_ACTION = new AbstractAction("Reset Zoom", new ImageIcon(ImageViewer.class.getResource("/jshm/resources/images/toolbar/refresh32.png"))) {
+			public void actionPerformed(ActionEvent e) {
+				zoomSlider.setValue(100);
+			}
+		};
+    
 	ImagePainter imagePainter = new ImagePainter();
 	BufferedImage image = null;
 	float scale = 1f;
@@ -37,9 +50,9 @@ public class ImageViewer extends javax.swing.JFrame {
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				if (e.isControlDown()) {
 					if (e.getWheelRotation() < 0) {
-						zoomInButtonActionPerformed(null);
+						ZOOM_IN_ACTION.actionPerformed(null);
 					} else {
-						zoomOutButtonActionPerformed(null);
+						ZOOM_OUT_ACTION.actionPerformed(null);
 					}
 					
 					e.consume();
@@ -50,16 +63,8 @@ public class ImageViewer extends javax.swing.JFrame {
         });
         
         ActionMap aMap = getRootPane().getActionMap();
-        aMap.put("imageZoomIn", new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				zoomInButtonActionPerformed(e);
-			}
-        });
-        aMap.put("imageZoomOut", new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				zoomOutButtonActionPerformed(e);
-			}
-        });
+        aMap.put("imageZoomIn", ZOOM_IN_ACTION);
+        aMap.put("imageZoomOut", ZOOM_OUT_ACTION);
         InputMap inMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         inMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, KeyEvent.CTRL_DOWN_MASK), "imageZoomIn");
         inMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, KeyEvent.CTRL_DOWN_MASK), "imageZoomOut");
@@ -164,9 +169,10 @@ public class ImageViewer extends javax.swing.JFrame {
         closeButtonPanel = new javax.swing.JPanel();
         closeButton = new javax.swing.JButton();
         controlsPanel = new javax.swing.JPanel();
-        zoomInButton = new javax.swing.JButton();
-        resetButton = new javax.swing.JButton();
+        jToolBar1 = new javax.swing.JToolBar();
         zoomOutButton = new javax.swing.JButton();
+        resetButton = new javax.swing.JButton();
+        zoomInButton = new javax.swing.JButton();
         zoomSlider = new javax.swing.JSlider();
         zoomLabel = new javax.swing.JLabel();
 
@@ -181,6 +187,7 @@ public class ImageViewer extends javax.swing.JFrame {
 
         jSplitPane1.setLeftComponent(jScrollPane2);
 
+        imageScrollPane.setPreferredSize(new java.awt.Dimension(600, 500));
         imageScrollPane.getVerticalScrollBar().setUnitIncrement(50);
         jSplitPane1.setBottomComponent(imageScrollPane);
 
@@ -198,32 +205,34 @@ public class ImageViewer extends javax.swing.JFrame {
 
         jPanel1.add(closeButtonPanel, java.awt.BorderLayout.SOUTH);
 
-        zoomInButton.setText("+");
-        zoomInButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                zoomInButtonActionPerformed(evt);
-            }
-        });
-        controlsPanel.add(zoomInButton);
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
 
-        resetButton.setText("=");
-        resetButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resetButtonActionPerformed(evt);
-            }
-        });
-        controlsPanel.add(resetButton);
+        zoomOutButton.setAction(ZOOM_OUT_ACTION);
+        zoomOutButton.setFocusable(false);
+        zoomOutButton.setHideActionText(true);
+        zoomOutButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        zoomOutButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(zoomOutButton);
 
-        zoomOutButton.setText("-");
-        zoomOutButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                zoomOutButtonActionPerformed(evt);
-            }
-        });
-        controlsPanel.add(zoomOutButton);
+        resetButton.setAction(RESET_ZOOM_ACTION);
+        resetButton.setFocusable(false);
+        resetButton.setHideActionText(true);
+        resetButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        resetButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(resetButton);
 
+        zoomInButton.setAction(ZOOM_IN_ACTION);
+        zoomInButton.setFocusable(false);
+        zoomInButton.setHideActionText(true);
+        zoomInButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        zoomInButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(zoomInButton);
+
+        zoomSlider.setMajorTickSpacing(150);
         zoomSlider.setMaximum(500);
         zoomSlider.setMinimum(50);
+        zoomSlider.setMinorTickSpacing(50);
         zoomSlider.setPaintLabels(true);
         zoomSlider.setPaintTicks(true);
         zoomSlider.setValue(100);
@@ -232,10 +241,12 @@ public class ImageViewer extends javax.swing.JFrame {
                 zoomSliderStateChanged(evt);
             }
         });
-        controlsPanel.add(zoomSlider);
+        jToolBar1.add(zoomSlider);
 
         zoomLabel.setText("100%");
-        controlsPanel.add(zoomLabel);
+        jToolBar1.add(zoomLabel);
+
+        controlsPanel.add(jToolBar1);
 
         jPanel1.add(controlsPanel, java.awt.BorderLayout.NORTH);
 
@@ -251,23 +262,12 @@ private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 private void zoomSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_zoomSliderStateChanged
 	zoomLabel.setText(zoomSlider.getValue() + "%");
 	if (!zoomSlider.getValueIsAdjusting()) {
-		resizeImage(zoomSlider.getValue() / 100f);
+		int value = zoomSlider.getValue();
+		resizeImage(value / 100f);
+		ZOOM_IN_ACTION.setEnabled(value != zoomSlider.getMaximum());
+		ZOOM_OUT_ACTION.setEnabled(value != zoomSlider.getMinimum());
 	}
 }//GEN-LAST:event_zoomSliderStateChanged
-
-private void zoomInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomInButtonActionPerformed
-	int newScale = Math.min(zoomSlider.getValue() + 25, zoomSlider.getMaximum());
-	zoomSlider.setValue(newScale);
-}//GEN-LAST:event_zoomInButtonActionPerformed
-
-private void zoomOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutButtonActionPerformed
-	int newScale = Math.max(zoomSlider.getValue() - 25, zoomSlider.getMinimum());
-	zoomSlider.setValue(newScale);
-}//GEN-LAST:event_zoomOutButtonActionPerformed
-
-private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
-	zoomSlider.setValue(100);
-}//GEN-LAST:event_resetButtonActionPerformed
 
     /**
     * @param args the command line arguments
@@ -300,6 +300,7 @@ private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JButton resetButton;
     private javax.swing.JTextPane textPane;
     private javax.swing.JButton zoomInButton;
