@@ -14,6 +14,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 
+import jshm.gui.EditPopupMenu;
+
 /**
  *
  * @author  Tim
@@ -45,6 +47,8 @@ public class ImageViewer extends javax.swing.JFrame {
     /** Creates new form ImageViewer */
     public ImageViewer() {
         initComponents();
+        
+        EditPopupMenu.add(textPane);
         
         imagePainter.addMouseWheelListener(new MouseWheelListener() {
 			public void mouseWheelMoved(MouseWheelEvent e) {
@@ -286,7 +290,7 @@ private void zoomSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FI
             	ImageViewer iv = new ImageViewer();
             	iv.setLocationRelativeTo(null);
             	iv.setVisible(true);
-            	iv.setText(null);
+            	iv.setText("Here's some text to test with.\n\nNew line maybe?");
             	iv.setImage("http://i24.photobucket.com/albums/c45/bbloot/CherubRock.gif");
             }
         });

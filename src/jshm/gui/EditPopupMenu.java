@@ -58,16 +58,16 @@ public class EditPopupMenu extends JPopupMenu implements ActionListener, MouseLi
 	public EditPopupMenu() {
 		cb = Toolkit.getDefaultToolkit().getSystemClipboard();		
 		
-		cutMenuItem = new JMenuItem("Cut");
+		cutMenuItem = new JMenuItem("Cut", new ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/cutb32.png")));
 		cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.CTRL_DOWN_MASK));
 		cutMenuItem.addActionListener(this);
-		copyMenuItem = new JMenuItem("Copy");
+		copyMenuItem = new JMenuItem("Copy", new ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/copy32.png")));
 		copyMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK));
 		copyMenuItem.addActionListener(this);
-		pasteMenuItem = new JMenuItem("Paste");
+		pasteMenuItem = new JMenuItem("Paste", new ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/paste32.png")));
 		pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK));
 		pasteMenuItem.addActionListener(this);
-		deleteMenuItem = new JMenuItem("Delete");
+		deleteMenuItem = new JMenuItem("Delete", new ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/delete32.png")));
 		deleteMenuItem.addActionListener(this);
 		selectAllMenuItem = new JMenuItem("Select All");
 		selectAllMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK));
