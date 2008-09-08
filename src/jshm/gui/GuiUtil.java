@@ -44,6 +44,7 @@ public class GuiUtil {
 				UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {}
 		
+		// http://www.java2s.com/Tutorial/Java/0240__Swing/CustomizingaJOptionPaneLookandFeel.htm
 		UIManager.put("OptionPane.errorIcon", new ImageIcon(GuiUtil.class.getResource("/jshm/resources/images/toolbar/delete.png")));
 		UIManager.put("OptionPane.informationIcon", new ImageIcon(GuiUtil.class.getResource("/jshm/resources/images/toolbar/infoabout.png")));
 		UIManager.put("OptionPane.questionIcon", new ImageIcon(GuiUtil.class.getResource("/jshm/resources/images/toolbar/help.png")));
