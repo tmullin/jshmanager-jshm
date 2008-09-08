@@ -87,6 +87,8 @@ public class GUI extends javax.swing.JFrame {
 	
     /** Creates new form GUITest */
     public GUI() {
+    	GuiUtil.init();
+    	
     	hh = new HoverHelp();
     	
         initComponents();

@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -138,15 +137,7 @@ public class JSHManager {
 			splash.setStatus("Loading user interface...");
 			
 			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {				
-					try {
-						// Set the Look & Feel to match the current system
-						UIManager.setLookAndFeel(
-							UIManager.getSystemLookAndFeelClassName());
-					} catch (Exception e) {
-						LOG.log(Level.WARNING, "Couldn't set system look & feel (not fatal)", e);
-					}
-	
+				public void run() {	
 					gui = new GUI();
 					gui.setVisible(true);
 					gui.toFront();

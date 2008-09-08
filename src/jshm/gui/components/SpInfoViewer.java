@@ -15,6 +15,7 @@ import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 
 import jshm.gui.EditPopupMenu;
+import jshm.gui.GuiUtil;
 
 /**
  *
@@ -456,13 +457,7 @@ private void fromFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-				try {
-					// Set the Look & Feel to match the current system
-					UIManager.setLookAndFeel(
-						UIManager.getSystemLookAndFeelClassName());
-				} catch (Exception e) {
-					System.out.println("Couldn't set system look & feel (not fatal)");
-				}
+            	GuiUtil.init();
 				
             	SpInfoViewer iv = new SpInfoViewer();
             	iv.setLocationRelativeTo(null);

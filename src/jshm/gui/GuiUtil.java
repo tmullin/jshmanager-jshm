@@ -27,12 +27,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.UIManager;
 import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 public class GuiUtil {
+	/**
+	 * This sets the default L&F as well as sets some icons
+	 */
+	public static void init() {
+		try {
+			// Set the Look & Feel to match the current system
+			UIManager.setLookAndFeel(
+				UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {}
+		
+		UIManager.put("OptionPane.errorIcon", new ImageIcon(GuiUtil.class.getResource("/jshm/resources/images/toolbar/delete.png")));
+		UIManager.put("OptionPane.informationIcon", new ImageIcon(GuiUtil.class.getResource("/jshm/resources/images/toolbar/infoabout.png")));
+		UIManager.put("OptionPane.questionIcon", new ImageIcon(GuiUtil.class.getResource("/jshm/resources/images/toolbar/help.png")));
+		UIManager.put("OptionPane.warningIcon", new ImageIcon(GuiUtil.class.getResource("/jshm/resources/images/toolbar/pause.png")));
+		UIManager.put("OptionPane.yesIcon", new ImageIcon(GuiUtil.class.getResource("/jshm/resources/images/toolbar/accept32.png")));
+		UIManager.put("OptionPane.noIcon", new ImageIcon(GuiUtil.class.getResource("/jshm/resources/images/toolbar/delete32.png")));
+		
+	}
+	
 	/**
 	 * Expands all nodes of the supplied tree starting at startDepth.
 	 * This should only be used when there is a known maximum depth.
