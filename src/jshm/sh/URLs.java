@@ -21,6 +21,8 @@
 package jshm.sh;
 
 import jshm.Difficulty;
+import jshm.Instrument;
+import jshm.Platform;
 import jshm.gh.*;
 
 public class URLs {
@@ -65,7 +67,27 @@ public class URLs {
 	public static class rb {
 		public static final String
 			DOMAIN = "rockband." + ROOT_DOMAIN,
-			BASE = "http://" + DOMAIN
+			BASE = "http://" + DOMAIN,
+			MANAGE_SCORES = BASE + "/manage_scores.php?game=%s&diff=%s",
+			TOP_SCORES = BASE + "/top_scores.php?platform=%s&size=%s&group=%s&diff=%s",
+			INSERT_SCORE = BASE + "/insert_score.php?song=%s",
+			DELETE_SCORES = BASE + "/delete_scores.php?song=%s"
 			;
+				
+//		public static String getManageScoresUrl(final GhGame game, final Difficulty difficulty) {
+//			return String.format(MANAGE_SCORES, game.scoreHeroId, difficulty.scoreHeroId);
+//		}
+		
+		public static String getTopScoresUrl(final Platform platform, final Instrument.Group group, final Difficulty difficulty) {
+			return String.format(TOP_SCORES, RbPlatform.getId(platform), group.instruments.length, group.id, difficulty.scoreHeroId);
+		}
+		
+//		public static String getInsertScoreUrl(final GhScore score) {
+//			return String.format(INSERT_SCORE, score.getSong().getScoreHeroId());
+//		}
+//		
+//		public static String getDeleteScoresUrl(final GhSong song) {
+//			return String.format(DELETE_SCORES, song.getScoreHeroId());
+//		}
 	}
 }

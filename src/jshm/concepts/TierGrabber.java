@@ -21,12 +21,11 @@
 package jshm.concepts;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-//import jshm.gh.*;
-import jshm.Game;
-import jshm.GameSeries;
-import jshm.gh.GhGame;
-import jshm.sh.scraper.GhTierScraper;
+import jshm.*;
+import jshm.sh.scraper.*;
 
 /**
  * This is an internal program to provide an easily
@@ -36,12 +35,14 @@ import jshm.sh.scraper.GhTierScraper;
  */
 public class TierGrabber {
 	public static void main(String[] args) throws Exception {
-		List<Game> games = Game.getBySeries(GameSeries.GUITAR_HERO);
+		Logger.getLogger("").setLevel(Level.ALL);
+		
+		List<Game> games = Game.getBySeries(GameSeries.ROCKBAND);
 		
 		jshm.util.TestTimer.start();
 		
 		for (Game game : games) {
-			List<String> tiers = GhTierScraper.scrape((GhGame) game);
+			List<String> tiers = RbTierScraper.scrape(game.platform, Instrument.Group.GUITAR);
 			
 			System.out.print(game + " = \"");
 			for (int i = 0; i < tiers.size(); i++) {

@@ -23,6 +23,7 @@ package jshm;
 import java.util.*;
 
 import jshm.gh.GhGame;
+import jshm.rb.RbGame;
 
 /**
  * This represents a specific {@link GameTitle} and
@@ -77,6 +78,7 @@ public abstract class Game {
 	static {
 		// needed to ensure the GhGames get put into values
 		GhGame.init();
+		RbGame.init();
 	}
 	
 	public final int scoreHeroId;
@@ -109,14 +111,26 @@ public abstract class Game {
 		tiersMap.put(group, tiers);
 	}
 	
+	public String getTierName(final int tierLevel) {
+		throw new UnsupportedOperationException();
+	}
+	
 	public String getTierName(final Instrument.Group group, final int tierLevel) {
 		if (!tiersMap.containsKey(group)) return "UNKNOWN";
 		return tiersMap.get(group).getName(tierLevel);
 	}
 	
+	public int getTierLevel(final String tierName) {
+		throw new UnsupportedOperationException();
+	}
+	
 	public int getTierLevel(final Instrument.Group group, final String tierName) {
 		if (!tiersMap.containsKey(group)) return 0;
 		return tiersMap.get(group).getLevel(tierName);
+	}
+	
+	public int getTierCount() {
+		throw new UnsupportedOperationException();
 	}
 	
 	public int getTierCount(final Instrument.Group group) {
