@@ -33,11 +33,11 @@ import jshm.Part;
 import jshm.Score;
 import jshm.exceptions.ScraperException;
 import jshm.gh.*;
+import jshm.scraper.DataTable;
 import jshm.scraper.Scraper;
 import jshm.scraper.TieredTabularDataAdapter;
 import jshm.scraper.TieredTabularDataExtractor;
 import jshm.scraper.TieredTabularDataHandler;
-import jshm.sh.DataTable;
 import jshm.sh.DateFormats;
 import jshm.sh.URLs;
 
@@ -201,8 +201,8 @@ public class GhScoreScraper {
 		public DataTable getDataTable() {
 			return 
 				game.title.platforms.length == 1
-				? DataTable.GH_MANAGE_SCORES_SINGLE_PLAT
-				: DataTable.GH_MANAGE_SCORES;
+				? GhDataTable.MANAGE_SCORES_SINGLE_PLAT
+				: GhDataTable.MANAGE_SCORES;
 		}
 		
 		// "-|text=int|link=songid~text|-|-|text=int|img=rating~text=float|text=int|text=int|text|text"
@@ -228,7 +228,7 @@ public class GhScoreScraper {
 			
 			int i = 4;
 			
-			if (getDataTable() == DataTable.GH_MANAGE_SCORES)
+			if (getDataTable() == GhDataTable.MANAGE_SCORES)
 				i++;
 			
 			// i = 4 or 5 for score
@@ -355,7 +355,7 @@ public class GhScoreScraper {
 		
 		@Override
 		public DataTable getDataTable() {
-			return DataTable.GH_DELETE_SCORES;
+			return GhDataTable.DELETE_SCORES;
 		}
 		
 		// input|text=int|img=rating~text=float|text=int|text=int|text

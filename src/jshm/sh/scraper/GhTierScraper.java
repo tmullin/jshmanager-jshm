@@ -28,6 +28,7 @@ import org.htmlparser.util.ParserException;
 import jshm.Difficulty;
 import jshm.exceptions.*;
 import jshm.gh.GhGame;
+import jshm.scraper.DataTable;
 import jshm.scraper.TieredTabularDataAdapter;
 import jshm.scraper.TieredTabularDataExtractor;
 import jshm.sh.*;
@@ -60,7 +61,7 @@ public class GhTierScraper {
 		}
 		
 		public DataTable getDataTable() {
-			return DataTable.GH_TOP_SCORES;
+			return GhDataTable.TOP_SCORES;
 		}
 		
 		public void handleTierRow(String tierName) {

@@ -25,7 +25,7 @@ import org.htmlparser.tags.*;
 import jshm.exceptions.ScraperException;
 
 public interface TieredTabularDataHandler {
-	public jshm.sh.DataTable getDataTable();
+	public jshm.scraper.DataTable getDataTable();
 	public boolean ignoreInvalidRowChildCount();
 	public boolean ignoreNewData();
 	public void handleHeaderRow(TableRow tr) throws ScraperException;

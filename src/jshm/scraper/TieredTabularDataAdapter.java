@@ -21,7 +21,6 @@
 package jshm.scraper;
 
 import jshm.exceptions.ScraperException;
-import jshm.sh.DataTable;
 
 import org.htmlparser.tags.TableRow;
 

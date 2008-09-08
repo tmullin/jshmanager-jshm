@@ -26,7 +26,6 @@ import org.htmlparser.tags.TableHeader;
 import org.htmlparser.tags.TableRow;
 
 import jshm.exceptions.ScraperException;
-import jshm.sh.DataTable;
 
 public class TieredTabularDataExtractor {
 	public static void extract(

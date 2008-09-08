@@ -38,17 +38,17 @@ import org.htmlparser.util.*;
 public class Scraper {
 	static final Logger LOG = Logger.getLogger(Scraper.class.getName());
 	
-	public static NodeList scrape(final String url, final jshm.sh.DataTable dataTable) throws ParserException {
+	public static NodeList scrape(final String url, final jshm.scraper.DataTable dataTable) throws ParserException {
 		return scrape(url, dataTable.getFilters(), true);
 	}
 	
-	public static NodeList scrape(final String url, final jshm.sh.DataTable dataTable, final boolean removeWhitespace) throws ParserException {
+	public static NodeList scrape(final String url, final jshm.scraper.DataTable dataTable, final boolean removeWhitespace) throws ParserException {
 		return scrape(url, dataTable.getFilters(), removeWhitespace);
 	}
 	
 	public static NodeList scrape(
 			final String url,
-			final jshm.sh.DataTable dataTable,
+			final jshm.scraper.DataTable dataTable,
 			final org.apache.commons.httpclient.Cookie[] cookies) throws ParserException {
 			
 			return scrape(url, dataTable.getFilters(), true, cookies);
@@ -56,7 +56,7 @@ public class Scraper {
 	
 	public static NodeList scrape(
 		final String url,
-		final jshm.sh.DataTable dataTable,
+		final jshm.scraper.DataTable dataTable,
 		final boolean removeWhitespace,
 		final org.apache.commons.httpclient.Cookie[] cookies) throws ParserException {
 		

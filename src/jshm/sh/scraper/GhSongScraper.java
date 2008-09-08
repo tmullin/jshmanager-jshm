@@ -95,7 +95,7 @@ public class GhSongScraper {
 		
 		@Override
 		public DataTable getDataTable() {
-			return DataTable.GH_TOTAL_NOTES;
+			return GhDataTable.TOTAL_NOTES;
 		}
 		
 		@Override
@@ -145,7 +145,7 @@ public class GhSongScraper {
 		
 		@Override
 		public DataTable getDataTable() {
-			return DataTable.GH_ALL_CUTOFFS;
+			return GhDataTable.ALL_CUTOFFS;
 		}
 		
 		// "text|text=int|text=int|text=int|text=int|text=int|text=int|text=int"
