@@ -2,6 +2,7 @@ package jshm.gui.components;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -21,40 +22,39 @@ import jshm.gui.GuiUtil;
  *
  * @author  Tim
  */
-public class SpInfoViewer extends javax.swing.JFrame {    
+public class SpInfoViewer extends javax.swing.JFrame {
+	static final float
+		FIT_WIDTH = -1f,
+		FIT_ALL   = -2f,
+		MIN_SCALE = 0.1f,
+		MAX_SCALE = 10f;
+	
+	static final String
+		FIT_WIDTH_STR = "Fit Width",
+		FIT_ALL_STR   = "Fit All",
+		CUSTOM_STR    = "Custom...";
+	
+	
 	ImagePainter imagePainter = new ImagePainter();
 	BufferedImage image = null;
 	float scale = 1f;
+	Object lastSelectedItem = null;
 	
 	
 	// actions
 	final Action
 	ZOOM_IN_ACTION = new AbstractAction("Zoom In", new ImageIcon(SpInfoViewer.class.getResource("/jshm/resources/images/toolbar/zoomin32.png"))) {
 		public void actionPerformed(ActionEvent e) {
-			int newScale = Math.min(zoomSlider.getValue() + 25, zoomSlider.getMaximum());
-			zoomSlider.setValue(newScale);
+			float newScale = Math.min(getScale() + 0.25f, MAX_SCALE);
+			setScale(newScale);
+//			zoomCombo.setSelectedItem(CUSTOM_STR);
 		}
     },
     ZOOM_OUT_ACTION = new AbstractAction("Zoom Out", new ImageIcon(SpInfoViewer.class.getResource("/jshm/resources/images/toolbar/zoomout32.png"))) {
 		public void actionPerformed(ActionEvent e) {
-			int newScale = Math.max(zoomSlider.getValue() - 25, zoomSlider.getMinimum());
-			zoomSlider.setValue(newScale);
-		}
-	},
-	RESET_ZOOM_ACTION = new AbstractAction("Reset Zoom", new ImageIcon(SpInfoViewer.class.getResource("/jshm/resources/images/toolbar/refresh32.png"))) {
-		public void actionPerformed(ActionEvent e) {
-			zoomSlider.setValue(100);
-		}
-	},
-	FIT_WIDTH_ACTION = new AbstractAction("Fit Width", new ImageIcon(SpInfoViewer.class.getResource("/jshm/resources/images/toolbar/window32.png"))) {
-		public void actionPerformed(ActionEvent e) {
-			int imw  = image.getWidth(); 
-			int vpw = imageScrollPane.getViewport().getWidth();
-			float newScale = (float) vpw / (float) imw;
-			newScale = Math.min((float) zoomSlider.getMaximum() / 100f,
-				Math.max((float) zoomSlider.getMinimum() / 100f, newScale)
-			);
-			zoomSlider.setValue((int) (newScale * 100));
+			float newScale = Math.max(getScale() - 0.25f, MIN_SCALE);
+			setScale(newScale);
+//			zoomCombo.setSelectedItem(CUSTOM_STR);
 		}
 	},
 	
@@ -85,7 +85,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
     /** Creates new form ImageViewer */
     public SpInfoViewer() {
     	for (Action a : new Action[] {
-    		ZOOM_IN_ACTION, ZOOM_OUT_ACTION, RESET_ZOOM_ACTION, FIT_WIDTH_ACTION,
+    		ZOOM_IN_ACTION, ZOOM_OUT_ACTION,
     		CLOSE_ACTION,
     		NEW_ACTION, SAVE_ACTION, DELETE_ACTION})
     		a.putValue(Action.SHORT_DESCRIPTION, a.getValue(Action.NAME));
@@ -194,12 +194,42 @@ public class SpInfoViewer extends javax.swing.JFrame {
 		imageScrollPane.repaint();
 	}
 	
-	private void resizeImage(float scale) {
+	private float getScale() {
+		float scale = SpInfoViewer.this.scale;
+		
+		if (FIT_WIDTH == scale || FIT_ALL == scale) {
+			// it's almost assured that the image will be taller than wide
+			// but for completeness...
+			int imw = image.getWidth();
+			int imh = image.getHeight();
+			int vpw = imageScrollPane.getViewport().getWidth();
+			int vph = imageScrollPane.getViewport().getHeight();
+			
+			if (FIT_WIDTH == scale || imw > imh)
+				scale = (float) vpw / (float) imw;
+			else
+				scale = (float) vph / (float) imh;
+			
+			scale = Math.min(MAX_SCALE,
+				Math.max(MIN_SCALE, scale)
+			);
+		}
+		
+		return scale;
+	}
+	
+	private void setScale(float scale) {
 		if (image != null && this.scale != scale) {
+			if (!(FIT_WIDTH == scale || FIT_ALL == scale || (MIN_SCALE <= scale && scale <= MAX_SCALE)))
+				throw new IllegalArgumentException("Invalid scale: " + scale);
+			
 			this.scale = scale;
 			imageScrollPane.getViewport().revalidate();
 			imageScrollPane.revalidate();
 			imageScrollPane.repaint();
+			
+			ZOOM_IN_ACTION.setEnabled(MAX_SCALE != scale);
+			ZOOM_OUT_ACTION.setEnabled(MIN_SCALE != scale);
 		}
 	}
 	
@@ -237,10 +267,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JToolBar.Separator();
         zoomOutButton = new javax.swing.JButton();
         zoomInButton = new javax.swing.JButton();
-        resetButton = new javax.swing.JButton();
-        fitWidthButton = new javax.swing.JButton();
-        zoomSlider = new javax.swing.JSlider();
-        zoomLabel = new javax.swing.JLabel();
+        zoomCombo = new javax.swing.JComboBox();
         jSeparator2 = new javax.swing.JToolBar.Separator();
         closeButton = new javax.swing.JButton();
         imageScrollPane = new JScrollPane(imagePainter);
@@ -350,7 +377,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
                     .addComponent(jScrollPane2, 0, 0, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE))
         );
 
         editorCollapsiblePane.getContentPane().add(editorPanel, java.awt.BorderLayout.CENTER);
@@ -398,35 +425,13 @@ public class SpInfoViewer extends javax.swing.JFrame {
         zoomInButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(zoomInButton);
 
-        resetButton.setAction(RESET_ZOOM_ACTION);
-        resetButton.setFocusable(false);
-        resetButton.setHideActionText(true);
-        resetButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        resetButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(resetButton);
-
-        fitWidthButton.setAction(FIT_WIDTH_ACTION);
-        fitWidthButton.setFocusable(false);
-        fitWidthButton.setHideActionText(true);
-        fitWidthButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        fitWidthButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(fitWidthButton);
-
-        zoomSlider.setMajorTickSpacing(150);
-        zoomSlider.setMaximum(500);
-        zoomSlider.setMinimum(50);
-        zoomSlider.setMinorTickSpacing(50);
-        zoomSlider.setPaintTicks(true);
-        zoomSlider.setValue(100);
-        zoomSlider.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                zoomSliderStateChanged(evt);
+        zoomCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "50%", "75%", "100%", "125%", "150%", "200%", "250%", "300%", "Fit Width", "Fit All", "Custom..." }));
+        zoomCombo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                zoomComboItemStateChanged(evt);
             }
         });
-        jToolBar1.add(zoomSlider);
-
-        zoomLabel.setText("100%");
-        jToolBar1.add(zoomLabel);
+        jToolBar1.add(zoomCombo);
         jToolBar1.add(jSeparator2);
 
         closeButton.setAction(CLOSE_ACTION);
@@ -460,19 +465,59 @@ private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 	this.dispose();
 }//GEN-LAST:event_closeButtonActionPerformed
 
-private void zoomSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_zoomSliderStateChanged
-	zoomLabel.setText(zoomSlider.getValue() + "%");
-	if (!zoomSlider.getValueIsAdjusting()) {
-		int value = zoomSlider.getValue();
-		resizeImage(value / 100f);
-		ZOOM_IN_ACTION.setEnabled(value != zoomSlider.getMaximum());
-		ZOOM_OUT_ACTION.setEnabled(value != zoomSlider.getMinimum());
-	}
-}//GEN-LAST:event_zoomSliderStateChanged
-
 private void fromFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fromFileButtonActionPerformed
 // TODO add your handling code here:
 }//GEN-LAST:event_fromFileButtonActionPerformed
+
+private void zoomComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_zoomComboItemStateChanged
+	if (evt.getStateChange() == ItemEvent.DESELECTED) {
+		lastSelectedItem = evt.getItem();
+		return;
+	}
+	
+	String s = (String) zoomCombo.getSelectedItem();
+	float newScale = 1f;
+	
+	try {
+		s = s.replaceAll("%", "");
+//		System.out.println("s=" + s);
+		int i = Integer.parseInt(s);
+		newScale = ((float) i) / 100f;
+	} catch (NumberFormatException e) {
+		if (FIT_ALL_STR.equals(s))
+			newScale = FIT_ALL;
+		else if (FIT_WIDTH_STR.equals(s))
+			newScale = FIT_WIDTH;
+		else if (CUSTOM_STR.equals(s)) {
+			s = JOptionPane.showInputDialog(this, "Please enter a zoom level:", "Input", JOptionPane.QUESTION_MESSAGE);
+			
+			if (null == s) {
+				if (null != lastSelectedItem)
+					zoomCombo.setSelectedItem(lastSelectedItem);
+				return;
+			}
+			
+			try {
+				int i = Integer.parseInt(s);
+				newScale = ((float) i) / 100f;
+				
+				if (newScale < MIN_SCALE || MAX_SCALE < newScale)
+					throw new NumberFormatException();
+			} catch (NumberFormatException nfe) {
+				JOptionPane.showMessageDialog(this, 
+					String.format(
+						"You must enter a number between %s and %s.",
+						(int) (MIN_SCALE * 100), (int) (MAX_SCALE * 100)),
+					"Error", JOptionPane.WARNING_MESSAGE);
+				if (null != lastSelectedItem)
+					zoomCombo.setSelectedItem(lastSelectedItem);
+				return;
+			}
+		}
+	}
+	
+	setScale(newScale);
+}//GEN-LAST:event_zoomComboItemStateChanged
 
     /**
     * @param args the command line arguments
@@ -497,7 +542,6 @@ private void fromFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
     private javax.swing.JButton deleteButton;
     private org.jdesktop.swingx.JXCollapsiblePane editorCollapsiblePane;
     private javax.swing.JPanel editorPanel;
-    private javax.swing.JButton fitWidthButton;
     private javax.swing.JButton fromFileButton;
     private javax.swing.JButton fromUrlButton;
     private javax.swing.JScrollPane imageScrollPane;
@@ -515,15 +559,13 @@ private void fromFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
     private javax.swing.JButton newButton;
     private javax.swing.JButton openReferenceUrlButton;
     private javax.swing.JTextField referenceUrlField;
-    private javax.swing.JButton resetButton;
     private javax.swing.JButton saveButton;
     private javax.swing.JTextPane textPane;
     private javax.swing.JTextField titleField;
     private javax.swing.JLabel titleLabel;
+    private javax.swing.JComboBox zoomCombo;
     private javax.swing.JButton zoomInButton;
-    private javax.swing.JLabel zoomLabel;
     private javax.swing.JButton zoomOutButton;
-    private javax.swing.JSlider zoomSlider;
     // End of variables declaration//GEN-END:variables
 
     
@@ -580,6 +622,8 @@ private void fromFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
     	}
     	
     	public Dimension getPreferredSize() {
+    		float scale = getScale();
+			
     		return
     			null != image
     			? new Dimension((int) (scale * image.getWidth()), (int) (scale * image.getHeight()))
@@ -591,6 +635,8 @@ private void fromFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
 			
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			
+			float scale = getScale();
 			
 			float iscale = 1f / scale;
 			Rectangle clip = g2.getClipBounds();
