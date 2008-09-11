@@ -78,6 +78,7 @@ public abstract class Score {
 	private String	imageUrl			= "";
 	private String	videoUrl			= "";
 	
+	private Instrument.Group group      = Instrument.Group.GUITAR;
 	private Set<Part> parts				= new LinkedHashSet<Part>(4);
 	
 	@Id
@@ -186,6 +187,16 @@ public abstract class Score {
 		pcs.firePropertyChange("score", old, score);
 	}
 
+	@Column(name="instrumentgroup") // "group" is a reserved sql word
+	@Enumerated(EnumType.STRING)
+	public Instrument.Group getGroup() {
+		return group;
+	}
+	
+	public void setGroup(Instrument.Group group) {
+		this.group = group;
+	}
+	
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@Fetch(FetchMode.SELECT)
@@ -237,6 +248,18 @@ public abstract class Score {
 		}
 		
 		return ret;
+	}
+	
+	@Transient
+	public Part getPart(Instrument instrument) {
+		Iterator<Part> it = getPartsIterator();
+		
+		while (it.hasNext()) {
+			Part p = it.next();
+			if (p.getInstrument() == instrument) return p;
+		}
+		
+		return null;
 	}
 	
 	@Transient

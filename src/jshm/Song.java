@@ -80,7 +80,6 @@ public abstract class Song {
 		this.scoreHeroId = scoreHeroId;
 	}
 
-	@NotNull
 	@Type(type="jshm.hibernate.GameUserType")
 	public Game getGame() {
 		return game;
