@@ -55,7 +55,7 @@ public class GhSongScraper {
 				GhSongStat.TOTAL_NOTES,
 				game,
 				difficulty),
-			handler.getDataTable());
+			handler);
 		
 		TieredTabularDataExtractor.extract(nodes, handler);
 		

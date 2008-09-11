@@ -38,6 +38,10 @@ import org.htmlparser.util.*;
 public class Scraper {
 	static final Logger LOG = Logger.getLogger(Scraper.class.getName());
 	
+	public static NodeList scrape(final String url, final jshm.scraper.TieredTabularDataHandler handler) throws ParserException {
+		return scrape(url, handler.getDataTable());
+	}
+	
 	public static NodeList scrape(final String url, final jshm.scraper.DataTable dataTable) throws ParserException {
 		return scrape(url, dataTable.getFilters(), true);
 	}

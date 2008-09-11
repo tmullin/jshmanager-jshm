@@ -27,40 +27,48 @@ import java.util.logging.Logger;
 import jshm.*;
 import jshm.gh.*;
 import jshm.gui.LoginDialog;
+import jshm.rb.*;
 import jshm.sh.scraper.*;
 
+@SuppressWarnings("unused")
 public class ShGhScraperTest {
-	static final GhGame game 			= GhGame.GH3_XBOX360;
+//	static final GhGame game 			= GhGame.GH3_XBOX360;
+	static final RbGame game 			= RbGame.RB1_XBOX360;
 	static final Difficulty difficulty 	= Difficulty.EXPERT;
 	
 	public static void main(String[] args) throws Exception {
 		Logger.getLogger("").setLevel(Level.FINE);
 		jshm.util.TestTimer.start(true);
 		
-//		doSongs();
-		doScores();
+		doSongs();
+//		doScores();
 		
 		jshm.util.TestTimer.stop(true);
 	}
 	
-	static void doScores() throws Exception {
-		LoginDialog.showDialog();
-		
-		List<GhScore> scores = 
-			GhScoreScraper.scrapeAll(
-				game, difficulty);
-
-		for (GhScore s : scores)
-			System.out.println(s);
-	}
+//	static void doScores() throws Exception {
+//		LoginDialog.showDialog();
+//		
+//		List<GhScore> scores = 
+//			GhScoreScraper.scrapeAll(
+//				game, difficulty);
+//
+//		for (GhScore s : scores)
+//			System.out.println(s);
+//	}
 	
 	static void doSongs() throws Exception {
-		List<GhSong> songs = 
-			GhSongScraper.scrape(
-				game, difficulty);
-	
-		for (Song s : songs) {
-			System.out.println(s);
-		}
+//		List<RbSong> songs = 
+//			RbSongScraper.scrape(game);
+//	
+//		for (Song s : songs) {
+//			System.out.println(s);
+//		}
+		
+		List<SongOrder> orders = 
+			RbSongScraper.scrapeOrders(game);
+		
+		for (SongOrder o : orders)
+			System.out.println(o);
 	}
 }

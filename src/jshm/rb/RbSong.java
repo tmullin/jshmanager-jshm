@@ -12,15 +12,30 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.validator.Min;
 
 import jshm.Song;
 
 public class RbSong extends Song {
 	static final Logger LOG = Logger.getLogger(RbSong.class.getName());
 	
+	public static RbSong getByScoreHeroId(final int id) {
+		LOG.finer("Querying database for song with scoreHeroId=" + id);
+		
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    RbSong result =
+			(RbSong)
+			session.createQuery(
+				String.format(
+					"from RbSong where scoreHeroId=%d", id))
+				.uniqueResult();
+	    session.getTransaction().commit();
+		
+		return result;
+	}
+	
+	
 	private List<RbGame> games = new ArrayList<RbGame>();
-	private int tierLevel = 0;
 	
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
@@ -42,27 +57,21 @@ public class RbSong extends Song {
 		games.set(index, game);
 	}
 	
-	/**
-	 * 
-	 * @return The tier number of this song or 0 if it is unknown.
-	 */
-	@Min(0)
-	public int getTierLevel() {
-		return tierLevel;
-	}
-
-	public void setTierLevel(int tierLevel) {
-		if (tierLevel < 0)
-			throw new IllegalArgumentException("tierLevel must be >= 0");
-		this.tierLevel = tierLevel;
-	}
 	
-	/**
-	 * 
-	 * @return The name of this song's tier based on this song's tier level and game.
-	 */
-	@Transient
-	public String getTierName() {
-		return ((RbGame) getGame()).getTierName(this.getTierLevel());
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append('[');
+		for (RbGame g : getGames()) {
+			sb.append(g);
+			sb.append(',');
+		}
+		sb.append(']');
+		sb.append(',');
+		sb.append(getScoreHeroId());
+		sb.append(',');
+		sb.append(getTitle());
+		
+		return sb.toString();
 	}
 }

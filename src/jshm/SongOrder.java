@@ -20,6 +20,7 @@
  */
 package jshm;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -117,12 +118,30 @@ public class SongOrder implements Comparable<SongOrder> {
 		this.order = order;
 	}
 
+	@Column(name="ordering")
 	public int getOrder() {
 		return order;
 	}
 
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(group);
+		sb.append(',');
+		sb.append(song);
+		sb.append(",t=");
+		sb.append(tier);
+		sb.append(",o=");
+		sb.append(order);
+		
+		return sb.toString();
+	}
+	
 	@Override
 	public int compareTo(SongOrder o) {
+		if (this.tier < o.tier) return -1;
+		if (this.tier > o.tier) return 1;
 		if (this.order < o.order) return -1;
 		if (this.order > o.order) return 1;
 		return 0;
