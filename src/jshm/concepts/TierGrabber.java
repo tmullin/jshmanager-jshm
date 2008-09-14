@@ -25,6 +25,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jshm.*;
+import jshm.rb.RbGame;
+import jshm.rb.RbGameTitle;
 import jshm.sh.scraper.*;
 
 /**
@@ -37,12 +39,12 @@ public class TierGrabber {
 	public static void main(String[] args) throws Exception {
 		Logger.getLogger("").setLevel(Level.ALL);
 		
-		List<Game> games = Game.getBySeries(GameSeries.ROCKBAND);
+		List<Game> games = Game.getByTitle(RbGameTitle.RB2); // .getBySeries(GameSeries.ROCKBAND);
 		
 		jshm.util.TestTimer.start();
 		
 		for (Game game : games) {
-			List<String> tiers = RbTierScraper.scrape(game.platform, Instrument.Group.GUITAR);
+			List<String> tiers = RbTierScraper.scrape((RbGame) game, Instrument.Group.GUITAR);
 			
 			System.out.print(game + " = \"");
 			for (int i = 0; i < tiers.size(); i++) {

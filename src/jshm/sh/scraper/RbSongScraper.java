@@ -31,7 +31,7 @@ public class RbSongScraper {
 		
 		NodeList nodes = Scraper.scrape(
 			URLs.rb.getTopScoresUrl(
-				game.platform,
+				game,
 				Instrument.Group.GUITAR,
 				Difficulty.EXPERT),
 			handler);
@@ -56,7 +56,7 @@ public class RbSongScraper {
 		
 			NodeList nodes = Scraper.scrape(
 				URLs.rb.getTopScoresUrl(
-					game.platform,
+					game,
 					g,
 					Difficulty.EXPERT),
 				handler);

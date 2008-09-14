@@ -27,17 +27,18 @@ import org.htmlparser.util.ParserException;
 
 import jshm.*;
 import jshm.exceptions.*;
+import jshm.rb.RbGame;
 import jshm.scraper.*;
 import jshm.sh.*;
 
 public class RbTierScraper {
-	public static List<String> scrape(Platform platform, Instrument.Group group)
+	public static List<String> scrape(RbGame game, Instrument.Group group)
 	throws ScraperException, ParserException {
 		final Difficulty difficulty = Difficulty.EXPERT;
 		
         List<String> tiers = new ArrayList<String>();
         TierHandler handler = new TierHandler(tiers);
-        String url = URLs.rb.getTopScoresUrl(platform, group, difficulty);
+        String url = URLs.rb.getTopScoresUrl(game, group, difficulty);
 //        System.out.println("url = " + url);
 		NodeList nodes = Scraper.scrape(url, handler.getDataTable());
 //        System.out.println("nodecount = " + nodes.size());

@@ -22,8 +22,7 @@ package jshm.scraper;
 
 import org.htmlparser.Node;
 import org.htmlparser.util.*;
-import org.htmlparser.tags.TableHeader;
-import org.htmlparser.tags.TableRow;
+import org.htmlparser.tags.*;
 
 import jshm.exceptions.ScraperException;
 
@@ -35,6 +34,7 @@ public class TieredTabularDataExtractor {
 		
 		final DataTable dataTable = handler.getDataTable();
         SimpleNodeIterator it = nodes.elements();
+        final String tierColspanStr = String.valueOf(dataTable.tierColspan);
         
         while (it.hasMoreNodes()) {
         	if (handler.ignoreNewData()) break;
@@ -54,7 +54,12 @@ public class TieredTabularDataExtractor {
         		continue;
         	}
         	
-        	if (dataTable.tierChildNodeCount == tr.getChildCount()) {
+        	if (dataTable.tierChildNodeCount == tr.getChildCount() &&
+        		// check the colspan to try to make sure
+        		tierColspanStr.equals(
+        			((TableColumn) tr.getChild(0)).getAttribute("colspan"))
+        		) {        		
+        		
         		// should be the tier row
         		String[][] tierData = DataTable.TIER_ROW_FORMAT.getData(tr);
         		handler.handleTierRow(tierData[0][0]);

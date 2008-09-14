@@ -9,11 +9,15 @@ import jshm.Instrument.Group;
 
 public class RbGameTitle extends GameTitle {
 	public static final RbGameTitle
-		RB1 = new RbGameTitle("RB1", Platform.PS2, Platform.XBOX360, Platform.PS3, Platform.WII)
+		RB1 = new RbGameTitle(1, "RB1", Platform.PS2, Platform.XBOX360, Platform.PS3, Platform.WII),
+		RB2 = new RbGameTitle(2, "RB2", /*Platform.PS2,*/ Platform.XBOX360/*, Platform.PS3, Platform.WII*/)
 	;
 	
-	protected RbGameTitle(String title, Platform ... platforms) {
+	public final int scoreHeroId;
+	
+	protected RbGameTitle(int scoreHeroId, String title, Platform ... platforms) {
 		super(GameSeries.ROCKBAND, title, platforms);
+		this.scoreHeroId = scoreHeroId;
 	}
 
 	@Override
