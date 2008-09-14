@@ -448,6 +448,18 @@ public abstract class Score {
 	@Transient
 	public abstract javax.swing.ImageIcon getRatingIcon();
 	
+	/**
+	 * If calculated ratings are supported this can be overridden to
+	 * provide that, otherwise {@link #getRatingIcon()} will simply
+	 * be called.
+	 * @param ignoreCalculatedRating
+	 * @return
+	 */
+	@Transient
+	public javax.swing.ImageIcon getRatingIcon(boolean ignoreCalculatedRating) {
+		return getRatingIcon();
+	}
+	
 	// override object methods
 	
 	@Override

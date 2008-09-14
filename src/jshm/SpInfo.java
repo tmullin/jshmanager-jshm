@@ -13,6 +13,8 @@ import javax.imageio.ImageIO;
  */
 public class SpInfo {
 	public Song song;
+	public Difficulty difficulty;
+	public Instrument.Group group;
 	public String title;
 	public String referenceUrl;
 	public String imageUrl;

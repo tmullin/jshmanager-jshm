@@ -91,7 +91,7 @@ public abstract class Song {
 	
 	@Transient
 	public GameTitle getGameTitle() {
-		return game.title;
+		return game != null ? game.title : null;
 	}
 	
 	@NotEmpty
@@ -100,8 +100,8 @@ public abstract class Song {
 	}
 
 	public void setTitle(String title) {
-		if (title.isEmpty())
-			throw new IllegalArgumentException("title cannot be empty");
+		if (null == title || title.isEmpty())
+			throw new IllegalArgumentException("title cannot be null or empty");
 		this.title = title;
 	}
 	
@@ -115,6 +115,7 @@ public abstract class Song {
 		Song s = (Song) o;
 		return this.scoreHeroId == s.scoreHeroId &&
 			this.title.equals(s.title) &&
-			this.game.equals(s.game);
+			((this.game == null && s.game == null) ||
+			 this.game.equals(s.game));
 	}
 }

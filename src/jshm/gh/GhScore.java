@@ -136,7 +136,7 @@ public class GhScore extends jshm.Score {
 	public ImageIcon getRatingIcon() {
 		return this.getRatingIcon(false);
 	}
-	 
+
 	@Transient
 	public ImageIcon getRatingIcon(boolean ignoreCalculatedRating) {		
 		int rating = ignoreCalculatedRating

@@ -89,7 +89,9 @@ public class RbSongScraper {
 			
 			try {
     			curSong.setScoreHeroId(Integer.parseInt(data[1][1]));
-    		} catch (NumberFormatException e) {}
+    		} catch (NumberFormatException e) {
+    			throw new ScraperException("Error parsing song id", e);
+    		}
     		
     		curSong.setTitle(data[1][0]);
     		

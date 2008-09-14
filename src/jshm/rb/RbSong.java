@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -13,8 +14,10 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import jshm.GameTitle;
 import jshm.Song;
 
+@Entity
 public class RbSong extends Song {
 	static final Logger LOG = Logger.getLogger(RbSong.class.getName());
 	
@@ -57,6 +60,11 @@ public class RbSong extends Song {
 		games.set(index, game);
 	}
 	
+	@Override
+	@Transient
+	public GameTitle getGameTitle() {
+		return games.size() > 0 ? games.get(0).title : null;
+	}
 	
 	@Override
 	public String toString() {
