@@ -105,6 +105,22 @@ public class Log {
 		cur.setLevel(DEBUG ? Level.ALL : Level.INFO);
 	}
 	
+	// this is for setting up logging for tests/concepts, just to the console
+	public static void configTestLogging() {
+		Handler consoleHandler = new ConsoleHandler();
+		consoleHandler.setLevel(Level.ALL);
+		consoleHandler.setFormatter(new OneLineFormatter());
+		
+		Logger cur = Logger.getLogger("");
+		removeHandlers(cur);
+		cur.setLevel(Level.ALL);
+		
+		cur.addHandler(consoleHandler);
+		
+		cur = Logger.getLogger("jshm");
+		cur.setLevel(Level.ALL);
+	}
+	
 	public static Logger removeHandlers(final Logger logger) {
 		for (Handler h : logger.getHandlers())
 			logger.removeHandler(h);

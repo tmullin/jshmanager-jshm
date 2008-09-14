@@ -26,7 +26,7 @@ import jshm.exceptions.ScraperException;
 
 public interface TieredTabularDataHandler {
 	public jshm.scraper.DataTable getDataTable();
-	public boolean ignoreInvalidRowChildCount();
+	public TieredTabularDataExtractor.InvalidChildCountStrategy getInvalidChildCountStrategy();
 	public boolean ignoreNewData();
 	public void handleHeaderRow(TableRow tr) throws ScraperException;
 	public void handleTierRow(String tierName) throws ScraperException;

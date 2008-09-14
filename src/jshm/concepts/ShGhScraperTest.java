@@ -37,7 +37,7 @@ public class ShGhScraperTest {
 	static final Difficulty difficulty 	= Difficulty.EXPERT;
 	
 	public static void main(String[] args) throws Exception {
-		Logger.getLogger("").setLevel(Level.FINE);
+		jshm.logging.Log.configTestLogging();
 		jshm.util.TestTimer.start(true);
 		
 		doSongs();
@@ -68,7 +68,9 @@ public class ShGhScraperTest {
 		List<SongOrder> orders = 
 			RbSongScraper.scrapeOrders(game);
 		
-		for (SongOrder o : orders)
+		for (SongOrder o : orders) {
+			if (o.getTier() == 10) continue;
 			System.out.println(o);
+		}
 	}
 }

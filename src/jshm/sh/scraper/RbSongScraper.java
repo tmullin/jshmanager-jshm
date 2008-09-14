@@ -15,6 +15,7 @@ import jshm.scraper.DataTable;
 import jshm.scraper.Scraper;
 import jshm.scraper.TieredTabularDataAdapter;
 import jshm.scraper.TieredTabularDataExtractor;
+import jshm.scraper.TieredTabularDataExtractor.InvalidChildCountStrategy;
 import jshm.sh.URLs;
 
 public class RbSongScraper {
@@ -74,6 +75,7 @@ public class RbSongScraper {
 		final List<RbSong> songs;
 		
 		public SongHandler(final RbGame game, final List<RbSong> songs) {
+			this.invalidChildCountStrategy = InvalidChildCountStrategy.HANDLE;
 			this.game = game;
 			this.songs = songs;
 		}
@@ -106,6 +108,7 @@ public class RbSongScraper {
 		int curTierLevel = 0, curOrder = 0;
 		
 		public SongOrderHandler(RbGame game, Instrument.Group group, List<SongOrder> orders) {
+			this.invalidChildCountStrategy = InvalidChildCountStrategy.HANDLE;
 			this.game = game;
 			this.group = group;
 			this.orders = orders;
@@ -125,6 +128,8 @@ public class RbSongScraper {
 			
 			curTierLevel++;
 			curOrder = 0;
+			
+//			System.out.println("new tier " + tierName + " = " + curTierLevel);
 		}
 		
 		@Override
@@ -149,6 +154,8 @@ public class RbSongScraper {
 			
     		orders.add(order);
 			curOrder++;
+			
+//			System.out.println(orders.size() + ": " + order);
 		}
 	}
 }
