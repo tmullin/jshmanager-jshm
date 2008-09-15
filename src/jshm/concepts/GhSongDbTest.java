@@ -24,37 +24,37 @@ import java.util.List;
 
 import org.hibernate.Session;
 
-import jshm.Difficulty;
-import jshm.Instrument;
-import jshm.Part;
-import jshm.Song;
-import jshm.gh.GhGame;
-import jshm.gh.GhScore;
-import jshm.gh.GhSong;
+import jshm.*;
+import jshm.dataupdaters.*;
+import jshm.gh.*;
+import jshm.rb.*;
 import jshm.hibernate.HibernateUtil;
-import jshm.sh.scraper.GhSongScraper;
+import jshm.logging.Log;
+import jshm.sh.scraper.*;
 
 @SuppressWarnings({"unused", "unchecked"})
 public class GhSongDbTest {
 	public static void main(String[] args) throws Exception {
-		final GhGame game = GhGame.GH3_XBOX360;
-		final Difficulty difficulty = Difficulty.EXPERT;
+		Log.configTestLogging();
 		
-		jshm.util.TestTimer.start();
+		final RbGame game = RbGame.RB1_XBOX360;
+//		final Difficulty difficulty = Difficulty.EXPERT;
 		
-//		jshm.dataupdaters.GhSongUpdater.update(game, difficulty);
-//		jshm.util.TestTimer.stop();
+//		jshm.util.TestTimer.start();
 //		
-//		printSongs();
-//		
+//		RbSongUpdater.update(game);
 //		jshm.util.TestTimer.stop();
 		
-		jshm.sh.Client.getAuthCookies("someuser", "somepass");
-		jshm.dataupdaters.GhScoreUpdater.update(false, game, difficulty);
+		printSongs();
+//		
+//		jshm.util.TestTimer.stop();
 		
-		jshm.util.TestTimer.stop();
+//		jshm.sh.Client.getAuthCookies("someuser", "somepass");
+//		jshm.dataupdaters.GhScoreUpdater.update(false, game, difficulty);
+//		
+//		jshm.util.TestTimer.stop();
 		
-		printScores();
+//		printScores();
 		
 		jshm.util.TestTimer.stop();
 	}
@@ -62,10 +62,10 @@ public class GhSongDbTest {
 	static void printSongs() {
 	    Session session = HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
-	    List<GhSong> result = (List<GhSong>) session.createQuery("from GhSong").list();
+	    List<Song> result = (List<Song>) session.createQuery("from RbSong").list();
 	    session.getTransaction().commit();
 	    
-	    for (GhSong s : result)
+	    for (Song s : result)
 	    	System.out.println(s);
 	}
 	

@@ -66,7 +66,7 @@ public abstract class FakeEnumUserType implements UserType {
 		try {
 			method = clazz.getMethod("valueOf", String.class);
 		} catch (NoSuchMethodException e) {
-			throw new RuntimeException("no valueOf() method found when constructing " + this.getClass().getName(), e);
+			throw new RuntimeException(clazz.getName() + " doesn't have valueOf() method, ctor for " + this.getClass().getName(), e);
 		}
 	}
 	
@@ -77,7 +77,7 @@ public abstract class FakeEnumUserType implements UserType {
 		try {
 			return invokeValueOf(cached);
 		} catch (Exception e) {
-			throw new RuntimeException("class does not have a static valueOf() methods", e);
+			throw new RuntimeException(clazz.getName() + " does not have a static valueOf() method (class=" + getClass().getName() + ")", e);
 		}
 	}
 
@@ -118,7 +118,7 @@ public abstract class FakeEnumUserType implements UserType {
 			try {
 				result = invokeValueOf(gameAsString);
 			} catch (Exception e) {
-				throw new RuntimeException("class does not have a static valueOf() methods", e);
+				throw new RuntimeException(clazz.getName() + " does not have a static valueOf() method (class=" + getClass().getName() + ")", e);
 			}
 		}
 	    

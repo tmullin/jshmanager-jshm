@@ -40,11 +40,14 @@ public abstract class Game {
 	}
 	
 	public static Game valueOf(final String value) {
+		if (null == value) return null;
+		
 		for (Game g : values)
 			if (g.toString().equals(value))
 				return g;
 		
-		throw new IllegalArgumentException("invalid value: " + value);
+		return null;
+//		throw new IllegalArgumentException("invalid value: " + value);
 	}
 	
 	public static List<Game> getBySeries(final GameSeries series) {

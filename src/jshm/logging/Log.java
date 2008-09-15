@@ -119,6 +119,12 @@ public class Log {
 		
 		cur = Logger.getLogger("jshm");
 		cur.setLevel(Level.ALL);
+		
+		
+		cur = Logger.getLogger("org.hibernate");
+		removeHandlers(cur);
+		
+		cur.setLevel(Level.INFO);
 	}
 	
 	public static Logger removeHandlers(final Logger logger) {

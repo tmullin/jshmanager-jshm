@@ -1,10 +1,13 @@
 package jshm.rb;
 
+import javax.persistence.Embeddable;
+
 import jshm.Game;
 import jshm.Instrument;
 import jshm.Platform;
 import jshm.Tiers;
 
+@Embeddable
 public class RbGame extends Game {
 	private static class RbTiers {
 		public static final String[]
