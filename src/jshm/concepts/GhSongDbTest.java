@@ -58,7 +58,7 @@ public class GhSongDbTest {
 		
 		jshm.util.TestTimer.stop();
 		
-//		HibernateUtil.shutdown();
+		HibernateUtil.shutdown();
 	}
 	
 	static void printSongs() {

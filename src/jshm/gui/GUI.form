@@ -37,156 +37,187 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="myScoresMenu">
+        <Menu class="javax.swing.JMenu" name="ghMenu">
           <Properties>
-            <Property name="mnemonic" type="int" value="77"/>
-            <Property name="text" type="java.lang.String" value="My Scores"/>
+            <Property name="text" type="java.lang.String" value="Guitar Hero"/>
           </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initDynamicGameMenu(myScoresMenu);"/>
-          </AuxValues>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="addNewScoreMenuItem">
+            <Menu class="javax.swing.JMenu" name="ghScoresMenu">
               <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="INSERT"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/jshm/resources/images/toolbar/add32.png"/>
-                </Property>
-                <Property name="mnemonic" type="int" value="110"/>
-                <Property name="text" type="java.lang.String" value="Add new score"/>
-                <Property name="toolTipText" type="java.lang.String" value="Insert a new score for the selected song"/>
-                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="mnemonic" type="int" value="77"/>
+                <Property name="text" type="java.lang.String" value="Scores"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addNewScoreMenuItemActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="deleteSelectedScoreMenuItem">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initDynamicGameMenu(ghScoresMenu);"/>
+              </AuxValues>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="addNewScoreMenuItem">
+                  <Properties>
+                    <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                      <KeyStroke key="INSERT"/>
+                    </Property>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/jshm/resources/images/toolbar/add32.png"/>
+                    </Property>
+                    <Property name="mnemonic" type="int" value="110"/>
+                    <Property name="text" type="java.lang.String" value="Add new score"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Insert a new score for the selected song"/>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addNewScoreMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="deleteSelectedScoreMenuItem">
+                  <Properties>
+                    <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                      <KeyStroke key="DELETE"/>
+                    </Property>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/jshm/resources/images/toolbar/delete32.png"/>
+                    </Property>
+                    <Property name="mnemonic" type="int" value="68"/>
+                    <Property name="text" type="java.lang.String" value="Delete selected score"/>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteSelectedScoreMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="toggleEditorMenuItem">
+                  <Properties>
+                    <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                      <KeyStroke key="Ctrl+E"/>
+                    </Property>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/jshm/resources/images/toolbar/edit32.png"/>
+                    </Property>
+                    <Property name="mnemonic" type="int" value="69"/>
+                    <Property name="text" type="java.lang.String" value="Toggle Editor"/>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="toggleEditorMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JSeparator" name="jSeparator3">
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="loadMyScoresMenuItem">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/jshm/resources/images/toolbar/down32.png"/>
+                    </Property>
+                    <Property name="mnemonic" type="int" value="76"/>
+                    <Property name="text" type="java.lang.String" value="Download from ScoreHero..."/>
+                    <Property name="toolTipText" type="java.lang.String" value="Sync the local score list for the current game and difficulty to ScoreHero&apos;s"/>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadMyScoresMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="uploadScoresMenuItem">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/jshm/resources/images/toolbar/up32.png"/>
+                    </Property>
+                    <Property name="mnemonic" type="int" value="85"/>
+                    <Property name="text" type="java.lang.String" value="Upload to ScoreHero..."/>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uploadScoresMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="uploadSelectedScoreMenuItem">
+                  <Properties>
+                    <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                      <KeyStroke key="Ctrl+U"/>
+                    </Property>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/jshm/resources/images/toolbar/up32.png"/>
+                    </Property>
+                    <Property name="mnemonic" type="int" value="83"/>
+                    <Property name="text" type="java.lang.String" value="Upload Selected Score"/>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uploadSelectedScoreMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JSeparator" name="jSeparator1">
+                </MenuItem>
+              </SubComponents>
+            </Menu>
+            <Menu class="javax.swing.JMenu" name="ghSongDataMenu">
               <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="DELETE"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/jshm/resources/images/toolbar/delete32.png"/>
-                </Property>
                 <Property name="mnemonic" type="int" value="68"/>
-                <Property name="text" type="java.lang.String" value="Delete selected score"/>
-                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="text" type="java.lang.String" value="Song Data"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteSelectedScoreMenuItemActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="toggleEditorMenuItem">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initDynamicGameMenu(ghSongDataMenu);"/>
+              </AuxValues>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="loadGhSongDataMenuItem">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/jshm/resources/images/toolbar/down32.png"/>
+                    </Property>
+                    <Property name="mnemonic" type="int" value="76"/>
+                    <Property name="text" type="java.lang.String" value="Download from ScoreHero..."/>
+                    <Property name="toolTipText" type="java.lang.String" value="Sync the local song list for the current game and difficulty to ScoreHero&apos;s (e.g. when there is new DLC)"/>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadGhSongDataMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JSeparator" name="jSeparator2">
+                </MenuItem>
+              </SubComponents>
+            </Menu>
+            <Menu class="javax.swing.JMenu" name="ghLinksMenu">
               <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Ctrl+E"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/jshm/resources/images/toolbar/edit32.png"/>
-                </Property>
-                <Property name="mnemonic" type="int" value="69"/>
-                <Property name="text" type="java.lang.String" value="Toggle Editor"/>
-                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="mnemonic" type="int" value="114"/>
+                <Property name="text" type="java.lang.String" value="Web Links"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="toggleEditorMenuItemActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jSeparator3">
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="loadMyScoresMenuItem">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/jshm/resources/images/toolbar/down32.png"/>
-                </Property>
-                <Property name="mnemonic" type="int" value="76"/>
-                <Property name="text" type="java.lang.String" value="Download from ScoreHero..."/>
-                <Property name="toolTipText" type="java.lang.String" value="Sync the local score list for the current game and difficulty to ScoreHero&apos;s"/>
-                <Property name="enabled" type="boolean" value="false"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadMyScoresMenuItemActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="uploadScoresMenuItem">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/jshm/resources/images/toolbar/up32.png"/>
-                </Property>
-                <Property name="mnemonic" type="int" value="85"/>
-                <Property name="text" type="java.lang.String" value="Upload to ScoreHero..."/>
-                <Property name="enabled" type="boolean" value="false"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uploadScoresMenuItemActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="uploadSelectedScoreMenuItem">
-              <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Ctrl+U"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/jshm/resources/images/toolbar/up32.png"/>
-                </Property>
-                <Property name="mnemonic" type="int" value="83"/>
-                <Property name="text" type="java.lang.String" value="Upload Selected Score"/>
-                <Property name="enabled" type="boolean" value="false"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uploadSelectedScoreMenuItemActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jSeparator1">
-            </MenuItem>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initForumsMenu(ghLinksMenu);"/>
+              </AuxValues>
+            </Menu>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="songDataMenu">
+        <Menu class="javax.swing.JMenu" name="rbMenu">
           <Properties>
-            <Property name="mnemonic" type="int" value="68"/>
-            <Property name="text" type="java.lang.String" value="Song Data"/>
+            <Property name="text" type="java.lang.String" value="Rock Band"/>
           </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initDynamicGameMenu(songDataMenu);"/>
-          </AuxValues>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="loadSongDataMenuItem">
+            <Menu class="javax.swing.JMenu" name="rbSongDataMenu">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/jshm/resources/images/toolbar/down32.png"/>
-                </Property>
-                <Property name="mnemonic" type="int" value="76"/>
-                <Property name="text" type="java.lang.String" value="Download from ScoreHero..."/>
-                <Property name="toolTipText" type="java.lang.String" value="Sync the local song list for the current game and difficulty to ScoreHero&apos;s (e.g. when there is new DLC)"/>
-                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="text" type="java.lang.String" value="Song Data"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadSongDataMenuItemActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jSeparator2">
-            </MenuItem>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initRbGameMenu(rbSongDataMenu);"/>
+              </AuxValues>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="loadRbSongDataMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Download from ScoreHero..."/>
+                  </Properties>
+                </MenuItem>
+                <MenuItem class="javax.swing.JSeparator" name="jSeparator5">
+                </MenuItem>
+              </SubComponents>
+            </Menu>
+            <Menu class="javax.swing.JMenu" name="rbLinksMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Web Links"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initForumsMenu(rbLinksMenu);"/>
+              </AuxValues>
+            </Menu>
           </SubComponents>
-        </Menu>
-        <Menu class="javax.swing.JMenu" name="ghLinksMenu">
-          <Properties>
-            <Property name="mnemonic" type="int" value="114"/>
-            <Property name="text" type="java.lang.String" value="GH Links"/>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initForumsMenu(ghLinksMenu);"/>
-          </AuxValues>
-        </Menu>
-        <Menu class="javax.swing.JMenu" name="rbLinksMenu">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="RB Links"/>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initForumsMenu(rbLinksMenu);"/>
-          </AuxValues>
         </Menu>
         <Menu class="javax.swing.JMenu" name="helpMenu">
           <Properties>
@@ -297,7 +328,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="org.jdesktop.swingx.JXTreeTable" name="jXTreeTable1">
+        <Component class="org.jdesktop.swingx.JXTreeTable" name="tree">
           <Properties>
             <Property name="columnControlVisible" type="boolean" value="true"/>
             <Property name="preferredScrollableViewportSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -308,9 +339,9 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="treeCollapsed" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="jXTreeTable1TreeCollapsed"/>
-            <EventHandler event="treeExpanded" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="jXTreeTable1TreeExpanded"/>
-            <EventHandler event="valueChanged" listener="javax.swing.event.TreeSelectionListener" parameters="javax.swing.event.TreeSelectionEvent" handler="jXTreeTable1ValueChanged"/>
+            <EventHandler event="treeCollapsed" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="treeTreeCollapsed"/>
+            <EventHandler event="treeExpanded" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="treeTreeExpanded"/>
+            <EventHandler event="valueChanged" listener="javax.swing.event.TreeSelectionListener" parameters="javax.swing.event.TreeSelectionEvent" handler="treeValueChanged"/>
           </Events>
         </Component>
       </SubComponents>

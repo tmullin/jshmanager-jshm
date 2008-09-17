@@ -57,17 +57,16 @@ import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.tree.TreePath;
 
-import jshm.Config;
-import jshm.JSHManager;
-import jshm.Score;
-import jshm.gh.GhScore;
-import jshm.gh.GhSong;
+import jshm.*;
+import jshm.gh.*;
 import jshm.gui.components.StatusBar;
 import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 import jshm.gui.datamodels.GhSongDataTreeTableModel;
 import jshm.gui.datamodels.Parentable;
+import jshm.gui.datamodels.RbSongDataTreeTableModel;
 import jshm.gui.wizards.scoredownload.ScoreDownloadWizard;
 import jshm.gui.wizards.scoreupload.ScoreUploadWizard;
+import jshm.rb.*;
 
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXTree;
@@ -111,38 +110,38 @@ public class GUI extends javax.swing.JFrame {
         // fix the tree table so that pressing left/right arrow will collapse/expand the current
         // row while maintaining cell selection on leaf rows
         
-        jXTreeTable1.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "expandCurrentRow");
-        jXTreeTable1.getActionMap().put("expandCurrentRow", new AbstractAction() {
-        	Action parent = jXTreeTable1.getActionMap().get("selectNextColumnCell");
+        tree.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "expandCurrentRow");
+        tree.getActionMap().put("expandCurrentRow", new AbstractAction() {
+        	Action parent = tree.getActionMap().get("selectNextColumnCell");
         	
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int row = jXTreeTable1.getSelectedRow();
+				int row = tree.getSelectedRow();
 				if (row == -1) return;
-				TreePath p = jXTreeTable1.getPathForRow(row);
+				TreePath p = tree.getPathForRow(row);
 				
-				if (jXTreeTable1.getTreeTableModel().isLeaf(p.getLastPathComponent())) {
+				if (tree.getTreeTableModel().isLeaf(p.getLastPathComponent())) {
 					parent.actionPerformed(e);
 				} else {
-					jXTreeTable1.expandRow(row);
+					tree.expandRow(row);
 				}
 			}
         });
         
-        jXTreeTable1.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "collapseCurrentRow");
-        jXTreeTable1.getActionMap().put("collapseCurrentRow", new AbstractAction() {
-        	Action parent = jXTreeTable1.getActionMap().get("selectPreviousColumnCell");
+        tree.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "collapseCurrentRow");
+        tree.getActionMap().put("collapseCurrentRow", new AbstractAction() {
+        	Action parent = tree.getActionMap().get("selectPreviousColumnCell");
         	
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int row = jXTreeTable1.getSelectedRow();
+				int row = tree.getSelectedRow();
 				if (row == -1) return;
-				TreePath p = jXTreeTable1.getPathForRow(row);
+				TreePath p = tree.getPathForRow(row);
 				
-				if (jXTreeTable1.getTreeTableModel().isLeaf(p.getLastPathComponent())) {
+				if (tree.getTreeTableModel().isLeaf(p.getLastPathComponent())) {
 					parent.actionPerformed(e);
 				} else {
-					jXTreeTable1.collapseRow(row);
+					tree.collapseRow(row);
 				}
 			}
         });
@@ -162,21 +161,21 @@ public class GUI extends javax.swing.JFrame {
         // TODO move this text to the tooltip for each item
         hh.add(addNewScoreMenuItem);
         hh.add(loadMyScoresMenuItem);
-        hh.add(loadSongDataMenuItem);
-        hh.add(jXTreeTable1, new HoverHelp.Callback() {
+        hh.add(loadGhSongDataMenuItem);
+        hh.add(tree, new HoverHelp.Callback() {
 			@Override
 			public String getMessage() {
 //				if (!jXTreeTable1.isEditing()) return null;
-				if (!(jXTreeTable1.getTreeTableModel() instanceof GhMyScoresTreeTableModel)) return null;
+				if (!(tree.getTreeTableModel() instanceof GhMyScoresTreeTableModel)) return null;
 				
-				Point p = jXTreeTable1.getMousePosition(true);
+				Point p = tree.getMousePosition(true);
 				
 				if (null == p) return null;
 				
-				int row = jXTreeTable1.rowAtPoint(p);
-				int col = jXTreeTable1.columnAtPoint(p);
+				int row = tree.rowAtPoint(p);
+				int col = tree.columnAtPoint(p);
 				
-				if (!(jXTreeTable1.isCellEditable(row, col))) return null;
+				if (!(tree.isCellEditable(row, col))) return null;
 				
 //				int editRow = jXTreeTable1.getEditingRow();
 //				int editCol = jXTreeTable1.getEditingColumn();
@@ -252,13 +251,14 @@ public class GUI extends javax.swing.JFrame {
         textFileViewerDialog1 = new TextFileViewerDialog(this, true);
         statusBar1 = new jshm.gui.components.StatusBar();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jXTreeTable1 = new org.jdesktop.swingx.JXTreeTable();
+        tree = new org.jdesktop.swingx.JXTreeTable();
         editorCollapsiblePane = new org.jdesktop.swingx.JXCollapsiblePane();
         scoreEditorPanel1 = new ScoreEditorPanel(this);
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
-        myScoresMenu = new javax.swing.JMenu();
+        ghMenu = new javax.swing.JMenu();
+        ghScoresMenu = new javax.swing.JMenu();
         addNewScoreMenuItem = new javax.swing.JMenuItem();
         deleteSelectedScoreMenuItem = new javax.swing.JMenuItem();
         toggleEditorMenuItem = new javax.swing.JMenuItem();
@@ -267,10 +267,14 @@ public class GUI extends javax.swing.JFrame {
         uploadScoresMenuItem = new javax.swing.JMenuItem();
         uploadSelectedScoreMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
-        songDataMenu = new javax.swing.JMenu();
-        loadSongDataMenuItem = new javax.swing.JMenuItem();
+        ghSongDataMenu = new javax.swing.JMenu();
+        loadGhSongDataMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
         ghLinksMenu = new javax.swing.JMenu();
+        rbMenu = new javax.swing.JMenu();
+        rbSongDataMenu = new javax.swing.JMenu();
+        loadRbSongDataMenuItem = new javax.swing.JMenuItem();
+        jSeparator5 = new javax.swing.JSeparator();
         rbLinksMenu = new javax.swing.JMenu();
         helpMenu = new javax.swing.JMenu();
         readmeMenuItem = new javax.swing.JMenuItem();
@@ -298,23 +302,23 @@ public class GUI extends javax.swing.JFrame {
         });
         getContentPane().add(statusBar1, java.awt.BorderLayout.SOUTH);
 
-        jXTreeTable1.setColumnControlVisible(true);
-        jXTreeTable1.setPreferredScrollableViewportSize(new java.awt.Dimension(800, 600));
-        jXTreeTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        jXTreeTable1.addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
+        tree.setColumnControlVisible(true);
+        tree.setPreferredScrollableViewportSize(new java.awt.Dimension(800, 600));
+        tree.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tree.addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
             public void treeCollapsed(javax.swing.event.TreeExpansionEvent evt) {
-                jXTreeTable1TreeCollapsed(evt);
+                treeTreeCollapsed(evt);
             }
             public void treeExpanded(javax.swing.event.TreeExpansionEvent evt) {
-                jXTreeTable1TreeExpanded(evt);
+                treeTreeExpanded(evt);
             }
         });
-        jXTreeTable1.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+        tree.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
-                jXTreeTable1ValueChanged(evt);
+                treeValueChanged(evt);
             }
         });
-        jScrollPane1.setViewportView(jXTreeTable1);
+        jScrollPane1.setViewportView(tree);
 
         getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
@@ -339,8 +343,10 @@ public class GUI extends javax.swing.JFrame {
 
         jMenuBar1.add(fileMenu);
 
-        myScoresMenu.setMnemonic('M');
-        myScoresMenu.setText("My Scores");
+        ghMenu.setText("Guitar Hero");
+
+        ghScoresMenu.setMnemonic('M');
+        ghScoresMenu.setText("Scores");
 
         addNewScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_INSERT, 0));
         addNewScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/add32.png"))); // NOI18N
@@ -353,7 +359,7 @@ public class GUI extends javax.swing.JFrame {
                 addNewScoreMenuItemActionPerformed(evt);
             }
         });
-        myScoresMenu.add(addNewScoreMenuItem);
+        ghScoresMenu.add(addNewScoreMenuItem);
 
         deleteSelectedScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         deleteSelectedScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/delete32.png"))); // NOI18N
@@ -365,7 +371,7 @@ public class GUI extends javax.swing.JFrame {
                 deleteSelectedScoreMenuItemActionPerformed(evt);
             }
         });
-        myScoresMenu.add(deleteSelectedScoreMenuItem);
+        ghScoresMenu.add(deleteSelectedScoreMenuItem);
 
         toggleEditorMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
         toggleEditorMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/edit32.png"))); // NOI18N
@@ -377,8 +383,8 @@ public class GUI extends javax.swing.JFrame {
                 toggleEditorMenuItemActionPerformed(evt);
             }
         });
-        myScoresMenu.add(toggleEditorMenuItem);
-        myScoresMenu.add(jSeparator3);
+        ghScoresMenu.add(toggleEditorMenuItem);
+        ghScoresMenu.add(jSeparator3);
 
         loadMyScoresMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/down32.png"))); // NOI18N
         loadMyScoresMenuItem.setMnemonic('L');
@@ -390,7 +396,7 @@ public class GUI extends javax.swing.JFrame {
                 loadMyScoresMenuItemActionPerformed(evt);
             }
         });
-        myScoresMenu.add(loadMyScoresMenuItem);
+        ghScoresMenu.add(loadMyScoresMenuItem);
 
         uploadScoresMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/up32.png"))); // NOI18N
         uploadScoresMenuItem.setMnemonic('U');
@@ -401,7 +407,7 @@ public class GUI extends javax.swing.JFrame {
                 uploadScoresMenuItemActionPerformed(evt);
             }
         });
-        myScoresMenu.add(uploadScoresMenuItem);
+        ghScoresMenu.add(uploadScoresMenuItem);
 
         uploadSelectedScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.CTRL_MASK));
         uploadSelectedScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/up32.png"))); // NOI18N
@@ -413,45 +419,61 @@ public class GUI extends javax.swing.JFrame {
                 uploadSelectedScoreMenuItemActionPerformed(evt);
             }
         });
-        myScoresMenu.add(uploadSelectedScoreMenuItem);
-        myScoresMenu.add(jSeparator1);
+        ghScoresMenu.add(uploadSelectedScoreMenuItem);
+        ghScoresMenu.add(jSeparator1);
 
-        initDynamicGameMenu(myScoresMenu);
+        initDynamicGameMenu(ghScoresMenu);
 
-        jMenuBar1.add(myScoresMenu);
+        ghMenu.add(ghScoresMenu);
 
-        songDataMenu.setMnemonic('D');
-        songDataMenu.setText("Song Data");
+        ghSongDataMenu.setMnemonic('D');
+        ghSongDataMenu.setText("Song Data");
 
-        loadSongDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/down32.png"))); // NOI18N
-        loadSongDataMenuItem.setMnemonic('L');
-        loadSongDataMenuItem.setText("Download from ScoreHero...");
-        loadSongDataMenuItem.setToolTipText("Sync the local song list for the current game and difficulty to ScoreHero's (e.g. when there is new DLC)");
-        loadSongDataMenuItem.setEnabled(false);
-        loadSongDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        loadGhSongDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/down32.png"))); // NOI18N
+        loadGhSongDataMenuItem.setMnemonic('L');
+        loadGhSongDataMenuItem.setText("Download from ScoreHero...");
+        loadGhSongDataMenuItem.setToolTipText("Sync the local song list for the current game and difficulty to ScoreHero's (e.g. when there is new DLC)");
+        loadGhSongDataMenuItem.setEnabled(false);
+        loadGhSongDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadSongDataMenuItemActionPerformed(evt);
+                loadGhSongDataMenuItemActionPerformed(evt);
             }
         });
-        songDataMenu.add(loadSongDataMenuItem);
-        songDataMenu.add(jSeparator2);
+        ghSongDataMenu.add(loadGhSongDataMenuItem);
+        ghSongDataMenu.add(jSeparator2);
 
-        initDynamicGameMenu(songDataMenu);
+        initDynamicGameMenu(ghSongDataMenu);
 
-        jMenuBar1.add(songDataMenu);
+        ghMenu.add(ghSongDataMenu);
 
         ghLinksMenu.setMnemonic('r');
-        ghLinksMenu.setText("GH Links");
+        ghLinksMenu.setText("Web Links");
 
         initForumsMenu(ghLinksMenu);
 
-        jMenuBar1.add(ghLinksMenu);
+        ghMenu.add(ghLinksMenu);
 
-        rbLinksMenu.setText("RB Links");
+        jMenuBar1.add(ghMenu);
+
+        rbMenu.setText("Rock Band");
+
+        rbSongDataMenu.setText("Song Data");
+
+        loadRbSongDataMenuItem.setText("Download from ScoreHero...");
+        rbSongDataMenu.add(loadRbSongDataMenuItem);
+        rbSongDataMenu.add(jSeparator5);
+
+        initRbGameMenu(rbSongDataMenu);
+
+        rbMenu.add(rbSongDataMenu);
+
+        rbLinksMenu.setText("Web Links");
 
         initForumsMenu(rbLinksMenu);
 
-        jMenuBar1.add(rbLinksMenu);
+        rbMenu.add(rbLinksMenu);
+
+        jMenuBar1.add(rbMenu);
 
         helpMenu.setMnemonic('H');
         helpMenu.setText("Help");
@@ -536,7 +558,7 @@ private void loadMyScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 	wiz.show();
 }//GEN-LAST:event_loadMyScoresMenuItemActionPerformed
 
-private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                      
+private void loadGhSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                      
 	new SwingWorker<Boolean, Void>() {		
 		@Override
 		protected Boolean doInBackground() throws Exception {
@@ -573,24 +595,24 @@ private void loadSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 	}.execute();
 }                                                    
 
-private void jXTreeTable1TreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_jXTreeTable1TreeCollapsed
-	jXTreeTable1.packAll();
-}//GEN-LAST:event_jXTreeTable1TreeCollapsed
+private void treeTreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_treeTreeCollapsed
+	tree.packAll();
+}//GEN-LAST:event_treeTreeCollapsed
 
-private void jXTreeTable1TreeExpanded(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_jXTreeTable1TreeExpanded
-	jXTreeTable1.packAll();
-}//GEN-LAST:event_jXTreeTable1TreeExpanded
+private void treeTreeExpanded(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_treeTreeExpanded
+	tree.packAll();
+}//GEN-LAST:event_treeTreeExpanded
 
-private void jXTreeTable1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jXTreeTable1ValueChanged
+private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_treeValueChanged
 //	System.out.println("now selected: " + evt.getPath());
 	// evt seems out of date sometimes
 //	final Object o = evt.getPath().getLastPathComponent();
-	final int row = jXTreeTable1.getSelectedRow();
+	final int row = tree.getSelectedRow();
 	final Object o =
 		row != -1 
-		? jXTreeTable1.getPathForRow(row).getLastPathComponent()
+		? tree.getPathForRow(row).getLastPathComponent()
 		: null;
-	final boolean goodRowCount = jXTreeTable1.getSelectedRowCount() == 1;
+	final boolean goodRowCount = tree.getSelectedRowCount() == 1;
 	final boolean isGhScore = o instanceof GhScore;
 	final GhScore score = isGhScore ? (GhScore) o : null;
 	
@@ -611,18 +633,18 @@ private void jXTreeTable1ValueChanged(javax.swing.event.TreeSelectionEvent evt) 
 		scoreEditorPanel1.setSong(
 			((GhMyScoresTreeTableModel.SongScores) o).song);
 	}
-}//GEN-LAST:event_jXTreeTable1ValueChanged
+}//GEN-LAST:event_treeValueChanged
 
 private void addNewScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNewScoreMenuItemActionPerformed
-	GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) jXTreeTable1.getTreeTableModel(); 
+	GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) tree.getTreeTableModel(); 
 	model.createScoreTemplate(
-		jXTreeTable1.getPathForRow(jXTreeTable1.getSelectedRow()));
+		tree.getPathForRow(tree.getSelectedRow()));
 //	jXTreeTable1.repaint();
 }//GEN-LAST:event_addNewScoreMenuItemActionPerformed
 
 private void deleteSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteSelectedScoreMenuItemActionPerformed
-	GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) jXTreeTable1.getTreeTableModel();
-	TreePath path = jXTreeTable1.getPathForRow(jXTreeTable1.getSelectedRow());
+	GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) tree.getTreeTableModel();
+	TreePath path = tree.getPathForRow(tree.getSelectedRow());
 	
 	GhScore score = (GhScore) path.getLastPathComponent();
 	
@@ -647,7 +669,7 @@ private void deleteSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEve
 
 private void uploadScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadScoresMenuItemActionPerformed
 	GhMyScoresTreeTableModel newModel = 
-		((GhMyScoresTreeTableModel) jXTreeTable1.getTreeTableModel()).createNewScoresModel();
+		((GhMyScoresTreeTableModel) tree.getTreeTableModel()).createNewScoresModel();
 	
 	if (newModel.getScoreCount() == 0) {
 		JOptionPane.showMessageDialog(this, "There are no new scores to upload", "Error", JOptionPane.WARNING_MESSAGE);
@@ -673,7 +695,7 @@ private void licenseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//G
 private void uploadSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadSelectedScoreMenuItemActionPerformed
 	final Object selected =
 		// not obscure at all....
-		((JXTree) jXTreeTable1.getCellRenderer(0, jXTreeTable1.getHierarchicalColumn()))
+		((JXTree) tree.getCellRenderer(0, tree.getHierarchicalColumn()))
 			.getSelectionPath().getLastPathComponent();
 	
 	if (!(selected instanceof GhScore)) {
@@ -820,14 +842,14 @@ private void initDynamicGameMenu(final javax.swing.JMenu menu) {
 				
 				ActionListener al = null;
 				
-				if (menu == songDataMenu) {
+				if (menu == ghSongDataMenu) {
 					al = new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							songDataMenuItemActionPerformed(e, (jshm.gh.GhGame) game, diff);
 						}
 					};
-				} else if (menu == myScoresMenu) {
+				} else if (menu == ghScoresMenu) {
 					al = new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
@@ -847,6 +869,22 @@ private void initDynamicGameMenu(final javax.swing.JMenu menu) {
 				ttlMenu.add(gameMenu);
 		}
 		
+		menu.add(ttlMenu);
+	}
+}
+
+private void initRbGameMenu(final javax.swing.JMenu menu) {
+	java.util.List<GameTitle> titles =
+		GameTitle.getTitlesBySeries(GameSeries.ROCKBAND);
+	
+	for (final GameTitle ttl : titles) {
+		JMenuItem ttlMenu = new JMenuItem(ttl.toString());
+		ttlMenu.setIcon(ttl.getIcon());
+		ttlMenu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				rbSongDataMenuItemActionPerformed(e, (RbGameTitle) ttl);
+			}
+		});
 		menu.add(ttlMenu);
 	}
 }
@@ -939,11 +977,11 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 	
 				SwingUtilities.invokeAndWait(new Runnable() {
 					public void run() {
-						if (jXTreeTable1.getTreeTableModel() instanceof Parentable)
-							((Parentable) jXTreeTable1.getTreeTableModel()).removeParent(jXTreeTable1);
-						jXTreeTable1.setTreeTableModel(model);
-						model.setParent(jXTreeTable1);
-						jXTreeTable1.repaint();
+						if (tree.getTreeTableModel() instanceof Parentable)
+							((Parentable) tree.getTreeTableModel()).removeParent(tree);
+						tree.setTreeTableModel(model);
+						model.setParent(tree);
+						tree.repaint();
 					}
 				});
 			} catch (Exception e) {
@@ -964,7 +1002,7 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 			
 			statusBar1.setText("Viewing song data for " + game + " on " + difficulty);
 			loadMyScoresMenuItem.setEnabled(true);
-			loadSongDataMenuItem.setEnabled(true);
+			loadGhSongDataMenuItem.setEnabled(true);
 			uploadScoresMenuItem.setEnabled(false);
 			editorCollapsiblePane.setCollapsed(true);
 			toggleEditorMenuItem.setEnabled(false);
@@ -978,11 +1016,78 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 						GUI.this, "No songs are present.\nDownload from ScoreHero?", "",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 					
-					loadSongDataMenuItemActionPerformed(null);
+					loadGhSongDataMenuItemActionPerformed(null);
 				}
 
 				return;
 			}
+		}
+	}.execute();
+}
+
+private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGameTitle game) {	
+	scoreEditorPanel1.setScore(null);
+	editorCollapsiblePane.setCollapsed(true);
+	
+	new SwingWorker<Void, Void>() {
+		List<RbSong> songs = null;
+		RbSongDataTreeTableModel model = null;
+		
+		@Override
+		protected Void doInBackground() throws Exception {
+			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			statusBar1.setTempText("Loading song data from database...", true);
+			
+			try {
+				songs = RbSong.getSongs(game);
+				model = new RbSongDataTreeTableModel(game, songs);
+	
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run() {
+						if (tree.getTreeTableModel() instanceof Parentable)
+							((Parentable) tree.getTreeTableModel()).removeParent(tree);
+						tree.setTreeTableModel(model);
+						model.setParent(tree);
+						tree.repaint();
+					}
+				});
+			} catch (Exception e) {
+				LOG.log(Level.SEVERE, "Failed to load song data from database", e);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to load song data from database", null, null, e, null, null);
+				JXErrorPane.showDialog(GUI.this, ei);
+			} finally {
+				getContentPane().setCursor(Cursor.getDefaultCursor());
+				statusBar1.revertText();
+			}
+			
+			return null;
+		}
+		
+		@Override
+		public void done() {
+			if (null == songs) return;
+			
+			statusBar1.setText("Viewing song data for " + game);
+			loadMyScoresMenuItem.setEnabled(true);
+			loadGhSongDataMenuItem.setEnabled(true);
+			uploadScoresMenuItem.setEnabled(false);
+			editorCollapsiblePane.setCollapsed(true);
+			toggleEditorMenuItem.setEnabled(false);
+			
+			GUI.this.setIconImage(game.getIcon().getImage());
+			GUI.this.setTitle(game + " - Song Data");
+			
+//			if (songs.size() == 0 && null != evt) { // if evt == null we're recursing
+//				if (JOptionPane.YES_OPTION ==
+//					JOptionPane.showConfirmDialog(
+//						GUI.this, "No songs are present.\nDownload from ScoreHero?", "",
+//						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+//					
+//					loadGhSongDataMenuItemActionPerformed(null);
+//				}
+//
+//				return;
+//			}
 		}
 	}.execute();
 }
@@ -1017,20 +1122,20 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 				
 				SwingUtilities.invokeAndWait(new Runnable() {
 					public void run() {
-						if (null != model && null != jXTreeTable1) {
-							if (jXTreeTable1.getTreeTableModel() instanceof Parentable)
-								((Parentable) jXTreeTable1.getTreeTableModel()).removeParent(jXTreeTable1);
-							jXTreeTable1.setTreeTableModel(model);
-							model.setParent(jXTreeTable1);
+						if (null != model && null != tree) {
+							if (tree.getTreeTableModel() instanceof Parentable)
+								((Parentable) tree.getTreeTableModel()).removeParent(tree);
+							tree.setTreeTableModel(model);
+							model.setParent(tree);
 							
 							// TODO this doesn't work
 //							if (null != expandedPaths) {
 //								GuiUtil.restoreExpandedPaths(jXTreeTable1, expandedPaths);
 //							} else {
-								GuiUtil.expandTreeFromDepth(jXTreeTable1, 2);
+								GuiUtil.expandTreeFromDepth(tree, 2);
 //							}
 							
-							jXTreeTable1.repaint();
+							tree.repaint();
 						}
 						
 						scoreEditorPanel1.setSongs(orderedSongs);
@@ -1057,7 +1162,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			
 			statusBar1.setText("Viewing scores for " + game + " on " + difficulty);
 			loadMyScoresMenuItem.setEnabled(true);
-			loadSongDataMenuItem.setEnabled(true);
+			loadGhSongDataMenuItem.setEnabled(true);
 			uploadScoresMenuItem.setEnabled(true);
 			toggleEditorMenuItem.setEnabled(true);
 			
@@ -1105,6 +1210,9 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu ghLinksMenu;
+    private javax.swing.JMenu ghMenu;
+    private javax.swing.JMenu ghScoresMenu;
+    private javax.swing.JMenu ghSongDataMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -1112,18 +1220,20 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
-    private org.jdesktop.swingx.JXTreeTable jXTreeTable1;
+    private javax.swing.JSeparator jSeparator5;
     private javax.swing.JMenuItem licenseMenuItem;
+    private javax.swing.JMenuItem loadGhSongDataMenuItem;
     private javax.swing.JMenuItem loadMyScoresMenuItem;
-    private javax.swing.JMenuItem loadSongDataMenuItem;
-    private javax.swing.JMenu myScoresMenu;
+    private javax.swing.JMenuItem loadRbSongDataMenuItem;
     private javax.swing.JMenu rbLinksMenu;
+    private javax.swing.JMenu rbMenu;
+    private javax.swing.JMenu rbSongDataMenu;
     private javax.swing.JMenuItem readmeMenuItem;
     private jshm.gui.ScoreEditorPanel scoreEditorPanel1;
-    private javax.swing.JMenu songDataMenu;
     private jshm.gui.components.StatusBar statusBar1;
     private jshm.gui.TextFileViewerDialog textFileViewerDialog1;
     private javax.swing.JMenuItem toggleEditorMenuItem;
+    private org.jdesktop.swingx.JXTreeTable tree;
     private javax.swing.JMenuItem uploadScoresMenuItem;
     private javax.swing.JMenuItem uploadSelectedScoreMenuItem;
     private javax.swing.JMenu viewLogMenu;

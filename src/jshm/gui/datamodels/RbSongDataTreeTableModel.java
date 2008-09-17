@@ -40,7 +40,7 @@ public class RbSongDataTreeTableModel extends AbstractTreeTableModel implements 
 		List<Tier> tiers = new ArrayList<Tier>();
 		
 		public DataModel(
-			final RbGame game,
+			final RbGameTitle game,
 			final List<RbSong> songs) {
 	
 			tiers.add(new Tier("All Songs"));
@@ -73,7 +73,7 @@ public class RbSongDataTreeTableModel extends AbstractTreeTableModel implements 
 	private final DataModel model;
 	
 	public RbSongDataTreeTableModel(
-		final RbGame game,
+		final RbGameTitle game,
 		final List<RbSong> songs) {
 		
 		super("ROOT");
@@ -100,11 +100,11 @@ public class RbSongDataTreeTableModel extends AbstractTreeTableModel implements 
 	
 	@Override
 	public int getColumnCount() {
-		return 8;
+		return 2;
 	}
 
 	private static final String[] COLUMN_NAMES = {
-		"Song", "Games"
+		"Song", "Platforms"
 	};
 	
 	@Override
@@ -130,7 +130,7 @@ public class RbSongDataTreeTableModel extends AbstractTreeTableModel implements 
 		
 		switch (column) {
 			case 0: ret = song.getTitle(); break;
-			case 1: ret = jshm.util.Util.implode(song.getGames().toArray()); break;
+			case 1: ret = jshm.util.Util.implode(", ", song.getPlatforms().toArray()); break;
 
 			default: assert false;
 		}

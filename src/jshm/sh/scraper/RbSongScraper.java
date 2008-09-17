@@ -87,7 +87,8 @@ public class RbSongScraper {
 		
 		public void handleDataRow(String[][] data) throws ScraperException {
 			RbSong curSong = new RbSong();
-			curSong.getGames().add(game);
+			curSong.setGameTitle(game.title);
+			curSong.addPlatform(game.platform);
 			
 			try {
     			curSong.setScoreHeroId(Integer.parseInt(data[1][1]));
@@ -144,7 +145,7 @@ public class RbSongScraper {
 				RbSong s = new RbSong();
 				s.setTitle(data[1][0]);
 				s.setScoreHeroId(Integer.parseInt(data[1][1]));
-				s.getGames().add(game);
+				s.addPlatform(game.platform);
 				order.setSong(s);
 //    			order.setSong(
 //    				RbSong.getByScoreHeroId(Integer.parseInt(data[1][1])));

@@ -18,7 +18,7 @@ public class RbSongUpdater {
 	
 	public static void update(final RbGame game) throws Exception {
 		// first get the songs themselves, need to do for each platform
-		for (Game g : new Game[] { RbGame.RB1_XBOX360 } /*Game.getByTitle(game.title)*/) {
+		for (Game g : Game.getByTitle(game.title)) {
 			List<RbSong> songs = RbSongScraper.scrape((RbGame) g);
 			
 			LOG.finer("scraped " + songs.size() + " songs for " + g);
@@ -37,9 +37,9 @@ public class RbSongUpdater {
 				    	(RbSong)
 				    	session.createCriteria(RbSong.class).add(ex)
 				    		.uniqueResult();
-				    tx.commit();
+//				    tx.commit();
 				    
-			    	session = getCurrentSession();
+//			    	session = getCurrentSession();
 				    tx = session.beginTransaction();
 				    
 				    if (null == result) {
