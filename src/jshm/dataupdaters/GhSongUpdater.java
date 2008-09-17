@@ -52,7 +52,16 @@ public class GhSongUpdater {
 				session = getCurrentSession();
 			    tx = session.beginTransaction();
 			    
-			    Example ex = Example.create(song);
+			    Example ex = Example.create(song)
+			    	.excludeProperty("noteCount")
+			    	.excludeProperty("baseScore")
+			    	.excludeProperty("fourStarCutoff")
+			    	.excludeProperty("fiveStarCutoff")
+			    	.excludeProperty("sixStarCutoff")
+			    	.excludeProperty("sevenStarCutoff")
+			    	.excludeProperty("eightStarCutoff")
+			    	.excludeProperty("nineStarCutoff")
+			    	;
 			    GhSong result =
 			    	(GhSong)
 			    	session.createCriteria(GhSong.class).add(ex)

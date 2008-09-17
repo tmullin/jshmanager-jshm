@@ -47,7 +47,7 @@ import jshm.gui.renderers.GhMyScoresNewScoreHighlighter;
 import jshm.gui.renderers.GhMyScoresNoCommentHighlighter;
 import jshm.gui.renderers.GhMyScoresPercentHighlighter;
 import jshm.gui.renderers.GhMyScoresTreeCellRenderer;
-import jshm.gui.renderers.GhTierHighlighter;
+import jshm.gui.renderers.TierHighlighter;
 import jshm.hibernate.HibernateUtil;
 
 import org.hibernate.Session;
@@ -63,7 +63,7 @@ import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
  * 
  * @author Tim Mullin
  */
-public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
+public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements Parentable {
 	static final Logger LOG = Logger.getLogger(GhMyScoresTreeTableModel.class.getName());
 	
 	/*
@@ -366,16 +366,14 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		for (int i = 0; i <= 6; i++)
 			parent.getColumn(i).setCellRenderer(renderer);
 
-		parent.removeMouseListener(myParentMouseListener);
 		parent.addMouseListener(myParentMouseListener);
-		parent.removeMouseMotionListener(myParentMouseMotionListener);
 		parent.addMouseMotionListener(myParentMouseMotionListener);
 		
 		Highlighter[] highlighters = new Highlighter[] {
 			HighlighterFactory.createSimpleStriping(),
 			new GhMyScoresPercentHighlighter(),
 			new GhMyScoresFcHighlighter(),
-			new GhTierHighlighter(),
+			new TierHighlighter(),
 			new GhMyScoresNoCommentHighlighter(),
 			new GhMyScoresNewScoreHighlighter()
 		};
@@ -410,6 +408,13 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel {
 		parent.packAll();
 	}
 
+	public void removeParent(JXTreeTable parent) {
+		parent.removeMouseListener(myParentMouseListener);
+		parent.removeMouseMotionListener(myParentMouseMotionListener);
+		GhMyScoresTreeTableModel.parent = null;
+	}
+	
+	
 	@Override
 	public int getColumnCount() {
 		return 7;

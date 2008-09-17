@@ -65,6 +65,7 @@ import jshm.gh.GhSong;
 import jshm.gui.components.StatusBar;
 import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 import jshm.gui.datamodels.GhSongDataTreeTableModel;
+import jshm.gui.datamodels.Parentable;
 import jshm.gui.wizards.scoredownload.ScoreDownloadWizard;
 import jshm.gui.wizards.scoreupload.ScoreUploadWizard;
 
@@ -938,6 +939,8 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 	
 				SwingUtilities.invokeAndWait(new Runnable() {
 					public void run() {
+						if (jXTreeTable1.getTreeTableModel() instanceof Parentable)
+							((Parentable) jXTreeTable1.getTreeTableModel()).removeParent(jXTreeTable1);
 						jXTreeTable1.setTreeTableModel(model);
 						model.setParent(jXTreeTable1);
 						jXTreeTable1.repaint();
@@ -1015,6 +1018,8 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 				SwingUtilities.invokeAndWait(new Runnable() {
 					public void run() {
 						if (null != model && null != jXTreeTable1) {
+							if (jXTreeTable1.getTreeTableModel() instanceof Parentable)
+								((Parentable) jXTreeTable1.getTreeTableModel()).removeParent(jXTreeTable1);
 							jXTreeTable1.setTreeTableModel(model);
 							model.setParent(jXTreeTable1);
 							

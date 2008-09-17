@@ -29,9 +29,6 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
 import jshm.gui.GUI;
 import jshm.gui.Splash;
 import jshm.hibernate.HibernateUtil;
@@ -162,15 +159,9 @@ public class JSHManager {
 			gui.dispose();
 		
 		splash.setStatus("Saving database...");
-		
-		Session sess = null;
-		Transaction tx = null;
-		
+
 		try {
-			sess = HibernateUtil.getCurrentSession();
-			tx = sess.beginTransaction();
-			sess.createSQLQuery("SHUTDOWN COMPACT");
-			tx.commit();
+			HibernateUtil.shutdown();
 		} catch (Exception e) {
 			LOG.log(Level.WARNING, "Error shutting down database", e);
 		}

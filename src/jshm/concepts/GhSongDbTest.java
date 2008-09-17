@@ -40,13 +40,13 @@ public class GhSongDbTest {
 		final RbGame game = RbGame.RB1_XBOX360;
 //		final Difficulty difficulty = Difficulty.EXPERT;
 		
-//		jshm.util.TestTimer.start();
-//		
-//		RbSongUpdater.update(game);
-//		jshm.util.TestTimer.stop();
+		jshm.util.TestTimer.start();
+//		GhSongUpdater.update(GhGame.GH3_XBOX360, Difficulty.EXPERT);
+		RbSongUpdater.update(game);
+		jshm.util.TestTimer.stop();
 		
-		printSongs();
-//		
+//		printSongs();
+		
 //		jshm.util.TestTimer.stop();
 		
 //		jshm.sh.Client.getAuthCookies("someuser", "somepass");
@@ -57,6 +57,8 @@ public class GhSongDbTest {
 //		printScores();
 		
 		jshm.util.TestTimer.stop();
+		
+//		HibernateUtil.shutdown();
 	}
 	
 	static void printSongs() {

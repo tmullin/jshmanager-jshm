@@ -25,15 +25,16 @@ import java.awt.Component;
 
 import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 import jshm.gui.datamodels.GhSongDataTreeTableModel;
+import jshm.gui.datamodels.RbSongDataTreeTableModel;
 
 import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 
-public class GhTierHighlighter extends AbstractHighlighter {
+public class TierHighlighter extends AbstractHighlighter {
 	Color color = new Color(0x990000);
 	
-	public GhTierHighlighter() {
+	public TierHighlighter() {
 		super(new HighlightPredicate() {
 			@Override
 			public boolean isHighlighted(Component renderer,
@@ -42,7 +43,8 @@ public class GhTierHighlighter extends AbstractHighlighter {
 				Object o = adapter.getValueAt(adapter.row, 0);
 				
 				if (o instanceof GhMyScoresTreeTableModel.Tier ||
-					o instanceof GhSongDataTreeTableModel.Tier)
+					o instanceof GhSongDataTreeTableModel.Tier ||
+					o instanceof RbSongDataTreeTableModel.Tier)
 					return true;
 				
 				return false;

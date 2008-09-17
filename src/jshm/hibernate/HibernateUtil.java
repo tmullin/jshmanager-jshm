@@ -49,4 +49,14 @@ public class HibernateUtil {
 		return getSessionFactory().getCurrentSession();
 	}
 
+	
+	public static void shutdown() throws Exception {
+		Session sess = null;
+		Transaction tx = null;
+
+		sess = getCurrentSession();
+		tx = sess.beginTransaction();
+		sess.createSQLQuery("SHUTDOWN COMPACT");
+		tx.commit();
+	}
 }

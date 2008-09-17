@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -13,8 +14,6 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.CollectionOfElements;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import jshm.Game;
 import jshm.GameTitle;
@@ -46,32 +45,39 @@ public class RbSong extends Song {
 	// this is a total hack since i can't figure out how to use
 	// my fake enum type in a list
 	@CollectionOfElements(fetch=FetchType.EAGER)
-	@Cascade({CascadeType.ALL})
+	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
 	@JoinTable(name="rbsong_games",
 		joinColumns={
 			@JoinColumn(name="song_id", nullable=false)})
-	@Fetch(FetchMode.SELECT)
+	@Column(nullable=false)
 	public List<String> getGameStrs() {
 		return gameStrs;
 	}
 	
 	public void setGameStrs(List<String> gameStrs) {
 		this.gameStrs = gameStrs;
-		
-		games.clear();
-		for (String s : gameStrs)
-			games.add((RbGame) Game.valueOf(s));
+//		Hibernate.initialize(gameStrs);
 	}
 	
 	private List<RbGame> games = new ArrayList<RbGame>();
 	
+	private void checkGames() {
+		if (games.size() == 0 && gameStrs.size() != 0) {
+			games.clear();
+			for (String s : gameStrs)
+				games.add((RbGame) Game.valueOf(s));
+		}
+	}
+	
 	@Transient
 	public List<RbGame> getGames() {
+		checkGames();
 		return games;
 	}
 	
 	@Transient
 	public RbGame getGames(int index) {
+		checkGames();
 		return games.get(index);
 	}
 

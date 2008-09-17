@@ -35,6 +35,23 @@ import org.jdesktop.swingx.error.ErrorInfo;
 public class Util {
 	static final Logger LOG = Logger.getLogger(Util.class.getName());
 	
+	public static String implode(Object ... pieces) {
+		return implode(",", pieces);
+	}
+	
+	public static String implode(String glue, Object ... pieces) {
+		if (pieces.length == 0) return "";
+		
+		StringBuilder sb = new StringBuilder(pieces[0].toString());
+		
+		for (int i = 1; i < pieces.length; i++) {
+			sb.append(glue);
+			sb.append(pieces[i]);
+		}
+		
+		return sb.toString();
+	}
+	
 	public static void openURL(String url) {
 		try {
 			openURL(url, true);

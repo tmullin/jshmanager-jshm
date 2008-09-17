@@ -20,7 +20,7 @@
  */
 package jshm.gui.datamodels;
 
-import java.text.DecimalFormat;
+//import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,34 +28,36 @@ import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
-import jshm.gh.*;
+import jshm.rb.*;
 import jshm.gui.renderers.TierHighlighter;
 
 /**
  *
  * @author Tim Mullin
  */
-public class GhSongDataTreeTableModel extends AbstractTreeTableModel implements Parentable {
+public class RbSongDataTreeTableModel extends AbstractTreeTableModel implements Parentable {
 	private class DataModel {
 		List<Tier> tiers = new ArrayList<Tier>();
 		
 		public DataModel(
-			final GhGame game,
-			final List<GhSong> songs) {
+			final RbGame game,
+			final List<RbSong> songs) {
 	
-			for (int i = 1; i <= game.getTierCount(); i++) {
-				tiers.add(new Tier(game.getTierName(i)));
-			}
+			tiers.add(new Tier("All Songs"));
+//			for (int i = 1; i <= game.getTierCount(); i++) {
+//				tiers.add(new Tier(game.getTierName(i)));
+//			}
 			
-			for (GhSong song : songs) {
-				tiers.get(song.getTierLevel() - 1).songs.add(song);
+			for (RbSong song : songs) {
+				tiers.get(0).songs.add(song);
+//				tiers.get(song.getTierLevel() - 1).songs.add(song);
 			}
 		}
 	}
 	
 	public class Tier {
 		public final String name;
-		public final List<GhSong> songs = new ArrayList<GhSong>();
+		public final List<RbSong> songs = new ArrayList<RbSong>();
 		
 		public Tier(String name) {
 			this.name = name;
@@ -70,9 +72,9 @@ public class GhSongDataTreeTableModel extends AbstractTreeTableModel implements 
 	
 	private final DataModel model;
 	
-	public GhSongDataTreeTableModel(
-		final GhGame game,
-		final List<GhSong> songs) {
+	public RbSongDataTreeTableModel(
+		final RbGame game,
+		final List<RbSong> songs) {
 		
 		super("ROOT");
 		this.model = new DataModel(game, songs);
@@ -87,8 +89,8 @@ public class GhSongDataTreeTableModel extends AbstractTreeTableModel implements 
 	    
 	    parent.getColumnExt(1).setPrototypeValue("00000");
 	    
-	    for (int i = 2; i <= 7; i++)
-	    	parent.getColumnExt(i).setPrototypeValue("00000000");
+//	    for (int i = 2; i <= 7; i++)
+//	    	parent.getColumnExt(i).setPrototypeValue("00000000");
 	    
 	    parent.setAutoResizeMode(JXTreeTable.AUTO_RESIZE_OFF);
 	    parent.packAll();
@@ -102,8 +104,7 @@ public class GhSongDataTreeTableModel extends AbstractTreeTableModel implements 
 	}
 
 	private static final String[] COLUMN_NAMES = {
-		"Song", "Notes", "Base Score", "4* Cutoff", "5* Cutoff",
-		"6* Cutoff", "7* Cutoff", "8* Cutoff"
+		"Song", "Games"
 	};
 	
 	@Override
@@ -112,7 +113,7 @@ public class GhSongDataTreeTableModel extends AbstractTreeTableModel implements 
 	}
 	
 	
-	private final DecimalFormat NUM_FMT = new DecimalFormat("#,###");
+//	private final DecimalFormat NUM_FMT = new DecimalFormat("#,###");
 	
 	@Override
 	public Object getValueAt(Object node, int column) {
@@ -121,22 +122,16 @@ public class GhSongDataTreeTableModel extends AbstractTreeTableModel implements 
 			return "";
 		}
 		
-		if (!(node instanceof GhSong)) return "";
+		if (!(node instanceof RbSong)) return "";
 		
-		GhSong song = (GhSong) node;
+		RbSong song = (RbSong) node;
 		
 		String ret = "";
 		
 		switch (column) {
 			case 0: ret = song.getTitle(); break;
-			case 1: ret = NUM_FMT.format(song.getNoteCount()); break; // noteCount
-			case 2: ret = NUM_FMT.format(song.getBaseScore()); break; // baseScore
-			case 3: ret = NUM_FMT.format(song.getFourStarCutoff()); break; // 4*
-			case 4: ret = NUM_FMT.format(song.getFiveStarCutoff()); break; // 5*
-			case 5: ret = NUM_FMT.format(song.getSixStarCutoff()); break; // 6*
-			case 6: ret = NUM_FMT.format(song.getSevenStarCutoff()); break; // 7*
-			case 7: ret = NUM_FMT.format(song.getEightStarCutoff()); break; // 8*
-				
+			case 1: ret = jshm.util.Util.implode(song.getGames().toArray()); break;
+
 			default: assert false;
 		}
 		
@@ -179,7 +174,7 @@ public class GhSongDataTreeTableModel extends AbstractTreeTableModel implements 
 		}
 		
 		if (parent instanceof Tier) {
-			if (!(child instanceof GhSong)) return -1;
+			if (!(child instanceof RbSong)) return -1;
 			
 			return ((Tier) parent).songs.indexOf(child);
 		}
@@ -189,6 +184,6 @@ public class GhSongDataTreeTableModel extends AbstractTreeTableModel implements 
 
 	@Override
 	public boolean isLeaf(Object node) {
-		return node instanceof GhSong;
+		return node instanceof RbSong;
 	}
 }

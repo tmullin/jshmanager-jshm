@@ -31,35 +31,40 @@ public class RbSongUpdater {
 					session = getCurrentSession();
 				    tx = session.beginTransaction();
 				    
-				    Example ex = Example.create(song).excludeProperty("gameStrs");
+				    Example ex = Example.create(song)
+				    	.excludeProperty("gameStrs");
 				    RbSong result =
-				    	(RbSong) session.createCriteria(RbSong.class).add(ex)
-				    	.uniqueResult();
+				    	(RbSong)
+				    	session.createCriteria(RbSong.class).add(ex)
+				    		.uniqueResult();
+				    tx.commit();
 				    
 			    	session = getCurrentSession();
-				    session.beginTransaction();
+				    tx = session.beginTransaction();
 				    
 				    if (null == result) {
 				    	// new insert
 				    	LOG.info("Inserting song: " + song);
 					    session.save(song);
 				    } else {
+				    	LOG.finest("found song: " + result);
 				    	// update existing
 				    	if (result.update(song)) {
-					    	LOG.info("Updating song: " + result);
+					    	LOG.info("Updating song to: " + result);
 					    	session.update(result);
 				    	} else {
 				    		LOG.finest("No changes to song: " + result);
 				    	}
 				    }
-				    
+
+				    session.flush();
 				    tx.commit();
 				} catch (Exception e) {
 					if (null != tx) tx.rollback();
 					LOG.throwing("RbSongUpdater", "update", e);
 					throw e;
 				} finally {
-					if (session.isOpen())
+					if (null != session && session.isOpen())
 						session.close();
 				}
 			}
