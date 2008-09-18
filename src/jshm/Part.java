@@ -38,7 +38,8 @@ public class Part implements Comparable<Part> {
 	private int 		streak;
 	
 	private Difficulty	difficulty;
-	private Instrument 	instrument;
+	private Instrument	instrument;
+	private String		performer = "";
 	
 	@Id
 	@GeneratedValue(generator="part-id")
@@ -94,6 +95,18 @@ public class Part implements Comparable<Part> {
 		this.instrument = instrument;
 	}
 
+	/**
+	 * The name of the person who performed this part. May be empty.
+	 * @return
+	 */
+	public String getPerformer() {
+		return performer;
+	}
+	
+	public void setPerformer(String performer) {
+		if (null == performer) performer = "";
+		this.performer = performer;
+	}
 	
 	@Transient
 	public boolean isSubmittable() {

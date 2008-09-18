@@ -289,6 +289,16 @@ public abstract class Score {
 	}
 	
 	/**
+	 * This returns false unless overridden.
+	 * @return Whether this score is a full combo.
+	 */
+	@Transient
+	public boolean isFullCombo() {
+		return false;
+	}
+	
+	
+	/**
 	 * 
 	 * @return The highest streak among all of the Parts.
 	 */
