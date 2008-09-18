@@ -160,7 +160,8 @@ public abstract class Score {
 		this.song = song;
 		
 		if (null != song) {
-			this.game = song.getGame();
+			if (null != song.getGame())
+				this.game = song.getGame();
 			
 			if (Difficulty.Strategy.BY_SONG == getGameTitle().getDifficultyStrategy()) {
 				setDifficulty(song.getDifficulty());
@@ -561,6 +562,8 @@ OuterPartLoop:
 	protected String toString(String extra) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getGame());
+		sb.append(',');
+		sb.append(getGroup());
 		sb.append(',');
 		sb.append(song.getTitle());
 		sb.append(',');

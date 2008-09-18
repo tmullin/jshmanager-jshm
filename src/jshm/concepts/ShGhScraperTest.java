@@ -34,28 +34,29 @@ import jshm.sh.scraper.*;
 public class ShGhScraperTest {
 //	static final GhGame game 			= GhGame.GH3_XBOX360;
 	static final RbGame game 			= RbGame.RB1_XBOX360;
+	static final Instrument.Group group = Instrument.Group.VOCALS;
 	static final Difficulty difficulty 	= Difficulty.EXPERT;
 	
 	public static void main(String[] args) throws Exception {
 		jshm.logging.Log.configTestLogging();
 		jshm.util.TestTimer.start(true);
 		
-		doSongs();
-//		doScores();
+//		doSongs();
+		doScores();
 		
 		jshm.util.TestTimer.stop(true);
 	}
 	
-//	static void doScores() throws Exception {
-//		LoginDialog.showDialog();
-//		
-//		List<GhScore> scores = 
-//			GhScoreScraper.scrapeAll(
-//				game, difficulty);
-//
-//		for (GhScore s : scores)
-//			System.out.println(s);
-//	}
+	static void doScores() throws Exception {
+		LoginDialog.showDialog();
+		
+		List<? extends Score> scores = 
+			RbScoreScraper.scrapeLatest(
+				game, group, difficulty);
+
+		for (Score s : scores)
+			System.out.println(s);
+	}
 	
 	static void doSongs() throws Exception {
 //		List<RbSong> songs = 

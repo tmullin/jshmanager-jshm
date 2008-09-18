@@ -40,7 +40,7 @@ public class Log {
 		cur.addHandler(consoleHandler);
 		
 		cur = Logger.getLogger("jshm");
-		cur.setLevel(Level.FINER);
+		cur.setLevel(Level.ALL);
 		
 		
 //		cur = Logger.getLogger("org.hibernate");
