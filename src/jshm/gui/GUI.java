@@ -161,8 +161,8 @@ public class GUI extends javax.swing.JFrame {
         
         // TODO move this text to the tooltip for each item
         hh.add(addNewScoreMenuItem);
-        hh.add(loadMyScoresMenuItem);
-        hh.add(loadGhSongDataMenuItem);
+        hh.add(downloadScoresMenuItem);
+        hh.add(downloadGhSongDataMenuItem);
         hh.add(tree, new HoverHelp.Callback() {
 			@Override
 			public String getMessage() {
@@ -258,23 +258,24 @@ public class GUI extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
-        ghMenu = new javax.swing.JMenu();
-        ghScoresMenu = new javax.swing.JMenu();
+        scoresMenu = new javax.swing.JMenu();
         addNewScoreMenuItem = new javax.swing.JMenuItem();
         deleteSelectedScoreMenuItem = new javax.swing.JMenuItem();
         toggleEditorMenuItem = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JSeparator();
-        loadMyScoresMenuItem = new javax.swing.JMenuItem();
+        downloadScoresMenuItem = new javax.swing.JMenuItem();
         uploadScoresMenuItem = new javax.swing.JMenuItem();
         uploadSelectedScoreMenuItem = new javax.swing.JMenuItem();
-        jSeparator1 = new javax.swing.JSeparator();
+        ghMenu = new javax.swing.JMenu();
+        ghScoresMenu = new javax.swing.JMenu();
         ghSongDataMenu = new javax.swing.JMenu();
-        loadGhSongDataMenuItem = new javax.swing.JMenuItem();
+        downloadGhSongDataMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
         ghLinksMenu = new javax.swing.JMenu();
         rbMenu = new javax.swing.JMenu();
+        rbScoresMenu = new javax.swing.JMenu();
         rbSongDataMenu = new javax.swing.JMenu();
-        loadRbSongDataMenuItem = new javax.swing.JMenuItem();
+        downloadRbSongDataMenuItem = new javax.swing.JMenuItem();
         jSeparator5 = new javax.swing.JSeparator();
         rbLinksMenu = new javax.swing.JMenu();
         helpMenu = new javax.swing.JMenu();
@@ -344,10 +345,7 @@ public class GUI extends javax.swing.JFrame {
 
         jMenuBar1.add(fileMenu);
 
-        ghMenu.setText("Guitar Hero");
-
-        ghScoresMenu.setMnemonic('M');
-        ghScoresMenu.setText("Scores");
+        scoresMenu.setText("Scores");
 
         addNewScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_INSERT, 0));
         addNewScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/add32.png"))); // NOI18N
@@ -360,7 +358,7 @@ public class GUI extends javax.swing.JFrame {
                 addNewScoreMenuItemActionPerformed(evt);
             }
         });
-        ghScoresMenu.add(addNewScoreMenuItem);
+        scoresMenu.add(addNewScoreMenuItem);
 
         deleteSelectedScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         deleteSelectedScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/delete32.png"))); // NOI18N
@@ -372,7 +370,7 @@ public class GUI extends javax.swing.JFrame {
                 deleteSelectedScoreMenuItemActionPerformed(evt);
             }
         });
-        ghScoresMenu.add(deleteSelectedScoreMenuItem);
+        scoresMenu.add(deleteSelectedScoreMenuItem);
 
         toggleEditorMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
         toggleEditorMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/edit32.png"))); // NOI18N
@@ -384,20 +382,20 @@ public class GUI extends javax.swing.JFrame {
                 toggleEditorMenuItemActionPerformed(evt);
             }
         });
-        ghScoresMenu.add(toggleEditorMenuItem);
-        ghScoresMenu.add(jSeparator3);
+        scoresMenu.add(toggleEditorMenuItem);
+        scoresMenu.add(jSeparator3);
 
-        loadMyScoresMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/down32.png"))); // NOI18N
-        loadMyScoresMenuItem.setMnemonic('L');
-        loadMyScoresMenuItem.setText("Download from ScoreHero...");
-        loadMyScoresMenuItem.setToolTipText("Sync the local score list for the current game and difficulty to ScoreHero's");
-        loadMyScoresMenuItem.setEnabled(false);
-        loadMyScoresMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        downloadScoresMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/down32.png"))); // NOI18N
+        downloadScoresMenuItem.setMnemonic('L');
+        downloadScoresMenuItem.setText("Download from ScoreHero...");
+        downloadScoresMenuItem.setToolTipText("Sync the local score list for the current game and difficulty to ScoreHero's");
+        downloadScoresMenuItem.setEnabled(false);
+        downloadScoresMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadMyScoresMenuItemActionPerformed(evt);
+                downloadScoresMenuItemActionPerformed(evt);
             }
         });
-        ghScoresMenu.add(loadMyScoresMenuItem);
+        scoresMenu.add(downloadScoresMenuItem);
 
         uploadScoresMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/up32.png"))); // NOI18N
         uploadScoresMenuItem.setMnemonic('U');
@@ -408,7 +406,7 @@ public class GUI extends javax.swing.JFrame {
                 uploadScoresMenuItemActionPerformed(evt);
             }
         });
-        ghScoresMenu.add(uploadScoresMenuItem);
+        scoresMenu.add(uploadScoresMenuItem);
 
         uploadSelectedScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.CTRL_MASK));
         uploadSelectedScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/up32.png"))); // NOI18N
@@ -420,8 +418,15 @@ public class GUI extends javax.swing.JFrame {
                 uploadSelectedScoreMenuItemActionPerformed(evt);
             }
         });
-        ghScoresMenu.add(uploadSelectedScoreMenuItem);
-        ghScoresMenu.add(jSeparator1);
+        scoresMenu.add(uploadSelectedScoreMenuItem);
+
+        jMenuBar1.add(scoresMenu);
+
+        ghMenu.setMnemonic('G');
+        ghMenu.setText("Guitar Hero");
+
+        ghScoresMenu.setMnemonic('S');
+        ghScoresMenu.setText("Scores");
 
         initDynamicGameMenu(ghScoresMenu);
 
@@ -430,24 +435,24 @@ public class GUI extends javax.swing.JFrame {
         ghSongDataMenu.setMnemonic('D');
         ghSongDataMenu.setText("Song Data");
 
-        loadGhSongDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/down32.png"))); // NOI18N
-        loadGhSongDataMenuItem.setMnemonic('L');
-        loadGhSongDataMenuItem.setText("Download from ScoreHero...");
-        loadGhSongDataMenuItem.setToolTipText("Sync the local song list for the current game and difficulty to ScoreHero's (e.g. when there is new DLC)");
-        loadGhSongDataMenuItem.setEnabled(false);
-        loadGhSongDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        downloadGhSongDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/down32.png"))); // NOI18N
+        downloadGhSongDataMenuItem.setMnemonic('L');
+        downloadGhSongDataMenuItem.setText("Download from ScoreHero...");
+        downloadGhSongDataMenuItem.setToolTipText("Sync the local song list for the current game and difficulty to ScoreHero's (e.g. when there is new DLC)");
+        downloadGhSongDataMenuItem.setEnabled(false);
+        downloadGhSongDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadGhSongDataMenuItemActionPerformed(evt);
+                downloadGhSongDataMenuItemActionPerformed(evt);
             }
         });
-        ghSongDataMenu.add(loadGhSongDataMenuItem);
+        ghSongDataMenu.add(downloadGhSongDataMenuItem);
         ghSongDataMenu.add(jSeparator2);
 
         initDynamicGameMenu(ghSongDataMenu);
 
         ghMenu.add(ghSongDataMenu);
 
-        ghLinksMenu.setMnemonic('r');
+        ghLinksMenu.setMnemonic('L');
         ghLinksMenu.setText("Web Links");
 
         initForumsMenu(ghLinksMenu);
@@ -456,18 +461,35 @@ public class GUI extends javax.swing.JFrame {
 
         jMenuBar1.add(ghMenu);
 
+        rbMenu.setMnemonic('R');
         rbMenu.setText("Rock Band");
 
+        rbScoresMenu.setMnemonic('S');
+        rbScoresMenu.setText("Scores");
+
+        initRbGameMenu(rbScoresMenu);
+
+        rbMenu.add(rbScoresMenu);
+
+        rbSongDataMenu.setMnemonic('D');
         rbSongDataMenu.setText("Song Data");
 
-        loadRbSongDataMenuItem.setText("Download from ScoreHero...");
-        rbSongDataMenu.add(loadRbSongDataMenuItem);
+        downloadRbSongDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/down32.png"))); // NOI18N
+        downloadRbSongDataMenuItem.setText("Download from ScoreHero...");
+        downloadRbSongDataMenuItem.setEnabled(false);
+        downloadRbSongDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                downloadRbSongDataMenuItemActionPerformed(evt);
+            }
+        });
+        rbSongDataMenu.add(downloadRbSongDataMenuItem);
         rbSongDataMenu.add(jSeparator5);
 
         initRbGameMenu(rbSongDataMenu);
 
         rbMenu.add(rbSongDataMenu);
 
+        rbLinksMenu.setMnemonic('L');
         rbLinksMenu.setText("Web Links");
 
         initForumsMenu(rbLinksMenu);
@@ -553,13 +575,13 @@ private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event
 //	this.setLocationRelativeTo(null);
 }//GEN-LAST:event_formWindowOpened
 
-private void loadMyScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadMyScoresMenuItemActionPerformed
+private void downloadScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadScoresMenuItemActionPerformed
 	Wizard wiz = ScoreDownloadWizard
 		.createWizard(GUI.this, getCurGame(), getCurDiff());
 	wiz.show();
-}//GEN-LAST:event_loadMyScoresMenuItemActionPerformed
+}//GEN-LAST:event_downloadScoresMenuItemActionPerformed
 
-private void loadGhSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                      
+private void downloadGhSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                      
 	new SwingWorker<Boolean, Void>() {		
 		@Override
 		protected Boolean doInBackground() throws Exception {
@@ -762,6 +784,10 @@ private void toggleEditorMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 		!editorCollapsiblePane.isCollapsed());
 }//GEN-LAST:event_toggleEditorMenuItemActionPerformed
 
+private void downloadRbSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadRbSongDataMenuItemActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_downloadRbSongDataMenuItemActionPerformed
+
 public void showTextFileViewer(final String file) {
 	try {
 		textFileViewerDialog1.setVisible(new File(file));
@@ -875,10 +901,60 @@ private void initDynamicGameMenu(final javax.swing.JMenu menu) {
 }
 
 private void initRbGameMenu(final javax.swing.JMenu menu) {
-	if (menu != rbSongDataMenu) return;
-	
 	java.util.List<GameTitle> titles =
 		GameTitle.getTitlesBySeries(GameSeries.ROCKBAND);
+	
+	
+	if (menu == rbScoresMenu) {
+		for (final GameTitle ttl : titles) {
+			JMenu ttlMenu = new JMenu(ttl.toString());
+			ttlMenu.setIcon(ttl.getIcon());
+			
+			for (final Game g : Game.getByTitle(ttl)) {
+				JMenu platformMenu = new JMenu(g.platform.toString());
+				platformMenu.setIcon(g.platform.getIcon());
+				
+				for (int groupSize = 1; groupSize <= 1; groupSize++) {
+					JMenu groupSizeMenu = platformMenu; // new JMenu(groupSize + "-part");
+					
+					for (final Instrument.Group group : Instrument.Group.getBySize(groupSize)) {
+						JMenu groupMenu = new JMenu(group.toString());
+						groupMenu.setIcon(group.getIcon());
+						
+						for (Difficulty d : Difficulty.values()) {
+							if (Difficulty.CO_OP == d) continue;
+							
+							JMenuItem diffMenuItem = new JMenuItem(d.toString());
+							diffMenuItem.setIcon(d.getIcon());
+							
+//							diffMenuItem.addActionListener(new ActionListener() {
+//								public void actionPerformed(ActionEvent e) {
+//									// TODO Auto-generated method stub
+//								}
+//							});
+							
+							groupMenu.add(diffMenuItem);
+						}
+						
+						groupSizeMenu.add(groupMenu);
+					}
+					
+					if (platformMenu != groupSizeMenu)
+						platformMenu.add(groupSizeMenu);
+				}
+				
+				ttlMenu.add(platformMenu);
+			}
+			
+			menu.add(ttlMenu);
+		}
+		
+		return;
+	}
+	
+	
+	if (menu != rbSongDataMenu) return;
+	
 	
 	for (final GameTitle ttl : titles) {
 		JMenu ttlMenu = new JMenu(ttl.toString());
@@ -925,12 +1001,6 @@ private void initRbGameMenu(final javax.swing.JMenu menu) {
 			
 			ttlMenu.add(platformMenu);
 		}
-		
-//		ttlMenu.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				rbSongDataMenuItemActionPerformed(e, (RbGameTitle) ttl);
-//			}
-//		});
 		
 		menu.add(ttlMenu);
 	}
@@ -1048,8 +1118,8 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 			if (null == songs) return;
 			
 			statusBar1.setText("Viewing song data for " + game + " on " + difficulty);
-			loadMyScoresMenuItem.setEnabled(true);
-			loadGhSongDataMenuItem.setEnabled(true);
+			downloadScoresMenuItem.setEnabled(true);
+			downloadGhSongDataMenuItem.setEnabled(true);
 			uploadScoresMenuItem.setEnabled(false);
 			editorCollapsiblePane.setCollapsed(true);
 			toggleEditorMenuItem.setEnabled(false);
@@ -1063,7 +1133,7 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 						GUI.this, "No songs are present.\nDownload from ScoreHero?", "",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 					
-					loadGhSongDataMenuItemActionPerformed(null);
+					downloadGhSongDataMenuItemActionPerformed(null);
 				}
 
 				return;
@@ -1115,8 +1185,8 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 			if (null == songs) return;
 			
 			statusBar1.setText("Viewing song data for " + game);
-			loadMyScoresMenuItem.setEnabled(true);
-			loadGhSongDataMenuItem.setEnabled(true);
+			downloadScoresMenuItem.setEnabled(true);
+			downloadGhSongDataMenuItem.setEnabled(true);
 			uploadScoresMenuItem.setEnabled(false);
 			editorCollapsiblePane.setCollapsed(true);
 			toggleEditorMenuItem.setEnabled(false);
@@ -1208,8 +1278,8 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			GUI.this.setTitle(game + " on " + difficulty + " - My Scores");
 			
 			statusBar1.setText("Viewing scores for " + game + " on " + difficulty);
-			loadMyScoresMenuItem.setEnabled(true);
-			loadGhSongDataMenuItem.setEnabled(true);
+			downloadScoresMenuItem.setEnabled(true);
+			downloadGhSongDataMenuItem.setEnabled(true);
 			uploadScoresMenuItem.setEnabled(true);
 			toggleEditorMenuItem.setEnabled(true);
 			
@@ -1219,7 +1289,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 						GUI.this, "No scores are present.\nDownload from ScoreHero?", "",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 					
-					loadMyScoresMenuItemActionPerformed(null);
+					downloadGhSongDataMenuItemActionPerformed(null);
 				}
 
 				return;
@@ -1253,6 +1323,9 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JMenuItem addNewScoreMenuItem;
     private javax.swing.JMenuItem changeLogMenuItem;
     private javax.swing.JMenuItem deleteSelectedScoreMenuItem;
+    private javax.swing.JMenuItem downloadGhSongDataMenuItem;
+    private javax.swing.JMenuItem downloadRbSongDataMenuItem;
+    private javax.swing.JMenuItem downloadScoresMenuItem;
     private org.jdesktop.swingx.JXCollapsiblePane editorCollapsiblePane;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
@@ -1263,20 +1336,18 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JMenuItem licenseMenuItem;
-    private javax.swing.JMenuItem loadGhSongDataMenuItem;
-    private javax.swing.JMenuItem loadMyScoresMenuItem;
-    private javax.swing.JMenuItem loadRbSongDataMenuItem;
     private javax.swing.JMenu rbLinksMenu;
     private javax.swing.JMenu rbMenu;
+    private javax.swing.JMenu rbScoresMenu;
     private javax.swing.JMenu rbSongDataMenu;
     private javax.swing.JMenuItem readmeMenuItem;
     private jshm.gui.ScoreEditorPanel scoreEditorPanel1;
+    private javax.swing.JMenu scoresMenu;
     private jshm.gui.components.StatusBar statusBar1;
     private jshm.gui.TextFileViewerDialog textFileViewerDialog1;
     private javax.swing.JMenuItem toggleEditorMenuItem;

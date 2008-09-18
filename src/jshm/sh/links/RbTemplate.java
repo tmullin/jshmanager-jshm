@@ -21,8 +21,11 @@
 package jshm.sh.links;
 
 import jshm.Difficulty;
+import jshm.GameSeries;
+import jshm.GameTitle;
 import jshm.Instrument;
 import jshm.Platform;
+import jshm.rb.RbGameTitle;
 import jshm.sh.RbPlatform;
 import jshm.sh.URLs;
 
@@ -30,38 +33,47 @@ public class RbTemplate extends Link {
 	RbTemplate(final String name, final String urlFmt) {
 		super(name);
 
-		for (Platform p : new Platform[] {Platform.PS2, Platform.XBOX360, Platform.PS3, Platform.WII}) {
-			Link platLink = new Link(p.toString(), p.getIcon());
+		for (GameTitle t : GameTitle.getTitlesBySeries(GameSeries.ROCKBAND)) {
+			RbGameTitle tt = (RbGameTitle) t;
 			
-			for (int groupSize = 1; groupSize <= 4; groupSize++) {
-				Link sizeLink = new Link(groupSize + "-part");
+			Link ttlLink = new Link(t.title);
+			ttlLink.icon = t.getIcon();
+			
+			for (Platform p : t.platforms) {
+				Link platLink = new Link(p.toString(), p.getIcon());
 				
-				for (Instrument.Group g : Instrument.Group.getBySize(groupSize)) {
-					Link groupLink =
-						groupSize == 4
-						? sizeLink
-						: new Link(g.toString(),
-							g.size == 1
-							? Instrument.valueOf(g.toString()).getIcon()
-							: null);
+				for (int groupSize = 1; groupSize <= 4; groupSize++) {
+					Link sizeLink = new Link(groupSize + "-part");
 					
-					for (Difficulty d : Difficulty.values()) {
-						if (Difficulty.CO_OP == d) continue;
+					for (Instrument.Group g : Instrument.Group.getBySize(groupSize)) {
+						Link groupLink =
+							groupSize == 4
+							? sizeLink
+							: new Link(g.toString(),
+								g.size == 1
+								? Instrument.valueOf(g.toString()).getIcon()
+								: null);
 						
-						Link diffLink = new Link(d.toString(),
-							String.format(URLs.rb.BASE + "/" + urlFmt + "platform=%s&size=%s&group=%s&diff=%s", RbPlatform.getId(p), groupSize, g.id, d.scoreHeroId),
-							d.getIcon());
-						groupLink.add(diffLink);
+						for (Difficulty d : Difficulty.values()) {
+							if (Difficulty.CO_OP == d) continue;
+							
+							Link diffLink = new Link(d.toString(),
+								String.format(URLs.rb.BASE + "/" + urlFmt + "game=%s&platform=%s&size=%s&group=%s&diff=%s", tt.scoreHeroId, RbPlatform.getId(p), groupSize, g.id, d.scoreHeroId),
+								d.getIcon());
+							groupLink.add(diffLink);
+						}
+						
+						if (groupLink != sizeLink)
+							sizeLink.add(groupLink);
 					}
 					
-					if (groupLink != sizeLink)
-						sizeLink.add(groupLink);
+					platLink.add(sizeLink);
 				}
 				
-				platLink.add(sizeLink);
+				ttlLink.add(platLink);
 			}
 			
-			add(platLink);
+			add(ttlLink);
 		}
 	}
 }
