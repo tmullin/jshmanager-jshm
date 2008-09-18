@@ -24,7 +24,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 
-import jshm.gh.GhScore;
+import jshm.Score;
 
 import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
@@ -37,9 +37,9 @@ public class GhMyScoresPercentHighlighter extends AbstractHighlighter {
 			public boolean isHighlighted(Component renderer,
 					ComponentAdapter adapter) {	
 				if (adapter.column != 3) return false;
-				if (!(adapter.getValue() instanceof GhScore)) return false;
+				if (!(adapter.getValue() instanceof Score)) return false;
 				
-				GhScore score = (GhScore) adapter.getValue(); 
+				Score score = (Score) adapter.getValue(); 
 				return score.getHitPercent() < 1f;
 			}
 		});
@@ -52,7 +52,7 @@ public class GhMyScoresPercentHighlighter extends AbstractHighlighter {
 	protected Component doHighlight(Component component,
 			ComponentAdapter adapter) {
 		
-		GhScore score = (GhScore) adapter.getValue();
+		Score score = (Score) adapter.getValue();
 		Color fg = score.getHitPercent() >= 0.8f
 		? ORANGE : RED;
 			

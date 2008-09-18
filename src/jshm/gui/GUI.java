@@ -921,17 +921,17 @@ private void initRbGameMenu(final javax.swing.JMenu menu) {
 						JMenu groupMenu = new JMenu(group.toString());
 						groupMenu.setIcon(group.getIcon());
 						
-						for (Difficulty d : Difficulty.values()) {
+						for (final Difficulty d : Difficulty.values()) {
 							if (Difficulty.CO_OP == d) continue;
 							
 							JMenuItem diffMenuItem = new JMenuItem(d.toString());
 							diffMenuItem.setIcon(d.getIcon());
 							
-//							diffMenuItem.addActionListener(new ActionListener() {
-//								public void actionPerformed(ActionEvent e) {
-//									// TODO Auto-generated method stub
-//								}
-//							});
+							diffMenuItem.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent e) {
+									myScoresMenuItemActionPerformed(e, g, group, d);
+								}
+							});
 							
 							groupMenu.add(diffMenuItem);
 						}
@@ -1238,7 +1238,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 				if (game instanceof GhGame)
 					songs = GhSong.getSongs((GhGame) game, difficulty);
 				else if (game instanceof RbGame)
-					songs = null; // RbSong.getSongs((RbGame) game, group);
+					songs = RbSong.getSongs(true, (RbGame) game, group);
 				else
 					assert false: "game not a GhGame or RbGame";
 				
@@ -1248,14 +1248,14 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 				if (game instanceof GhGame)
 					scores = GhScore.getScores((GhGame) game, difficulty);
 				else
-					scores = null; // RbScore.getScores((RbGame) game, group, difficulty);
+					scores = RbScore.getScores((RbGame) game, group, difficulty);
 				
 				model = new GhMyScoresTreeTableModel(game, songs, scores);
 	
-				final List<GhSong> orderedSongs =
+				final List<? extends Song> orderedSongs =
 					game instanceof GhGame
 					? GhSong.getSongsOrderedByTitles((GhGame) game, difficulty)
-					: null; // GhSong.getSongsOrderedByTitles((RbGame) game, group);
+					: RbSong.getSongsOrderedByTitles((RbGame) game, group);
 				
 				SwingUtilities.invokeAndWait(new Runnable() {
 					public void run() {
@@ -1295,7 +1295,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			if (null == scores) return;
 			
 			GUI.this.setIconImage(game.title.getIcon().getImage());
-			GUI.this.setTitle(game + " on " + difficulty + " - My Scores");
+			GUI.this.setTitle(game + " on " + difficulty + " " + group + " - Scores");
 			
 			statusBar1.setText("Viewing scores for " + game + " on " + difficulty);
 			downloadScoresMenuItem.setEnabled(true);

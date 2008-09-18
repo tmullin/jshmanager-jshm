@@ -34,7 +34,7 @@ import org.hibernate.validator.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class Song {
+public abstract class Song implements Comparable<Song> {
 	/**
 	 * The id internal to JSHManager's database. 
 	 */
@@ -133,5 +133,9 @@ public abstract class Song {
 			this.title.equals(s.title) &&
 			((this.game == null && s.game == null) ||
 			 this.game.equals(s.game));
+	}
+	
+	public int compareTo(Song song) {
+		return this.title.compareTo(song.title);
 	}
 }

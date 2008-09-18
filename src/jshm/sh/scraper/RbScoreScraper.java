@@ -332,6 +332,8 @@ public class RbScoreScraper {
 //		return scores;
 	}
 	
+	@SuppressWarnings("unused")
+	// TODO handle all rb scores
 	private static class AllScoresHandler extends TieredTabularDataAdapter {
 		private final GhSong song;
 		private final List<GhScore> scores;

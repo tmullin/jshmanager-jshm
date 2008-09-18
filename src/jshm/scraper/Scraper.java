@@ -121,7 +121,7 @@ public class Scraper {
         LOG.finest("calling bean.getNodes()");
         NodeList nodes = bean.getNodes();
         
-        System.out.println(nodes.toHtml());
+//        System.out.println(nodes.toHtml());
         
         if (removeWhitespace) {
         	LOG.finer("Removing whitespace from retrieved nodes");

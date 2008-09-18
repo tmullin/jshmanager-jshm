@@ -24,7 +24,6 @@ import java.awt.Color;
 import java.awt.Component;
 
 import jshm.Score;
-import jshm.gh.GhScore;
 
 import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
@@ -39,9 +38,9 @@ public class GhMyScoresNewScoreHighlighter extends AbstractHighlighter {
 			public boolean isHighlighted(Component renderer,
 					ComponentAdapter adapter) {
 				
-				if (!(adapter.getValueAt(adapter.row, 1) instanceof GhScore)) return false;
+				if (!(adapter.getValueAt(adapter.row, 1) instanceof Score)) return false;
 				
-				Score.Status status = ((GhScore) adapter.getValueAt(adapter.row, 1)).getStatus();
+				Score.Status status = ((Score) adapter.getValueAt(adapter.row, 1)).getStatus();
 				
 				return !adapter.isSelected() &&
 				(status == Score.Status.NEW || status == Score.Status.TEMPLATE);

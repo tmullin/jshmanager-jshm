@@ -1,5 +1,7 @@
 package jshm.rb;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -44,6 +46,16 @@ public class RbSong extends Song {
 		return result;
 	}
 	
+	public static List<RbSong> getSongs(final boolean asRbSongList, final RbGame game, Instrument.Group group) {
+		List<SongOrder> orders = getSongs(game, group);
+		List<RbSong> ret = new ArrayList<RbSong>(orders.size());
+		
+		for (SongOrder o : orders)
+			ret.add((RbSong) o.getSong());
+		
+		return ret;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static List<SongOrder> getSongs(final RbGame game, Instrument.Group group) {
 		LOG.finest("Querying database for all song orders for " + game + " with group " + group);
@@ -66,6 +78,12 @@ public class RbSong extends Song {
 	    session.getTransaction().commit();
 		
 		return result;
+	}
+
+	public static List<RbSong> getSongsOrderedByTitles(final RbGame game, final Instrument.Group group) {
+		List<RbSong> result = getSongs(true, game, group);
+		Collections.sort(result);
+	    return result;
 	}
 	
 	public static RbSong getByScoreHeroId(final int id) {

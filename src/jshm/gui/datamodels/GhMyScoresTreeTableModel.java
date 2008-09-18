@@ -88,7 +88,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			}
 
 			for (Score score : scores) {
-				tiers.get(score.getSong().getTierLevel() - 1)
+				tiers.get(Math.max(score.getSong().getTierLevel() - 1, 0))
 					.addScore(score);
 			}
 
@@ -109,7 +109,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 
 		public void addScore(Score score) {
 			for (SongScores ss : songs) {
-				if (ss.song.equals((GhSong) score.getSong())) {
+				if (ss.song.equals(score.getSong())) {
 					ss.scores.add(score);
 					return;
 				}
@@ -118,7 +118,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		
 		public void removeScore(Score score) {
 			for (SongScores ss : songs) {
-				if (ss.song.equals((GhSong) score.getSong())) {
+				if (ss.song.equals(score.getSong())) {
 					ss.scores.remove(score);
 					return;
 				}

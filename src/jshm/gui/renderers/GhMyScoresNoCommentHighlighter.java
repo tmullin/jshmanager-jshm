@@ -25,7 +25,7 @@ import java.awt.Component;
 
 import javax.swing.UIManager;
 
-import jshm.gh.GhScore;
+import jshm.Score;
 
 import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
@@ -40,13 +40,13 @@ public class GhMyScoresNoCommentHighlighter extends AbstractHighlighter {
 			public boolean isHighlighted(Component renderer,
 					ComponentAdapter adapter) {
 				
-				if (!(adapter.getValueAt(adapter.row, 1) instanceof GhScore)) return false;
+				if (!(adapter.getValueAt(adapter.row, 1) instanceof Score)) return false;
 				
 				switch (adapter.column) {
 					case 0:
 						return
 						!adapter.isSelected() &&
-						((GhScore) adapter.getValueAt(adapter.row, 1)).getComment().isEmpty();
+						((Score) adapter.getValueAt(adapter.row, 1)).getComment().isEmpty();
 				}
 				
 				return false;

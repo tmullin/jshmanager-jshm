@@ -27,10 +27,12 @@ import java.util.logging.Logger;
 
 import jshm.*;
 import jshm.dataupdaters.GhScoreUpdater;
+import jshm.dataupdaters.RbScoreUpdater;
 import jshm.gh.GhGame;
 import jshm.gui.GUI;
 import jshm.gui.LoginDialog;
 import jshm.rb.RbGame;
+import jshm.rb.RbSong;
 
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
@@ -100,6 +102,12 @@ public class ScoreDownloadWizard {
 					LOG.finest("Returned from login dialog");
 				}
 
+				boolean scrapeAll = false;
+				
+				try {
+					scrapeAll = (Boolean) settings.get("all");
+				} catch (Exception e) {}
+				
 				if (game instanceof GhGame) {
 					GhGame ggame = (GhGame) game;
 					// TODO change to a select count(*) for efficiency
@@ -112,16 +120,22 @@ public class ScoreDownloadWizard {
 						jshm.dataupdaters.GhSongUpdater.update(ggame, difficulty);
 					}
 					
-					boolean scrapeAll = false;
-					
-					try {
-						scrapeAll = (Boolean) settings.get("all");
-					} catch (Exception e) {}
-					
 					GhScoreUpdater.update(progress, scrapeAll, ggame, difficulty);
 					gui.myScoresMenuItemActionPerformed(null, ggame, Instrument.Group.GUITAR, difficulty);
 				} else if (game instanceof RbGame) {
-//					RbGame rgame = (RbGame) game;
+					RbGame rgame = (RbGame) game;
+					// TODO change to a select count(*) for efficiency
+					List<?> songs = RbSong.getSongs(rgame, group);
+					
+					if (songs.size() == 0) {
+						// need to load song data as well
+						LOG.fine("Downloading song data first");
+						progress.setBusy("Downloading song data");
+						jshm.dataupdaters.RbSongUpdater.update(rgame.title);
+					}
+					
+					RbScoreUpdater.update(progress, scrapeAll, rgame, group, difficulty);
+					gui.myScoresMenuItemActionPerformed(null, rgame, group, difficulty);
 				} else {
 					assert false: "game is not a GhGame or RbGame";
 				}
