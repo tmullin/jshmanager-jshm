@@ -51,6 +51,8 @@ import jshm.gh.GhSong;
 import jshm.gui.editors.GhMyScoresRatingEditor;
 import jshm.gui.renderers.ScoreEditorSongComboRenderer;
 import jshm.hibernate.HibernateUtil;
+import jshm.rb.RbScore;
+
 import org.jdesktop.swingx.JXCollapsiblePane;
 
 /**
@@ -441,10 +443,10 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			case TEMPLATE:
 				score.setStatus(Score.Status.NEW);
 				
-				if (!(songCombo.getSelectedItem() instanceof GhSong))
+				if (!(songCombo.getSelectedItem() instanceof Song))
 					throw new IllegalArgumentException("You must select a song");
 				
-				score.setSong((GhSong) songCombo.getSelectedItem());
+				score.setSong((Song) songCombo.getSelectedItem());
 				score.setComment(commentField.getText().trim());
 				score.setImageUrl(imageUrlField.getText().trim());
 				score.setVideoUrl(videoUrlField.getText().trim());
@@ -501,7 +503,14 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 				}
 				
 //				setScore(null);
-				gui.myScoresMenuItemActionPerformed(null, gui.getCurGame(), gui.getCurDiff());
+				
+				if (score instanceof GhScore) {
+					gui.myScoresMenuItemActionPerformed(null, gui.getCurGame(), gui.getCurGroup(), gui.getCurDiff());
+				} else if (score instanceof RbScore) {
+					
+				} else {
+					assert false: "score isn't GhScore or RbScore";
+				}
 		}
 	} catch (Throwable t) {
 		LOG.log(Level.WARNING, "Failed to save score", t);

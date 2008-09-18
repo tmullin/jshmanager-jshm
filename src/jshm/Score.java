@@ -20,17 +20,41 @@
  */
 package jshm;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.text.DateFormat;
-import java.beans.*;
-import java.util.*;
-import javax.persistence.*;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-import org.hibernate.annotations.CollectionOfElements;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Type;
-import org.hibernate.validator.*;
+import org.hibernate.validator.Min;
+import org.hibernate.validator.NotNull;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
@@ -193,10 +217,13 @@ public abstract class Score {
 	}
 	
 	public void setGroup(Instrument.Group group) {
+		if (null == group) group = Instrument.Group.GUITAR;
 		this.group = group;
 	}
 	
-	@CollectionOfElements(fetch=FetchType.EAGER)
+	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name="score_id", nullable=false)
 	@Sort(type=SortType.NATURAL)
 	public SortedSet<Part> getParts() {

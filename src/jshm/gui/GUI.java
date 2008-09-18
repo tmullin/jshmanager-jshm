@@ -80,9 +80,9 @@ import org.netbeans.spi.wizard.Wizard;
 public class GUI extends javax.swing.JFrame {
 	static final Logger LOG = Logger.getLogger(GUI.class.getName());
 	
-//	private Instrument.Group curGroup = null;
-	private jshm.gh.GhGame curGame = null;
-	private jshm.Difficulty curDiff = null;
+	private Instrument.Group curGroup = null;
+	private Game curGame = null;
+	private Difficulty curDiff = null;
 	
 	private HoverHelp hh = null;
 	
@@ -577,7 +577,7 @@ private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event
 
 private void downloadScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadScoresMenuItemActionPerformed
 	Wizard wiz = ScoreDownloadWizard
-		.createWizard(GUI.this, getCurGame(), getCurDiff());
+		.createWizard(GUI.this, curGame, curGroup, curDiff);
 	wiz.show();
 }//GEN-LAST:event_downloadScoresMenuItemActionPerformed
 
@@ -589,7 +589,7 @@ private void downloadGhSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 			statusBar1.setTempText("Downloading song data from ScoreHero...", true);
 			
 			try {
-				jshm.dataupdaters.GhSongUpdater.update(getCurGame(), getCurDiff());
+				jshm.dataupdaters.GhSongUpdater.update((GhGame) curGame, curDiff);
 				return true;
 			} catch (Exception e) {
 				LOG.log(Level.SEVERE, "Failed to download song data ", e);
@@ -607,7 +607,7 @@ private void downloadGhSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 		public void done() {
 			try {
 				if (get()) {
-					songDataMenuItemActionPerformed(null, getCurGame(), getCurDiff());
+					songDataMenuItemActionPerformed(null, curGame, curDiff);
 				}
 			} catch (Exception e) {
 				LOG.log(Level.SEVERE, "Unknown error", e);
@@ -873,14 +873,14 @@ private void initDynamicGameMenu(final javax.swing.JMenu menu) {
 					al = new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							songDataMenuItemActionPerformed(e, (jshm.gh.GhGame) game, diff);
+							songDataMenuItemActionPerformed(e, game, diff);
 						}
 					};
 				} else if (menu == ghScoresMenu) {
 					al = new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							myScoresMenuItemActionPerformed(e, (jshm.gh.GhGame) game, diff);
+							myScoresMenuItemActionPerformed(e, game, Instrument.Group.GUITAR, diff);
 						}
 					};
 				} else {
@@ -1073,11 +1073,18 @@ private void initForumsMenu(final JMenu menu, final jshm.sh.links.Link linkRoot)
 	}
 }
 
-private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent evt, final jshm.gh.GhGame game, final jshm.Difficulty difficulty) {	
+private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game game, final Difficulty difficulty) {
+	if (!(game instanceof GhGame))
+		throw new IllegalArgumentException("game is not a GhGame");
+	
 	this.setCurGame(game);
 	this.setCurDiff(difficulty);
+	curGroup = Instrument.Group.GUITAR;
+	
 	scoreEditorPanel1.setScore(null);
 	editorCollapsiblePane.setCollapsed(true);
+	
+	final GhGame ggame = (GhGame) game;
 	
 	new SwingWorker<Void, Void>() {
 		List<jshm.gh.GhSong> songs = null;
@@ -1089,8 +1096,8 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 			statusBar1.setTempText("Loading song data from database...", true);
 			
 			try {
-				songs = jshm.gh.GhSong.getSongs(game, difficulty);
-				model = new GhSongDataTreeTableModel(game, songs);
+				songs = jshm.gh.GhSong.getSongs(ggame, difficulty);
+				model = new GhSongDataTreeTableModel(ggame, songs);
 	
 				SwingUtilities.invokeAndWait(new Runnable() {
 					public void run() {
@@ -1209,7 +1216,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 	}.execute();
 }
 
-public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt, final jshm.gh.GhGame game, final jshm.Difficulty difficulty) {
+public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt, final Game game, final Instrument.Group group, final Difficulty difficulty) {
 //	final List<TreePath> expandedPaths = 
 //		getCurGame() == game && getCurDiff() == difficulty
 //		? GuiUtil.getExpandedPaths(jXTreeTable1)
@@ -1217,25 +1224,38 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 	
 	this.setCurGame(game);
 	this.setCurDiff(difficulty);
+	this.curGroup = group;
 	scoreEditorPanel1.setScore(null);
 	
 	new SwingWorker<Void, Void>() {
-		List<GhSong> songs = null;
-		List<GhScore> scores = null;
+		List<? extends Song> songs = null;
+		List<? extends Score> scores = null;
 		GhMyScoresTreeTableModel model = null;
 		
 		@Override
 		protected Void doInBackground() throws Exception {			
 			try {
-				songs = GhSong.getSongs(game, difficulty);
+				if (game instanceof GhGame)
+					songs = GhSong.getSongs((GhGame) game, difficulty);
+				else if (game instanceof RbGame)
+					songs = null; // RbSong.getSongs((RbGame) game, group);
+				else
+					assert false: "game not a GhGame or RbGame";
 				
 				getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				statusBar1.setTempText("Loading score data from database...", true);
 				
-				scores = GhScore.getScores(game, difficulty);
+				if (game instanceof GhGame)
+					scores = GhScore.getScores((GhGame) game, difficulty);
+				else
+					scores = null; // RbScore.getScores((RbGame) game, group, difficulty);
+				
 				model = new GhMyScoresTreeTableModel(game, songs, scores);
 	
-				final List<GhSong> orderedSongs = GhSong.getSongsOrderedByTitles(game, difficulty);
+				final List<GhSong> orderedSongs =
+					game instanceof GhGame
+					? GhSong.getSongsOrderedByTitles((GhGame) game, difficulty)
+					: null; // GhSong.getSongsOrderedByTitles((RbGame) game, group);
 				
 				SwingUtilities.invokeAndWait(new Runnable() {
 					public void run() {
@@ -1289,7 +1309,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 						GUI.this, "No scores are present.\nDownload from ScoreHero?", "",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 					
-					downloadGhSongDataMenuItemActionPerformed(null);
+					downloadScoresMenuItemActionPerformed(null);
 				}
 
 				return;
@@ -1361,20 +1381,27 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     	return statusBar1;
     }
     
-	public jshm.gh.GhGame getCurGame() {
+	public Game getCurGame() {
 		return curGame;
 	}
 
-	private void setCurGame(jshm.gh.GhGame curGame) {
+	private void setCurGame(Game curGame) {
 		this.curGame = curGame;
 	}
 
-	public jshm.Difficulty getCurDiff() {
+	public Difficulty getCurDiff() {
 		return curDiff;
 	}
 
-	private void setCurDiff(jshm.Difficulty curDiff) {
+	private void setCurDiff(Difficulty curDiff) {
 		this.curDiff = curDiff;
 	}
 
+	public Instrument.Group getCurGroup() {
+		return curGroup;
+	}
+	
+	void setCurGroup(Instrument.Group group) {
+		this.curGroup = group;
+	}
 }

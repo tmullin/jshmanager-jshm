@@ -25,11 +25,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jshm.Difficulty;
+import jshm.*;
 import jshm.dataupdaters.GhScoreUpdater;
 import jshm.gh.GhGame;
 import jshm.gui.GUI;
 import jshm.gui.LoginDialog;
+import jshm.rb.RbGame;
 
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
@@ -44,8 +45,8 @@ import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
 public class ScoreDownloadWizard {
 	static final Logger LOG = Logger.getLogger(ScoreDownloadWizard.class.getName());
 	
-	public static Wizard createWizard(final GUI gui, final GhGame game, final Difficulty difficulty) {
-		final ScoreDownloadWizard me = new ScoreDownloadWizard(gui, game, difficulty);
+	public static Wizard createWizard(final GUI gui, final Game game, final Instrument.Group group, final Difficulty difficulty) {
+		final ScoreDownloadWizard me = new ScoreDownloadWizard(gui, game, group, difficulty);
 		
 		return WizardPage.createWizard("Download scores from ScoreHero",
 			new WizardPage[] {
@@ -55,12 +56,14 @@ public class ScoreDownloadWizard {
 	}
 
 	final GUI gui;
-	final GhGame game;
+	final Game game;
+	final Instrument.Group group;
 	final Difficulty difficulty;
 	
-	private ScoreDownloadWizard(final GUI gui, final GhGame game, final Difficulty difficulty) {
+	private ScoreDownloadWizard(final GUI gui, final Game game, final Instrument.Group group, final Difficulty difficulty) {
 		this.gui = gui;
 		this.game = game;
+		this.group = group;
 		this.difficulty = difficulty;
 	}
 	
@@ -97,24 +100,32 @@ public class ScoreDownloadWizard {
 					LOG.finest("Returned from login dialog");
 				}
 
-				// TODO change to a select count(*) for efficiency
-				List<jshm.gh.GhSong> songs = jshm.gh.GhSong.getSongs(game, difficulty);
-				
-				if (songs.size() == 0) {
-					// need to load song data as well
-					LOG.fine("Downloading song data first");
-					progress.setBusy("Downloading song data");
-					jshm.dataupdaters.GhSongUpdater.update(game, difficulty);
+				if (game instanceof GhGame) {
+					GhGame ggame = (GhGame) game;
+					// TODO change to a select count(*) for efficiency
+					List<jshm.gh.GhSong> songs = jshm.gh.GhSong.getSongs(ggame, difficulty);
+					
+					if (songs.size() == 0) {
+						// need to load song data as well
+						LOG.fine("Downloading song data first");
+						progress.setBusy("Downloading song data");
+						jshm.dataupdaters.GhSongUpdater.update(ggame, difficulty);
+					}
+					
+					boolean scrapeAll = false;
+					
+					try {
+						scrapeAll = (Boolean) settings.get("all");
+					} catch (Exception e) {}
+					
+					GhScoreUpdater.update(progress, scrapeAll, ggame, difficulty);
+					gui.myScoresMenuItemActionPerformed(null, ggame, Instrument.Group.GUITAR, difficulty);
+				} else if (game instanceof RbGame) {
+//					RbGame rgame = (RbGame) game;
+				} else {
+					assert false: "game is not a GhGame or RbGame";
 				}
 				
-				boolean scrapeAll = false;
-				
-				try {
-					scrapeAll = (Boolean) settings.get("all");
-				} catch (Exception e) {}
-				
-				GhScoreUpdater.update(progress, scrapeAll, game, difficulty);
-				gui.myScoresMenuItemActionPerformed(null, game, difficulty);
 				progress.finished(null);
 			} catch (Throwable e) {
 				LOG.log(Level.WARNING, "Failed to download scores", e);
