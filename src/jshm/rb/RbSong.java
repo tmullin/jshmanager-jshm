@@ -69,7 +69,7 @@ public class RbSong extends Song {
 	}
 	
 	public static RbSong getByScoreHeroId(final int id) {
-		LOG.finest("Querying database for song with scoreHeroId=" + id);
+		LOG.finest("Querying database for RbSong with scoreHeroId=" + id);
 		
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();

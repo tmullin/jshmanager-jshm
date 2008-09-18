@@ -25,11 +25,8 @@ import java.beans.*;
 import java.util.*;
 import javax.persistence.*;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Type;
@@ -199,9 +196,7 @@ public abstract class Score {
 		this.group = group;
 	}
 	
-	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@Fetch(FetchMode.SELECT)
+	@CollectionOfElements(fetch=FetchType.EAGER)
 	@JoinColumn(name="score_id", nullable=false)
 	@Sort(type=SortType.NATURAL)
 	public SortedSet<Part> getParts() {
