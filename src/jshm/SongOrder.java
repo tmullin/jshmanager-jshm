@@ -116,6 +116,7 @@ public class SongOrder implements Comparable<SongOrder> {
 	public void setSong(Song song) {
 		this.song = song;
 		this.gameTitle = song.getGameTitle();
+		song.setSongOrder(this);
 	}
 
 	@Enumerated(EnumType.STRING)

@@ -26,8 +26,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import jshm.Score;
-import jshm.gh.GhScore;
-import jshm.gh.GhSong;
+import jshm.Song;
 
 public class GhMyScoresTreeCellRenderer extends DefaultTreeCellRenderer {
     public Component getTreeCellRendererComponent(JTree tree, Object value,
@@ -36,8 +35,8 @@ public class GhMyScoresTreeCellRenderer extends DefaultTreeCellRenderer {
 			  boolean leaf, int row,
 			  boolean hasFocus) {
     	
-    	if (value instanceof GhScore) {
-    		GhScore score = (GhScore) value;
+    	if (value instanceof Score) {
+    		Score score = (Score) value;
     		
     		if (score.getStatus() == Score.Status.TEMPLATE) {
     			value = "Double click to edit...";
@@ -45,8 +44,8 @@ public class GhMyScoresTreeCellRenderer extends DefaultTreeCellRenderer {
 	    		value = score.getComment().isEmpty()
 	    			? "No Comment" : score.getComment();
     		}
-    	} else if (value instanceof GhSong) {
-    		value = ((GhSong) value).getTitle();
+    	} else if (value instanceof Song) {
+    		value = ((Song) value).getTitle();
     	}
     	
     	return super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);

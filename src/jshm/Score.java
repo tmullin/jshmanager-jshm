@@ -219,12 +219,32 @@ public abstract class Score {
 		pcs.firePropertyChange("part" + index + "Streak", old, streak);
 	}
 	
+	@Transient
+	public int getPartStreak(int index) {
+		return getPart(index).getStreak();
+	}
+	
 	public void setPartHitPercent(int index, float percent) {
 		Part p = getPart(index);
 		
 		float old = p.getHitPercent();
 		p.setHitPercent(percent);
 		pcs.firePropertyChange("part" + index + "HitPercent", old, percent);
+	}
+	
+	@Transient
+	public float getPartHitPercent(int index) {
+		return getPart(index).getHitPercent();
+	}
+	
+	@Transient
+	public Instrument getPartInstrument(int index) {
+		return getPart(index).getInstrument();
+	}
+	
+	@Transient
+	public String getPartPerformer(int index) {
+		return getPart(index).getPerformer();
 	}
 	
 	/**
@@ -475,9 +495,19 @@ public abstract class Score {
 		if (this == o) return true;
 		Score s = (Score) o;
 		
-//		boolean b1 = this.parts.equals(s.parts);
-//		boolean b2 = this.parts.size() == s.parts.size();
-//		boolean b3 = this.getPart(1).equals(s.getPart(1));
+		boolean partsEqual = this.parts.size() == s.parts.size();
+		
+		if (partsEqual) { // same size
+OuterPartLoop:
+			for (Part p1 : parts) {
+				for (Part p2 : s.parts) {
+					if (!p1.equals(p2)) {
+						partsEqual = false;
+						break OuterPartLoop;
+					}
+				}
+			}
+		}
 		
 		// TODO figure out why !this.parts.equals(s.parts)
 		
@@ -486,7 +516,7 @@ public abstract class Score {
 			this.score == s.score &&
 			((null == this.submissionDate && null == s.submissionDate) ||
 			 (this.submissionDate.equals(s.submissionDate))) &&
-			this.parts.size() == s.parts.size();
+			partsEqual;
 //			this.parts.equals(s.parts);
 	}
 	

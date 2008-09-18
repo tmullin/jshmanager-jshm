@@ -57,6 +57,7 @@
 		
 		<mapping class="jshm.Score"/>
 		<mapping class="jshm.gh.GhScore"/>
+		<mapping class="jshm.rb.RbScore"/>
 		
 		<mapping class="jshm.Part"/>
 		<mapping class="jshm.SongOrder"/>

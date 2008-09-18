@@ -26,23 +26,46 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 
+import jshm.Game;
+import jshm.GameTitle;
+import jshm.Score;
+import jshm.gh.GhGameTitle;
 import jshm.gh.GhScore;
+import jshm.rb.RbGameTitle;
+import jshm.rb.RbScore;
 
-public class GhMyScoresRatingEditor extends DefaultCellEditor {		
-	public static JComboBox createRatingComboBox() {
-		return 
-		new JComboBox(
-			new Object[] {
-					GhScore.getRatingIcon(0),
-					GhScore.getRatingIcon(5),
-					GhScore.getRatingIcon(4),
-					GhScore.getRatingIcon(3)
-				}
-			);
+public class GhMyScoresRatingEditor extends DefaultCellEditor {
+	public static JComboBox createRatingComboBox(Game game) {
+		return createRatingComboBox(game.title);
 	}
 	
-	public GhMyScoresRatingEditor() {
-		super(createRatingComboBox());
+	public static JComboBox createRatingComboBox(GameTitle game) {
+		Object[] values = null;
+		
+		if (game instanceof GhGameTitle) {
+			values = new Object[] {
+				GhScore.getRatingIcon(0),
+				GhScore.getRatingIcon(5),
+				GhScore.getRatingIcon(4),
+				GhScore.getRatingIcon(3)
+			};
+		} else if (game instanceof RbGameTitle) {
+			values = new Object[] {
+				RbScore.getRatingIcon(0),
+				RbScore.getRatingIcon(5),
+				RbScore.getRatingIcon(4),
+				RbScore.getRatingIcon(3),
+				RbScore.getRatingIcon(2),
+				RbScore.getRatingIcon(1)
+			};
+		}
+		
+		return 
+		new JComboBox(values);
+	}
+	
+	public GhMyScoresRatingEditor(Game game) {
+		super(createRatingComboBox(game));
 	}
 	
     public Component getTableCellEditorComponent(JTable table, Object value,
@@ -50,7 +73,7 @@ public class GhMyScoresRatingEditor extends DefaultCellEditor {
 			 int row, int column) {
     	
 		return super.getTableCellEditorComponent(
-			table, ((GhScore) value).getRatingIcon(),
+			table, ((Score) value).getRatingIcon(),
 			isSelected, row, column);
 	}
 }

@@ -45,6 +45,7 @@ import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 import jshm.Score;
+import jshm.Song;
 import jshm.gh.GhScore;
 import jshm.gh.GhSong;
 import jshm.gui.editors.GhMyScoresRatingEditor;
@@ -96,19 +97,19 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 		@Override
 		public String getPreferredStringForItem(Object item) {
 			if (null == item) return null;
-			if (item instanceof GhSong)
-				return ((GhSong) item).getTitle();
+			if (item instanceof Song)
+				return ((Song) item).getTitle();
 			return item.toString();
 		}
 	};
 	
-	public void setSongs(List<GhSong> songs) {
+	public void setSongs(List<? extends Song> songs) {
 		songCombo.setRenderer(SONG_COMBO_RENDERER);
 		DefaultComboBoxModel model = (DefaultComboBoxModel) songCombo.getModel();
 		model.removeAllElements();
 		
 		model.addElement(SELECT_A_SONG);
-		for (GhSong s : songs)
+		for (Song s : songs)
 			model.addElement(s);
 		
 		AutoCompleteDecorator.decorate(songCombo, SONG_COMBO_CONVERTER);
@@ -116,15 +117,15 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 		newButton.setEnabled(true);
 	}
 	
-	private GhScore score = null;
+	private Score score = null;
 	
-	public void setSong(GhSong song) {
+	public void setSong(Song song) {
 		songCombo.setSelectedItem(song);
 	}
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		final GhScore score = (GhScore) evt.getSource();
+		final Score score = (Score) evt.getSource();
 		final String name = evt.getPropertyName();
 		final Object newValue = evt.getNewValue();
 		
@@ -132,7 +133,7 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 		
 		if (name.equals("score")) {
 			field = scoreField;
-		} else if (name.equals("streak")) {
+		} else if (name.equals("part1Streak")) {
 			field = streakField;
 		} else if (name.equals("comment")) {
 			field = commentField;
@@ -154,9 +155,16 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 		}
 	}
 	
-	public void setScore(final GhScore score) {
+	public void setScore(final Score score) {
 		if (null != this.score)
 			this.score.removePropertyChangeListener(this);
+		
+		if (null != score &&
+			(null == this.score || this.score.getClass() != score.getClass())) {
+			ratingCombo.setModel(
+				GhMyScoresRatingEditor.createRatingComboBox(score.getGame()).getModel());
+			ratingCombo.validate();
+		}
 		
 		this.score = score;
 		
@@ -204,7 +212,7 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
     private void initComponents() {
 
         scoreField = new javax.swing.JTextField();
-        ratingCombo = GhMyScoresRatingEditor.createRatingComboBox();
+        ratingCombo = new javax.swing.JComboBox();
         percentField = new javax.swing.JTextField();
         streakField = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();

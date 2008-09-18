@@ -29,7 +29,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import jshm.gh.GhScore;
+import jshm.Score;
 
 public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
 	private final DecimalFormat NUM_FMT = new DecimalFormat("#,###");
@@ -45,8 +45,8 @@ public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
     	super.getTableCellRendererComponent(
        		table, value, isSelected, hasFocus, row, column);
     	
-    	if (value instanceof GhScore) {
-    		final GhScore score = (GhScore) value;
+    	if (value instanceof Score) {
+    		final Score score = (Score) value;
     	
 			switch (column) {
 				case 0:
@@ -85,23 +85,24 @@ public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
 					setHorizontalTextPosition(RIGHT);
 					setIcon(score.getRatingIcon());
 					setText(
+						score.getGameTitle().supportsCalculatedRating() &&
 						score.getCalculatedRating() != 0.0f
 						? String.format("(%01.1f)", 
 							(float) ((int) (score.getCalculatedRating() * 10)) / 10.0f
 						  )
-						: "");
+						: null);
 					break;
 				
 				case 3:
 					setText(
-						score.getHitPercent() != 0.0f
-						? String.valueOf((int) (score.getHitPercent() * 100))
+						score.getPartHitPercent(1) != 0.0f
+						? String.valueOf((int) (score.getPartHitPercent(1) * 100))
 						: "");
 					break;
 					
 				case 4:
-					if (score.getStreak() > 0)
-						setText(NUM_FMT.format(score.getStreak()));
+					if (score.getPartStreak(1) > 0)
+						setText(NUM_FMT.format(score.getPartStreak(1)));
 					else
 						setText("");
 					break;

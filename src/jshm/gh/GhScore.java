@@ -30,6 +30,7 @@ import jshm.Instrument;
 import jshm.Part;
 import jshm.Score;
 
+import org.hibernate.LazyInitializationException;
 import org.hibernate.validator.*;
 
 /**
@@ -88,13 +89,17 @@ public class GhScore extends jshm.Score {
 		this.streak = streak;
 		pcs.firePropertyChange("streak", old, streak);
 		
-		// TODO check on LazyInitializationException
+		// This can throw LazyInitializationException but
+		// it seems this isn't anything to worry about,
+		// the exception would only be thrown when reading
+		// the value from the db initially, in which case it's also
+		// going to set part 1's streak anyway
 		try {
 			if (getParts().size() == 1) {
 //				getPart(1).setStreak(streak);
 				setPartStreak(1, streak);
 			}
-		} catch (Exception e) {}
+		} catch (LazyInitializationException e) {}
 	}
 	
 	/**

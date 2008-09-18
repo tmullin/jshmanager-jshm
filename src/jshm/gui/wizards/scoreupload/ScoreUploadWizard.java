@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 
 //import javax.swing.JOptionPane;
 
-import jshm.gh.GhScore;
+import jshm.Score;
 import jshm.gui.LoginDialog;
 import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 
@@ -95,7 +95,7 @@ public class ScoreUploadWizard {
 				
 				int scoreCount = model.getScoreCount();
 				int curIndex = -1;
-				for (GhScore s : model.getScores()) {
+				for (Score s : model.getScores()) {
 					curIndex++;
 					
 					try {
@@ -112,7 +112,7 @@ public class ScoreUploadWizard {
 						String.format("Uploading score %s of %s", curIndex + 1, scoreCount),
 						curIndex, scoreCount);
 					
-					jshm.sh.GhApi.submitGhScore(s);
+					jshm.sh.Api.submitScore(s);
 					
 					resultStrings.add("Uploaded: " + s.getSong().getTitle() + " - " + s.getScore());
 				}

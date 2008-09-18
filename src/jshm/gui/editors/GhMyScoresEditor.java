@@ -29,7 +29,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-import jshm.gh.GhScore;
+import jshm.Score;
 import jshm.gui.EditPopupMenu;
 
 public class GhMyScoresEditor extends DefaultCellEditor {
@@ -113,8 +113,8 @@ public class GhMyScoresEditor extends DefaultCellEditor {
     	
 //    	InputVerifier iv = null;
     	
-    	if (value instanceof GhScore) {
-    		GhScore score = (GhScore) value;
+    	if (value instanceof Score) {
+    		Score score = (Score) value;
     		
     		switch (column) {
     			case 0: value = score.getComment(); break;
@@ -125,14 +125,14 @@ public class GhMyScoresEditor extends DefaultCellEditor {
     				break;
     				
     			case 3:
-    				value = score.getPart(1).getHitPercent() != 0f
-    					? (int) (score.getPart(1).getHitPercent() * 100) : "";
+    				value = score.getPartHitPercent(1) != 0f
+    					? (int) (score.getPartHitPercent(1) * 100) : "";
 //    				iv = PERCENT_VERIFIER;
     				break;
     				
     			case 4:
-    				value = score.getPart(1).getStreak() > 0
-    					? score.getPart(1).getStreak() : "";
+    				value = score.getPartStreak(1) > 0
+    					? score.getPartStreak(1) : "";
 //    				iv = STREAK_VERIFIER;
     				break;
     		}

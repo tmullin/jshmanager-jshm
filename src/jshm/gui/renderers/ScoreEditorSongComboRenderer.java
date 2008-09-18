@@ -25,7 +25,7 @@ import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
-import jshm.gh.GhSong;
+import jshm.Song;
 
 public class ScoreEditorSongComboRenderer extends DefaultListCellRenderer {
     public Component getListCellRendererComponent(
@@ -35,8 +35,8 @@ public class ScoreEditorSongComboRenderer extends DefaultListCellRenderer {
             boolean isSelected,
             boolean cellHasFocus) {
 
-    	if (value instanceof GhSong)
-    		value = ((GhSong) value).getTitle();
+    	if (value instanceof Song)
+    		value = ((Song) value).getTitle();
     	
     	return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
     }

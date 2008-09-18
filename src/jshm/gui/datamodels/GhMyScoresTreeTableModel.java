@@ -35,8 +35,9 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
 
+import jshm.Game;
 import jshm.Score;
-import jshm.gh.GhGame;
+import jshm.Song;
 import jshm.gh.GhScore;
 import jshm.gh.GhSong;
 import jshm.gui.editors.GhMyScoresEditor;
@@ -49,6 +50,7 @@ import jshm.gui.renderers.GhMyScoresPercentHighlighter;
 import jshm.gui.renderers.GhMyScoresTreeCellRenderer;
 import jshm.gui.renderers.TierHighlighter;
 import jshm.hibernate.HibernateUtil;
+import jshm.rb.RbScore;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -73,21 +75,21 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	private class DataModel {
 		List<Tier>	tiers	= new ArrayList<Tier>();
 
-		public DataModel(final GhGame game, final List<GhSong> songs,
-				final List<GhScore> scores) {
+		public DataModel(final Game game, final List<? extends Song> songs,
+				final List<? extends Score> scores) {
 
 			for (int i = 1; i <= game.getTierCount(); i++) {
 				tiers.add(new Tier(game.getTierName(i)));
 			}
-
-			for (GhSong song : songs) {
-				tiers.get(song.getTierLevel() - 1).songs.add(new SongScores(
-						song));
+			
+			for (Song song : songs) {
+				tiers.get(song.getTierLevel() - 1).songs.add(
+					new SongScores(song));
 			}
 
-			for (GhScore score : scores) {
-				tiers.get(((GhSong) score.getSong()).getTierLevel() - 1)
-						.addScore(score);
+			for (Score score : scores) {
+				tiers.get(score.getSong().getTierLevel() - 1)
+					.addScore(score);
 			}
 
 //			for (GhSong song : songs) {
@@ -99,14 +101,13 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 
 	public class Tier {
 		public final String				name;
-
-		public final List<SongScores>	songs	= new ArrayList<SongScores>();
+		public final List<SongScores>	songs = new ArrayList<SongScores>();
 
 		public Tier(String name) {
 			this.name = name;
 		}
 
-		public void addScore(GhScore score) {
+		public void addScore(Score score) {
 			for (SongScores ss : songs) {
 				if (ss.song.equals((GhSong) score.getSong())) {
 					ss.scores.add(score);
@@ -115,7 +116,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			}
 		}
 		
-		public void removeScore(GhScore score) {
+		public void removeScore(Score score) {
 			for (SongScores ss : songs) {
 				if (ss.song.equals((GhSong) score.getSong())) {
 					ss.scores.remove(score);
@@ -137,11 +138,10 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	}
 
 	public class SongScores {
-		public final GhSong			song;
+		public final Song			song;
+		public final List<Score>	scores	= new ArrayList<Score>();
 
-		public final List<GhScore>	scores	= new ArrayList<GhScore>();
-
-		public SongScores(GhSong song) {
+		public SongScores(Song song) {
 			this.song = song;
 		}
 
@@ -154,10 +154,10 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 
 	private static JXTreeTable parent;
 	private final DataModel	model;
-	private final GhGame game;
+	private final Game game;
 
-	public GhMyScoresTreeTableModel(final GhGame game,
-			final List<GhSong> songs, final List<GhScore> scores) {
+	public GhMyScoresTreeTableModel(final Game game,
+			final List<? extends Song> songs, final List<? extends Score> scores) {
 
 		super("ROOT");
 		this.game = game;
@@ -170,8 +170,8 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		Object o = p.getLastPathComponent();
 //		System.out.println("Selected: " + o);
 		
-		if (o instanceof GhScore) {
-			createScoreTemplate((GhScore) o);
+		if (o instanceof Score) {
+			createScoreTemplate((Score) o);
 			p = p.getParentPath();
 		} else if (o instanceof SongScores) {
 			createScoreTemplate((SongScores) o);
@@ -184,15 +184,17 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	}
 	
 	private void createScoreTemplate(SongScores selectedSongScores) {
-		selectedSongScores.scores.add(
-			GhScore.createNewScoreTemplate(selectedSongScores.song));
+		// FIXME
+//		selectedSongScores.scores.add(
+//			GhScore.createNewScoreTemplate(selectedSongScores.song));
 	}
 	
-	private void createScoreTemplate(GhScore selectedScore) {
-		GhSong song = (GhSong) selectedScore.getSong();
-		
-		model.tiers.get(song.getTierLevel() - 1)
-			.addScore(GhScore.createNewScoreTemplate(song));
+	private void createScoreTemplate(Score selectedScore) {
+		// FIXME
+//		Song song = (Song) selectedScore.getSong();
+//		
+//		model.tiers.get(song.getTierLevel() - 1)
+//			.addScore(GhScore.createNewScoreTemplate(song));
 	}
 
 	public void deleteScore(TreePath p) {
@@ -200,9 +202,9 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	}
 	
 	public void deleteScore(TreePath p, boolean deleteFromScoreHero) {
-		if (!(p.getLastPathComponent() instanceof GhScore)) return;
+		if (!(p.getLastPathComponent() instanceof Score)) return;
 		
-		GhScore score = (GhScore) p.getLastPathComponent();
+		Score score = (Score) p.getLastPathComponent();
 		
 		switch (score.getStatus()) {
 			case NEW:
@@ -227,6 +229,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 				}
 				
 			case TEMPLATE:
+				// FIXME
 				model.tiers.get(((GhSong) score.getSong()).getTierLevel() - 1)
 					.removeScore(score);
 				
@@ -245,12 +248,12 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	 * that contains only the new scores that this model contains.
 	 */
 	public GhMyScoresTreeTableModel createNewScoresModel() {
-		List<GhSong> songs = new ArrayList<GhSong>();
-		List<GhScore> newScores = new ArrayList<GhScore>();
+		List<Song> songs = new ArrayList<Song>();
+		List<Score> newScores = new ArrayList<Score>();
 		
 		for (Tier t : model.tiers) {
 			for (SongScores ss : t.songs) {
-				for (GhScore s : ss.scores) {
+				for (Score s : ss.scores) {
 					if (s.getStatus() == Score.Status.NEW && s.isSubmittable()) {
 						newScores.add(s);
 						
@@ -280,8 +283,8 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		return count;
 	}
 	
-	public List<GhScore> getScores() {
-		List<GhScore> scores = new ArrayList<GhScore>();
+	public List<Score> getScores() {
+		List<Score> scores = new ArrayList<Score>();
 		
 		for (Tier t : model.tiers) {
 			for (SongScores ss : t.songs) {
@@ -396,10 +399,10 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 //		parent.setHierarchicalEditor(
 //			new GhMyScoresCommentEditor(   ));
 		GhMyScoresEditor editor = new GhMyScoresEditor();
-		parent.setDefaultEditor(GhScore.class, editor);
+		parent.setDefaultEditor(Score.class, editor);
 //		parent.getColumn(0).setCellEditor(editor); // has no effect....
 //		parent.getColumn(1).setCellEditor(editor);
-		parent.getColumn(2).setCellEditor(new GhMyScoresRatingEditor());
+		parent.getColumn(2).setCellEditor(new GhMyScoresRatingEditor(game));
 //		parent.getColumn(3).setCellEditor(editor);
 //		parent.getColumn(4).setCellEditor(editor);
 		
@@ -425,7 +428,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		switch (column) {
 			case 0: return String.class;
 			case 1:	case 2: case 3: case 4:
-				return GhScore.class;
+				return Score.class;
 			case 5:
 			case 6:
 				return java.util.Date.class;
@@ -440,7 +443,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 
 	private static final String[]	COLUMN_NAMES	= {
 		"Song/Comment",
-		"Score", "Rating (Calc)", "%", "Streak", "Date Created", "Date Submitted" };
+		"Score", "Rating", "%", "Streak", "Date Created", "Date Submitted" };
 
 	@Override
 	public String getColumnName(int arg0) {
@@ -461,10 +464,10 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			return "";
 		}
 
-		if (!(node instanceof GhScore))
+		if (!(node instanceof Score))
 			return "";
 
-		GhScore score = (GhScore) node;
+		Score score = (Score) node;
 
 //		if (score.getStatus() == Score.Status.TEMPLATE) {
 //			switch (column) {
@@ -490,9 +493,9 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	}
 
 	public boolean isCellEditable(Object node, int column) {
-		if (!(node instanceof GhScore)) return false;
+		if (!(node instanceof Score)) return false;
 		
-		GhScore score = (GhScore) node;
+		Score score = (Score) node;
 		
 		switch (score.getStatus()) {
 			case NEW:
@@ -510,9 +513,9 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 
     public void setValueAt(Object value, Object node, int column) {
 //    	System.out.println("setting col: " + column + " = " + value);
-		if (!(node instanceof GhScore)) return;
+		if (!(node instanceof Score)) return;
 		
-		GhScore score = (GhScore) node;
+		Score score = (Score) node;
 		String s = value.toString();
 		
 		switch (score.getStatus()) {
@@ -533,11 +536,19 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 					case 2:
 						score.setRating(0);
 						
-						for (int i : new Integer[] {3, 4, 5})
-							if (GhScore.getRatingIcon(i) == value) {
-								score.setRating(i);
-								break;
-							}
+						if (score instanceof GhScore) {
+							for (int i : new Integer[] {3, 4, 5})
+								if (GhScore.getRatingIcon(i) == value) {
+									score.setRating(i);
+									break;
+								}
+						} else if (score instanceof RbScore) {
+							for (int i : new Integer[] {1, 2, 3, 4, 5})
+								if (RbScore.getRatingIcon(i) == value) {
+									score.setRating(i);
+									break;
+								}
+						}
 						break;
 						
 					case 3:
@@ -550,7 +561,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 						
 					case 4:
 						try {
-							score.setStreak(
+							score.setPartStreak(1, 
 								s.isEmpty() ? 0 :
 								Integer.parseInt(s));
 						} catch (Exception e) {}
@@ -637,6 +648,6 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 
 	@Override
 	public boolean isLeaf(Object node) {
-		return node instanceof GhScore;
+		return node instanceof Score;
 	}
 }

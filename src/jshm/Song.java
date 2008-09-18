@@ -47,6 +47,8 @@ public abstract class Song {
 	private Game	game		= null;
 	private String	title		= "UNKNOWN";
 	
+	private SongOrder songOrder = null;
+	
 	/**
 	 * If the game's {@link Difficulty.Strategy} is BY_SONG this
 	 * should be overridden to return it. Otherwise it should
@@ -105,6 +107,20 @@ public abstract class Song {
 		this.title = title;
 	}
 	
+	@Transient
+	public SongOrder getSongOrder() {
+		return songOrder;
+	}
+	
+	public void setSongOrder(SongOrder songOrder) {
+		this.songOrder = songOrder;
+	}
+	
+	@Transient
+	public int getTierLevel() {
+		if (null == songOrder) return 0;
+		return songOrder.getTier();
+	}
 	
 	// override object methods
 	
