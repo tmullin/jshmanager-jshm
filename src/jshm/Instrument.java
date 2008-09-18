@@ -73,6 +73,11 @@ public enum Instrument {
 			this.instruments = instruments;
 		}
 		
+		public javax.swing.ImageIcon getIcon() {
+			if (size != 1) return null;
+			return Instrument.valueOf(this.name()).getIcon();
+		}
+		
 		/**
 		 * 
 		 * @param id

@@ -27,6 +27,28 @@ import java.util.logging.*;
 public class Log {
 	public static final boolean DEBUG = true;
 	
+	// this is for setting up logging for tests/concepts, just to the console
+	public static void configTestLogging() {
+		Handler consoleHandler = new ConsoleHandler();
+		consoleHandler.setLevel(Level.ALL);
+		consoleHandler.setFormatter(new OneLineFormatter());
+		
+		Logger cur = Logger.getLogger("");
+		removeHandlers(cur);
+//		cur.setLevel(Level.ALL);
+		
+		cur.addHandler(consoleHandler);
+		
+		cur = Logger.getLogger("jshm");
+		cur.setLevel(Level.FINER);
+		
+		
+//		cur = Logger.getLogger("org.hibernate");
+//		removeHandlers(cur);
+//		
+//		cur.setLevel(Level.INFO);
+	}
+	
 	public static void reloadConfig() throws Exception {
 		// all logging
 		Handler consoleHandler = new ConsoleHandler();
@@ -103,28 +125,6 @@ public class Log {
 		
 		cur.addHandler(swingxHandler);
 		cur.setLevel(DEBUG ? Level.ALL : Level.INFO);
-	}
-	
-	// this is for setting up logging for tests/concepts, just to the console
-	public static void configTestLogging() {
-		Handler consoleHandler = new ConsoleHandler();
-		consoleHandler.setLevel(Level.ALL);
-		consoleHandler.setFormatter(new OneLineFormatter());
-		
-		Logger cur = Logger.getLogger("");
-		removeHandlers(cur);
-		cur.setLevel(Level.ALL);
-		
-		cur.addHandler(consoleHandler);
-		
-		cur = Logger.getLogger("jshm");
-		cur.setLevel(Level.ALL);
-		
-		
-		cur = Logger.getLogger("org.hibernate");
-		removeHandlers(cur);
-		
-		cur.setLevel(Level.INFO);
 	}
 	
 	public static Logger removeHandlers(final Logger logger) {

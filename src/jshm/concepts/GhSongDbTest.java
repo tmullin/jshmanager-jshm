@@ -32,17 +32,19 @@ import jshm.hibernate.HibernateUtil;
 import jshm.logging.Log;
 import jshm.sh.scraper.*;
 
-@SuppressWarnings({"unused", "unchecked"})
+@SuppressWarnings({"unused"})
 public class GhSongDbTest {
 	public static void main(String[] args) throws Exception {
 		Log.configTestLogging();
+//		HibernateUtil.getCurrentSession();
+//		System.exit(0);
 		
-		final RbGame game = RbGame.RB1_XBOX360;
+		final RbGame game = RbGame.RB2_XBOX360;
 //		final Difficulty difficulty = Difficulty.EXPERT;
 		
 		jshm.util.TestTimer.start();
 //		GhSongUpdater.update(GhGame.GH3_XBOX360, Difficulty.EXPERT);
-		RbSongUpdater.update(game);
+		RbSongUpdater.update(game.title);
 		jshm.util.TestTimer.stop();
 		
 //		printSongs();
@@ -56,28 +58,33 @@ public class GhSongDbTest {
 		
 //		printScores();
 		
-		jshm.util.TestTimer.stop();
+//		jshm.util.TestTimer.stop();
 		
 		HibernateUtil.shutdown();
 	}
 	
 	static void printSongs() {
-	    Session session = HibernateUtil.getCurrentSession();
-	    session.beginTransaction();
-	    List<Song> result = (List<Song>) session.createQuery("from RbSong").list();
-	    session.getTransaction().commit();
+//	    Session session = HibernateUtil.getCurrentSession();
+//	    session.beginTransaction();
+//	    List<Song> result = (List<Song>) session.createQuery("from RbSong").list();
+//	    session.getTransaction().commit();
+//	    
+//	    for (Song s : result)
+//	    	System.out.println(s);
 	    
-	    for (Song s : result)
-	    	System.out.println(s);
+		List<SongOrder> orders = RbSong.getSongs(RbGame.RB1_WII, Instrument.Group.GUITAR);
+		
+		for (SongOrder o : orders)
+			System.out.println(o);
 	}
 	
 	static void printScores() {
-	    Session session = HibernateUtil.getCurrentSession();
-	    session.beginTransaction();
-	    List<GhScore> result = (List<GhScore>) session.createQuery("from GhScore").list();
-	    session.getTransaction().commit();
-	    
-	    for (GhScore s : result)
-	    	System.out.println(s);
+//	    Session session = HibernateUtil.getCurrentSession();
+//	    session.beginTransaction();
+//	    List<GhScore> result = (List<GhScore>) session.createQuery("from GhScore").list();
+//	    session.getTransaction().commit();
+//	    
+//	    for (GhScore s : result)
+//	    	System.out.println(s);
 	}
 }

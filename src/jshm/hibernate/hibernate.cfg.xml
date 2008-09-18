@@ -59,5 +59,6 @@
 		<mapping class="jshm.gh.GhScore"/>
 		
 		<mapping class="jshm.Part"/>
+		<mapping class="jshm.SongOrder"/>
 	</session-factory>
 </hibernate-configuration>

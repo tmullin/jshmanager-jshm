@@ -1,21 +1,15 @@
 package jshm.rb;
 
-import javax.persistence.Embeddable;
+import jshm.*;
 
-import jshm.Game;
-import jshm.Instrument;
-import jshm.Platform;
-import jshm.Tiers;
-
-@Embeddable
 public class RbGame extends Game {
 	private static class RbTiers {
 		public static final String[]
 			RB1_DLC = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|Downloaded Songs".split("\\|"),
-			RB1 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|Track Pack Volume 1".split("\\|"),
+			RB1 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|European Exclusives|Track Pack Volume 1".split("\\|"),
 			
-			RB2_DLC = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Rock Band Imported|Downloaded Songs".split("\\|"),
-			RB2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs".split("\\|")
+			RB2_DLC = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Rock Band Imported|Downloaded Songs".split("\\|")
+//			RB2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs".split("\\|")
 			;
 	}
 	

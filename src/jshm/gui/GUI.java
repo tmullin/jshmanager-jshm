@@ -80,6 +80,7 @@ import org.netbeans.spi.wizard.Wizard;
 public class GUI extends javax.swing.JFrame {
 	static final Logger LOG = Logger.getLogger(GUI.class.getName());
 	
+//	private Instrument.Group curGroup = null;
 	private jshm.gh.GhGame curGame = null;
 	private jshm.Difficulty curDiff = null;
 	
@@ -874,17 +875,63 @@ private void initDynamicGameMenu(final javax.swing.JMenu menu) {
 }
 
 private void initRbGameMenu(final javax.swing.JMenu menu) {
+	if (menu != rbSongDataMenu) return;
+	
 	java.util.List<GameTitle> titles =
 		GameTitle.getTitlesBySeries(GameSeries.ROCKBAND);
 	
 	for (final GameTitle ttl : titles) {
-		JMenuItem ttlMenu = new JMenuItem(ttl.toString());
+		JMenu ttlMenu = new JMenu(ttl.toString());
 		ttlMenu.setIcon(ttl.getIcon());
-		ttlMenu.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				rbSongDataMenuItemActionPerformed(e, (RbGameTitle) ttl);
+		
+		for (final Game g : Game.getByTitle(ttl)) {
+			JMenu platformMenu = new JMenu(g.platform.toString());
+			platformMenu.setIcon(g.platform.getIcon());
+			
+			for (int groupSize = 1; groupSize <= 4; groupSize++) {
+				JMenu groupSizeMenu = new JMenu(groupSize + "-part");
+				
+				for (final Instrument.Group group : Instrument.Group.getBySize(groupSize)) {
+					JMenuItem groupMenuItem = new JMenuItem(group.toString());
+					groupMenuItem.setIcon(group.getIcon());
+					
+					groupMenuItem.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							rbSongDataMenuItemActionPerformed(e, (RbGame) g, group);
+						}
+					});
+					
+					groupSizeMenu.add(groupMenuItem);
+					
+					
+					// will need for the score menu later
+//					JMenu groupMenu = new JMenu(group.toString());
+//					groupMenu.setIcon(group.getIcon());
+//					
+//					for (Difficulty d : Difficulty.values()) {
+//						if (Difficulty.CO_OP == d) continue;
+//						
+//						JMenuItem diffMenuItem = new JMenuItem(d.toString());
+//						diffMenuItem.setIcon(d.getIcon());
+//						
+//						groupMenu.add(diffMenuItem);
+//					}
+//					
+//					groupSizeMenu.add(groupMenu);
+				}
+				
+				platformMenu.add(groupSizeMenu);
 			}
-		});
+			
+			ttlMenu.add(platformMenu);
+		}
+		
+//		ttlMenu.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				rbSongDataMenuItemActionPerformed(e, (RbGameTitle) ttl);
+//			}
+//		});
+		
 		menu.add(ttlMenu);
 	}
 }
@@ -1025,12 +1072,12 @@ private void songDataMenuItemActionPerformed(final java.awt.event.ActionEvent ev
 	}.execute();
 }
 
-private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGameTitle game) {	
+private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGame game, final Instrument.Group group) {	
 	scoreEditorPanel1.setScore(null);
 	editorCollapsiblePane.setCollapsed(true);
 	
 	new SwingWorker<Void, Void>() {
-		List<RbSong> songs = null;
+		List<SongOrder> songs = null;
 		RbSongDataTreeTableModel model = null;
 		
 		@Override
@@ -1039,7 +1086,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 			statusBar1.setTempText("Loading song data from database...", true);
 			
 			try {
-				songs = RbSong.getSongs(game);
+				songs = RbSong.getSongs(game, group);
 				model = new RbSongDataTreeTableModel(game, songs);
 	
 				SwingUtilities.invokeAndWait(new Runnable() {
@@ -1074,8 +1121,8 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 			editorCollapsiblePane.setCollapsed(true);
 			toggleEditorMenuItem.setEnabled(false);
 			
-			GUI.this.setIconImage(game.getIcon().getImage());
-			GUI.this.setTitle(game + " - Song Data");
+			GUI.this.setIconImage(game.title.getIcon().getImage());
+			GUI.this.setTitle(group + " - " + game + " - Song Data");
 			
 //			if (songs.size() == 0 && null != evt) { // if evt == null we're recursing
 //				if (JOptionPane.YES_OPTION ==

@@ -30,6 +30,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+import org.hibernate.validator.NotNull;
 
 /*
 
@@ -67,6 +69,8 @@ public class SongOrder implements Comparable<SongOrder> {
 	private int id = 0;
 	
 	private Instrument.Group group;
+	private GameTitle gameTitle;
+	private Platform platform;
 	private Song song;
 	private int tier;
 	private int order;
@@ -87,21 +91,45 @@ public class SongOrder implements Comparable<SongOrder> {
 	public Game getGame() {
 		return getSong().getGame();
 	}
+	
+	@Type(type="jshm.hibernate.GameTitleUserType")
+	@NotNull
+	public GameTitle getGameTitle() {
+		return gameTitle;
+	}
+	
+	public void setGameTitle(GameTitle gameTitle) {
+		this.gameTitle = gameTitle;
+	}
 
 	public void setGroup(Instrument.Group group) {
 		this.group = group;
 	}
 
 	@Enumerated(EnumType.STRING)
+	@Column(name="instrumentgroup")
+	@NotNull
 	public Instrument.Group getGroup() {
 		return group;
 	}
 
 	public void setSong(Song song) {
 		this.song = song;
+		this.gameTitle = song.getGameTitle();
 	}
 
+	@Enumerated(EnumType.STRING)
+	@NotNull
+	public Platform getPlatform() {
+		return platform;
+	}
+	
+	public void setPlatform(Platform platform) {
+		this.platform = platform;
+	}
+	
 	@ManyToOne
+	@NotNull
 	public Song getSong() {
 		return song;
 	}
@@ -123,14 +151,39 @@ public class SongOrder implements Comparable<SongOrder> {
 		return order;
 	}
 
+	/**
+	 * Updates this SongOrder to have the same tier and order
+	 * as the provided SongOrder.
+	 * @param order
+	 * @return
+	 */
+	public boolean update(SongOrder order) {
+		boolean changed = false;
+		
+		if (this.tier != order.tier) {
+			this.tier = order.tier;
+			changed = true;
+		}
+		
+		if (this.order != order.order) {
+			this.order = order.order;
+			changed = true;
+		}
+		
+		return changed;
+	}
 	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(group);
+		sb.append(gameTitle);
+		sb.append('_');
+		sb.append(platform);
 		sb.append(',');
+		sb.append(group);
+		sb.append(",s={");
 		sb.append(song);
-		sb.append(",t=");
+		sb.append("},t=");
 		sb.append(tier);
 		sb.append(",o=");
 		sb.append(order);

@@ -28,6 +28,7 @@ import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
+import jshm.SongOrder;
 import jshm.rb.*;
 import jshm.gui.renderers.TierHighlighter;
 
@@ -40,17 +41,15 @@ public class RbSongDataTreeTableModel extends AbstractTreeTableModel implements 
 		List<Tier> tiers = new ArrayList<Tier>();
 		
 		public DataModel(
-			final RbGameTitle game,
-			final List<RbSong> songs) {
+			final RbGame game,
+			final List<SongOrder> songs) {
 	
-			tiers.add(new Tier("All Songs"));
-//			for (int i = 1; i <= game.getTierCount(); i++) {
-//				tiers.add(new Tier(game.getTierName(i)));
-//			}
+			for (int i = 1; i <= game.getTierCount(); i++) {
+				tiers.add(new Tier(game.getTierName(i)));
+			}
 			
-			for (RbSong song : songs) {
-				tiers.get(0).songs.add(song);
-//				tiers.get(song.getTierLevel() - 1).songs.add(song);
+			for (SongOrder song : songs) {
+				tiers.get(song.getTier() - 1).songs.add((RbSong) song.getSong());
 			}
 		}
 	}
@@ -73,8 +72,8 @@ public class RbSongDataTreeTableModel extends AbstractTreeTableModel implements 
 	private final DataModel model;
 	
 	public RbSongDataTreeTableModel(
-		final RbGameTitle game,
-		final List<RbSong> songs) {
+		final RbGame game,
+		final List<SongOrder> songs) {
 		
 		super("ROOT");
 		this.model = new DataModel(game, songs);

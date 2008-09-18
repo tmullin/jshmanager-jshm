@@ -137,18 +137,21 @@ public class RbSongScraper {
 		public void handleDataRow(String[][] data) throws ScraperException {
 			SongOrder order = new SongOrder();
 			order.setGroup(group);
+			order.setPlatform(game.platform);
 			order.setOrder(curOrder);
 			order.setTier(curTierLevel);
 			
 			try {
 				// for testing
-				RbSong s = new RbSong();
-				s.setTitle(data[1][0]);
-				s.setScoreHeroId(Integer.parseInt(data[1][1]));
-				s.addPlatform(game.platform);
-				order.setSong(s);
-//    			order.setSong(
-//    				RbSong.getByScoreHeroId(Integer.parseInt(data[1][1])));
+//				RbSong s = new RbSong();
+//				s.setTitle(data[1][0]);
+//				s.setScoreHeroId(Integer.parseInt(data[1][1]));
+//				s.addPlatform(game.platform);
+//				order.setSong(s);
+				RbSong s = RbSong.getByScoreHeroId(Integer.parseInt(data[1][1]));
+				if (null == s)
+					throw new ScraperException("Song not found with scoreHeroId=" + data[1][1]);
+    			order.setSong(s);
     		} catch (NumberFormatException e) {
     			throw new ScraperException("Error parsing song id", e);
     		}

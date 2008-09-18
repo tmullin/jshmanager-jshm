@@ -75,7 +75,7 @@ public class TieredTabularDataExtractor {
         	
         	if (dataTable.headerCssClass.equals(cssClass) ||
         		(tr.getChildCount() > 0 && tr.getChild(0) instanceof TableHeader)) {
-        		LOG.finer("handling header row");
+        		LOG.finest("handling header row");
         		handler.handleHeaderRow(tr);
         		continue;
         	}
@@ -88,7 +88,7 @@ public class TieredTabularDataExtractor {
         		
         		// should be the tier row
         		String[][] tierData = DataTable.TIER_ROW_FORMAT.getData(tr);
-        		LOG.finer("handling tier row: " + tierData[0][0]);
+        		LOG.finest("handling tier row: " + tierData[0][0]);
         		handler.handleTierRow(tierData[0][0]);
         		continue;
         	}
@@ -109,7 +109,7 @@ public class TieredTabularDataExtractor {
         		}
         	}
         	
-        	LOG.finer("handling data row");
+        	LOG.finest("handling data row");
     		handler.handleDataRow(dataTable.rowFormat.getData(tr));
         }
 	}

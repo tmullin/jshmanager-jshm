@@ -9,10 +9,13 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.OrderBy;
 
 import jshm.GameTitle;
+import jshm.Instrument;
 import jshm.Platform;
 import jshm.Song;
+import jshm.SongOrder;
 
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Type;
@@ -24,7 +27,7 @@ public class RbSong extends Song {
 	
 	@SuppressWarnings("unchecked")
 	public static List<RbSong> getSongs(final RbGameTitle game) {
-		LOG.finer("Querying database for all songs for " + game);
+		LOG.finest("Querying database for all songs for " + game);
 		
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
@@ -40,8 +43,32 @@ public class RbSong extends Song {
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static List<SongOrder> getSongs(final RbGame game, Instrument.Group group) {
+		LOG.finest("Querying database for all song orders for " + game + " with group " + group);
+		
+		// TODO change GUITAR_BASS to a constant in RbGameTitle
+		if (group.size > 1)
+			group = Instrument.Group.GUITAR_BASS;
+		
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    List<SongOrder> result =
+			(List<SongOrder>)
+			session.createQuery(
+				String.format(
+					"from SongOrder where gameTitle='%s' and platform='%s' and instrumentgroup='%s' order by tier, ordering",
+					game.title,
+					game.platform,
+					group))
+				.list();
+	    session.getTransaction().commit();
+		
+		return result;
+	}
+	
 	public static RbSong getByScoreHeroId(final int id) {
-		LOG.finer("Querying database for song with scoreHeroId=" + id);
+		LOG.finest("Querying database for song with scoreHeroId=" + id);
 		
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
@@ -74,6 +101,7 @@ public class RbSong extends Song {
 	
 	@CollectionOfElements(fetch=FetchType.EAGER)
 	@Enumerated(EnumType.STRING)
+	@OrderBy("platform")
 	public Set<Platform> getPlatforms() {
 		return platforms;
 	}
