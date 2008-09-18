@@ -1,10 +1,11 @@
 package jshm.dataupdaters;
 
-import static jshm.hibernate.HibernateUtil.getCurrentSession;
+import static jshm.hibernate.HibernateUtil.openSession;
 
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
@@ -20,30 +21,26 @@ public class RbSongUpdater {
 		if (!(game instanceof RbGameTitle))
 			throw new IllegalArgumentException("game must be an RbGameTitle");
 		
-		// first get the songs themselves, need to do for each platform
-		for (Game g : Game.getByTitle(game)) {
-			List<RbSong> songs = RbSongScraper.scrape((RbGame) g);
-			
-			LOG.finer("scraped " + songs.size() + " songs for " + g);
-			
-			for (RbSong song : songs) {
-				Session session = null;
-				Transaction tx = null;
+		Session session = null;
+		Transaction tx = null;
+		
+		try {
+			session = openSession();
+		    tx = session.beginTransaction();
+		
+		    // first get the songs themselves, need to do for each platform
+			for (Game g : Game.getByTitle(game)) {
+				List<RbSong> songs = RbSongScraper.scrape((RbGame) g);
 				
-				try {
-					session = getCurrentSession();
-				    tx = session.beginTransaction();
-				    
+				LOG.finer("scraped " + songs.size() + " songs for " + g);
+				
+				for (RbSong song : songs) {
 				    Example ex = Example.create(song)
 				    	.excludeProperty("gameStrs");
 				    RbSong result =
 				    	(RbSong)
 				    	session.createCriteria(RbSong.class).add(ex)
 				    		.uniqueResult();
-//				    tx.commit();
-				    
-//			    	session = getCurrentSession();
-				    tx = session.beginTransaction();
 				    
 				    if (null == result) {
 				    	// new insert
@@ -59,38 +56,21 @@ public class RbSongUpdater {
 				    		LOG.finest("No changes to song: " + result);
 				    	}
 				    }
-
-				    session.flush();
-				    tx.commit();
-				} catch (Exception e) {
-					if (null != tx) tx.rollback();
-					LOG.throwing("RbSongUpdater", "update", e);
-					throw e;
-				} finally {
-					if (null != session && session.isOpen())
-						session.close();
 				}
 			}
-		}
-		
-		// for now we kind of have to do each platform/group combo.... 20+ requests ugh
-		// at least it seems to be working
-		for (Game g : Game.getByTitle(game)) {
-			List<SongOrder> orders = RbSongScraper.scrapeOrders((RbGame) g);
 			
-			LOG.finer("scraped " + orders.size() + " song orderings for " + g);
-			
-			for (SongOrder order : orders) {
-//				System.out.println(order);
-//				if (true) continue;
+		    
+			// for now we kind of have to do each platform/group combo.... 20+ requests ugh
+			// at least it seems to be working
+			for (Game g : Game.getByTitle(game)) {
+				List<SongOrder> orders = RbSongScraper.scrapeOrders((RbGame) g);
 				
-				Session session = null;
-				Transaction tx = null;
+				LOG.finer("scraped " + orders.size() + " song orderings for " + g);
 				
-				try {
-					session = getCurrentSession();
-				    tx = session.beginTransaction();
-				    
+				for (SongOrder order : orders) {
+	//				System.out.println(order);
+	//				if (true) continue;
+					    
 				    Example ex = Example.create(order)
 				    	.excludeProperty("tier")
 				    	.excludeProperty("order");
@@ -101,10 +81,6 @@ public class RbSongUpdater {
 				    		.createCriteria("song")
 				    			.add(Example.create(order.getSong()))
 				    	.uniqueResult();
-//				    tx.commit();
-				    
-//			    	session = getCurrentSession();
-				    tx = session.beginTransaction();
 				    
 				    if (null == result) {
 				    	// new insert
@@ -120,20 +96,17 @@ public class RbSongUpdater {
 				    		LOG.finest("No changes to song order: " + result);
 				    	}
 				    }
-
-				    session.flush();
-				    tx.commit();
-				} catch (Exception e) {
-					if (null != tx) tx.rollback();
-					LOG.throwing("RbSongUpdater", "update", e);
-					throw e;
-				} finally {
-					if (null != session && session.isOpen())
-						session.close();
 				}
 			}
 			
-//			break;
+		    tx.commit();
+		} catch (HibernateException e) {
+			if (null != tx && tx.isActive()) tx.rollback();
+			LOG.throwing("RbSongUpdater", "update", e);
+			throw e;
+		} finally {
+			if (null != session && session.isOpen())
+				session.close();
 		}
 	}
 }

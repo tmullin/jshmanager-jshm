@@ -1,15 +1,14 @@
 package jshm.rb;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.OrderBy;
 
 import jshm.GameTitle;
 import jshm.Instrument;
@@ -18,6 +17,8 @@ import jshm.Song;
 import jshm.SongOrder;
 
 import org.hibernate.annotations.CollectionOfElements;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotNull;
 
@@ -97,16 +98,16 @@ public class RbSong extends Song {
 		this.gameTitle = gameTitle;
 	}
 	
-	private Set<Platform> platforms = new HashSet<Platform>(4);
+	private SortedSet<Platform> platforms = new TreeSet<Platform>();
 	
 	@CollectionOfElements(fetch=FetchType.EAGER)
 	@Enumerated(EnumType.STRING)
-	@OrderBy("platform")
-	public Set<Platform> getPlatforms() {
+	@Sort(type=SortType.NATURAL)
+	public SortedSet<Platform> getPlatforms() {
 		return platforms;
 	}
 
-	public void setPlatforms(Set<Platform> platforms) {
+	public void setPlatforms(SortedSet<Platform> platforms) {
 		this.platforms = platforms;
 	}
 	

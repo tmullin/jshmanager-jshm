@@ -49,6 +49,9 @@ public class HibernateUtil {
 		return getSessionFactory().getCurrentSession();
 	}
 
+	public static Session openSession() {
+		return getSessionFactory().openSession();
+	}
 	
 	public static void shutdown() throws Exception {
 		Session sess = null;

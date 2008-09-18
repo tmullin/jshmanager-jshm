@@ -39,7 +39,7 @@ public class GhSongDbTest {
 //		HibernateUtil.getCurrentSession();
 //		System.exit(0);
 		
-		final RbGame game = RbGame.RB2_XBOX360;
+		final RbGame game = RbGame.RB1_XBOX360;
 //		final Difficulty difficulty = Difficulty.EXPERT;
 		
 		jshm.util.TestTimer.start();
@@ -60,7 +60,7 @@ public class GhSongDbTest {
 		
 //		jshm.util.TestTimer.stop();
 		
-		HibernateUtil.shutdown();
+//		HibernateUtil.shutdown();
 	}
 	
 	static void printSongs() {

@@ -42,15 +42,15 @@ public class JSHManager {
 	public static class Version {
 		public static final String NAME = "JSHManager";
 		public static final int MAJOR = 0;
-		public static final int MINOR = 1;
+		public static final int MINOR = 2;
 		public static final int POINT = 0;
-		public static final boolean IS_BETA = false;
+		public static final boolean IS_BETA = true;
 		
 		public static final String STRING =
 			String.format("%s.%s.%s%s", MAJOR, MINOR, POINT, IS_BETA ? " beta" : "");
 		
-		public static final String LAST = "0.0.3";
-		public static final int LAST_REVISION = 91;
+		public static final String LAST = "0.1.0";
+		public static final int LAST_REVISION = 138;
 		
 		public static final java.util.Date DATE = initDate("$Date$");
 		public static final int REVISION = initRevision("$Revision$");

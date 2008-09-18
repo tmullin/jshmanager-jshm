@@ -28,7 +28,7 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
 
 import jshm.*;
-import static jshm.hibernate.HibernateUtil.getCurrentSession;
+import static jshm.hibernate.HibernateUtil.openSession;
 import jshm.gh.*;
 
 /**
@@ -44,14 +44,14 @@ public class GhSongUpdater {
 		List<GhSong> scrapedSongs =
 			jshm.sh.scraper.GhSongScraper.scrape(game, difficulty);
 		
-		for (GhSong song : scrapedSongs) {
-			Session session = null;
-			Transaction tx = null;
-			
-			try {
-				session = getCurrentSession();
-			    tx = session.beginTransaction();
-			    
+		Session session = null;
+		Transaction tx = null;
+		
+		try {
+			session = openSession();
+		    tx = session.beginTransaction();
+		    
+			for (GhSong song : scrapedSongs) {
 			    Example ex = Example.create(song)
 			    	.excludeProperty("noteCount")
 			    	.excludeProperty("baseScore")
@@ -67,9 +67,6 @@ public class GhSongUpdater {
 			    	session.createCriteria(GhSong.class).add(ex)
 			    		.uniqueResult();
 			    
-		    	session = getCurrentSession();
-			    session.beginTransaction();
-			    
 			    if (null == result) {
 			    	// new insert
 			    	LOG.info("Inserting song: " + song);
@@ -77,22 +74,22 @@ public class GhSongUpdater {
 			    } else {
 			    	// update existing
 			    	if (result.update(song)) {
-				    	LOG.info("Updating song: " + result);
+				    	LOG.info("Updating song to: " + result);
 				    	session.update(result);
 			    	} else {
 			    		LOG.finest("No changes to song: " + result);
 			    	}
 			    }
-
-			    tx.commit();
-			} catch (Exception e) {
-				if (null != tx) tx.rollback();
-				LOG.throwing("GhSongUpdater", "update", e);
-				throw e;
-			} finally {
-				if (session.isOpen())
-					session.close();
 			}
+		
+	    tx.commit();
+		} catch (Exception e) {
+			if (null != tx) tx.rollback();
+			LOG.throwing("GhSongUpdater", "update", e);
+			throw e;
+		} finally {
+			if (null != session && session.isOpen())
+				session.close();
 		}
 	}
 }

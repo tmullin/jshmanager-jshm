@@ -30,6 +30,8 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.*;
 
@@ -79,7 +81,7 @@ public abstract class Score {
 	private String	videoUrl			= "";
 	
 	private Instrument.Group group      = Instrument.Group.GUITAR;
-	private Set<Part> parts				= new LinkedHashSet<Part>(4);
+	private SortedSet<Part> parts		= new TreeSet<Part>();
 	
 	@Id
 	@GeneratedValue(generator="score-id")
@@ -201,12 +203,12 @@ public abstract class Score {
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name="score_id", nullable=false)
-	@OrderBy("instrument")
-	public Set<Part> getParts() {
+	@Sort(type=SortType.NATURAL)
+	public SortedSet<Part> getParts() {
 		return parts;
 	}
 
-	public void setParts(Set<Part> parts) {
+	public void setParts(SortedSet<Part> parts) {
 		this.parts = parts;
 	}
 	

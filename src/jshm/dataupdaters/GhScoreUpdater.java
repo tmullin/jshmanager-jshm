@@ -52,14 +52,14 @@ public class GhScoreUpdater {
 			? jshm.sh.scraper.GhScoreScraper.scrapeAll(progress, game, difficulty)
 			: jshm.sh.scraper.GhScoreScraper.scrapeLatest(progress, game, difficulty, null);
 		
-		for (GhScore score : scrapedScores) {
-			Session session = null;
-			Transaction tx = null;
+		Session session = null;
+		Transaction tx = null;
+		
+		try {
+			session = getCurrentSession();
+		    tx = session.beginTransaction();
 			
-			try {
-				session = getCurrentSession();
-			    tx = session.beginTransaction();
-			    
+			for (GhScore score : scrapedScores) {			    
 			    // TODO fix submission date comparison to prevent
 			    // getting more than 1 result back
 			    Example ex = Example.create(score)
@@ -76,9 +76,6 @@ public class GhScoreUpdater {
 			    	session.createCriteria(GhScore.class).add(ex)
 			    		.list();
 			    
-		    	session = getCurrentSession();
-			    session.beginTransaction();
-			    
 			    switch (result.size()) {
 			    	case 0:
 				    	// new insert
@@ -91,21 +88,21 @@ public class GhScoreUpdater {
 			    		LOG.warning("  Scraped: " + score);
 			    		for (GhScore s : result)
 			    			LOG.warning("    In DB: " + s);
-//			    		throw new IllegalStateException("found more than 1 existing score, found " + result.size());
+	//			    		throw new IllegalStateException("found more than 1 existing score, found " + result.size());
 			    		
 			    	case 1:
 			    		LOG.fine("Score already exists: " + result.get(0));
 			    }
-
-			    tx.commit();
-			} catch (Exception e) {
-				if (null != tx) tx.rollback();
-				LOG.throwing("GhScoreUpdater", "update", e);
-				throw e;
-			} finally {
-				if (session.isOpen())
-					session.close();
 			}
+			
+		    tx.commit();
+		} catch (Exception e) {
+			if (null != tx) tx.rollback();
+			LOG.throwing("GhScoreUpdater", "update", e);
+			throw e;
+		} finally {
+			if (null != session && session.isOpen())
+				session.close();
 		}
 	}
 }
