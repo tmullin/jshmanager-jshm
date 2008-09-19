@@ -309,9 +309,9 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			
 			Object o = parent.getModel().getValueAt(row, column);
 			
-			if (!(o instanceof GhScore)) return;
+			if (!(o instanceof Score)) return;
 			
-			GhScore score = (GhScore) o;
+			Score score = (Score) o;
 			
 			// can still double-click to edit score without opening
 			// a browser window
@@ -341,8 +341,8 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			
 			Object o = parent.getModel().getValueAt(row, column);
 			
-			if (1 == column && o instanceof GhScore) {
-				GhScore score = (GhScore) o;
+			if (1 == column && o instanceof Score) {
+				Score score = (Score) o;
 				
 				if (score.getStatus() != Score.Status.NEW && 
 					(!score.getImageUrl().isEmpty() || !score.getVideoUrl().isEmpty())) {
