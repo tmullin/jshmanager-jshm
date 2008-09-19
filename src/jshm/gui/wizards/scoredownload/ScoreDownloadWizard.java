@@ -31,7 +31,7 @@ import jshm.dataupdaters.RbScoreUpdater;
 import jshm.gh.GhGame;
 import jshm.gui.GUI;
 import jshm.gui.LoginDialog;
-import jshm.gui.ProgressDialog;
+//import jshm.gui.ProgressDialog;
 import jshm.rb.RbGame;
 import jshm.rb.RbSong;
 
@@ -132,9 +132,9 @@ public class ScoreDownloadWizard {
 						// need to load song data as well
 						LOG.fine("Downloading song data first");
 						progress.setBusy("Downloading song data");
-						ProgressDialog progDialog = new ProgressDialog();
-						jshm.dataupdaters.RbSongUpdater.update(progDialog, rgame.title);
-						progDialog.dispose();
+//						ProgressDialog progDialog = new ProgressDialog();
+						jshm.dataupdaters.RbSongUpdater.update(progress, rgame.title);
+//						progDialog.dispose();
 					}
 					
 					RbScoreUpdater.update(progress, scrapeAll, rgame, group, difficulty);
