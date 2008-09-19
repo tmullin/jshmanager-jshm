@@ -50,9 +50,9 @@ public class ScoreDownloadWizard {
 	public static Wizard createWizard(final GUI gui, final Game game, final Instrument.Group group, final Difficulty difficulty) {
 		final ScoreDownloadWizard me = new ScoreDownloadWizard(gui, game, group, difficulty);
 		
-		return WizardPage.createWizard("Download scores from ScoreHero",
+		return WizardPage.createWizard("Download Scores from ScoreHero",
 			new WizardPage[] {
-				new DownloadModePage()
+				new DownloadModePage(game)
 			},
 			me.resultProducer);
 	}

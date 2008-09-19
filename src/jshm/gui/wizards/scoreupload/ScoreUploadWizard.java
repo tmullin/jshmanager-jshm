@@ -49,7 +49,7 @@ public class ScoreUploadWizard {
 	public static Wizard createWizard(GhMyScoresTreeTableModel model) {
 		final ScoreUploadWizard me = new ScoreUploadWizard();
 		
-		return WizardPage.createWizard("Upload scores to ScoreHero",
+		return WizardPage.createWizard("Upload Scores to ScoreHero",
 			new WizardPage[] {
 				new VerifyScoresPage(model)
 			},

@@ -334,6 +334,7 @@ public class GUI extends javax.swing.JFrame {
         fileMenu.setText("File");
 
         exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
+        exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/close32.png"))); // NOI18N
         exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -452,6 +453,7 @@ public class GUI extends javax.swing.JFrame {
 
         ghMenu.add(ghSongDataMenu);
 
+        ghLinksMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/gowebsite32.png"))); // NOI18N
         ghLinksMenu.setMnemonic('L');
         ghLinksMenu.setText("Web Links");
 
@@ -489,6 +491,7 @@ public class GUI extends javax.swing.JFrame {
 
         rbMenu.add(rbSongDataMenu);
 
+        rbLinksMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/gowebsite32.png"))); // NOI18N
         rbLinksMenu.setMnemonic('L');
         rbLinksMenu.setText("Web Links");
 
@@ -1340,7 +1343,8 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			
 			statusBar1.setText("Viewing scores for " + game + " on " + difficulty);
 			downloadScoresMenuItem.setEnabled(true);
-			downloadGhSongDataMenuItem.setEnabled(true);
+			downloadGhSongDataMenuItem.setEnabled(game instanceof GhGame);
+			downloadRbSongDataMenuItem.setEnabled(game instanceof RbGame);
 			uploadScoresMenuItem.setEnabled(true);
 			toggleEditorMenuItem.setEnabled(true);
 			

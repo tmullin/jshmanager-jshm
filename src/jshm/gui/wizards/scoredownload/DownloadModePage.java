@@ -26,13 +26,16 @@ import java.awt.GridLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
 
+import jshm.Game;
+import jshm.gh.GhGame;
+
 import org.netbeans.spi.wizard.WizardPage;
 
 public class DownloadModePage extends WizardPage {
 	JRadioButton latestButton;
 	JRadioButton allButton;
 	
-	public DownloadModePage() {
+	public DownloadModePage(final Game game) {
 		super("downloadMode", "Select mode");
 		this.setLongDescription("Select how to download your scores");
 		
@@ -49,6 +52,7 @@ public class DownloadModePage extends WizardPage {
 			"One HTTP request is required per song but all scores will be retrieved.<br>" +
 			"This can take more than a minute to complete.");
 		allButton.setName("all");
+		allButton.setVisible(game instanceof GhGame);
 		group.add(allButton);
 		
 		setLayout(new GridLayout(0, 1));

@@ -41,7 +41,6 @@ import jshm.Score;
 import jshm.Song;
 import jshm.Instrument.Group;
 import jshm.gh.GhScore;
-import jshm.gh.GhSong;
 import jshm.gui.editors.GhMyScoresEditor;
 import jshm.gui.editors.GhMyScoresRatingEditor;
 import jshm.gui.renderers.GhMyScoresCellRenderer;
@@ -256,7 +255,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 						newScores.add(s);
 						
 						if (!songs.contains(s.getSong()))
-							songs.add((GhSong) s.getSong());
+							songs.add(s.getSong());
 					}
 				}
 			}
