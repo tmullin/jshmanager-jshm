@@ -31,6 +31,7 @@ import jshm.dataupdaters.RbScoreUpdater;
 import jshm.gh.GhGame;
 import jshm.gui.GUI;
 import jshm.gui.LoginDialog;
+import jshm.gui.ProgressDialog;
 import jshm.rb.RbGame;
 import jshm.rb.RbSong;
 
@@ -111,7 +112,7 @@ public class ScoreDownloadWizard {
 				if (game instanceof GhGame) {
 					GhGame ggame = (GhGame) game;
 					// TODO change to a select count(*) for efficiency
-					List<jshm.gh.GhSong> songs = jshm.gh.GhSong.getSongs(ggame, difficulty);
+					List<?> songs = jshm.gh.GhSong.getSongs(ggame, difficulty);
 					
 					if (songs.size() == 0) {
 						// need to load song data as well
@@ -131,7 +132,9 @@ public class ScoreDownloadWizard {
 						// need to load song data as well
 						LOG.fine("Downloading song data first");
 						progress.setBusy("Downloading song data");
-						jshm.dataupdaters.RbSongUpdater.update(rgame.title);
+						ProgressDialog progDialog = new ProgressDialog();
+						jshm.dataupdaters.RbSongUpdater.update(progDialog, rgame.title);
+						progDialog.dispose();
 					}
 					
 					RbScoreUpdater.update(progress, scrapeAll, rgame, group, difficulty);

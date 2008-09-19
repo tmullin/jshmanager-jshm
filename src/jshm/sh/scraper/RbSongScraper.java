@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
+import org.netbeans.spi.wizard.ResultProgressHandle;
 
 import jshm.Difficulty;
 import jshm.Instrument;
@@ -41,9 +42,14 @@ public class RbSongScraper {
 		
 		return songs;
 	}
+
+	public static List<SongOrder> scrapeOrders(final RbGame game) 
+		throws ScraperException, ParserException {
+		return scrapeOrders(null, game);
+	}
 	
 	public static List<SongOrder> scrapeOrders(
-			final RbGame game) 
+			ResultProgressHandle progress, final RbGame game) 
 		throws ScraperException, ParserException {
 		
 		List<SongOrder> orders = new ArrayList<SongOrder>();
@@ -52,6 +58,9 @@ public class RbSongScraper {
 		groups.add(Instrument.Group.GUITAR_BASS);
 		
 		for (Instrument.Group g : groups) {
+			if (null != progress)
+				progress.setBusy("Downloading list for " + game + " " + g);
+			
 //			List<SongOrder> curOrders = new ArrayList<SongOrder>();
 			TieredTabularDataAdapter handler = new SongOrderHandler(game, g, orders);
 		

@@ -797,7 +797,9 @@ private void downloadRbSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 			statusBar1.setTempText("Downloading song data from ScoreHero...", true);
 			
 			try {
-				jshm.dataupdaters.RbSongUpdater.update(curGame.title);
+				ProgressDialog progress = new ProgressDialog(GUI.this);
+				jshm.dataupdaters.RbSongUpdater.update(progress, curGame.title);
+				progress.dispose();
 				return true;
 			} catch (Exception e) {
 				LOG.log(Level.SEVERE, "Failed to download song data ", e);
