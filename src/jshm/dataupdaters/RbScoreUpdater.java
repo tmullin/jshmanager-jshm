@@ -82,6 +82,7 @@ public class RbScoreUpdater {
 					    session.save(score);
 					    break;
 			    		
+					// FIXME 2 scores always seem to get returned
 			    	default:
 			    		LOG.warning("Found more than 1 existing score");
 			    		LOG.warning("  Scraped: " + score);

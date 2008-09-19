@@ -23,12 +23,19 @@ package jshm;
 import java.util.*;
 
 public enum Instrument {
-	GUITAR,
-	BASS, // will also mean rhythm for GH
-	DRUMS,
-	VOCALS;
+	GUITAR("gtr"),
+	BASS("bass"), // will also mean rhythm for GH
+	DRUMS("drums"),
+	VOCALS("vocals");
 	
 	private transient javax.swing.ImageIcon icon = null;
+	
+	// needed for submitting rb scores
+	private final String shortString; 
+	
+	private Instrument(final String shortString) {
+		this.shortString = shortString;
+	}
 	
 	public javax.swing.ImageIcon getIcon() {
 		if (null == icon) {
@@ -39,6 +46,10 @@ public enum Instrument {
 		}
 		
 		return icon;
+	}
+	
+	public String toShortString() {
+		return shortString;
 	}
 	
 	public static enum Group {

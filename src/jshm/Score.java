@@ -578,6 +578,8 @@ OuterPartLoop:
 	 */
 	protected String toString(String extra) {
 		StringBuilder sb = new StringBuilder();
+		sb.append(getId());
+		sb.append(',');
 		sb.append(getGame());
 		sb.append(',');
 		sb.append(getGroup());
