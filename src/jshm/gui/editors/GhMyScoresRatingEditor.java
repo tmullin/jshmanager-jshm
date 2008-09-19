@@ -52,12 +52,15 @@ public class GhMyScoresRatingEditor extends DefaultCellEditor {
 		} else if (game instanceof RbGameTitle) {
 			values = new Object[] {
 				RbScore.getRatingIcon(0),
+				RbScore.getRatingIcon(6),
 				RbScore.getRatingIcon(5),
 				RbScore.getRatingIcon(4),
 				RbScore.getRatingIcon(3),
 				RbScore.getRatingIcon(2),
 				RbScore.getRatingIcon(1)
 			};
+		} else {
+			assert false: "game not a GhGameTitle or RbGameTitle";
 		}
 		
 		return 

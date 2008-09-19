@@ -46,8 +46,8 @@ import org.jdesktop.swingx.error.ErrorInfo;
 
 import jshm.Score;
 import jshm.Song;
+import jshm.StreakStrategy;
 import jshm.gh.GhScore;
-import jshm.gh.GhSong;
 import jshm.gui.editors.GhMyScoresRatingEditor;
 import jshm.gui.renderers.ScoreEditorSongComboRenderer;
 import jshm.hibernate.HibernateUtil;
@@ -127,7 +127,8 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		final Score score = (Score) evt.getSource();
+		final Object src = evt.getSource();		
+		final Score score = (Score) src;
 		final String name = evt.getPropertyName();
 		final Object newValue = evt.getNewValue();
 		
@@ -169,8 +170,11 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 		}
 		
 		this.score = score;
+		boolean scoreNotNull = false;
 		
 		if (null != score) {
+			scoreNotNull = true;
+			
 			score.addPropertyChangeListener(this);
 			
 			switch (score.getStatus()) {
@@ -194,14 +198,14 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 			videoUrlOpenButton.setEnabled(false);
 		}
 		
-		songCombo.setSelectedItem(null != score && null != score.getSong() ? score.getSong() : SELECT_A_SONG);
-		scoreField.setText(null != score && score.getScore() > 0 ? String.valueOf(score.getScore()) : "");
-		ratingCombo.setSelectedItem(null != score ? score.getRatingIcon(true) : GhScore.getRatingIcon(0));
-		percentField.setText(null != score && score.getHitPercent() != 0f ? String.valueOf((int) (score.getHitPercent() * 100)) : "");
-		streakField.setText(null != score && score.getStreak() > 0 ? String.valueOf(score.getStreak()) : "");
-		commentField.setText(null != score ? score.getComment() : "");
-		imageUrlField.setText(null != score ? score.getImageUrl() : "");
-		videoUrlField.setText(null != score ? score.getVideoUrl() : "");
+		songCombo.setSelectedItem(scoreNotNull && null != score.getSong() ? score.getSong() : SELECT_A_SONG);
+		scoreField.setText(scoreNotNull && score.getScore() > 0 ? String.valueOf(score.getScore()) : "");
+		ratingCombo.setSelectedItem(scoreNotNull ? score.getRatingIcon(true) : ratingCombo.getItemAt(0));
+		percentField.setText(scoreNotNull && score.getHitPercent() != 0f ? String.valueOf((int) (score.getHitPercent() * 100)) : "");
+		streakField.setText(scoreNotNull && score.getStreak() > 0 ? String.valueOf(score.getStreak()) : "");
+		commentField.setText(scoreNotNull ? score.getComment() : "");
+		imageUrlField.setText(scoreNotNull ? score.getImageUrl() : "");
+		videoUrlField.setText(scoreNotNull ? score.getVideoUrl() : "");
 	}
 	
     /** This method is called from within the constructor to
@@ -425,11 +429,12 @@ private void videoUrlOpenButtonActionPerformed(java.awt.event.ActionEvent evt) {
 
 private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
 //	boolean wasNullScore = null == score;
-	GhSong lastSong =
-		songCombo.getSelectedItem() instanceof GhSong
-		? (GhSong) songCombo.getSelectedItem() : null;
+	Song lastSong =
+		songCombo.getSelectedItem() instanceof Song
+		? (Song) songCombo.getSelectedItem() : null;
 		
-	setScore(GhScore.createNewScoreTemplate());
+	setScore(Score.createNewScoreTemplate(
+		gui.getCurGame(), gui.getCurGroup(), gui.getCurDiff(), lastSong));
 	
 	if (/*wasNullScore &&*/ null != lastSong) {
 		setSong(lastSong);
@@ -462,11 +467,19 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 	
 				score.setRating(0);
 				
-				for (int i : new Integer[] {3, 4, 5})
-					if (GhScore.getRatingIcon(i) == ratingCombo.getSelectedItem()) {
-						score.setRating(i);
-						break;
-					}
+				if (score instanceof GhScore) {
+					for (int i : new Integer[] {3, 4, 5})
+						if (GhScore.getRatingIcon(i) == ratingCombo.getSelectedItem()) {
+							score.setRating(i);
+							break;
+						}
+				} else if (score instanceof RbScore) {
+					for (int i : new Integer[] {1, 2, 3, 4, 5, 6})
+						if (RbScore.getRatingIcon(i) == ratingCombo.getSelectedItem()) {
+							score.setRating(i);
+							break;
+						}
+				}
 	
 				try {
 					String s = percentField.getText();
@@ -479,9 +492,13 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 	
 				try {
 					String s = streakField.getText();
-					score.setStreak(
-						s.isEmpty() ? 0 :
-						Integer.parseInt(s));
+					int streak = s.isEmpty() ? 0 : Integer.parseInt(s);
+					
+					if (score.getGameTitle().getStreakStrategy() == StreakStrategy.BY_SCORE) {
+						score.setStreak(streak);
+					}
+					
+					score.setPartStreak(1, streak);
 				} catch (Exception e) {
 					throw new NumberFormatException("Invalid streak: " + streakField.getText());
 				}
@@ -504,13 +521,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 				
 //				setScore(null);
 				
-				if (score instanceof GhScore) {
-					gui.myScoresMenuItemActionPerformed(null, gui.getCurGame(), gui.getCurGroup(), gui.getCurDiff());
-				} else if (score instanceof RbScore) {
-					
-				} else {
-					assert false: "score isn't GhScore or RbScore";
-				}
+				gui.myScoresMenuItemActionPerformed(null, gui.getCurGame(), gui.getCurGroup(), gui.getCurDiff());
 		}
 	} catch (Throwable t) {
 		LOG.log(Level.WARNING, "Failed to save score", t);
@@ -525,7 +536,7 @@ private void hideButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		if (parent instanceof JXCollapsiblePane) {
 			((JXCollapsiblePane) parent).setCollapsed(true);
 		}
-	} catch (Exception e) {}
+	} catch (NullPointerException e) {}
 }//GEN-LAST:event_hideButtonActionPerformed
 
 

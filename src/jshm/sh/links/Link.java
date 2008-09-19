@@ -47,8 +47,7 @@ public class Link {
 	public static final Link RB_ROOT = new Link("RB_ROOT")
 		.add("Home", URLs.rb.BASE)
 		.add(ForumLink.RB_ROOT)
-		.add(new Link("Manage Scores", URLs.rb.BASE + "/manage_scores.php")
-			.add(new RbTemplate("Manage Scores", "manage_scores.php?"))
+		.add(new RbTemplate("Manage Scores", "manage_scores.php?")
 			.add("Manage Teams", URLs.rb.BASE + "/teams.php"))
 		.add(ScoreDatabaseLink.RB_ROOT);
 	

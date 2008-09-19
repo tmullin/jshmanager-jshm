@@ -10,11 +10,31 @@ import org.hibernate.criterion.Restrictions;
 
 import jshm.Difficulty;
 import jshm.Instrument;
+import jshm.Part;
 import jshm.Score;
 import jshm.SongOrder;
 
 @Entity
 public class RbScore extends Score {
+	public static RbScore createNewScoreTemplate(final RbGame game, final Instrument.Group group, final Difficulty difficulty, final RbSong song) {
+		RbScore s = new RbScore();
+		s.setGame(game);
+		s.setSong(song);
+		s.setDifficulty(difficulty);
+		s.setGroup(group);
+		s.setStatus(Score.Status.TEMPLATE);
+		
+		for (Instrument i : group.instruments) {
+			Part p = new Part();
+			p.setInstrument(i);
+			p.setDifficulty(difficulty);
+			s.addPart(p);
+		}
+		
+		return s;
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	public static List<RbScore> getScores(final RbGame game, final Instrument.Group group, final Difficulty difficulty) {
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();

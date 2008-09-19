@@ -437,7 +437,7 @@ public class GUI extends javax.swing.JFrame {
 
         downloadGhSongDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/down32.png"))); // NOI18N
         downloadGhSongDataMenuItem.setMnemonic('L');
-        downloadGhSongDataMenuItem.setText("Download from ScoreHero...");
+        downloadGhSongDataMenuItem.setText("Download...");
         downloadGhSongDataMenuItem.setToolTipText("Sync the local song list for the current game and difficulty to ScoreHero's (e.g. when there is new DLC)");
         downloadGhSongDataMenuItem.setEnabled(false);
         downloadGhSongDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -475,7 +475,7 @@ public class GUI extends javax.swing.JFrame {
         rbSongDataMenu.setText("Song Data");
 
         downloadRbSongDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/down32.png"))); // NOI18N
-        downloadRbSongDataMenuItem.setText("Download from ScoreHero...");
+        downloadRbSongDataMenuItem.setText("Download...");
         downloadRbSongDataMenuItem.setEnabled(false);
         downloadRbSongDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -636,18 +636,18 @@ private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-F
 		? tree.getPathForRow(row).getLastPathComponent()
 		: null;
 	final boolean goodRowCount = tree.getSelectedRowCount() == 1;
-	final boolean isGhScore = o instanceof GhScore;
-	final GhScore score = isGhScore ? (GhScore) o : null;
+	final boolean isScore = o instanceof Score;
+	final Score score = isScore ? (Score) o : null;
 	
 	addNewScoreMenuItem.setEnabled(
 		goodRowCount &&
-		(isGhScore || o instanceof GhMyScoresTreeTableModel.SongScores));
+		(isScore || o instanceof GhMyScoresTreeTableModel.SongScores));
 	deleteSelectedScoreMenuItem.setEnabled(
 		goodRowCount &&
-		isGhScore);
+		isScore);
 	uploadSelectedScoreMenuItem.setEnabled(
 		goodRowCount &&
-		isGhScore &&
+		isScore &&
 		score.getStatus() == Score.Status.NEW);
 	
 	scoreEditorPanel1.setScore(score);
@@ -661,6 +661,7 @@ private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-F
 private void addNewScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNewScoreMenuItemActionPerformed
 	GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) tree.getTreeTableModel(); 
 	model.createScoreTemplate(
+		getCurGame(), getCurGroup(), getCurDiff(),
 		tree.getPathForRow(tree.getSelectedRow()));
 //	jXTreeTable1.repaint();
 }//GEN-LAST:event_addNewScoreMenuItemActionPerformed
@@ -669,7 +670,7 @@ private void deleteSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEve
 	GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) tree.getTreeTableModel();
 	TreePath path = tree.getPathForRow(tree.getSelectedRow());
 	
-	GhScore score = (GhScore) path.getLastPathComponent();
+	Score score = (Score) path.getLastPathComponent();
 	
 	switch (score.getStatus()) {
 		case NEW:
@@ -721,12 +722,12 @@ private void uploadSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEve
 		((JXTree) tree.getCellRenderer(0, tree.getHierarchicalColumn()))
 			.getSelectionPath().getLastPathComponent();
 	
-	if (!(selected instanceof GhScore)) {
-		LOG.fine("Expecting selected to be a GhScore but it was a " + selected.getClass().getName());
+	if (!(selected instanceof Score)) {
+		LOG.fine("Expecting selected to be a Score but it was a " + selected.getClass().getName());
 		return;
 	}
 	
-	if (!((GhScore) selected).isSubmittable()) {
+	if (!((Score) selected).isSubmittable()) {
 		JOptionPane.showMessageDialog(this,
 			"That score cannot be uploaded.",
 			"Error", JOptionPane.WARNING_MESSAGE);
@@ -744,8 +745,8 @@ private void uploadSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEve
 					LoginDialog.showDialog(GUI.this);
 				}
 				
-				GhScore score = (GhScore) selected;
-				jshm.sh.GhApi.submitGhScore(score);
+				Score score = (Score) selected;
+				jshm.sh.Api.submitScore(score);
 				statusBar1.setTempText("Uploaded " + score.getSong().getTitle() + " (" + score.getScore() + ") successfully");
 			} catch (Exception e) {
 				LOG.log(Level.SEVERE, "Failed to upload score", e);
@@ -784,8 +785,42 @@ private void toggleEditorMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 		!editorCollapsiblePane.isCollapsed());
 }//GEN-LAST:event_toggleEditorMenuItemActionPerformed
 
+// TODO convert this and downloading gh song data into one method?
 private void downloadRbSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadRbSongDataMenuItemActionPerformed
-// TODO add your handling code here:
+	new SwingWorker<Boolean, Void>() {		
+		@Override
+		protected Boolean doInBackground() throws Exception {
+			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			statusBar1.setTempText("Downloading song data from ScoreHero...", true);
+			
+			try {
+				jshm.dataupdaters.RbSongUpdater.update(curGame.title);
+				return true;
+			} catch (Exception e) {
+				LOG.log(Level.SEVERE, "Failed to download song data ", e);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to download song data", null, null, e, null, null);
+				JXErrorPane.showDialog(GUI.this, ei);
+			} finally {
+				statusBar1.revertText();
+				getContentPane().setCursor(Cursor.getDefaultCursor());
+			}
+			
+			return false;
+		}
+		
+		@Override
+		public void done() {
+			try {
+				if (get()) {
+					rbSongDataMenuItemActionPerformed(null, (RbGame) curGame, curGroup);
+				}
+			} catch (Exception e) {
+				LOG.log(Level.SEVERE, "Unknown error", e);
+				ErrorInfo ei = new ErrorInfo("Error", "Unknown error", null, null, e, null, null);
+				JXErrorPane.showDialog(GUI.this, ei);
+			}
+		}	
+	}.execute();
 }//GEN-LAST:event_downloadRbSongDataMenuItemActionPerformed
 
 public void showTextFileViewer(final String file) {
@@ -1127,6 +1162,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 			statusBar1.setText("Viewing song data for " + game + " on " + difficulty);
 			downloadScoresMenuItem.setEnabled(true);
 			downloadGhSongDataMenuItem.setEnabled(true);
+			downloadRbSongDataMenuItem.setEnabled(false);
 			uploadScoresMenuItem.setEnabled(false);
 			editorCollapsiblePane.setCollapsed(true);
 			toggleEditorMenuItem.setEnabled(false);
@@ -1149,7 +1185,11 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 	}.execute();
 }
 
-private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGame game, final Instrument.Group group) {	
+private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGame game, final Instrument.Group group) {
+	setCurGame(game);
+	curGroup = group;
+	setCurDiff(null);
+	
 	scoreEditorPanel1.setScore(null);
 	editorCollapsiblePane.setCollapsed(true);
 	
@@ -1192,26 +1232,27 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 			if (null == songs) return;
 			
 			statusBar1.setText("Viewing song data for " + game);
-			downloadScoresMenuItem.setEnabled(true);
-			downloadGhSongDataMenuItem.setEnabled(true);
+			downloadScoresMenuItem.setEnabled(false);
+			downloadGhSongDataMenuItem.setEnabled(false);
+			downloadRbSongDataMenuItem.setEnabled(true);
 			uploadScoresMenuItem.setEnabled(false);
 			editorCollapsiblePane.setCollapsed(true);
 			toggleEditorMenuItem.setEnabled(false);
 			
 			GUI.this.setIconImage(game.title.getIcon().getImage());
-			GUI.this.setTitle(group + " - " + game + " - Song Data");
+			GUI.this.setTitle(game + " " + group + " - Song Data");
 			
-//			if (songs.size() == 0 && null != evt) { // if evt == null we're recursing
-//				if (JOptionPane.YES_OPTION ==
-//					JOptionPane.showConfirmDialog(
-//						GUI.this, "No songs are present.\nDownload from ScoreHero?", "",
-//						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-//					
-//					loadGhSongDataMenuItemActionPerformed(null);
-//				}
-//
-//				return;
-//			}
+			if (songs.size() == 0 && null != evt) { // if evt == null we're recursing
+				if (JOptionPane.YES_OPTION ==
+					JOptionPane.showConfirmDialog(
+						GUI.this, "No songs are present.\nDownload from ScoreHero?\n(This may take a long time)", "",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+					
+					downloadRbSongDataMenuItemActionPerformed(null);
+				}
+
+				return;
+			}
 		}
 	}.execute();
 }

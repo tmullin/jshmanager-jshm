@@ -35,9 +35,11 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
 
+import jshm.Difficulty;
 import jshm.Game;
 import jshm.Score;
 import jshm.Song;
+import jshm.Instrument.Group;
 import jshm.gh.GhScore;
 import jshm.gh.GhSong;
 import jshm.gui.editors.GhMyScoresEditor;
@@ -164,17 +166,17 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		this.model = new DataModel(game, songs, scores);
 	}
 	
-	public void createScoreTemplate(TreePath p) {
+	public void createScoreTemplate(Game game, Group group, Difficulty difficulty, TreePath p) {
 		if (null == p) return;
 		
 		Object o = p.getLastPathComponent();
 //		System.out.println("Selected: " + o);
 		
 		if (o instanceof Score) {
-			createScoreTemplate((Score) o);
+			createScoreTemplate(game, group, difficulty, (Score) o);
 			p = p.getParentPath();
 		} else if (o instanceof SongScores) {
-			createScoreTemplate((SongScores) o);
+			createScoreTemplate(game, group, difficulty, (SongScores) o);
 		}
 		
 		TreeModelEvent e = new TreeModelEvent(this, p);
@@ -183,18 +185,15 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			l.treeStructureChanged(e);
 	}
 	
-	private void createScoreTemplate(SongScores selectedSongScores) {
-		// FIXME
-//		selectedSongScores.scores.add(
-//			GhScore.createNewScoreTemplate(selectedSongScores.song));
+	private void createScoreTemplate(Game game, Group group, Difficulty difficulty, SongScores selectedSongScores) {
+		selectedSongScores.scores.add(
+			Score.createNewScoreTemplate(game, group, difficulty, selectedSongScores.song));
 	}
 	
-	private void createScoreTemplate(Score selectedScore) {
-		// FIXME
-//		Song song = (Song) selectedScore.getSong();
-//		
-//		model.tiers.get(song.getTierLevel() - 1)
-//			.addScore(GhScore.createNewScoreTemplate(song));
+	private void createScoreTemplate(Game game, Group group, Difficulty difficulty, Score selectedScore) {
+		Song song = (Song) selectedScore.getSong();		
+		model.tiers.get(song.getTierLevel() - 1)
+			.addScore(Score.createNewScoreTemplate(game, group, difficulty, song));
 	}
 
 	public void deleteScore(TreePath p) {
@@ -229,8 +228,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 				}
 				
 			case TEMPLATE:
-				// FIXME
-				model.tiers.get(((GhSong) score.getSong()).getTierLevel() - 1)
+				model.tiers.get(score.getSong().getTierLevel() - 1)
 					.removeScore(score);
 				
 				TreeModelEvent e = new TreeModelEvent(this, p.getParentPath());
@@ -543,7 +541,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 									break;
 								}
 						} else if (score instanceof RbScore) {
-							for (int i : new Integer[] {1, 2, 3, 4, 5})
+							for (int i : new Integer[] {1, 2, 3, 4, 5, 6})
 								if (RbScore.getRatingIcon(i) == value) {
 									score.setRating(i);
 									break;

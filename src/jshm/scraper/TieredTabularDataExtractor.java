@@ -106,6 +106,7 @@ public class TieredTabularDataExtractor {
         				throw t;
         			default:
         				LOG.finest("going to handle invalid row");
+        				LOG.finest("row: " + tr.toHtml());
         		}
         	}
         	

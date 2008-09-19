@@ -22,7 +22,9 @@ package jshm;
 
 /**
  * This represents whether note streaks are managed on a
- * by score or by part basis.
+ * by score or by part basis. Note that Parts can always have
+ * a streak whereas an overall score may or may not have a 
+ * streak.
  * 
  * <p>
  * GH is BY_SCORE in that if one player loses combo,
