@@ -26,6 +26,8 @@
 
 package jshm.gui;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
@@ -34,8 +36,11 @@ import java.util.logging.Logger;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
 import org.hibernate.Session;
@@ -71,6 +76,7 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 	 * our new button or not.
 	 */
 	private boolean isNewScore = false;
+	private boolean hasScoreChanged = false;
 	
 	public ScoreEditorPanel() {
 		this(null);
@@ -81,16 +87,32 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
     	this.gui = gui;
         initComponents();
         
+        MySongChangeListener mscl = new MySongChangeListener();
+        
         for (JTextComponent c : new JTextComponent[] {
         	scoreField, percentField, streakField, commentField, imageUrlField, videoUrlField}) {
         	EditPopupMenu.add(c);
+        	c.getDocument().addDocumentListener(mscl);
         }
+        
+        songCombo.addItemListener(mscl);
+        ratingCombo.addItemListener(mscl);
     }
 
+    private class MySongChangeListener implements DocumentListener, ItemListener {
+    	private void _() {
+    		hasScoreChanged = true;
+    	}
+    	
+		public void changedUpdate(DocumentEvent e) { _(); }
+		public void insertUpdate(DocumentEvent e) {	_(); }
+		public void removeUpdate(DocumentEvent e) {	_(); }
+		public void itemStateChanged(ItemEvent e) {	_(); }
+    }
+    
 	@Override
 	public void setEnabled(boolean b) {
 		super.setEnabled(b);
-		songCombo.setEnabled(b);
 		scoreField.setEditable(b);
 		ratingCombo.setEnabled(b);
 		percentField.setEditable(b);
@@ -154,23 +176,42 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 			field = videoUrlField;
 		} else if (name.equals("rating")) {
 			ratingCombo.setSelectedItem(score.getRatingIcon(true));
-			return;
 		} else if (name.equals("part1HitPercent")) {
 			float f = (Float) newValue;
 			percentField.setText(0.0f != f ? String.valueOf((int) (f * 100)) : "");
-			return;
 		}
 		
 		if (null != field) {
 			field.setText(!newValue.equals(0) ? newValue.toString() : "");
 		}
+		
+		// it has changed via the quick editor, which has already
+		// saved the change to the db
+		hasScoreChanged = false;
 	}
 	
-	public void setScore(final Score score) {
-		isNewScore = false;
-		
-		if (null != this.score)
+	public void setScore(final Score score) {		
+		if (null != this.score) {
+			if (this.score.isEditable() && hasScoreChanged) {
+				final int ret = JOptionPane.showConfirmDialog(gui, 
+					"The current score has been modified.\n" +
+					"Do you want to save it?\n\n" +
+					
+					"Yes: save and continue current action\n" +
+					"No: lose changes and continue current action\n" +
+					"Cancel: continue editing the current score",
+					"Confirm", JOptionPane.YES_NO_CANCEL_OPTION,
+					JOptionPane.QUESTION_MESSAGE);
+				
+				if (JOptionPane.CANCEL_OPTION == ret)
+					return;
+				
+				if (JOptionPane.YES_OPTION == ret)
+					saveButtonActionPerformed(null);
+			}
+			
 			this.score.removePropertyChangeListener(this);
+		}
 		
 		if (null != score &&
 			(null == this.score || this.score.getClass() != score.getClass())) {
@@ -183,11 +224,30 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 		this.score = score;
 		boolean scoreNotNull = false;
 		
+		setEnabled(score);
+		
 		if (null != score) {
 			scoreNotNull = true;
-			
 			score.addPropertyChangeListener(this);
-			
+		}
+		
+		songCombo.setSelectedItem(scoreNotNull && null != score.getSong() ? score.getSong() : SELECT_A_SONG);
+		scoreField.setText(scoreNotNull && score.getScore() > 0 ? String.valueOf(score.getScore()) : "");
+		ratingCombo.setSelectedItem(scoreNotNull ? score.getRatingIcon(true) : ratingCombo.getItemAt(0));
+		percentField.setText(scoreNotNull && score.getHitPercent() != 0f ? String.valueOf((int) (score.getHitPercent() * 100)) : "");
+		streakField.setText(scoreNotNull && score.getPartStreak(1) > 0 ? String.valueOf(score.getPartStreak(1)) : "");
+		commentField.setText(scoreNotNull ? score.getComment() : "");
+		imageUrlField.setText(scoreNotNull ? score.getImageUrl() : "");
+		videoUrlField.setText(scoreNotNull ? score.getVideoUrl() : "");
+		
+		songCombo.setEnabled(false);
+		
+		isNewScore = false;
+		hasScoreChanged = false;
+	}
+	
+	private void setEnabled(Score score) {
+		if (null != score) {
 			switch (score.getStatus()) {
 				case NEW:
 				case TEMPLATE:
@@ -200,23 +260,16 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 					saveButton.setEnabled(false);
 					break;
 			}
-			
+
+			songCombo.setEnabled(isNewScore);
 			imageUrlOpenButton.setEnabled(true);
 			videoUrlOpenButton.setEnabled(true);
 		} else {
 			setEnabled(false);
+			songCombo.setEnabled(false);
 			imageUrlOpenButton.setEnabled(false);
 			videoUrlOpenButton.setEnabled(false);
 		}
-		
-		songCombo.setSelectedItem(scoreNotNull && null != score.getSong() ? score.getSong() : SELECT_A_SONG);
-		scoreField.setText(scoreNotNull && score.getScore() > 0 ? String.valueOf(score.getScore()) : "");
-		ratingCombo.setSelectedItem(scoreNotNull ? score.getRatingIcon(true) : ratingCombo.getItemAt(0));
-		percentField.setText(scoreNotNull && score.getHitPercent() != 0f ? String.valueOf((int) (score.getHitPercent() * 100)) : "");
-		streakField.setText(scoreNotNull && score.getPartStreak(1) > 0 ? String.valueOf(score.getPartStreak(1)) : "");
-		commentField.setText(scoreNotNull ? score.getComment() : "");
-		imageUrlField.setText(scoreNotNull ? score.getImageUrl() : "");
-		videoUrlField.setText(scoreNotNull ? score.getVideoUrl() : "");
 	}
 	
     /** This method is called from within the constructor to
@@ -452,6 +505,10 @@ private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 	if (/*wasNullScore &&*/ null != lastSong) {
 		setSong(lastSong);
 	}
+	
+	songCombo.setEnabled(true);
+	songCombo.getEditor().selectAll();
+	songCombo.requestFocusInWindow();
 }//GEN-LAST:event_newButtonActionPerformed
 
 private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
@@ -537,7 +594,8 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 				gui.tree.repaint();
 				
 				// update the enabled state of the fields
-				setScore(isNewScore ? null : score);
+				setEnabled(isNewScore ? null : score);
+				hasScoreChanged = false;
 		}
 	} catch (Throwable t) {
 		LOG.log(Level.WARNING, "Failed to save score", t);

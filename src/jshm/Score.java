@@ -160,7 +160,7 @@ public abstract class Score {
 	 */
 	@Transient
 	public boolean isEditable() {
-		return this.status == Status.NEW;
+		return status == Status.NEW || status == Status.TEMPLATE;
 	}
 	
 	public void setGame(Game game) {
