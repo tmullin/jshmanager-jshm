@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.text.JTextComponent;
@@ -173,8 +174,9 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 		
 		if (null != score &&
 			(null == this.score || this.score.getClass() != score.getClass())) {
-			ratingCombo.setModel(
-				GhMyScoresRatingEditor.createRatingComboBox(gui.getCurGame()).getModel());
+			JComboBox newRatingCombo = GhMyScoresRatingEditor.createRatingComboBox(gui.getCurGame());
+			ratingCombo.setModel(newRatingCombo.getModel());
+			ratingCombo.setKeySelectionManager(newRatingCombo.getKeySelectionManager());
 			ratingCombo.validate();
 		}
 		
