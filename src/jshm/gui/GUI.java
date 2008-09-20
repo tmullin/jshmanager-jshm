@@ -260,6 +260,7 @@ public class GUI extends javax.swing.JFrame {
         exitMenuItem = new javax.swing.JMenuItem();
         scoresMenu = new javax.swing.JMenu();
         addNewScoreMenuItem = new javax.swing.JMenuItem();
+        addNewScoreViaEditorMenuItem = new javax.swing.JMenuItem();
         deleteSelectedScoreMenuItem = new javax.swing.JMenuItem();
         toggleEditorMenuItem = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JSeparator();
@@ -360,6 +361,17 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         scoresMenu.add(addNewScoreMenuItem);
+
+        addNewScoreViaEditorMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        addNewScoreViaEditorMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/add32.png"))); // NOI18N
+        addNewScoreViaEditorMenuItem.setText("Add score via editor");
+        addNewScoreViaEditorMenuItem.setEnabled(false);
+        addNewScoreViaEditorMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addNewScoreViaEditorMenuItemActionPerformed(evt);
+            }
+        });
+        scoresMenu.add(addNewScoreViaEditorMenuItem);
 
         deleteSelectedScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         deleteSelectedScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/delete32.png"))); // NOI18N
@@ -705,6 +717,7 @@ private void uploadScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 	
 	Wizard wiz = ScoreUploadWizard.createWizard(newModel);
 	wiz.show();
+	tree.repaint(); // takes care of de-highlighting the new scores
 }//GEN-LAST:event_uploadScoresMenuItemActionPerformed
 
 private void readmeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readmeMenuItemActionPerformed
@@ -830,6 +843,11 @@ private void downloadRbSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 		}	
 	}.execute();
 }//GEN-LAST:event_downloadRbSongDataMenuItemActionPerformed
+
+private void addNewScoreViaEditorMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNewScoreViaEditorMenuItemActionPerformed
+	editorCollapsiblePane.setCollapsed(false);
+	scoreEditorPanel1.newButton.doClick();
+}//GEN-LAST:event_addNewScoreViaEditorMenuItemActionPerformed
 
 public void showTextFileViewer(final String file) {
 	try {
@@ -1173,6 +1191,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 			downloadRbSongDataMenuItem.setEnabled(false);
 			uploadScoresMenuItem.setEnabled(false);
 			editorCollapsiblePane.setCollapsed(true);
+			addNewScoreViaEditorMenuItem.setEnabled(false);
 			toggleEditorMenuItem.setEnabled(false);
 			
 			GUI.this.setIconImage(game.title.getIcon().getImage());
@@ -1245,6 +1264,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 			downloadRbSongDataMenuItem.setEnabled(true);
 			uploadScoresMenuItem.setEnabled(false);
 			editorCollapsiblePane.setCollapsed(true);
+			addNewScoreViaEditorMenuItem.setEnabled(false);
 			toggleEditorMenuItem.setEnabled(false);
 			
 			GUI.this.setIconImage(game.title.getIcon().getImage());
@@ -1351,6 +1371,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			downloadGhSongDataMenuItem.setEnabled(game instanceof GhGame);
 			downloadRbSongDataMenuItem.setEnabled(game instanceof RbGame);
 			uploadScoresMenuItem.setEnabled(true);
+			addNewScoreViaEditorMenuItem.setEnabled(true);
 			toggleEditorMenuItem.setEnabled(true);
 			
 			if (scores.size() == 0 && null != evt) { // if evt == null we're recursing
@@ -1391,6 +1412,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private jshm.gui.AboutDialog aboutDialog1;
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem addNewScoreMenuItem;
+    private javax.swing.JMenuItem addNewScoreViaEditorMenuItem;
     private javax.swing.JMenuItem changeLogMenuItem;
     private javax.swing.JMenuItem deleteSelectedScoreMenuItem;
     private javax.swing.JMenuItem downloadGhSongDataMenuItem;

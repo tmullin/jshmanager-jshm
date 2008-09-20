@@ -567,7 +567,7 @@ private void hideButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JButton newButton;
+    javax.swing.JButton newButton;
     private javax.swing.JTextField percentField;
     private javax.swing.JComboBox ratingCombo;
     private javax.swing.JButton saveButton;

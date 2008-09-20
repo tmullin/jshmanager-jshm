@@ -8,6 +8,10 @@ Version 0.2.0
   as a note count.
 - When using the score editor panel to create and save a new score,
   the entire tree of scores is no longer reloaded.
+- You can now more quickly enter a score via the score editor by
+  clicking "Add score via editor" from the "Scores" menu or by pressing
+  CTRL+N. This has the effect of toggling the editor if it is hidden
+  and then pressing the "New" button in the editor.
 
 Version 0.1.0
 -------------
