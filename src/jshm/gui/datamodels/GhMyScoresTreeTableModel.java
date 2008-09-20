@@ -109,8 +109,9 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		public SongScores addScore(Score score) {
 			for (SongScores ss : songs) {
 				if (ss.song.equals(score.getSong())) {
-					if (ss.scores.contains(score))
+					if (ss.scores.contains(score)) {
 						return null;
+					}
 					
 					ss.scores.add(score);
 					return ss;
@@ -174,7 +175,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		if (null == p) return;
 		
 		Object o = p.getLastPathComponent();
-//		System.out.println("Selected: " + o);
+//		System.out.println("Selected: " + p);
 		
 		if (o instanceof Score) {
 			createScoreTemplate(game, group, difficulty, (Score) o);
@@ -187,13 +188,15 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	}
 	
 	private void createScoreTemplate(Game game, Group group, Difficulty difficulty, SongScores selectedSongScores) {
-		selectedSongScores.scores.add(
-			Score.createNewScoreTemplate(game, group, difficulty, selectedSongScores.song));
+		insertScore(
+			Score.createNewScoreTemplate(
+				game, group, difficulty, selectedSongScores.song));
 	}
 	
 	private void createScoreTemplate(Game game, Group group, Difficulty difficulty, Score selectedScore) {
-		Song song = selectedScore.getSong();	
-		insertScore(Score.createNewScoreTemplate(game, group, difficulty, song));
+		insertScore(
+			Score.createNewScoreTemplate(
+				game, group, difficulty, selectedScore.getSong()));
 	}
 	
 	public void insertScore(Score score) {
@@ -209,8 +212,9 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			
 			TreePath tp = new TreePath(path);
 			modelSupport.fireTreeStructureChanged(tp);
+			tp = tp.pathByAddingChild(score);
 			parent.expandPath(tp);
-			parent.scrollPathToVisible(tp.pathByAddingChild(score));
+			parent.scrollPathToVisible(tp);
 		}
 	}
 
