@@ -20,6 +20,9 @@
  */
 package jshm.sh;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.httpclient.*;
 
 import jshm.exceptions.*;
@@ -35,6 +38,12 @@ public class Client {
 		}
 		
 		return httpClient;
+	}
+	
+	private static String username = "";
+	
+	public static String getUsername() {
+		return username;
 	}
 	
 	private static Cookie[] cookieCache = null;
@@ -101,6 +110,8 @@ public class Client {
 	throws Exception {
 		if (null != cookieCache && useCache) return cookieCache;
 		
+		Client.username = userName;
+		
 		new HttpForm((Object) URLs.LOGIN_URL,
 			"uname", userName,
 			"pass", password,
@@ -125,13 +136,15 @@ public class Client {
 				method.releaseConnection();
 				
 				try {
-					if (body.contains("Invalid login, please try again.")) {
-						throw new ClientException("invalid login credentials");
+					Pattern p = Pattern.compile("<span class=\"error\"[^>]*>(.+?)</span>");
+					Matcher m = p.matcher(body);
+					
+					if (m.find()) {
+						throw new ClientException(m.group(1));
 					}
 					
-					if (body.contains("Too many failed attempts, you must wait before trying again.")) {
-						throw new ClientException("too many failed login attempts");
-					}
+					LOG.warning("Unhandled login failure, responseCode=" + response + ", response body follows");
+					LOG.warning(body);
 					
 					throw new ClientException("login failed, unknown error");
 				} catch (Exception t) {
@@ -152,7 +165,10 @@ public class Client {
 	 * @return
 	 */
 	static boolean checkAuthCookies(final Cookie[] cookies, final String userName) {
-		if (cookies.length < 9) return false;
+		if (cookies.length < 9) {
+			HttpForm.LOG.warning("expecting 9 cookies but got " + cookies.length);
+			return false;
+		}
 		
 		int found = 0;
 		
@@ -164,6 +180,11 @@ public class Client {
 				found++;
 		}
 		
-		return found == 2;
+		if (found != 2) {
+			HttpForm.LOG.warning("expecting to match 2 cookies but got " + found);
+			return false;
+		}
+		
+		return true;
 	}
 }

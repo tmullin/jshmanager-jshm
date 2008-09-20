@@ -35,6 +35,8 @@ public class HttpForm {
 	public final HttpMethod method;
 	public final String methodName;
 	
+	protected Object userData;
+	
 	public HttpForm(final Object url, final String ... data) {
 		this("POST", url, data);
 	}
@@ -105,5 +107,14 @@ public class HttpForm {
 	 */
 	public void afterSubmit(final int response, final HttpClient client, final HttpMethod method) throws Exception {
 		method.releaseConnection();
+	}
+	
+	/**
+	 * A subclass can use the protected userData field if it
+	 * needs to give information back to the caller.
+	 * @return
+	 */
+	public Object getUserData() {
+		return userData;
 	}
 }
