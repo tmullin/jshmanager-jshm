@@ -1,5 +1,14 @@
 JSHManager ChangeLog
 
+Version 0.2.0
+-------------
+- Rock Band 1 and 2 are now supported.
+- Corrected issue when updating Guitar Hero song data that failed to
+  update an existing song if new information had been discovered, such
+  as a note count.
+- When using the score editor panel to create and save a new score,
+  the entire tree of scores is no longer reloaded.
+
 Version 0.1.0
 -------------
 - Additional logging information is stored in data/logs.

@@ -65,6 +65,12 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 	
 	private GUI gui;
 	
+	/**
+	 * Indicates if our current score is new from clicking
+	 * our new button or not.
+	 */
+	private boolean isNewScore = false;
+	
 	public ScoreEditorPanel() {
 		this(null);
 	}
@@ -160,13 +166,15 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 	}
 	
 	public void setScore(final Score score) {
+		isNewScore = false;
+		
 		if (null != this.score)
 			this.score.removePropertyChangeListener(this);
 		
 		if (null != score &&
 			(null == this.score || this.score.getClass() != score.getClass())) {
 			ratingCombo.setModel(
-				GhMyScoresRatingEditor.createRatingComboBox(score.getGame()).getModel());
+				GhMyScoresRatingEditor.createRatingComboBox(gui.getCurGame()).getModel());
 			ratingCombo.validate();
 		}
 		
@@ -437,6 +445,8 @@ private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 	setScore(Score.createNewScoreTemplate(
 		gui.getCurGame(), gui.getCurGroup(), gui.getCurDiff(), lastSong));
 	
+	isNewScore = true;
+	
 	if (/*wasNullScore &&*/ null != lastSong) {
 		setSong(lastSong);
 	}
@@ -520,12 +530,12 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 					if (sess.isOpen()) sess.close();
 				}
 				
-				// update the enabled state of the fields
-				setScore(score);
-				
 				((GhMyScoresTreeTableModel) gui.tree.getTreeTableModel())
 					.insertScore(score);
 				gui.tree.repaint();
+				
+				// update the enabled state of the fields
+				setScore(isNewScore ? null : score);
 		}
 	} catch (Throwable t) {
 		LOG.log(Level.WARNING, "Failed to save score", t);
