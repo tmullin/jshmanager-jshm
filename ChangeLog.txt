@@ -2,7 +2,9 @@ JSHManager ChangeLog
 
 Version 0.2.0
 -------------
-- Rock Band 1 and 2 are now supported.
+- Rock Band 1 and 2 are now supported. While it only took 35 characters
+  to express that, I assure you, it took a significant effort to
+  actually make it happen ;)
 - Corrected issue when updating Guitar Hero song data that failed to
   update an existing song if new information had been discovered, such
   as a note count.

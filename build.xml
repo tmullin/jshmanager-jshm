@@ -60,12 +60,11 @@
 		<mkdir dir="${dist_dir}"/>
 		
 		<!-- 
-		for 0.1.0, we're making a 0.0.x patch instead of just the previous version
 		destfile="${dist_dir}/${jshm.name}-patch-${jshm.last_version}-to-${jshm.version}.jar" 
 		-->
 		
 		<jar
-			destfile="${dist_dir}/${jshm.name}-patch-0.0.x-to-${jshm.version}.jar"
+			destfile="${dist_dir}/${jshm.name}-patch-${jshm.last_version}-to-${jshm.version}.jar"
 			compress="true">
 			
 			<!-- the patcher program itself -->

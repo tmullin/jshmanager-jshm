@@ -44,7 +44,7 @@ public class JSHManager {
 		public static final int MAJOR = 0;
 		public static final int MINOR = 2;
 		public static final int POINT = 0;
-		public static final boolean IS_BETA = true;
+		public static final boolean IS_BETA = false;
 		
 		public static final String STRING =
 			String.format("%s.%s.%s%s", MAJOR, MINOR, POINT, IS_BETA ? " beta" : "");
