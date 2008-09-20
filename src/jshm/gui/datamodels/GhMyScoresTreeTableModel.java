@@ -31,8 +31,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
 
 import jshm.Difficulty;
@@ -108,22 +106,29 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			this.name = name;
 		}
 
-		public void addScore(Score score) {
+		public SongScores addScore(Score score) {
 			for (SongScores ss : songs) {
 				if (ss.song.equals(score.getSong())) {
+					if (ss.scores.contains(score))
+						return null;
+					
 					ss.scores.add(score);
-					return;
+					return ss;
 				}
 			}
+			
+			return null;
 		}
 		
-		public void removeScore(Score score) {
+		public SongScores removeScore(Score score) {
 			for (SongScores ss : songs) {
 				if (ss.song.equals(score.getSong())) {
 					ss.scores.remove(score);
-					return;
+					return ss;
 				}
 			}
+			
+			return null;
 		}
 
 		public String toString() {
@@ -178,10 +183,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			createScoreTemplate(game, group, difficulty, (SongScores) o);
 		}
 		
-		TreeModelEvent e = new TreeModelEvent(this, p);
-		
-		for (TreeModelListener l : getTreeModelListeners())
-			l.treeStructureChanged(e);
+//		modelSupport.fireTreeStructureChanged(p);
 	}
 	
 	private void createScoreTemplate(Game game, Group group, Difficulty difficulty, SongScores selectedSongScores) {
@@ -190,9 +192,26 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	}
 	
 	private void createScoreTemplate(Game game, Group group, Difficulty difficulty, Score selectedScore) {
-		Song song = (Song) selectedScore.getSong();		
-		model.tiers.get(song.getTierLevel() - 1)
-			.addScore(Score.createNewScoreTemplate(game, group, difficulty, song));
+		Song song = selectedScore.getSong();	
+		insertScore(Score.createNewScoreTemplate(game, group, difficulty, song));
+	}
+	
+	public void insertScore(Score score) {
+		Song song = score.getSong();		
+		SongScores ss = model.tiers.get(song.getTierLevel() - 1)
+			.addScore(score);
+		
+		if (null != ss) {
+			Object[] path = new Object[3];
+			path[0] = getRoot();
+			path[1] = getChild(path[0], song.getTierLevel() - 1);
+			path[2] = ss;
+			
+			TreePath tp = new TreePath(path);
+			modelSupport.fireTreeStructureChanged(tp);
+			parent.expandPath(tp);
+			parent.scrollPathToVisible(tp.pathByAddingChild(score));
+		}
 	}
 
 	public void deleteScore(TreePath p) {
@@ -229,11 +248,8 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			case TEMPLATE:
 				model.tiers.get(score.getSong().getTierLevel() - 1)
 					.removeScore(score);
-				
-				TreeModelEvent e = new TreeModelEvent(this, p.getParentPath());
-				for (TreeModelListener l : getTreeModelListeners())
-					l.treeStructureChanged(e);
-				
+				modelSupport.fireTreeStructureChanged(p.getParentPath());
+
 				break;
 				
 		}

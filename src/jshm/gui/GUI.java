@@ -750,6 +750,9 @@ private void uploadSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEve
 				
 				Score score = (Score) selected;
 				jshm.sh.Api.submitScore(score);
+				
+				// this will cause the fields to be disabled as needed
+				scoreEditorPanel1.setScore(score);
 				statusBar1.setTempText("Uploaded " + score.getSong().getTitle() + " (" + score.getScore() + ") successfully");
 			} catch (Exception e) {
 				LOG.log(Level.SEVERE, "Failed to upload score", e);
@@ -1418,7 +1421,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private jshm.gui.components.StatusBar statusBar1;
     private jshm.gui.TextFileViewerDialog textFileViewerDialog1;
     private javax.swing.JMenuItem toggleEditorMenuItem;
-    private org.jdesktop.swingx.JXTreeTable tree;
+    org.jdesktop.swingx.JXTreeTable tree;
     private javax.swing.JMenuItem uploadScoresMenuItem;
     private javax.swing.JMenuItem uploadSelectedScoreMenuItem;
     private javax.swing.JMenu viewLogMenu;

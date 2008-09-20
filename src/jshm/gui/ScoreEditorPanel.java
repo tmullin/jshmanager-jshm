@@ -48,6 +48,7 @@ import jshm.Score;
 import jshm.Song;
 import jshm.StreakStrategy;
 import jshm.gh.GhScore;
+import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 import jshm.gui.editors.GhMyScoresRatingEditor;
 import jshm.gui.renderers.ScoreEditorSongComboRenderer;
 import jshm.hibernate.HibernateUtil;
@@ -202,7 +203,7 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 		scoreField.setText(scoreNotNull && score.getScore() > 0 ? String.valueOf(score.getScore()) : "");
 		ratingCombo.setSelectedItem(scoreNotNull ? score.getRatingIcon(true) : ratingCombo.getItemAt(0));
 		percentField.setText(scoreNotNull && score.getHitPercent() != 0f ? String.valueOf((int) (score.getHitPercent() * 100)) : "");
-		streakField.setText(scoreNotNull && score.getStreak() > 0 ? String.valueOf(score.getStreak()) : "");
+		streakField.setText(scoreNotNull && score.getPartStreak(1) > 0 ? String.valueOf(score.getPartStreak(1)) : "");
 		commentField.setText(scoreNotNull ? score.getComment() : "");
 		imageUrlField.setText(scoreNotNull ? score.getImageUrl() : "");
 		videoUrlField.setText(scoreNotNull ? score.getVideoUrl() : "");
@@ -519,9 +520,12 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 					if (sess.isOpen()) sess.close();
 				}
 				
-//				setScore(null);
+				// update the enabled state of the fields
+				setScore(score);
 				
-				gui.myScoresMenuItemActionPerformed(null, gui.getCurGame(), gui.getCurGroup(), gui.getCurDiff());
+				((GhMyScoresTreeTableModel) gui.tree.getTreeTableModel())
+					.insertScore(score);
+				gui.tree.repaint();
 		}
 	} catch (Throwable t) {
 		LOG.log(Level.WARNING, "Failed to save score", t);
