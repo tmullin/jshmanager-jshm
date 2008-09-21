@@ -35,6 +35,7 @@ import jshm.Config;
  *
  * @author  Tim
  */
+// TODO rename to TextViewerDialog
 public class TextFileViewerDialog extends javax.swing.JDialog {
 
 	public TextFileViewerDialog() {
@@ -59,6 +60,24 @@ public class TextFileViewerDialog extends javax.swing.JDialog {
 		jTextPane1.setPage(file.toURI().toURL());
 		setLocationRelativeTo(getOwner());
 		setTitle("Viewing " + file.getName());
+		setVisible(true);
+	}
+	
+	public void setVisible(final String content) {
+		setVisible(null, content);
+	}
+	
+	public void setVisible(final String title, final String content) {
+		jTextPane1.setContentType("text/plain");
+		jTextPane1.setText(content);
+		
+		if (null != title && !title.isEmpty()) {
+			setTitle(title);
+		} else {
+			setTitle("");
+		}
+		
+		setLocationRelativeTo(getOwner());
 		setVisible(true);
 	}
 	

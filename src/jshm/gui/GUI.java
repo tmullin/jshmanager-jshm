@@ -67,6 +67,7 @@ import jshm.gui.datamodels.RbSongDataTreeTableModel;
 import jshm.gui.wizards.scoredownload.ScoreDownloadWizard;
 import jshm.gui.wizards.scoreupload.ScoreUploadWizard;
 import jshm.rb.*;
+import jshm.util.PasteBin;
 
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXTree;
@@ -284,6 +285,8 @@ public class GUI extends javax.swing.JFrame {
         changeLogMenuItem = new javax.swing.JMenuItem();
         licenseMenuItem = new javax.swing.JMenuItem();
         viewLogMenu = new javax.swing.JMenu();
+        uploadLogsMenuItem = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JSeparator();
         jSeparator4 = new javax.swing.JSeparator();
         aboutMenuItem = new javax.swing.JMenuItem();
 
@@ -352,7 +355,7 @@ public class GUI extends javax.swing.JFrame {
         addNewScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_INSERT, 0));
         addNewScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/add32.png"))); // NOI18N
         addNewScoreMenuItem.setMnemonic('n');
-        addNewScoreMenuItem.setText("Add new score");
+        addNewScoreMenuItem.setText("Add New Score");
         addNewScoreMenuItem.setToolTipText("Insert a new score for the selected song");
         addNewScoreMenuItem.setEnabled(false);
         addNewScoreMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -364,7 +367,7 @@ public class GUI extends javax.swing.JFrame {
 
         addNewScoreViaEditorMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         addNewScoreViaEditorMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/add32.png"))); // NOI18N
-        addNewScoreViaEditorMenuItem.setText("Add score via editor");
+        addNewScoreViaEditorMenuItem.setText("Add Score via Editor");
         addNewScoreViaEditorMenuItem.setEnabled(false);
         addNewScoreViaEditorMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -376,7 +379,7 @@ public class GUI extends javax.swing.JFrame {
         deleteSelectedScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         deleteSelectedScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/delete32.png"))); // NOI18N
         deleteSelectedScoreMenuItem.setMnemonic('D');
-        deleteSelectedScoreMenuItem.setText("Delete selected score");
+        deleteSelectedScoreMenuItem.setText("Delete Selected Score");
         deleteSelectedScoreMenuItem.setEnabled(false);
         deleteSelectedScoreMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -546,6 +549,17 @@ public class GUI extends javax.swing.JFrame {
 
         viewLogMenu.setMnemonic('g');
         viewLogMenu.setText("View Log");
+
+        uploadLogsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/up32.png"))); // NOI18N
+        uploadLogsMenuItem.setMnemonic('U');
+        uploadLogsMenuItem.setText("Upload for Debugging...");
+        uploadLogsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uploadLogsMenuItemActionPerformed(evt);
+            }
+        });
+        viewLogMenu.add(uploadLogsMenuItem);
+        viewLogMenu.add(jSeparator1);
 
         initDynamicGameMenu(viewLogMenu);
 
@@ -848,6 +862,59 @@ private void addNewScoreViaEditorMenuItemActionPerformed(java.awt.event.ActionEv
 	editorCollapsiblePane.setCollapsed(false);
 	scoreEditorPanel1.newButton.doClick();
 }//GEN-LAST:event_addNewScoreViaEditorMenuItemActionPerformed
+
+private void uploadLogsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadLogsMenuItemActionPerformed		
+	final ProgressDialog prog = new ProgressDialog(this);
+	
+	final StringBuilder sb = new StringBuilder(
+		"Please copy and paste the following when replying in the JSHManager thread:\n\n"	
+	);
+	
+	new SwingWorker<Boolean, Void>() {
+		public Boolean doInBackground() throws Exception {
+			final File logDir = new File("data/logs");
+			String[] files = logDir.list(new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String name) {
+					return name.endsWith(".txt");
+				}
+			});
+
+			int i = 0;
+			for (final String s : files) {
+				File f = new File(logDir, s);
+				prog.setProgress(
+					String.format("Uploading %s (%s of %s)", s, i + 1, files.length),
+					i, files.length);
+				LOG.finer("Uploading " + f.getAbsolutePath() + " to PasteBin");
+				
+				sb.append(f.getName());
+				sb.append(" - ");
+				sb.append(PasteBin.post(f));
+				sb.append('\n');
+				
+				i++;
+			}
+							
+			return true;
+		}
+		
+		public void done() {
+			try {
+				if (get()) {
+					prog.setVisible(false);
+					textFileViewerDialog1.setVisible("Logs Uploaded", sb.toString());
+				}
+			} catch (Exception e) {
+				LOG.log(Level.SEVERE, "Error uploading logs to PasteBin", e);
+				ErrorInfo ei = new ErrorInfo("Error", "Error uploading logs", null, null, e, null, null);
+				JXErrorPane.showDialog(GUI.this, ei);
+			} finally {
+				prog.dispose();
+			}
+		}
+	}.execute();
+}//GEN-LAST:event_uploadLogsMenuItemActionPerformed
 
 public void showTextFileViewer(final String file) {
 	try {
@@ -1428,6 +1495,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
@@ -1444,6 +1512,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private jshm.gui.TextFileViewerDialog textFileViewerDialog1;
     private javax.swing.JMenuItem toggleEditorMenuItem;
     org.jdesktop.swingx.JXTreeTable tree;
+    private javax.swing.JMenuItem uploadLogsMenuItem;
     private javax.swing.JMenuItem uploadScoresMenuItem;
     private javax.swing.JMenuItem uploadSelectedScoreMenuItem;
     private javax.swing.JMenu viewLogMenu;
