@@ -132,7 +132,7 @@ public abstract class GameTitle {
 	
 	/**
 	 * 
-	 * @return An array of the possible instrument combinations this game supports.
+	 * @return An array of the possible instrument combinations JSHManager supports for this game.
 	 */
 	public abstract Instrument.Group[] getSupportedInstrumentGroups();
 	

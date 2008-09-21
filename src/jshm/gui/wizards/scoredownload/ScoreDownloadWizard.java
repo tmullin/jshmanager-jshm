@@ -53,6 +53,7 @@ public class ScoreDownloadWizard {
 		
 		return WizardPage.createWizard("Download Scores from ScoreHero",
 			new WizardPage[] {
+				new WhatToDownloadPage(game, group, difficulty),
 				new DownloadModePage(game)
 			},
 			me.resultProducer);
@@ -108,37 +109,86 @@ public class ScoreDownloadWizard {
 				try {
 					scrapeAll = (Boolean) settings.get("all");
 				} catch (Exception e) {}
+
+				Object platform   = settings.get("platforms");
+				Object diff       = settings.get("difficulties");
+				Object instrument = settings.get("instruments");
+				
+				Object[] platforms   = null;
+				Object[] diffs       = null;
+				Object[] instruments = null;
+				
+				if (platform instanceof Object[]) {
+					platforms = (Object[]) platform;
+				} else {
+					platforms = new Object[] {platform};
+				}
+				
+				if (diff instanceof Object[]) {
+					diffs = (Object[]) diff;
+				} else {
+					diffs = new Object[] {diff};
+				}
+				
+				if (instrument instanceof Object[]) {
+					instruments = (Object[]) instrument;
+				} else {
+					instruments = new Object[] {instrument};
+				}
+				
 				
 				if (game instanceof GhGame) {
-					GhGame ggame = (GhGame) game;
-					// TODO change to a select count(*) for efficiency
-					List<?> songs = jshm.gh.GhSong.getSongs(ggame, difficulty);
-					
-					if (songs.size() == 0) {
-						// need to load song data as well
-						LOG.fine("Downloading song data first");
-						progress.setBusy("Downloading song data");
-						jshm.dataupdaters.GhSongUpdater.update(ggame, difficulty);
+					for (Object platformObj : platforms) {
+						Platform p = (Platform) platformObj;
+						GhGame ggame = (GhGame) Game.getByTitleAndPlatform(game.title, p);
+						
+						for (Object diffObj : diffs) {
+							Difficulty d = (Difficulty) diffObj;
+							
+							// TODO change to a select count(*) for efficiency
+							List<?> songs = jshm.gh.GhSong.getSongs(ggame, d);
+							
+							if (songs.size() == 0) {
+								// need to load song data as well
+								LOG.fine("Downloading song data first");
+								progress.setBusy("Downloading song data");
+								jshm.dataupdaters.GhSongUpdater.update(ggame, d);
+							}
+							
+							GhScoreUpdater.update(progress, scrapeAll, ggame, d);
+						}
 					}
-					
-					GhScoreUpdater.update(progress, scrapeAll, ggame, difficulty);
-					gui.myScoresMenuItemActionPerformed(null, ggame, Instrument.Group.GUITAR, difficulty);
+						
+					gui.myScoresMenuItemActionPerformed(null, (GhGame) game, Instrument.Group.GUITAR, difficulty);
 				} else if (game instanceof RbGame) {
-					RbGame rgame = (RbGame) game;
-					// TODO change to a select count(*) for efficiency
-					List<?> songs = RbSong.getSongs(rgame, group);
+					for (Object platformObj : platforms) {
+						Platform p = (Platform) platformObj;
+						RbGame rgame = (RbGame) Game.getByTitleAndPlatform(game.title, p);
+						
+						for (Object diffObj : diffs) {
+							Difficulty d = (Difficulty) diffObj;
 					
-					if (songs.size() == 0) {
-						// need to load song data as well
-						LOG.fine("Downloading song data first");
-						progress.setBusy("Downloading song data");
-//						ProgressDialog progDialog = new ProgressDialog();
-						jshm.dataupdaters.RbSongUpdater.update(progress, rgame.title);
-//						progDialog.dispose();
+							for (Object instrumentObj : instruments) {
+								Instrument.Group g = (Instrument.Group) instrumentObj;
+							
+								// TODO change to a select count(*) for efficiency
+								List<?> songs = RbSong.getSongs(rgame, g);
+								
+								if (songs.size() == 0) {
+									// need to load song data as well
+									LOG.fine("Downloading song data first");
+									progress.setBusy("Downloading song data");
+			//						ProgressDialog progDialog = new ProgressDialog();
+									jshm.dataupdaters.RbSongUpdater.update(progress, rgame.title);
+			//						progDialog.dispose();
+								}
+							
+								RbScoreUpdater.update(progress, scrapeAll, rgame, g, d);
+							}
+						}
 					}
 					
-					RbScoreUpdater.update(progress, scrapeAll, rgame, group, difficulty);
-					gui.myScoresMenuItemActionPerformed(null, rgame, group, difficulty);
+					gui.myScoresMenuItemActionPerformed(null, (RbGame) game, group, difficulty);
 				} else {
 					assert false: "game is not a GhGame or RbGame";
 				}

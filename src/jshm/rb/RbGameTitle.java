@@ -62,7 +62,7 @@ public class RbGameTitle extends GameTitle {
 
 	@Override
 	public Group[] getSupportedInstrumentGroups() {
-		return Group.values();
+		return Group.getBySize(1).toArray(new Group[0]);
 	}
 
 	@Override

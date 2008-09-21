@@ -47,7 +47,7 @@ public class GhGameTitle extends jshm.GameTitle {
 	// override abstract methods
 	
 	private static final Instrument.Group[] SUPPORTED_INSTRUMENT_GROUPS = new Instrument.Group[] {
-		SINGLE_PLAYER_GROUP, CO_OP_PLAYER_GROUP
+		SINGLE_PLAYER_GROUP /*, CO_OP_PLAYER_GROUP*/
 	};
 	
 	private static final int
