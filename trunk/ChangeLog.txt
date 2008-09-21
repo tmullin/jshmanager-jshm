@@ -1,0 +1,72 @@
+JSHManager ChangeLog
+
+Version 0.2.0
+-------------
+- Rock Band 1 and 2 are now supported. While it only took 35 characters
+  to express that, I assure you, it took a significant effort to
+  actually make it happen ;)
+- Corrected issue when updating Guitar Hero song data that failed to
+  update an existing song if new information had been discovered, such
+  as a note count.
+- When using the score editor panel to create and save a new score,
+  the entire tree of scores is no longer reloaded.
+- You can now more quickly enter a score via the score editor by
+  clicking "Add score via editor" from the "Scores" menu or by pressing
+  CTRL+N. This has the effect of toggling the editor if it is hidden
+  and then pressing the "New" button in the editor.
+
+Version 0.1.0
+-------------
+- Additional logging information is stored in data/logs.
+- Corrected calculated rating rounding to be consistent with ScoreHero.
+- Quick access to the Readme, ChangeLog, License, and logs has been added
+  to the Help menu.
+- Picture and video links are now saved when scores are downloaded.
+- New scores can now be uploaded individually by first selecting the score
+  and clicking "Upload Selected Score" in the "My Scores" menu or by
+  pressing CTRL+U.
+- The way passwords are stored has been changed to fix potential issues on
+  some systems. If you previously saved your password, you will be required
+  to re-save your password the next time you need to log in to ScoreHero.
+- A new editor has been added that allows an image/video URL to be specified.
+  This can be shown/hidden by clicking "Toggle Editor" in the "My Scores" menu
+  or by pressing CTRL+E. When the editor is displayed, you can add a new score
+  by clicking the "New" button on the editor panel. You can specify the song
+  via the auto-completing text field without having to navigate to the song
+  in the tree view of the scores.
+- Scores with image/video URLs are now distinguished by blue, underlined
+  text and/or a camera icon. Clicking on the score will launch an external browser
+  to the video URL, if present, or the image URL (clicking on a new score will
+  NOT launch a browser so that you can still quickly edit the score).
+- Fixed an error that sometimes caused a NonUniqueResultException to occur while
+  trying to download scores from ScoreHero.
+- The login dialog has been changed in order to fix an issue that caused JSHManager
+  to hang after logging in to ScoreHero on Linux systems.
+- Added new menus similar to rckr's YUI menus (thanks) to quickly open ScoreHero
+  in your browser.
+- Any score can now be deleted (not just new, unsubmitted scores) from the
+  local database (you can not yet delete scores from ScoreHero's website
+  via JSHManager). A confirmation dialog will appear when deleting scores
+  that have already been submitted.
+
+Version 0.0.3
+-------------
+- Selected rows can now be expanded/collapsed via the right/left arrow keys
+- Table cells for new scores can be edited simply by beginning to type if
+  the cell is selected (has a dashed border around it). You can change the
+  selected cell with the arrow keys. Note there is still an issue when
+  editing the Comment cell causing text to be appended instead of replaced.
+- Hit percentages are now orange between 80 and 99% and red when < 80%
+  (same as on ScoreHero)
+- Song data is now downloaded automatically the first time you try to
+  download scores for a particular game/difficulty. This means it is no
+  longer required to manually download song data unless new DLC comes out.
+
+Version 0.0.2
+-------------
+- Fixed downloading scores for GH1/80s/OT (games that are only on one system)
+- Scores are now sorted descending by points
+
+Version 0.0.1
+-------------
+- Initial release

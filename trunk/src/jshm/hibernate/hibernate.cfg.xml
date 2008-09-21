@@ -1,0 +1,67 @@
+<!--
+  __LICENSE START__
+  JSHManager - A Java-based tool for managing one's ScoreHero account.
+  Copyright (C) 2008 Tim Mullin
+  
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License along
+  with this program; if not, write to the Free Software Foundation, Inc.,
+  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  __LICENSE END__
+-->
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+	    <!-- Database connection settings -->
+        <property name="connection.driver_class">org.hsqldb.jdbcDriver</property>
+        
+        <!--property name="connection.url">jdbc:hsqldb:hsql://localhost</property-->
+        <property name="connection.url">jdbc:hsqldb:file:data/db/jshm;hsqldb.default_table_type=cached</property>
+        
+        <property name="connection.username">sa</property>
+        <property name="connection.password"></property>
+
+        <!-- JDBC connection pool (use the built-in) -->
+        <property name="connection.pool_size">1</property>
+
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.HSQLDialect</property>
+
+        <!-- Enable Hibernate's automatic session context management -->
+        <property name="current_session_context_class">thread</property>
+
+        <!-- Disable the second-level cache  -->
+        <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">false</property>
+
+        <!-- Drop and re-create the database schema on startup -->
+        <property name="hbm2ddl.auto">update</property>
+        
+        <!--property name="hbm2ddl.auto">update</property-->
+
+		<mapping class="jshm.Song"/>
+		<mapping class="jshm.gh.GhSong"/>
+		<mapping class="jshm.rb.RbSong"/>
+		
+		<mapping class="jshm.Score"/>
+		<mapping class="jshm.gh.GhScore"/>
+		<mapping class="jshm.rb.RbScore"/>
+		
+		<mapping class="jshm.Part"/>
+		<mapping class="jshm.SongOrder"/>
+	</session-factory>
+</hibernate-configuration>
