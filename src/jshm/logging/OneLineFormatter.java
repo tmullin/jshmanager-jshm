@@ -38,7 +38,8 @@ public class OneLineFormatter extends Formatter {
 	static final SimpleDateFormat df =
 		new SimpleDateFormat("HH:mm:ss");
 	static final String fmt =
-		"[%s][%-7s][%s.%s()]\n  %s\n";
+		"[%s][%-7s][%s.%s()]" + System.getProperty("line.separator") +
+		"  %s" + System.getProperty("line.separator");
 	
 	Date dt = new Date();
 	
