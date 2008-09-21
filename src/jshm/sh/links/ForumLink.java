@@ -192,6 +192,7 @@ public class ForumLink extends Link {
 				.add("Expert", 1037, Difficulty.EXPERT.getIcon())
 			)
 		)
+		.add("JSHManager Thread", RB_BASE + "viewtopic.php?t=15464")
 	;
 	
 //	static {
