@@ -148,7 +148,7 @@ public class Api {
 				
 				String body = method.getResponseBodyAsString();
 				
-//				LOG.finest("submitGhScore() result body:");
+//				LOG.finest("submitRbScore() result body:");
 //				LOG.finest("\n" + body);
 				method.releaseConnection();
 				
@@ -161,7 +161,9 @@ public class Api {
 				}
 				
 				// can't be completely sure about this
-//				if (body.contains("Your score has been submitted"))
+//				if (!body.contains("window.close()")) {
+//					
+//				}
 				
 				score.setStatus(Score.Status.SUBMITTED);
 				score.setSubmissionDate(new java.util.Date());
