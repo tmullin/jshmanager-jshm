@@ -1,5 +1,13 @@
 JSHManager ChangeLog
 
+Version 0.2.1
+-------------
+- Added extra logging and improved error checking when logging in to
+  ScoreHero.
+- Added a new menu item to upload logs to pastebin.com in the
+  Help -> View Log menu. After uploading, you can copy and paste the
+  URLs when reporting an issue so that I can see the logging information.
+
 Version 0.2.0
 -------------
 - Rock Band 1 and 2 are now supported. While it only took 35 characters
