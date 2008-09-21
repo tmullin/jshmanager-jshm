@@ -7,3 +7,4 @@ HTMLParser - Lesser GNU Public License
 SwingLabs - Lesser GNU Public License
 HSQLDB - HSQLDB License
 DOM4J - DOM4J License
+OpenCSV - Apache License v2.0
