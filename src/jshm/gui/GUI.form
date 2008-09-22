@@ -42,6 +42,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="scoresMenu">
           <Properties>
+            <Property name="mnemonic" type="int" value="83"/>
             <Property name="text" type="java.lang.String" value="Scores"/>
           </Properties>
           <SubComponents>
@@ -70,6 +71,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/jshm/resources/images/toolbar/add32.png"/>
                 </Property>
+                <Property name="mnemonic" type="int" value="69"/>
                 <Property name="text" type="java.lang.String" value="Add Score via Editor"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
@@ -152,6 +154,20 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uploadSelectedScoreMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JSeparator" name="jSeparator6">
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="importScoresFromCsvFileMenuItem">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/jshm/resources/images/toolbar/addfile32.png"/>
+                </Property>
+                <Property name="mnemonic" type="int" value="73"/>
+                <Property name="text" type="java.lang.String" value="Import from CSV File..."/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="importScoresFromCsvFileMenuItemActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>

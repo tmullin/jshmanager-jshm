@@ -93,8 +93,8 @@ public class GhScore extends jshm.Score {
 		// going to set part 1's streak anyway
 		try {
 			if (getParts().size() == 1) {
-//				getPart(1).setStreak(streak);
-				setPartStreak(1, streak);
+				// super since we override it ourself and it would recurse
+				super.setPartStreak(1, streak);
 			}
 		} catch (LazyInitializationException e) {}
 	}

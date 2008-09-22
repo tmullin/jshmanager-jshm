@@ -131,6 +131,11 @@ public class WhatToDownloadPage extends WizardPage {
 		if (null != group) {
 			instrumentList.setSelectedValue(group, true);
 		}
+		
+		if (model.size() == 1) {
+			instrumentList.setSelectedIndex(0);
+			instrumentList.setEnabled(false);
+		}
 	}
 	
     /** This method is called from within the constructor to

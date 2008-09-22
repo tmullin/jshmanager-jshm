@@ -64,6 +64,7 @@ import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 import jshm.gui.datamodels.GhSongDataTreeTableModel;
 import jshm.gui.datamodels.Parentable;
 import jshm.gui.datamodels.RbSongDataTreeTableModel;
+import jshm.gui.wizards.csvimport.CsvImportWizard;
 import jshm.gui.wizards.scoredownload.ScoreDownloadWizard;
 import jshm.gui.wizards.scoreupload.ScoreUploadWizard;
 import jshm.rb.*;
@@ -268,6 +269,8 @@ public class GUI extends javax.swing.JFrame {
         downloadScoresMenuItem = new javax.swing.JMenuItem();
         uploadScoresMenuItem = new javax.swing.JMenuItem();
         uploadSelectedScoreMenuItem = new javax.swing.JMenuItem();
+        jSeparator6 = new javax.swing.JSeparator();
+        importScoresFromCsvFileMenuItem = new javax.swing.JMenuItem();
         ghMenu = new javax.swing.JMenu();
         ghScoresMenu = new javax.swing.JMenu();
         ghSongDataMenu = new javax.swing.JMenu();
@@ -350,6 +353,7 @@ public class GUI extends javax.swing.JFrame {
 
         jMenuBar1.add(fileMenu);
 
+        scoresMenu.setMnemonic('S');
         scoresMenu.setText("Scores");
 
         addNewScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_INSERT, 0));
@@ -367,6 +371,7 @@ public class GUI extends javax.swing.JFrame {
 
         addNewScoreViaEditorMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         addNewScoreViaEditorMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/add32.png"))); // NOI18N
+        addNewScoreViaEditorMenuItem.setMnemonic('E');
         addNewScoreViaEditorMenuItem.setText("Add Score via Editor");
         addNewScoreViaEditorMenuItem.setEnabled(false);
         addNewScoreViaEditorMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -435,6 +440,17 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         scoresMenu.add(uploadSelectedScoreMenuItem);
+        scoresMenu.add(jSeparator6);
+
+        importScoresFromCsvFileMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/addfile32.png"))); // NOI18N
+        importScoresFromCsvFileMenuItem.setMnemonic('I');
+        importScoresFromCsvFileMenuItem.setText("Import from CSV File...");
+        importScoresFromCsvFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importScoresFromCsvFileMenuItemActionPerformed(evt);
+            }
+        });
+        scoresMenu.add(importScoresFromCsvFileMenuItem);
 
         jMenuBar1.add(scoresMenu);
 
@@ -863,7 +879,13 @@ private void addNewScoreViaEditorMenuItemActionPerformed(java.awt.event.ActionEv
 	scoreEditorPanel1.newButton.doClick();
 }//GEN-LAST:event_addNewScoreViaEditorMenuItemActionPerformed
 
-private void uploadLogsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadLogsMenuItemActionPerformed		
+private void importScoresFromCsvFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importScoresFromCsvFileMenuItemActionPerformed
+	Wizard wiz = CsvImportWizard
+		.createWizard(GUI.this, curGame, curGroup, curDiff);
+	wiz.show();
+}//GEN-LAST:event_importScoresFromCsvFileMenuItemActionPerformed
+
+private void uploadLogsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                     
 	final ProgressDialog prog = new ProgressDialog(this);
 	
 	final StringBuilder sb = new StringBuilder(
@@ -914,7 +936,7 @@ private void uploadLogsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
 			}
 		}
 	}.execute();
-}//GEN-LAST:event_uploadLogsMenuItemActionPerformed
+}                                                  
 
 public void showTextFileViewer(final String file) {
 	try {
@@ -1493,6 +1515,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JMenu ghScoresMenu;
     private javax.swing.JMenu ghSongDataMenu;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JMenuItem importScoresFromCsvFileMenuItem;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
@@ -1500,6 +1523,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
+    private javax.swing.JSeparator jSeparator6;
     private javax.swing.JMenuItem licenseMenuItem;
     private javax.swing.JMenu rbLinksMenu;
     private javax.swing.JMenu rbMenu;
