@@ -15,6 +15,11 @@
       </Properties>
     </Component>
   </NonVisualComponents>
+  <Properties>
+    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="[644, 296]"/>
+    </Property>
+  </Properties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -40,11 +45,11 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="fileField" pref="318" max="32767" attributes="0"/>
+                              <Component id="fileField" pref="484" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="selectFileButton" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="gameField" alignment="0" pref="378" max="32767" attributes="0"/>
+                          <Component id="gameField" alignment="0" pref="544" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -54,8 +59,8 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="diffCombo" alignment="0" pref="286" max="32767" attributes="0"/>
-                          <Component id="instrumentCombo" alignment="0" pref="286" max="32767" attributes="0"/>
+                          <Component id="diffCombo" alignment="0" pref="452" max="32767" attributes="0"/>
+                          <Component id="instrumentCombo" alignment="0" pref="452" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -87,7 +92,7 @@
                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="instrumentCombo" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="123" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

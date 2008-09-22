@@ -3,15 +3,15 @@ package jshm.csv;
 import jshm.exceptions.CsvException;
 
 public enum CsvColumn {
-	IGNORE,
-	DIFFICULTY,
 	SONG,
 	SCORE,
 	RATING,
 	PERCENT,
 	STREAK,
 	COMMENT,
-	INSTRUMENT;
+	DIFFICULTY,
+	INSTRUMENT,
+	IGNORE;
 	
 	public static CsvColumn smartValueOf(final String value) throws CsvException {
 		if (value.length() < 2)

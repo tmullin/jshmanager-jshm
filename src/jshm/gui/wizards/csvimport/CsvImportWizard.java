@@ -53,7 +53,8 @@ public class CsvImportWizard {
 		
 		return WizardPage.createWizard("Import Scores from CSV File",
 			new WizardPage[] {
-				new OptionsPage(game, group, difficulty)
+				new OptionsPage(game, group, difficulty),
+				new ColumnsPage(game)
 			},
 			me.resultProducer);
 	}
@@ -85,7 +86,7 @@ public class CsvImportWizard {
 			System.out.println("Keys: ");
 			
 			for (Object key : wizardData.keySet()) {
-				System.out.println("  " + key + ": " + wizardData.get(key).getClass().getName());
+				System.out.println("  " + key + ": " + wizardData.get(key));
 			}
 			
 			return null;

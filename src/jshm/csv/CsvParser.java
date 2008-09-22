@@ -38,7 +38,7 @@ public class CsvParser {
 			}
 		}
 		
-		LOG.info("using columns: " + Util.implode((Object[]) columns));
+		LOG.info("using columns: " + Util.implode(columns));
 		
 		Map<CsvColumn, Integer> columnMap = new HashMap<CsvColumn, Integer>();
 		
@@ -57,7 +57,7 @@ public class CsvParser {
 				continue;
 			}
 			
-			final String implodedLine = Util.implode((Object[]) line);
+			final String implodedLine = Util.implode(line);
 			
 			LOG.info("Parsing line (" + line.length + " elements): " + implodedLine);
 			
