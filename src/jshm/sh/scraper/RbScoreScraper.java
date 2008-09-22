@@ -246,7 +246,7 @@ public class RbScoreScraper {
 			
 			i++; // i = 5 for rating
 			
-			if (!data[i][0].isEmpty()) {
+			if (null != data[i][0] && !data[i][0].isEmpty()) {
 				// infer rating from the image
 				score.setRating(Integer.parseInt(data[i][0]));
 			} else {
@@ -260,14 +260,14 @@ public class RbScoreScraper {
 			p.setDifficulty(difficulty);
 			p.setInstrument(group.instruments[0]);
 			
-			if (!data[i][0].isEmpty()) {
+			if (null != data[i][0] && !data[i][0].isEmpty()) {
 				p.setHitPercent(
 					Float.parseFloat(data[i][0]) / 100.0f);
 			}
 			
 			i++; // i = 7 for streak
 			
-			if (!data[i][0].isEmpty()) {
+			if (null != data[i][0] && !data[i][0].isEmpty()) {
 				p.setStreak(
 					Integer.parseInt(data[i][0]));
 			}
@@ -288,7 +288,7 @@ public class RbScoreScraper {
 			
 			i++; // i = 9 for comment
 				
-			if (!data[i][0].isEmpty() && !"N/A".equals(data[i][0])) {
+			if (null != data[i][0] && !data[i][0].isEmpty() && !"N/A".equals(data[i][0])) {
 				score.setComment(data[i][0]);
 			}
 			
