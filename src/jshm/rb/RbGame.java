@@ -21,6 +21,7 @@
 package jshm.rb;
 
 import jshm.*;
+import jshm.Instrument.Group;
 
 public class RbGame extends Game {
 	private static class RbTiers {
@@ -66,4 +67,30 @@ public class RbGame extends Game {
 	public int getTierCount() {
 		return getTierCount(Instrument.Group.GUITAR);
 	}
+
+	
+	@Override
+	public Song getSongByScoreHeroId(int scoreHeroId, Difficulty diff) {
+		return RbSong.getByScoreHeroId(scoreHeroId);
+	}
+
+	@Override
+	public Song getSongByTitle(String title, Difficulty diff) {
+		return RbSong.getByTitle(this, title);
+	}
+
+	@Override
+	public Score createNewScore(Song song, Group group, Difficulty diff,
+			int score, int rating, float percent, int streak, String comment) {
+		
+		RbScore ret = RbScore.createNewScoreTemplate(this, group, diff, (RbSong) song);
+		ret.setScore(score);
+		ret.setRating(rating);
+		ret.setPartHitPercent(1, percent);
+		ret.setPartStreak(1, streak);
+		ret.setComment(comment);
+		
+		return ret;
+	}
+
 }

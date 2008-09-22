@@ -101,6 +101,11 @@ public abstract class GameTitle {
 	 */
 	public abstract int getMaxRating();
 	
+	public boolean isValidRating(int rating) {
+		return rating == 0 ||
+		(getMinRating() <= rating && rating <= getMaxRating());
+	}
+	
 	/**
 	 * 
 	 * @return Whether we can calculate more stars than the

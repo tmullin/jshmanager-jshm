@@ -58,6 +58,18 @@ public enum Difficulty {
 		return icon;
 	}
 	
+	public static Difficulty smartValueOf(final String value) {
+		String value2 = value.toUpperCase();
+		boolean atLeastTwoChars = value.length() >= 2;
+		
+		for (Difficulty d : values()) {
+			if (d.toShortString().equals(value2) ||
+				(atLeastTwoChars && d.name().startsWith(value2)))
+				return d;
+		}
+		
+		return null;
+	}
 	
 	public static Difficulty getByScoreHeroId(final int scoreHeroId) {
 		for (Difficulty d : Difficulty.values())

@@ -52,6 +52,17 @@ public enum Instrument {
 		return shortString;
 	}
 	
+	public static Instrument smartValueOf(String value) {
+		String value2 = value.toUpperCase();
+		
+		for (Instrument i : values()) {
+			if (i.name().startsWith(value2))
+				return i;
+		}
+		
+		return null;
+	}
+	
 	public static enum Group {
 		GUITAR(1, Instrument.GUITAR),
 		BASS(2, Instrument.BASS),

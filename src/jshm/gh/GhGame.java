@@ -23,6 +23,7 @@ package jshm.gh;
 import java.util.Arrays;
 
 import jshm.*;
+import jshm.Instrument.Group;
 
 /**
  * This class represents a Guitar Hero game as far as it
@@ -109,5 +110,31 @@ public class GhGame extends jshm.Game {
 	
 	public int getTierCount() {
 		return getTierCount(GhGameTitle.SINGLE_PLAYER_GROUP);
+	}
+
+	
+	@Override
+	public Song getSongByScoreHeroId(int scoreHeroId, Difficulty diff) {
+		return GhSong.getByScoreHeroId(scoreHeroId);
+	}
+
+	@Override
+	public Song getSongByTitle(String title, Difficulty diff) {
+		return GhSong.getByTitle(this, title, diff);
+	}
+
+	
+	@Override
+	public Score createNewScore(Song song, Group group, Difficulty diff,
+			int score, int rating, float percent, int streak, String comment) {
+		
+		GhScore ret = GhScore.createNewScoreTemplate(this, group, diff, (GhSong) song);
+		ret.setScore(score);
+		ret.setRating(rating);
+		ret.setPartHitPercent(1, percent);
+		ret.setPartStreak(1, streak);
+		ret.setComment(comment);
+		
+		return ret;
 	}
 }

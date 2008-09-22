@@ -99,6 +99,14 @@ public class GhScore extends jshm.Score {
 		} catch (LazyInitializationException e) {}
 	}
 	
+	@Override
+	public void setPartStreak(int index, int streak) {
+		super.setPartStreak(index, streak);
+		
+		if (getParts().size() == 1)
+			setStreak(streak);
+	}
+	
 	/**
 	 * Set the score as well as the calculated rating automatically.
 	 */

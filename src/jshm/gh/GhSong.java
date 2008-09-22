@@ -25,6 +25,8 @@ import java.util.logging.Logger;
 
 import javax.persistence.*;
 
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.validator.*;
 
 import jshm.Difficulty;
@@ -75,7 +77,7 @@ public class GhSong extends jshm.Song {
 	}
 	
 	public static GhSong getByScoreHeroId(final int id) {
-		LOG.finer("Querying database for song with scoreHeroId=" + id);
+		LOG.finer("Querying database for ghsong with scoreHeroId=" + id);
 		
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
@@ -85,6 +87,29 @@ public class GhSong extends jshm.Song {
 				String.format(
 					"from GhSong where scoreHeroId=%d", id))
 				.uniqueResult();
+	    session.getTransaction().commit();
+		
+		return result;
+	}
+	
+	public static GhSong getByTitle(GhGame game, String title, Difficulty diff) {
+		List<GhSong> list = getAllByTitle(game, title, diff);
+		return list.size() == 1 ? list.get(0) : null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<GhSong> getAllByTitle(GhGame game, String title, Difficulty diff) {
+		LOG.finer("Querying database for ghsong for " + game + " with title=" + title + " on " + diff);
+		
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    List<GhSong> result =
+			(List<GhSong>)
+			session.createCriteria(GhSong.class)
+				.add(Restrictions.eq("game", game))
+				.add(Restrictions.ilike("title", title, MatchMode.ANYWHERE))
+				.add(Restrictions.eq("difficulty", diff))
+			.list();
 	    session.getTransaction().commit();
 		
 		return result;

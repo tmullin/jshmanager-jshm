@@ -22,6 +22,7 @@ package jshm;
 
 import java.util.*;
 
+import jshm.Instrument.Group;
 import jshm.gh.GhGame;
 import jshm.rb.RbGame;
 
@@ -141,6 +142,11 @@ public abstract class Game {
 		return tiersMap.get(group).getCount();
 	}
 	
+	
+	
+	public abstract Song getSongByTitle(String title, Difficulty diff);
+	public abstract Song getSongByScoreHeroId(int scoreHeroId, Difficulty diff);
+	
 
 	// override Object methods
 	
@@ -160,4 +166,20 @@ public abstract class Game {
 	public String toString() {
 		return title + "_" + platform;
 	}
+
+	/**
+	 * Creates a 1-part score. Note it is not saved to the db.
+	 * @param song
+	 * @param group
+	 * @param diff
+	 * @param score
+	 * @param rating
+	 * @param percent
+	 * @param streak
+	 * @param comment
+	 * @return
+	 */
+	public abstract Score createNewScore(Song song, Group group,
+			Difficulty diff, int score, int rating, float percent,
+			int streak, String comment);
 }

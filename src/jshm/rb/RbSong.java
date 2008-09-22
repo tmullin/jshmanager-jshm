@@ -42,6 +42,8 @@ import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Type;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.validator.NotNull;
 
 @Entity
@@ -121,6 +123,29 @@ public class RbSong extends Song {
 		
 		return result;
 	}
+	
+	public static RbSong getByTitle(RbGame game, String title) {
+		List<RbSong> list = getAllByTitle(game, title);
+		return list.size() == 1 ? list.get(0) : null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<RbSong> getAllByTitle(RbGame game, String title) {
+		LOG.finest("Querying database for RbSong for " + game + " with title=" + title);
+		
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    List<RbSong> result =
+			(List<RbSong>)
+			session.createCriteria(RbSong.class)
+				.add(Restrictions.eq("gameTitle", game.title))
+				.add(Restrictions.ilike("title", title, MatchMode.ANYWHERE))
+			.list();
+	    session.getTransaction().commit();
+		
+		return result;
+	}
+	
 	
 	private GameTitle gameTitle;
 	
