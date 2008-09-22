@@ -144,6 +144,7 @@ public abstract class Game {
 	
 	
 	
+	public abstract List<? extends Song> getAllSongsByTitle(String title, Difficulty diff);
 	public abstract Song getSongByTitle(String title, Difficulty diff);
 	public abstract Song getSongByScoreHeroId(int scoreHeroId, Difficulty diff);
 	

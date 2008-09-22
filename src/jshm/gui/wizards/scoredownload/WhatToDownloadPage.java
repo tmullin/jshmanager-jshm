@@ -36,6 +36,7 @@ import jshm.Instrument;
 import jshm.Platform;
 import jshm.gh.GhGameTitle;
 
+import org.netbeans.spi.wizard.WizardController;
 import org.netbeans.spi.wizard.WizardPage;
 
 /**
@@ -86,6 +87,7 @@ public class WhatToDownloadPage extends WizardPage {
     			return "You must select at least one instrument.";
     	}
     	
+    	setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE_OR_FINISH);
     	return null;
     }
     
@@ -158,7 +160,7 @@ public class WhatToDownloadPage extends WizardPage {
 
         jLabel1.setText("Game:");
 
-        gameField.setEnabled(false);
+        gameField.setEditable(false);
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder("Platforms"), javax.swing.BorderFactory.createEmptyBorder(0, 5, 5, 5)));
 
@@ -187,11 +189,11 @@ public class WhatToDownloadPage extends WizardPage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(gameField, javax.swing.GroupLayout.DEFAULT_SIZE, 547, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

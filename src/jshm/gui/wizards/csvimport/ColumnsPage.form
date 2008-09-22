@@ -55,7 +55,7 @@
       <Properties>
         <Property name="mnemonic" type="int" value="73"/>
         <Property name="selected" type="boolean" value="true"/>
-        <Property name="text" type="java.lang.String" value="Infer columns names from first row"/>
+        <Property name="text" type="java.lang.String" value="Infer column names from first row"/>
         <Property name="name" type="java.lang.String" value="inferColumns" noResource="true"/>
       </Properties>
       <Events>

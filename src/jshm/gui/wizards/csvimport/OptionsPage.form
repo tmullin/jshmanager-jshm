@@ -45,11 +45,11 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="fileField" pref="484" max="32767" attributes="0"/>
+                              <Component id="fileField" pref="505" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="selectFileButton" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="gameField" alignment="0" pref="544" max="32767" attributes="0"/>
+                          <Component id="gameField" alignment="0" pref="561" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -59,8 +59,8 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="diffCombo" alignment="0" pref="452" max="32767" attributes="0"/>
-                          <Component id="instrumentCombo" alignment="0" pref="452" max="32767" attributes="0"/>
+                          <Component id="diffCombo" alignment="0" pref="469" max="32767" attributes="0"/>
+                          <Component id="instrumentCombo" alignment="0" pref="469" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -92,7 +92,7 @@
                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="instrumentCombo" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="123" max="32767" attributes="0"/>
+              <EmptySpace pref="146" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -105,8 +105,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="fileField">
       <Properties>
-        <Property name="horizontalAlignment" type="int" value="4"/>
-        <Property name="enabled" type="boolean" value="false"/>
+        <Property name="editable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="file" noResource="true"/>
       </Properties>
     </Component>
@@ -120,7 +119,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="gameField">
       <Properties>
-        <Property name="enabled" type="boolean" value="false"/>
+        <Property name="editable" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">

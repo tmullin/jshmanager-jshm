@@ -165,6 +165,7 @@
                 </Property>
                 <Property name="mnemonic" type="int" value="73"/>
                 <Property name="text" type="java.lang.String" value="Import from CSV File..."/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="importScoresFromCsvFileMenuItemActionPerformed"/>

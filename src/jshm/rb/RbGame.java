@@ -20,6 +20,8 @@
 */
 package jshm.rb;
 
+import java.util.List;
+
 import jshm.*;
 import jshm.Instrument.Group;
 
@@ -70,12 +72,18 @@ public class RbGame extends Game {
 
 	
 	@Override
-	public Song getSongByScoreHeroId(int scoreHeroId, Difficulty diff) {
+	public RbSong getSongByScoreHeroId(int scoreHeroId, Difficulty diff) {
 		return RbSong.getByScoreHeroId(scoreHeroId);
 	}
 
+	
 	@Override
-	public Song getSongByTitle(String title, Difficulty diff) {
+	public List<RbSong> getAllSongsByTitle(String title, Difficulty diff) {
+		return RbSong.getAllByTitle(this, title);
+	}
+	
+	@Override
+	public RbSong getSongByTitle(String title, Difficulty diff) {
 		return RbSong.getByTitle(this, title);
 	}
 

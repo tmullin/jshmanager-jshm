@@ -15,7 +15,8 @@ public enum CsvColumn {
 	
 	public static CsvColumn smartValueOf(final String value) throws CsvException {
 		if (value.length() < 2)
-			throw new CsvException("value too short to determine column type: " + value);
+			return null;
+//			throw new CsvException("value too short to determine column type: " + value);
 		
 		String value2 = value.toUpperCase();
 		
@@ -24,6 +25,6 @@ public enum CsvColumn {
 				return c;
 		}
 		
-		throw new CsvException("no column found that matches " + value);
+		return null;
 	}
 }

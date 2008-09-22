@@ -21,6 +21,7 @@
 package jshm.gh;
 
 import java.util.Arrays;
+import java.util.List;
 
 import jshm.*;
 import jshm.Instrument.Group;
@@ -114,12 +115,17 @@ public class GhGame extends jshm.Game {
 
 	
 	@Override
-	public Song getSongByScoreHeroId(int scoreHeroId, Difficulty diff) {
+	public GhSong getSongByScoreHeroId(int scoreHeroId, Difficulty diff) {
 		return GhSong.getByScoreHeroId(scoreHeroId);
 	}
 
 	@Override
-	public Song getSongByTitle(String title, Difficulty diff) {
+	public List<GhSong> getAllSongsByTitle(String title, Difficulty diff) {
+		return GhSong.getAllByTitle(this, title, diff);
+	}
+	
+	@Override
+	public GhSong getSongByTitle(String title, Difficulty diff) {
 		return GhSong.getByTitle(this, title, diff);
 	}
 

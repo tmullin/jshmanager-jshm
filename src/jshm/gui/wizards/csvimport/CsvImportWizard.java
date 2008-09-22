@@ -20,25 +20,23 @@
  */
 package jshm.gui.wizards.csvimport;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jshm.*;
-import jshm.dataupdaters.GhScoreUpdater;
-import jshm.dataupdaters.RbScoreUpdater;
-import jshm.gh.GhGame;
+import jshm.csv.*;
 import jshm.gui.GUI;
-import jshm.gui.LoginDialog;
 //import jshm.gui.ProgressDialog;
-import jshm.rb.RbGame;
-import jshm.rb.RbSong;
 
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.netbeans.spi.wizard.DeferredWizardResult;
 import org.netbeans.spi.wizard.ResultProgressHandle;
+import org.netbeans.spi.wizard.Summary;
 import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardException;
 import org.netbeans.spi.wizard.WizardPage;
@@ -83,14 +81,14 @@ public class CsvImportWizard {
 	
 		@Override
 		public Object finish(Map wizardData) throws WizardException {
-			System.out.println("Keys: ");
-			
-			for (Object key : wizardData.keySet()) {
-				System.out.println("  " + key + ": " + wizardData.get(key));
-			}
-			
-			return null;
-//			return deferredResult;
+//			System.out.println("Keys: ");
+//			
+//			for (Object key : wizardData.keySet()) {
+//				System.out.println("  " + key + ": " + wizardData.get(key));
+//			}
+//			
+//			return null;
+			return deferredResult;
 		}
 	};
 	
@@ -98,101 +96,37 @@ public class CsvImportWizard {
 		@Override
 		public void start(Map settings, ResultProgressHandle progress) {
 			try {
-
-				boolean scrapeAll = false;
+				progress.setBusy("Parsing CSV file...");
 				
-				try {
-					scrapeAll = (Boolean) settings.get("all");
-				} catch (Exception e) {}
-
-				Object platform   = settings.get("platforms");
-				Object diff       = settings.get("difficulties");
-				Object instrument = settings.get("instruments");
-				
-				Object[] platforms   = null;
-				Object[] diffs       = null;
-				Object[] instruments = null;
-				
-				if (platform instanceof Object[]) {
-					platforms = (Object[]) platform;
-				} else {
-					platforms = new Object[] {platform};
-				}
-				
-				if (diff instanceof Object[]) {
-					diffs = (Object[]) diff;
-				} else {
-					diffs = new Object[] {diff};
-				}
-				
-				if (instrument instanceof Object[]) {
-					instruments = (Object[]) instrument;
-				} else {
-					instruments = new Object[] {instrument};
-				}
-				
-				
-				if (game instanceof GhGame) {
-					for (Object platformObj : platforms) {
-						Platform p = (Platform) platformObj;
-						GhGame ggame = (GhGame) Game.getByTitleAndPlatform(game.title, p);
-						
-						for (Object diffObj : diffs) {
-							Difficulty d = (Difficulty) diffObj;
-							
-							// TODO change to a select count(*) for efficiency
-							List<?> songs = jshm.gh.GhSong.getSongs(ggame, d);
-							
-							if (songs.size() == 0) {
-								// need to load song data as well
-								LOG.fine("Downloading song data first");
-								progress.setBusy("Downloading song data");
-								jshm.dataupdaters.GhSongUpdater.update(ggame, d);
-							}
-							
-							GhScoreUpdater.update(progress, scrapeAll, ggame, d);
-						}
-					}
-						
-					gui.myScoresMenuItemActionPerformed(null, (GhGame) game, Instrument.Group.GUITAR, difficulty);
-				} else if (game instanceof RbGame) {
-					for (Object platformObj : platforms) {
-						Platform p = (Platform) platformObj;
-						RbGame rgame = (RbGame) Game.getByTitleAndPlatform(game.title, p);
-						
-						for (Object diffObj : diffs) {
-							Difficulty d = (Difficulty) diffObj;
+				File f = new File((String) settings.get("file"));
+				boolean inferColumns =
+					null != settings.get("inferColumns")
+					? (Boolean) settings.get("inferColumns")
+					: true;
 					
-							for (Object instrumentObj : instruments) {
-								Instrument.Group g = (Instrument.Group) instrumentObj;
-							
-								// TODO change to a select count(*) for efficiency
-								List<?> songs = RbSong.getSongs(rgame, g);
-								
-								if (songs.size() == 0) {
-									// need to load song data as well
-									LOG.fine("Downloading song data first");
-									progress.setBusy("Downloading song data");
-			//						ProgressDialog progDialog = new ProgressDialog();
-									jshm.dataupdaters.RbSongUpdater.update(progress, rgame.title);
-			//						progDialog.dispose();
-								}
-							
-								RbScoreUpdater.update(progress, scrapeAll, rgame, g, d);
-							}
-						}
-					}
+				CsvColumn[] columns = null;
+				
+				if (!inferColumns) {
+					Object[] columnObjs = (Object[]) settings.get("columns");
 					
-					gui.myScoresMenuItemActionPerformed(null, (RbGame) game, group, difficulty);
-				} else {
-					assert false: "game is not a GhGame or RbGame";
+					columns = new CsvColumn[columnObjs.length];
+					
+					for (int i = 0; i < columnObjs.length; i++)
+						columns[i] = (CsvColumn) columnObjs[i];
 				}
 				
-				progress.finished(null);
+				List<String> summary = new ArrayList<String>();
+				List<Score> scores = CsvParser.parse(summary, f, columns, game, group, difficulty);
+				
+				summary.add("Parsed " + scores.size() + " scores");
+				
+				progress.finished(
+					Summary.create(
+						summary.toArray(new String[0]), null));
 			} catch (Throwable e) {
-				LOG.log(Level.WARNING, "Failed to download scores", e);
-				progress.failed("Failed to download scores: " + e.getMessage(), false);
-				ErrorInfo ei = new ErrorInfo("Error", "Failed to download scores", null, null, e, null, null);
+				LOG.log(Level.WARNING, "Failed to parse CSV file", e);
+				progress.failed("Failed to parse CSV file: " + e.getMessage(), false);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to parse CSV file", null, null, e, null, null);
 				JXErrorPane.showDialog(null, ei);
 				return;
 			}

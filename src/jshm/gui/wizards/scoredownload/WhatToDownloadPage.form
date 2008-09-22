@@ -24,11 +24,11 @@
                       <Component id="gameField" pref="547" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="jScrollPane1" pref="189" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="192" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="190" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" pref="191" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="jScrollPane3" pref="198" max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" pref="199" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -62,7 +62,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="gameField">
       <Properties>
-        <Property name="enabled" type="boolean" value="false"/>
+        <Property name="editable" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">

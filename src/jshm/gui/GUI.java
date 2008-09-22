@@ -445,6 +445,7 @@ public class GUI extends javax.swing.JFrame {
         importScoresFromCsvFileMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/addfile32.png"))); // NOI18N
         importScoresFromCsvFileMenuItem.setMnemonic('I');
         importScoresFromCsvFileMenuItem.setText("Import from CSV File...");
+        importScoresFromCsvFileMenuItem.setEnabled(false);
         importScoresFromCsvFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 importScoresFromCsvFileMenuItemActionPerformed(evt);
@@ -1282,6 +1283,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 			editorCollapsiblePane.setCollapsed(true);
 			addNewScoreViaEditorMenuItem.setEnabled(false);
 			toggleEditorMenuItem.setEnabled(false);
+			importScoresFromCsvFileMenuItem.setEnabled(false);
 			
 			GUI.this.setIconImage(game.title.getIcon().getImage());
 			GUI.this.setTitle(game + " on " + difficulty + " - Song Data");
@@ -1355,6 +1357,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 			editorCollapsiblePane.setCollapsed(true);
 			addNewScoreViaEditorMenuItem.setEnabled(false);
 			toggleEditorMenuItem.setEnabled(false);
+			importScoresFromCsvFileMenuItem.setEnabled(false);
 			
 			GUI.this.setIconImage(game.title.getIcon().getImage());
 			GUI.this.setTitle(game + " " + group + " - Song Data");
@@ -1462,6 +1465,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			uploadScoresMenuItem.setEnabled(true);
 			addNewScoreViaEditorMenuItem.setEnabled(true);
 			toggleEditorMenuItem.setEnabled(true);
+			importScoresFromCsvFileMenuItem.setEnabled(true);
 			
 			if (scores.size() == 0 && null != evt) { // if evt == null we're recursing
 				if (JOptionPane.YES_OPTION ==

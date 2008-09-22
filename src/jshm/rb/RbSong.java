@@ -43,6 +43,7 @@ import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Type;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.validator.NotNull;
 
@@ -140,6 +141,7 @@ public class RbSong extends Song {
 			session.createCriteria(RbSong.class)
 				.add(Restrictions.eq("gameTitle", game.title))
 				.add(Restrictions.ilike("title", title, MatchMode.ANYWHERE))
+				.addOrder(Order.asc("title"))
 			.list();
 	    session.getTransaction().commit();
 		

@@ -18,6 +18,7 @@ import jshm.Game;
 import jshm.Instrument;
 import jshm.gh.GhGame;
 
+import org.netbeans.spi.wizard.WizardController;
 import org.netbeans.spi.wizard.WizardPage;
 
 /**
@@ -55,6 +56,7 @@ public class OptionsPage extends WizardPage {
 		if (fileField.getText().isEmpty() || !new File(fileField.getText()).exists())
 			return "You must select a valid file.";
 		
+		setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE_OR_FINISH);
 		return null;
 	}
 	
@@ -126,8 +128,7 @@ public class OptionsPage extends WizardPage {
 
         jLabel1.setText("File:");
 
-        fileField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        fileField.setEnabled(false);
+        fileField.setEditable(false);
         fileField.setName("file"); // NOI18N
 
         selectFileButton.setText("...");
@@ -137,7 +138,7 @@ public class OptionsPage extends WizardPage {
             }
         });
 
-        gameField.setEnabled(false);
+        gameField.setEditable(false);
 
         jLabel2.setText("Game:");
 
@@ -163,18 +164,18 @@ public class OptionsPage extends WizardPage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(fileField, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
+                                .addComponent(fileField, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(selectFileButton))
-                            .addComponent(gameField, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE)))
+                            .addComponent(gameField, javax.swing.GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(diffCombo, 0, 452, Short.MAX_VALUE)
-                            .addComponent(instrumentCombo, 0, 452, Short.MAX_VALUE))))
+                            .addComponent(diffCombo, 0, 469, Short.MAX_VALUE)
+                            .addComponent(instrumentCombo, 0, 469, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -197,7 +198,7 @@ public class OptionsPage extends WizardPage {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(instrumentCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(123, Short.MAX_VALUE))
+                .addContainerGap(146, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

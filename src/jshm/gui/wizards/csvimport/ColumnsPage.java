@@ -98,7 +98,7 @@ public class ColumnsPage extends WizardPage {
 
         inferColumnsCheckBox.setMnemonic('I');
         inferColumnsCheckBox.setSelected(true);
-        inferColumnsCheckBox.setText("Infer columns names from first row");
+        inferColumnsCheckBox.setText("Infer column names from first row");
         inferColumnsCheckBox.setName("inferColumns"); // NOI18N
         inferColumnsCheckBox.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {

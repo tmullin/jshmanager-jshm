@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import javax.persistence.*;
 
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.validator.*;
 
@@ -109,6 +110,7 @@ public class GhSong extends jshm.Song {
 				.add(Restrictions.eq("game", game))
 				.add(Restrictions.ilike("title", title, MatchMode.ANYWHERE))
 				.add(Restrictions.eq("difficulty", diff))
+				.addOrder(Order.asc("title"))
 			.list();
 	    session.getTransaction().commit();
 		
