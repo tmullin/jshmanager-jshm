@@ -50,7 +50,7 @@ public class JSHManager {
 			String.format("%s.%s.%s%s", MAJOR, MINOR, POINT, IS_BETA ? " beta" : "");
 		
 		public static final String LAST = "0.2.0";
-		public static final int LAST_REVISION = 138;
+		public static final int LAST_REVISION = 188;
 		
 		public static final java.util.Date DATE = initDate("$Date$");
 		public static final int REVISION = initRevision("$Revision$");

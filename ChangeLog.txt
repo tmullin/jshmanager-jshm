@@ -10,15 +10,8 @@ Version 0.2.1
 - Added a new step to the score download wizard that allows you to download
   scores for multiple platforms/difficulties/instruments in one shot.
 - Fixed bug when trying to download RB scores where a rating wasn't specified.
-- Added a CSV score importer accessible from the "Scores" menu. It can guess
-  what the columns are if the first row contains headers but you can also
-  explicitly set the column order. It can match partial song names so you
-  don't have to type "Come Out and Play (Keep 'Em Separated)", for example.
-  As long as there aren't multiple matches, you could just use "out and play".
-  For songs like Working Man where there is "Working Man" and "Working Man 
-  (Vault Edition)", you must type the exact name of the shorter version.
-  That is, "working man" for the cover version, but "working man (va" would
-  work for the vault version. You could not use "working m", for example.
+- Added a CSV score importer accessible from the "Scores" menu. See
+  Readme.txt for more details.
 
 Version 0.2.0
 -------------
