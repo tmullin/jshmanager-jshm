@@ -39,7 +39,8 @@ public class SvnDiff {
 	static final File CHANGED_JAR_FILE = new File("internal/jshm/internal/patcher/ChangedJarFiles.txt");
 	
 	static final String[] IGNORE_PREFIX = new String[] {
-		"build.xml", "test/", "internal/", "src/jshm/concepts/"
+		".", "lib", "scripts/",
+		"build.xml", "test/", "internal", "src/jshm/concepts/"
 	};
 	
 	static final String[] IGNORE_SUFFIX = new String[] {
