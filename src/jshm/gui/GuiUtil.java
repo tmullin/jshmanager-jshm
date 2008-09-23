@@ -24,11 +24,15 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
+import javax.swing.plaf.FontUIResource;
 import javax.swing.tree.TreePath;
+
+import jshm.Config;
 
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.TreeTableModel;
@@ -52,6 +56,22 @@ public class GuiUtil {
 		UIManager.put("OptionPane.yesIcon", new ImageIcon(GuiUtil.class.getResource("/jshm/resources/images/toolbar/accept32.png")));
 		UIManager.put("OptionPane.noIcon", new ImageIcon(GuiUtil.class.getResource("/jshm/resources/images/toolbar/delete32.png")));
 		
+
+		float scale = Config.getFloat("font.scale"); 
+		
+		if (1f != scale) {
+			Enumeration<Object> keys = UIManager.getDefaults().keys();
+			while (keys.hasMoreElements()) {
+				Object key = keys.nextElement();
+				Object value = UIManager.get(key);
+				
+				if (value instanceof FontUIResource) {
+					FontUIResource f = (FontUIResource) value;
+					f = new FontUIResource(f.deriveFont(scale * f.getSize2D()));
+					UIManager.put(key, f);
+				}
+			}
+		}
 	}
 	
 	/**

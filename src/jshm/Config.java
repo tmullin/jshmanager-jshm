@@ -76,6 +76,10 @@ public class Config {
 		return p.getLong(propertyName);
 	}
 	
+	public static float getFloat(String propertyName) {
+		return p.getFloat(propertyName);
+	}
+	
 	public static double getDouble(String propertyName) {
 		return p.getDouble(propertyName);
 	}

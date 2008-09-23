@@ -85,7 +85,7 @@ public class Properties extends java.util.Properties {
 		return defaultValue;
 	}
 	
-	public double getFloat(String propertyName) {
+	public float getFloat(String propertyName) {
 		float defaultValue = 0.0f;
 		
 		try {
