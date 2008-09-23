@@ -122,7 +122,7 @@
 		<zip destfile="${dist_dir}/tmp.jar">
 			<zipfileset
 				src="${dist_dir}/${jshm.name}.jar"
-				includes="antlr/**,javassist/**,javax/**,jshm/**,net/**,org/**,META-INF/MANIFEST.MF"/>
+				includes="antlr/**,javassist/**,javax/**,jshm/**,net/**,org/**,au/**,META-INF/MANIFEST.MF"/>
 		</zip>
 		<move file="${dist_dir}/tmp.jar" tofile="${dist_dir}/${jshm.name}.jar"/>
 	</target>
