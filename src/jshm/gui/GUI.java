@@ -884,6 +884,7 @@ private void importScoresFromCsvFileMenuItemActionPerformed(java.awt.event.Actio
 	Wizard wiz = CsvImportWizard
 		.createWizard(GUI.this, curGame, curGroup, curDiff);
 	wiz.show();
+	myScoresMenuItemActionPerformed(null, curGame, curGroup, curDiff);
 }//GEN-LAST:event_importScoresFromCsvFileMenuItemActionPerformed
 
 private void uploadLogsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                     
@@ -1396,6 +1397,8 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		@Override
 		protected Void doInBackground() throws Exception {			
 			try {
+				// TODO put these methods in the Game subclasses to take advantage of polymorphism
+				
 				if (game instanceof GhGame)
 					songs = GhSong.getSongs((GhGame) game, difficulty);
 				else if (game instanceof RbGame)

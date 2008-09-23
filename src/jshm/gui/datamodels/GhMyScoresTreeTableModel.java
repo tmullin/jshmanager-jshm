@@ -227,6 +227,8 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		
 		Score score = (Score) p.getLastPathComponent();
 		
+		LOG.finer("Going to delete score: " + score);
+		
 		switch (score.getStatus()) {
 			case NEW:
 			case SUBMITTED:
@@ -238,7 +240,8 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 					sess = HibernateUtil.getCurrentSession();
 					tx = sess.beginTransaction();
 					sess.delete(score);
-					sess.getTransaction().commit();
+					tx.commit();
+					LOG.finer("Score deleted from DB");
 				} catch (Exception e) {
 					if (null != tx) tx.rollback();
 					LOG.log(Level.SEVERE, "Failed to delete score from database", e);

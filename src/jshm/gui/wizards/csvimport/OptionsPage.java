@@ -110,16 +110,17 @@ public class OptionsPage extends WizardPage {
         diffCombo = new javax.swing.JComboBox();
         jLabel4 = new javax.swing.JLabel();
         instrumentCombo = new javax.swing.JComboBox();
+        jLabel5 = new javax.swing.JLabel();
 
-        jfc.setAcceptAllFileFilterUsed(false);
         jfc.setCurrentDirectory(new File("."));
         jfc.setFileFilter(new FileFilter() {
             public boolean accept(File f) {
-                return f.isDirectory() || f.getName().toLowerCase().endsWith(".csv");
+                String name = f.getName().toLowerCase();
+                return f.isDirectory() || name.endsWith(".csv") || name.endsWith(".txt");
             }
 
             public String getDescription() {
-                return "CSV Files (*.csv)";
+                return "CSV Files (*.csv, *.txt)";
             }
         });
         jfc.setName(""); // NOI18N
@@ -150,6 +151,8 @@ public class OptionsPage extends WizardPage {
 
         instrumentCombo.setName("instrument"); // NOI18N
 
+        jLabel5.setText("<html>* The file must be a CSV (comma-separated values) file. Most spreadsheet programs can export or \"Save As\" this format.");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -157,6 +160,7 @@ public class OptionsPage extends WizardPage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 592, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
@@ -164,18 +168,18 @@ public class OptionsPage extends WizardPage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(fileField, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
+                                .addComponent(fileField, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(selectFileButton))
-                            .addComponent(gameField, javax.swing.GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE)))
+                            .addComponent(gameField, javax.swing.GroupLayout.DEFAULT_SIZE, 539, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(diffCombo, 0, 469, Short.MAX_VALUE)
-                            .addComponent(instrumentCombo, 0, 469, Short.MAX_VALUE))))
+                            .addComponent(diffCombo, 0, 447, Short.MAX_VALUE)
+                            .addComponent(instrumentCombo, 0, 447, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -191,6 +195,8 @@ public class OptionsPage extends WizardPage {
                     .addComponent(selectFileButton)
                     .addComponent(fileField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(diffCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -198,7 +204,7 @@ public class OptionsPage extends WizardPage {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(instrumentCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(146, Short.MAX_VALUE))
+                .addGap(85, 85, 85))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -222,6 +228,7 @@ private void selectFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JFileChooser jfc;
     private javax.swing.JButton selectFileButton;
     // End of variables declaration//GEN-END:variables

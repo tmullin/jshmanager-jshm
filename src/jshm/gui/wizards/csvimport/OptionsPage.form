@@ -4,12 +4,11 @@
   <NonVisualComponents>
     <Component class="javax.swing.JFileChooser" name="jfc">
       <Properties>
-        <Property name="acceptAllFileFilterUsed" type="boolean" value="false"/>
         <Property name="currentDirectory" type="java.io.File" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="new File(&quot;.&quot;)" type="code"/>
         </Property>
         <Property name="fileFilter" type="javax.swing.filechooser.FileFilter" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="new FileFilter() {&#xd;&#xa;&#x9;public boolean accept(File f) {&#xd;&#xa;&#x9;&#x9;return f.isDirectory() || f.getName().toLowerCase().endsWith(&quot;.csv&quot;);&#xd;&#xa;&#x9;}&#xd;&#xa;&#x9;&#xd;&#xa;&#x9;public String getDescription() {&#xd;&#xa;&#x9;&#x9;return &quot;CSV Files (*.csv)&quot;;&#xd;&#xa;&#x9;}&#xd;&#xa;}" type="code"/>
+          <Connection code="new FileFilter() {&#xd;&#xa;&#x9;public boolean accept(File f) {&#xd;&#xa;&#x9;&#x9;String name = f.getName().toLowerCase();&#xd;&#xa;&#x9;&#x9;return f.isDirectory() || name.endsWith(&quot;.csv&quot;) || name.endsWith(&quot;.txt&quot;);&#xd;&#xa;&#x9;}&#xd;&#xa;&#x9;&#xd;&#xa;&#x9;public String getDescription() {&#xd;&#xa;&#x9;&#x9;return &quot;CSV Files (*.csv, *.txt)&quot;;&#xd;&#xa;&#x9;}&#xd;&#xa;}" type="code"/>
         </Property>
         <Property name="name" type="java.lang.String" value="" noResource="true"/>
       </Properties>
@@ -34,10 +33,11 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Component id="jLabel5" alignment="0" pref="592" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -45,11 +45,11 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="fileField" pref="505" max="32767" attributes="0"/>
+                              <Component id="fileField" pref="483" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="selectFileButton" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="gameField" alignment="0" pref="561" max="32767" attributes="0"/>
+                          <Component id="gameField" alignment="0" pref="539" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -59,8 +59,8 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="diffCombo" alignment="0" pref="469" max="32767" attributes="0"/>
-                          <Component id="instrumentCombo" alignment="0" pref="469" max="32767" attributes="0"/>
+                          <Component id="diffCombo" alignment="0" pref="447" max="32767" attributes="0"/>
+                          <Component id="instrumentCombo" alignment="0" pref="447" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -83,6 +83,8 @@
                   <Component id="fileField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="jLabel5" pref="52" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="diffCombo" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -92,7 +94,7 @@
                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="instrumentCombo" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="146" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="85" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -145,6 +147,11 @@
     <Component class="javax.swing.JComboBox" name="instrumentCombo">
       <Properties>
         <Property name="name" type="java.lang.String" value="instrument" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel5">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;* The file must be a CSV (comma-separated values) file. Most spreadsheet programs can export or &quot;Save As&quot; this format."/>
       </Properties>
     </Component>
   </SubComponents>

@@ -286,8 +286,10 @@ SongCheckSwitch:
 					String.format("Parsed line %s: {%s}, %s, %s, %s, %s, %s, %s, %s",
 						lineNumber, curSong, curScore, curRating, curPercent, curStreak, curComment, curDiff, curGroup));
 				
-				scores.add(
-					game.createNewScore(curSong, curGroup, curDiff, curScore, curRating, curPercent, curStreak, curComment));
+				Score score = game.createNewScore(curSong, curGroup, curDiff, curScore, curRating, curPercent, curStreak, curComment);
+				score.setStatus(Score.Status.NEW);
+				
+				scores.add(score);
 			}
 			
 			return scores;

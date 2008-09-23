@@ -20,6 +20,8 @@
  */
 package jshm.gui.wizards.csvimport;
 
+import static jshm.hibernate.HibernateUtil.getCurrentSession;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,9 @@ import jshm.csv.*;
 import jshm.gui.GUI;
 //import jshm.gui.ProgressDialog;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Example;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.netbeans.spi.wizard.DeferredWizardResult;
@@ -119,6 +124,65 @@ public class CsvImportWizard {
 				List<Score> scores = CsvParser.parse(summary, f, columns, game, group, difficulty);
 				
 				summary.add("Parsed " + scores.size() + " scores");
+				
+				
+				progress.setBusy("Inserting into DB...");
+				int existingScores = 0, insertedScores = 0;
+				final int totalScores = scores.size();
+				
+				Session session = null;
+				Transaction tx = null;
+				
+				try {
+					session = getCurrentSession();
+				    tx = session.beginTransaction();
+				    
+					for (int i = 0; i < totalScores; i++) {
+						Score s = scores.get(i);
+						
+					    Example ex = Example.create(s)
+					    	.excludeProperty("comment")
+					    	.excludeProperty("rating")
+					    	.excludeProperty("calculatedRating")
+					    	.excludeProperty("creationDate")
+					    	.excludeProperty("submissionDate")
+					    	.excludeProperty("imageUrl")
+					    	.excludeProperty("videoUrl");
+					    
+					    List result =
+						    session.createCriteria(s.getClass())
+						    	.add(ex).list();
+					    
+					    String scoreStr =
+					    	String.format("%s %s \"%s\" - %s", s.getDifficulty().toShortString(), s.getGroup(), s.getSong().getTitle(), s.getScore());
+					    
+					    switch (result.size()) {
+					    	case 0:
+					    		LOG.info("Inserting score: " + s);
+					    		summary.add("Added score: " + scoreStr);
+					    		session.save(s);
+					    		insertedScores++;
+					    		break;
+					    		
+					    	default:
+					    		LOG.fine("Skipping existing score: " + s);
+					    		existingScores++;
+					    		break;
+					    }
+					}
+					
+					tx.commit();
+				} catch (Exception e) {
+					if (null != tx) tx.rollback();
+					LOG.throwing("CsvImportWizard", "start", e);
+					throw e;
+				} finally {
+					if (null != session && session.isOpen())
+						session.close();
+				}
+				
+				summary.add(
+					String.format("Done. Added %s scores, skipped %s duplicate scores", insertedScores, existingScores));
 				
 				progress.finished(
 					Summary.create(
