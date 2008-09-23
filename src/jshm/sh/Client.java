@@ -173,10 +173,10 @@ public class Client {
 		int found = 0;
 		
 		for (Cookie c : cookies) {
-			if (c.getName().equals("gh_uname") && c.getValue().equals(userName))
+			if (c.getName().equals("gh_uname") && c.getValue().equalsIgnoreCase(userName))
 				found++;
 			
-			if (c.getName().equals("ghf_uname") && c.getValue().equals(userName))
+			if (c.getName().equals("ghf_uname") && c.getValue().equalsIgnoreCase(userName))
 				found++;
 		}
 		

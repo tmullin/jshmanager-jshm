@@ -1,5 +1,10 @@
 JSHManager ChangeLog
 
+Version 0.2.2
+-------------
+- Corrected a bug that prevented you from logging in if you did not
+  enter your username /exactly/ as it appeared on ScoreHero.
+
 Version 0.2.1
 -------------
 - Added extra logging and improved error checking when logging in to
