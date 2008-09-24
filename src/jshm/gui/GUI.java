@@ -1576,4 +1576,9 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 	void setCurGroup(Instrument.Group group) {
 		this.curGroup = group;
 	}
+	
+	
+	public void openImageOrBrowser(String url) {
+		GuiUtil.openImageOrBrowser(this, url);
+	}
 }

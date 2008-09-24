@@ -331,7 +331,7 @@
                         <Property name="verticalTextPosition" type="int" value="3"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JToolBar$Separator" name="jSeparator1">
+                    <Component class="javax.swing.JToolBar$Separator" name="editActionsToolbarSeparator">
                     </Component>
                     <Component class="javax.swing.JButton" name="zoomOutButton">
                       <Properties>
@@ -358,18 +358,19 @@
                     <Component class="javax.swing.JComboBox" name="zoomCombo">
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                          <StringArray count="11">
-                            <StringItem index="0" value="50%"/>
-                            <StringItem index="1" value="75%"/>
-                            <StringItem index="2" value="100%"/>
-                            <StringItem index="3" value="125%"/>
-                            <StringItem index="4" value="150%"/>
-                            <StringItem index="5" value="200%"/>
-                            <StringItem index="6" value="250%"/>
-                            <StringItem index="7" value="300%"/>
-                            <StringItem index="8" value="Fit Width"/>
-                            <StringItem index="9" value="Fit All"/>
-                            <StringItem index="10" value="Custom..."/>
+                          <StringArray count="12">
+                            <StringItem index="0" value="Select Zoom..."/>
+                            <StringItem index="1" value="50%"/>
+                            <StringItem index="2" value="75%"/>
+                            <StringItem index="3" value="100%"/>
+                            <StringItem index="4" value="125%"/>
+                            <StringItem index="5" value="150%"/>
+                            <StringItem index="6" value="200%"/>
+                            <StringItem index="7" value="250%"/>
+                            <StringItem index="8" value="300%"/>
+                            <StringItem index="9" value="Fit Width"/>
+                            <StringItem index="10" value="Fit All"/>
+                            <StringItem index="11" value="Custom..."/>
                           </StringArray>
                         </Property>
                       </Properties>

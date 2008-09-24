@@ -4,6 +4,9 @@ Version 0.2.2
 -------------
 - Corrected a bug that prevented you from logging in if you did not
   enter your username /exactly/ as it appeared on ScoreHero.
+- Clicking a blue, underlined score (or the open button next to the image
+  URL in the editor) will now open an internal picture viewer instead of 
+  launching an external browser, if possible.
 
 Version 0.2.1
 -------------

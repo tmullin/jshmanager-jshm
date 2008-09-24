@@ -42,6 +42,7 @@ import jshm.gui.GuiUtil;
  *
  * @author  Tim
  */
+// TODO rename since this will act as the SpInfo viewer/editor as well a standalone image viewer
 public class SpInfoViewer extends javax.swing.JFrame {
 	static final float
 		FIT_WIDTH = -1f,
@@ -50,6 +51,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
 		MAX_SCALE = 10f;
 	
 	static final String
+		SELECT_ZOOM_STR = "Select Zoom...",
 		FIT_WIDTH_STR = "Fit Width",
 		FIT_ALL_STR   = "Fit All",
 		CUSTOM_STR    = "Custom...";
@@ -57,7 +59,8 @@ public class SpInfoViewer extends javax.swing.JFrame {
 	
 	ImagePainter imagePainter = new ImagePainter();
 	BufferedImage image = null;
-	float scale = 1f;
+	float scale = 1f; // requested scale, could be fit width/all
+	float actualScale = 1f; // the actual scale accounting for fit width/all
 	Object lastSelectedItem = null;
 	
 	
@@ -67,14 +70,14 @@ public class SpInfoViewer extends javax.swing.JFrame {
 		public void actionPerformed(ActionEvent e) {
 			float newScale = Math.min(getScale() + 0.25f, MAX_SCALE);
 			setScale(newScale);
-//			zoomCombo.setSelectedItem(CUSTOM_STR);
+			zoomCombo.setSelectedItem(SELECT_ZOOM_STR);
 		}
     },
     ZOOM_OUT_ACTION = new AbstractAction("Zoom Out", new ImageIcon(SpInfoViewer.class.getResource("/jshm/resources/images/toolbar/zoomout32.png"))) {
 		public void actionPerformed(ActionEvent e) {
 			float newScale = Math.max(getScale() - 0.25f, MIN_SCALE);
 			setScale(newScale);
-//			zoomCombo.setSelectedItem(CUSTOM_STR);
+			zoomCombo.setSelectedItem(SELECT_ZOOM_STR);
 		}
 	},
 	
@@ -111,6 +114,8 @@ public class SpInfoViewer extends javax.swing.JFrame {
     		a.putValue(Action.SHORT_DESCRIPTION, a.getValue(Action.NAME));
 
         initComponents();
+        
+        setImage((Image) null, true);
         
         EditPopupMenu.add(titleField);
         EditPopupMenu.add(referenceUrlField);
@@ -161,17 +166,25 @@ public class SpInfoViewer extends javax.swing.JFrame {
 	}
 	
 	public void setImage(String url) {
+		setImage(url, false);
+	}
+	
+	public void setImage(String url, boolean hideEditor) {
 		try {
-			setImage(new URL(url));
+			setImage(new URL(url), hideEditor);
 		} catch (MalformedURLException e) {
-			setImage((Image) null);
+			setImage((Image) null, hideEditor);
 			e.printStackTrace();
 		}
 	}
 	
 	public void setImage(final URL url) {
+		setImage(url, false);
+	}
+	
+	public void setImage(final URL url, final boolean hideEditor) {
 		if (null == url) {
-			setImage((Image) null);
+			setImage((Image) null, hideEditor);
 			return;
 		}
 		
@@ -182,11 +195,11 @@ public class SpInfoViewer extends javax.swing.JFrame {
 					
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							setImage(im);
+							setImage(im, hideEditor);
 						}
 					});
 				} catch (Exception e) {
-					setImage((Image) null);
+					setImage((Image) null, hideEditor);
 				}
 			}
 		}).start();
@@ -197,6 +210,17 @@ public class SpInfoViewer extends javax.swing.JFrame {
 	}
 	
 	public void setImage(Image image) {
+		setImage(image, false);
+	}
+	
+	public void setImage(Image image, boolean hideEditor) {
+		editorCollapsiblePane.setVisible(!hideEditor);
+		jSplitPane1.setDividerSize(hideEditor ? 0 : 5);
+		newButton.setVisible(!hideEditor);
+		saveButton.setVisible(!hideEditor);
+		deleteButton.setVisible(!hideEditor);
+		editActionsToolbarSeparator.setVisible(!hideEditor);
+		
 		if (null == image) {
 			this.image = null;
 		} else if (image instanceof BufferedImage) {
@@ -214,8 +238,13 @@ public class SpInfoViewer extends javax.swing.JFrame {
 		imageScrollPane.repaint();
 	}
 	
+	/**
+	 * 
+	 * @return The actual current scale value, accounting for fit width/all
+	 */
 	private float getScale() {
 		float scale = SpInfoViewer.this.scale;
+		SpInfoViewer.this.actualScale = scale;
 		
 		if (FIT_WIDTH == scale || FIT_ALL == scale) {
 			// it's almost assured that the image will be taller than wide
@@ -233,6 +262,8 @@ public class SpInfoViewer extends javax.swing.JFrame {
 			scale = Math.min(MAX_SCALE,
 				Math.max(MIN_SCALE, scale)
 			);
+			
+			SpInfoViewer.this.actualScale = scale;
 		}
 		
 		return scale;
@@ -244,6 +275,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
 				throw new IllegalArgumentException("Invalid scale: " + scale);
 			
 			this.scale = scale;
+			getScale();
 			imageScrollPane.getViewport().revalidate();
 			imageScrollPane.revalidate();
 			imageScrollPane.repaint();
@@ -284,7 +316,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
         newButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
+        editActionsToolbarSeparator = new javax.swing.JToolBar.Separator();
         zoomOutButton = new javax.swing.JButton();
         zoomInButton = new javax.swing.JButton();
         zoomCombo = new javax.swing.JComboBox();
@@ -429,7 +461,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
         deleteButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         deleteButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(deleteButton);
-        jToolBar1.add(jSeparator1);
+        jToolBar1.add(editActionsToolbarSeparator);
 
         zoomOutButton.setAction(ZOOM_OUT_ACTION);
         zoomOutButton.setFocusable(false);
@@ -445,7 +477,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
         zoomInButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(zoomInButton);
 
-        zoomCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "50%", "75%", "100%", "125%", "150%", "200%", "250%", "300%", "Fit Width", "Fit All", "Custom..." }));
+        zoomCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Select Zoom...", "50%", "75%", "100%", "125%", "150%", "200%", "250%", "300%", "Fit Width", "Fit All", "Custom..." }));
         zoomCombo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 zoomComboItemStateChanged(evt);
@@ -551,7 +583,7 @@ private void zoomComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRS
             	iv.setLocationRelativeTo(null);
             	iv.setVisible(true);
             	iv.setText("Here's some text to test with.\n\nNew line maybe?");
-            	iv.setImage("http://i24.photobucket.com/albums/c45/bbloot/CherubRock.gif");
+            	iv.setImage("http://i24.photobucket.com/albums/c45/bbloot/CherubRock.gif", true);
             }
         });
     }
@@ -560,6 +592,7 @@ private void zoomComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRS
     private javax.swing.JButton closeButton;
     private javax.swing.JPanel controlsPanel;
     private javax.swing.JButton deleteButton;
+    private javax.swing.JToolBar.Separator editActionsToolbarSeparator;
     private org.jdesktop.swingx.JXCollapsiblePane editorCollapsiblePane;
     private javax.swing.JPanel editorPanel;
     private javax.swing.JButton fromFileButton;
@@ -571,7 +604,6 @@ private void zoomComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRS
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JToolBar jToolBar1;

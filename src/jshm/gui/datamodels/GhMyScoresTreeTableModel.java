@@ -39,6 +39,7 @@ import jshm.Score;
 import jshm.Song;
 import jshm.Instrument.Group;
 import jshm.gh.GhScore;
+import jshm.gui.GuiUtil;
 import jshm.gui.editors.GhMyScoresEditor;
 import jshm.gui.editors.GhMyScoresRatingEditor;
 import jshm.gui.renderers.GhMyScoresCellRenderer;
@@ -348,8 +349,13 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 				  ? score.getImageUrl()
 				  : null;
 				  
+			boolean isVideo = !score.getVideoUrl().isEmpty();
+			
 			if (null != url) {
-				jshm.util.Util.openURL(url);
+				if (isVideo)
+					jshm.util.Util.openURL(url);
+				else
+					GuiUtil.openImageOrBrowser(null, url);
 			}
 		}
 	};

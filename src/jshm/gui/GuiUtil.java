@@ -20,21 +20,31 @@
  */
 package jshm.gui;
 
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.tree.TreePath;
 
 import jshm.Config;
+import jshm.gui.components.SpInfoViewer;
+import jshm.util.Util;
 
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.methods.HeadMethod;
+import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.error.ErrorInfo;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 public class GuiUtil {
@@ -201,5 +211,53 @@ public class GuiUtil {
 		g.drawImage(img, 0, 0, width, height, null);
 		
 		return new javax.swing.ImageIcon(bi);
+	}
+	
+	
+	public static void openImageOrBrowser(final Frame owner, final String urlStr) {
+		new SwingWorker<Void, Void>() {
+			Image image = null;
+			URL url = null;
+			Throwable t = null;
+			
+			protected Void doInBackground() throws Exception {
+				try {
+					url = new URL(urlStr);
+
+					// try to see if it's an image before downloading the
+					// whole thing
+					HeadMethod method = new HeadMethod(url.toExternalForm());
+					jshm.sh.Client.getHttpClient().executeMethod(method);
+					Header h = method.getResponseHeader("Content-type");
+					method.releaseConnection();
+
+					if (h.getValue().toLowerCase().startsWith("image")) {
+						image = ImageIO.read(url);
+					}
+				} catch (Exception e) {
+					t = e;
+				}
+				
+				return null;
+			}
+			
+			public void done() {
+				if (null == image) {
+					if (null == t) {
+						// no error, just the url wasn't an image, so launch the browser
+						Util.openURL(url.toExternalForm());
+					} else {
+						ErrorInfo ei = new ErrorInfo("Error", "Error opening image URL", null, null, t, null, null);
+						JXErrorPane.showDialog(owner, ei);
+					}
+				} else {
+					SpInfoViewer viewer = new SpInfoViewer();
+					viewer.setTitle(url.toExternalForm());
+					viewer.setImage(image, true);
+					viewer.setLocationRelativeTo(null);
+					viewer.setVisible(true);
+				}
+			}
+		}.execute();
 	}
 }

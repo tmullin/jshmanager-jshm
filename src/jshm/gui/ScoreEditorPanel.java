@@ -43,13 +43,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
-import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
-import org.jdesktop.swingx.error.ErrorInfo;
-
 import jshm.Score;
 import jshm.Song;
 import jshm.StreakStrategy;
@@ -60,7 +53,13 @@ import jshm.gui.renderers.ScoreEditorSongComboRenderer;
 import jshm.hibernate.HibernateUtil;
 import jshm.rb.RbScore;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.jdesktop.swingx.JXCollapsiblePane;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  *
@@ -328,8 +327,8 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 
         songCombo.setEnabled(false);
 
-        imageUrlOpenButton.setText("Open...");
-        imageUrlOpenButton.setToolTipText("Open the Image URL in an external browser window");
+        imageUrlOpenButton.setText("Open");
+        imageUrlOpenButton.setToolTipText("Opens the image viewer or launches external browser if not an image");
         imageUrlOpenButton.setEnabled(false);
         imageUrlOpenButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -337,7 +336,7 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
             }
         });
 
-        videoUrlOpenButton.setText("Open...");
+        videoUrlOpenButton.setText("Open");
         videoUrlOpenButton.setToolTipText("Open the Video URL in an external browser window");
         videoUrlOpenButton.setEnabled(false);
         videoUrlOpenButton.addActionListener(new java.awt.event.ActionListener() {
@@ -398,11 +397,9 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(videoUrlField, javax.swing.GroupLayout.DEFAULT_SIZE, 579, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(imageUrlField, javax.swing.GroupLayout.DEFAULT_SIZE, 579, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(imageUrlField, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
+                            .addComponent(videoUrlField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(imageUrlOpenButton)
@@ -480,9 +477,8 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
     }// </editor-fold>//GEN-END:initComponents
 
 private void imageUrlOpenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageUrlOpenButtonActionPerformed
-	if (!imageUrlField.getText().isEmpty()) {
-		jshm.util.Util.openURL(imageUrlField.getText());
-	}
+	if (imageUrlField.getText().isEmpty()) return;
+	gui.openImageOrBrowser(imageUrlField.getText());
 }//GEN-LAST:event_imageUrlOpenButtonActionPerformed
 
 private void videoUrlOpenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_videoUrlOpenButtonActionPerformed
