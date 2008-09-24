@@ -25,7 +25,6 @@ import jshm.Instrument.Group;
 import jshm.gui.LoginDialog;
 import jshm.logging.Log;
 import jshm.rb.*;
-import jshm.sh.Api;
 
 public class ScoreUploadTest {
 	static final RbGame game = RbGame.RB1_XBOX360;
@@ -44,6 +43,6 @@ public class ScoreUploadTest {
 		
 		LoginDialog.showDialog();
 		
-		Api.submitScore(score);
+		score.submit();
 	}
 }

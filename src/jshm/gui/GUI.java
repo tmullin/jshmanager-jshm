@@ -793,11 +793,16 @@ private void uploadSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEve
 				}
 				
 				Score score = (Score) selected;
-				jshm.sh.Api.submitScore(score);
+				score.submit();
 				
 				// this will cause the fields to be disabled as needed
 				scoreEditorPanel1.setScore(score);
-				statusBar1.setTempText("Uploaded " + score.getSong().getTitle() + " (" + score.getScore() + ") successfully");
+				statusBar1.setTempText(
+					"Uploaded " + score.getSong().getTitle() + " (" + score.getScore() + ")" +
+					(score.getStatus() == Score.Status.SUBMITTED
+					 ? " successfully"
+					 : ", success uncertain")
+				);
 			} catch (Exception e) {
 				LOG.log(Level.SEVERE, "Failed to upload score", e);
 				ErrorInfo ei = new ErrorInfo("Error", "Failed to upload score", null, null, e, null, null);

@@ -20,7 +20,6 @@
  */
 package jshm.gui.renderers;
 
-import java.awt.Color;
 import java.awt.Component;
 
 import jshm.Score;
@@ -29,9 +28,8 @@ import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 
+// TODO rename since it doesn't only apply to new scores
 public class GhMyScoresNewScoreHighlighter extends AbstractHighlighter {
-	Color color = new Color(0x009900);
-	
 	public GhMyScoresNewScoreHighlighter() {
 		super(new HighlightPredicate() {
 			@Override
@@ -42,18 +40,17 @@ public class GhMyScoresNewScoreHighlighter extends AbstractHighlighter {
 				
 				Score.Status status = ((Score) adapter.getValueAt(adapter.row, 1)).getStatus();
 				
-				return !adapter.isSelected() &&
-				(status == Score.Status.NEW || status == Score.Status.TEMPLATE);
+				return !adapter.isSelected() && status.highlightColor != null;
 			}
 		});
 	}
 	
-	Color bg = new Color(0x9fe4f1);
-	
 	@Override
 	protected Component doHighlight(Component component,
 			ComponentAdapter adapter) {
-		component.setBackground(bg);
+		component.setBackground(
+			((Score) adapter.getValueAt(adapter.row, 1)).getStatus().highlightColor
+		);
 		return component;
 	}
 

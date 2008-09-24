@@ -7,6 +7,8 @@ Version 0.2.2
 - Clicking a blue, underlined score (or the open button next to the image
   URL in the editor) will now open an internal picture viewer instead of 
   launching an external browser, if possible.
+- Added better detection for determining if a score submission was successful. 
+  Scores can be resubmitted if it is not certain they were submitted initially.
 
 Version 0.2.1
 -------------

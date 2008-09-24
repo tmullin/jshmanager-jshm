@@ -107,4 +107,12 @@ public class RbScore extends Score {
 		
 		return RATING_ICONS[rating];
 	}
+	
+	
+	public void submit() throws Exception {
+		if (!isSubmittable())
+			throw new IllegalArgumentException("This score is not submittable");
+		
+		jshm.sh.Api.submitRbScore(this);
+	}
 }

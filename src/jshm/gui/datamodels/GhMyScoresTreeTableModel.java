@@ -231,9 +231,11 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		LOG.finer("Going to delete score: " + score);
 		
 		switch (score.getStatus()) {
-			case NEW:
-			case SUBMITTED:
-			case DELETED:
+			default:
+//			case NEW:
+//			case SUBMITTED:
+//			case DELETED:
+//			case UNKNOWN:
 				Session sess = null;
 				Transaction tx = null;
 				
@@ -268,6 +270,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	 * @return A new instance of {@link GhMyScoresTreeTableModel}
 	 * that contains only the new scores that this model contains.
 	 */
+	// TODO rename to indicate new or unknown
 	public GhMyScoresTreeTableModel createNewScoresModel() {
 		List<Song> songs = new ArrayList<Song>();
 		List<Score> newScores = new ArrayList<Score>();
@@ -275,7 +278,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		for (Tier t : model.tiers) {
 			for (SongScores ss : t.songs) {
 				for (Score s : ss.scores) {
-					if (s.getStatus() == Score.Status.NEW && s.isSubmittable()) {
+					if (s.isSubmittable()) {
 						newScores.add(s);
 						
 						if (!songs.contains(s.getSong()))
@@ -411,7 +414,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 
 		Object[] prototypes = new Object[] {
 			"00000000000", GhScore.getRatingIcon(8),
-			"1000", "99999", "AAA9999999999", "AAA9999999999"
+			"00000", "99999", "AAA9999999999", "AAA9999999999"
 		};
 		
 		for (int i = 1; i <= 6; i++)

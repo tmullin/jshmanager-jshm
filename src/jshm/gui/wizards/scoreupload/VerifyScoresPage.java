@@ -21,8 +21,11 @@
 package jshm.gui.wizards.scoreupload;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import jshm.gui.datamodels.GhMyScoresTreeTableModel;
@@ -31,10 +34,21 @@ import org.jdesktop.swingx.JXTreeTable;
 import org.netbeans.spi.wizard.WizardPage;
 
 public class VerifyScoresPage extends WizardPage {
+	JCheckBox cb;
 	JXTreeTable tt;
 	
 	public VerifyScoresPage(GhMyScoresTreeTableModel model) {
-		super("verifyScores", "Verify scores", false);
+		super("verifyScores", "Verify scores", true);
+		
+		JPanel northPanel = new JPanel(new BorderLayout());
+		cb = new JCheckBox("Upload scores with an unknown status", false);
+		cb.setName("uploadUnknown");
+		northPanel.add(cb, BorderLayout.SOUTH);
+		northPanel.add(
+			new JLabel("<html>Ensure the following scores are correct.<br>" +
+						"If they aren't, cancel this wizard, make the necessary corrections, and restart the wizard.<br>" +
+						"If a new score is not shown below, you may have forgotten to enter the number of points for the score."),
+			BorderLayout.CENTER);
 		
 		tt = new JXTreeTable(model);
 		model.setParent(tt);
@@ -43,13 +57,11 @@ public class VerifyScoresPage extends WizardPage {
 //		tt.setHorizontalScrollEnabled(true);
 		tt.getColumnExt(5).setVisible(false); // hide submit date
 		tt.packAll();
-		tt.setName("treeTableData");
+//		tt.setName("treeTableData");
 		
+		setPreferredSize(new Dimension(700, 600));
 		setLayout(new BorderLayout(0, 10));
-		add(new JLabel("<html>Ensure the following scores are correct.<br>" +
-						"If they aren't, cancel this wizard, make the necessary corrections, and restart the wizard.<br>" +
-						"If a new score is not shown below, you may have forgotten to enter the number of points for the score."),
-			BorderLayout.NORTH);
+		add(northPanel, BorderLayout.NORTH);
 		add(new JScrollPane(tt), BorderLayout.CENTER);
 		
 		putWizardData("treeTableData", model);

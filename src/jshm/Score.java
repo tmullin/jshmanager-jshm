@@ -20,6 +20,7 @@
  */
 package jshm;
 
+import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.text.DateFormat;
@@ -68,12 +69,27 @@ public abstract class Score {
 	 *   <li>SUBMITTED - A score that has been submitted to ScoreHero
 	 *   <li>DELETED - A score that has been submitted but was deleted on ScoreHero due to a new score overwriting it.
 	 *   <li>TEMPLATE - A score that exists as a filler row in the GUI for adding a new score
+	 *   <li>UNKNOWN - A score that may have been submitted but it is unknown if the score is actually on ScoreHero
 	 * </ul>
 	 * @author Tim Mullin
 	 *
 	 */
 	public static enum Status {
-		NEW, SUBMITTED, DELETED, TEMPLATE
+		NEW(new Color(0x9fe4f1)),
+		SUBMITTED,
+		DELETED,
+		TEMPLATE(new Color(0x9fe4f1)),
+		UNKNOWN(new Color(0xF19F9F));
+		
+		public final Color highlightColor;
+		
+		private Status() {
+			this(null);
+		}
+		
+		private Status(Color highlightColor) {
+			this.highlightColor = highlightColor;
+		}
 	}
 	
 	
@@ -503,7 +519,8 @@ public abstract class Score {
 	@Transient
 	public boolean isSubmittable() {
 		boolean ok =
-			getStatus() == Status.NEW &&
+			(getStatus() == Status.NEW ||
+			 getStatus() == Status.UNKNOWN) &&
 			getScore() > 0 &&
 			getSong() != null &&
 			getParts().size() > 0;
@@ -516,6 +533,13 @@ public abstract class Score {
 		
 		return true;
 	}
+	
+	/**
+	 * Submit this score to ScoreHero. An exception should be
+	 * thrown if the score is not submittable.
+	 * @throws Exception
+	 */
+	public abstract void submit() throws Exception;
 	
 	@Transient
 	public abstract javax.swing.ImageIcon getRatingIcon();

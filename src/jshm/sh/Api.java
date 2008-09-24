@@ -44,16 +44,6 @@ public class Api {
 	static final Pattern ERROR_PATTERN =
 		Pattern.compile("^.*<span class=\"error\">(.*?)</span>.*$", Pattern.DOTALL);
 	
-	
-	public static void submitScore(final Score score) throws Exception {
-		if (score instanceof GhScore) {
-			submitGhScore((GhScore) score);
-		} else if (score instanceof RbScore) {
-			submitRbScore((RbScore) score);
-		} else {
-			throw new IllegalArgumentException("invalid score");
-		}
-	}
 
 	public static void submitGhScore(final GhScore score) throws Exception {
 		Client.getAuthCookies();
@@ -82,14 +72,20 @@ public class Api {
 				
 				if (m.matches()) {
 					Exception e = new ClientException(m.group(1));
-					LOG.throwing("GhApi", "submitGhScore", e);
+					LOG.throwing("Api", "submitGhScore", e);
 					throw e;
 				}
 				
-				// can't be completely sure about this
-//				if (body.contains("Your score has been submitted"))
+				// can't be completely sure about this		
+				if (body.contains("window.close()")) {
+					score.setStatus(Score.Status.SUBMITTED);
+				} else {
+					score.setStatus(Score.Status.UNKNOWN);
+					
+					LOG.warning("Score may not have been accepted, response body follows:");
+					LOG.warning(body);
+				}
 				
-				score.setStatus(Score.Status.SUBMITTED);
 				score.setSubmissionDate(new java.util.Date());
 				
 				Session sess = null;
@@ -160,12 +156,16 @@ public class Api {
 					throw e;
 				}
 				
-				// can't be completely sure about this
-//				if (!body.contains("window.close()")) {
-//					
-//				}
+				// can't be completely sure about this		
+				if (body.contains("window.close()")) {
+					score.setStatus(Score.Status.SUBMITTED);
+				} else {
+					score.setStatus(Score.Status.UNKNOWN);
+					
+					LOG.warning("Score may not have been accepted, response body follows:");
+					LOG.warning(body);
+				}
 				
-				score.setStatus(Score.Status.SUBMITTED);
 				score.setSubmissionDate(new java.util.Date());
 				
 				Session sess = null;

@@ -73,8 +73,10 @@ public class ScoreUploadWizard {
 //			System.out.println("Keys: ");
 //			
 //			for (Object key : wizardData.keySet()) {
-//				System.out.println("  " + key + ": " + wizardData.get(key).getClass().getName());
+//				System.out.println("  " + key + ": " + String.valueOf(wizardData.get(key)));
 //			}
+//			
+//			return null;
 			
 			return deferredResult;
 		}
@@ -87,6 +89,12 @@ public class ScoreUploadWizard {
 				if (!jshm.sh.Client.hasAuthCookies()) {
 					LoginDialog.showDialog();
 				}
+				
+				boolean uploadUnknown = false;
+				
+				try {
+					uploadUnknown = (Boolean) settings.get("uploadUnknown");
+				} catch (Exception e) {}
 				
 				GhMyScoresTreeTableModel model =
 					(GhMyScoresTreeTableModel) settings.get("treeTableData");
@@ -112,9 +120,15 @@ public class ScoreUploadWizard {
 						String.format("Uploading score %s of %s", curIndex + 1, scoreCount),
 						curIndex, scoreCount);
 					
-					jshm.sh.Api.submitScore(s);
+					if (s.getStatus() == Score.Status.UNKNOWN && !uploadUnknown)
+						continue;
 					
-					resultStrings.add("Uploaded: " + s.getSong().getTitle() + " - " + s.getScore());
+					s.submit();
+					
+					resultStrings.add(
+						(s.getStatus() == Score.Status.UNKNOWN
+						 ? "Possibly submitted" : "Submitted") +
+						": " + s.getSong().getTitle() + " - " + s.getScore());
 				}
 				
 				progress.finished(
