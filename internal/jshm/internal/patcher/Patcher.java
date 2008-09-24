@@ -33,6 +33,7 @@ import java.util.zip.*;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.jdesktop.swingx.JXErrorPane;
@@ -75,6 +76,8 @@ public class Patcher {
 		}
 	}
 	
+	final static int FILE_LOCK_LIMIT = 10;
+	
 	static Properties props = new Properties();
 	static File patchJarFile = null;
 	static File progJarFile = null;
@@ -113,72 +116,100 @@ public class Patcher {
 		}
 		
 		try {
-			progJarFile = getProgJarFile().getAbsoluteFile();
-			
-			gui = new PatcherGui();
-			gui.setLocationRelativeTo(null);
-			gui.setVisible(true);
-			configLogging();
-			
-			log("Current folder is " + progJarFile.getParentFile().getCanonicalPath());
-									
-			log("Checking JSHManager.jar...");
-			JarLoader.addFileToClasspath(progJarFile);
-			
 			try {
-//				if (true) throw new Exception("text");
 				
-				log("Checking patch file...");
-				String url = Patcher.class.getResource("/jshm/internal/patcher/Patcher.class").toExternalForm();
-				File f = getJarFileFromURL(url);
+				progJarFile = getProgJarFile().getAbsoluteFile();
 				
-				if (null == f) {
-					url = Patcher.class.getResource("/jshm/internal/patcher/PatchTest.jar").toExternalForm();
-					f = new File(URI.create(url));
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run() {
+						gui = new PatcherGui();
+						gui.setLocationRelativeTo(null);
+						gui.setVisible(true);
+					}
+				});
+				
+				configLogging();
+				
+				log("Current folder is " + progJarFile.getParentFile().getCanonicalPath());
+										
+				log("Checking JSHManager.jar...");
+				
+				int progJarFileWriteTestCount = 0;
+				
+				
+				// has no effect
+				while (isFileLockedReadOnly(progJarFile) && progJarFileWriteTestCount < FILE_LOCK_LIMIT) {
+					progJarFileWriteTestCount++;
+					
+					log("JSHmanager.jar is locked, waiting for it to become available (" + progJarFileWriteTestCount + ")");
+					
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {}
 				}
 				
-				patchJarFile = f;
+				if (progJarFileWriteTestCount == FILE_LOCK_LIMIT) {
+					log("JSHmanager.jar is still locked, patching cannot continue.");
+					log("Ensure that JSHManager is not running and try again.", 1, 1);
+				} else {
 				
-				log("Using patch file " + patchJarFile.getCanonicalPath());
-				
-				JarFile patchJar = new JarFile(f);
-				JarEntry propsEntry = patchJar.getJarEntry("jshm/internal/patcher/Patcher.properties");
-				
-				if (null != propsEntry) {
-					props.load(
-						patchJar.getInputStream(propsEntry));
-				}
-				
-				log("Loaded " + props.keySet().size() + " patcher properties");
-				
-				for (Object key : props.keySet()) {
-					log("  " + key + "=" + props.get(key));
-				}
-				
-				log("Patching JSHManager.jar...");
-				
-				addFilesToExistingZip(
-					progJarFile,
-					getPatchEntries(patchJar, "jar/"),
-					Arrays.asList(props.getArray("jardelete")));
-				
-				log("Patching main directory...");
-				patchMainDir(
-					progJarFile.getParentFile(),
-					getPatchEntries(patchJar, "folder/"),
-					Arrays.asList(props.getArray("folderdelete")));
-				
-				log("Patching complete.", 1, 1);
-				gui.setClosedEnabled(true);
-				
-				if (restartJshm) {
-					log("Restarting JSHManager...");
-					jshm.util.Exec.execNoOutput(
-						progJarFile.getAbsoluteFile().getParentFile(),
-						"java",
-						"-jar",
-						progJarFile.getName()
-					);
+					JarLoader.addFileToClasspath(progJarFile);
+	
+	//				if (true) throw new Exception("text");
+					
+					log("Checking patch file...");
+					String url = Patcher.class.getResource("/jshm/internal/patcher/Patcher.class").toExternalForm();
+					File f = getJarFileFromURL(url);
+					
+					if (null == f) {
+						url = Patcher.class.getResource("/jshm/internal/patcher/PatchTest.jar").toExternalForm();
+						f = new File(URI.create(url));
+					}
+					
+					patchJarFile = f;
+					
+					log("Using patch file " + patchJarFile.getCanonicalPath());
+					
+					JarFile patchJar = new JarFile(f);
+					JarEntry propsEntry = patchJar.getJarEntry("jshm/internal/patcher/Patcher.properties");
+					
+					if (null != propsEntry) {
+						props.load(
+							patchJar.getInputStream(propsEntry));
+					}
+					
+					log("Loaded " + props.keySet().size() + " patcher properties");
+					
+					for (Object key : props.keySet()) {
+						log("  " + key + "=" + props.get(key));
+					}
+					
+					log("Patching JSHManager.jar...");
+					
+					addFilesToExistingZip(
+						progJarFile,
+						getPatchEntries(patchJar, "jar/"),
+						Arrays.asList(props.getArray("jardelete")));
+					
+					log("Patching main directory...");
+					patchMainDir(
+						progJarFile.getParentFile(),
+						getPatchEntries(patchJar, "folder/"),
+						Arrays.asList(props.getArray("folderdelete")));
+					
+					log("Patching complete.", 1, 1);
+					gui.setClosedEnabled(true);
+					
+					if (restartJshm) {
+						log("Restarting JSHManager...");
+						jshm.util.Exec.execNoOutput(
+							progJarFile.getAbsoluteFile().getParentFile(),
+							"java",
+							"-jar",
+							progJarFile.getName()
+						);
+					}
+					
 				}
 				
 				if (unattended) {
@@ -192,8 +223,10 @@ public class Patcher {
 			} catch (Throwable t) {
 				LOG.log(Level.SEVERE, "Unknown error while patching", t);
 
-				ErrorInfo ei = new org.jdesktop.swingx.error.ErrorInfo("Error", "Unknown error while patching", null, null, t, null, null);
-				JXErrorPane.showDialog(null, ei);
+				if (!unattended) {
+					ErrorInfo ei = new org.jdesktop.swingx.error.ErrorInfo("Error", "Unknown error while patching", null, null, t, null, null);
+					JXErrorPane.showDialog(null, ei);
+				}
 				
 				gui.dispose();
 				System.exit(-1);
@@ -204,9 +237,11 @@ public class Patcher {
 			StringWriter sw = new StringWriter();
 			t.printStackTrace(new PrintWriter(sw));
 			
-			JOptionPane.showMessageDialog(null,
-				sw.toString(),
-				"Error", JOptionPane.ERROR_MESSAGE);
+			if (!unattended) {
+				JOptionPane.showMessageDialog(null,
+					sw.toString(),
+					"Error", JOptionPane.ERROR_MESSAGE);
+			}
 			
 			gui.dispose();
 			System.exit(-1);
@@ -408,6 +443,19 @@ public class Patcher {
 		tempFile.delete();
 	}
 
+	
+	public static boolean isFileLockedReadOnly(File file) {
+		try {
+			// Get a file channel for the file
+			RandomAccessFile test = new RandomAccessFile(file, "rw");
+			test.close();
+			return false;
+		} catch (Exception e) {
+			System.out.println("locked? " + e);
+			return true;
+		}
+	} 
+	
 	
 	// from azureus
     public static File getJarFileFromURL(String url_str ) {

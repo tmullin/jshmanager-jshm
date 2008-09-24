@@ -75,7 +75,6 @@ public class JshmUpdateScraper {
 	}
 	
 	static class DownloadsHandler extends TieredTabularDataAdapter {
-		
 		List<String> ret;
 		
 		public DownloadsHandler(List<String> ret) {
