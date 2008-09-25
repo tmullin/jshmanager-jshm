@@ -52,6 +52,8 @@ class GhGamesTemplate extends Link {
 				}
 				
 				for (Difficulty d : Difficulty.values()) {
+					if (Difficulty.CO_OP == d && !tt.supportsCoOp) continue;
+					
 					Link diffLink = new Link(
 						d.toString(),
 						String.format(URLs.BASE + "/" + urlFmt + "game=%s&diff=%s", g.scoreHeroId, d.scoreHeroId),
@@ -69,6 +71,8 @@ class GhGamesTemplate extends Link {
 				Link allLink = new Link("All");
 				
 				for (Difficulty d : Difficulty.values()) {
+					if (Difficulty.CO_OP == d && !tt.supportsCoOp) continue;
+					
 					Link diffLink = new Link(
 						d.toString(),
 						String.format(URLs.BASE + "/" + urlFmt + "group=%s&game=0&diff=%s", tt.scoreHeroGroupId, d.scoreHeroId),
