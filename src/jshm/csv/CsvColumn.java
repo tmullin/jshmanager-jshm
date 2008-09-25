@@ -18,7 +18,9 @@ public enum CsvColumn {
 			return null;
 //			throw new CsvException("value too short to determine column type: " + value);
 		
-		String value2 = value.toUpperCase();
+		String value2 = value.trim().toUpperCase();
+		
+		if (value2.equals("PCT")) return PERCENT;
 		
 		for (CsvColumn c : values()) {
 			if (c.name().startsWith(value2))
