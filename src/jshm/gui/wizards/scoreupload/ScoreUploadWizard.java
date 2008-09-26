@@ -99,15 +99,21 @@ public class ScoreUploadWizard {
 				GhMyScoresTreeTableModel model =
 					(GhMyScoresTreeTableModel) settings.get("treeTableData");
 				
+				int uploaded = 0, possiblyUploaded = 0, notUploaded = 0;
 				List<String> resultStrings = new ArrayList<String>();
+				
+				if (uploadUnknown)
+					resultStrings.add("Going to upload scores with unknown status");
 				
 				int scoreCount = model.getScoreCount();
 				int curIndex = -1;
 				for (Score s : model.getScores()) {
+					String scoreStr = s.getSong().getTitle() + " - " + s.getScore();
+					
 					curIndex++;
 					
 					try {
-						Thread.sleep(150);
+						Thread.sleep(250);
 						
 						// try not to hammer SH too badly
 						if (curIndex % 5 == 4) {
@@ -123,22 +129,36 @@ public class ScoreUploadWizard {
 					if (s.getStatus() == Score.Status.UNKNOWN && !uploadUnknown)
 						continue;
 					
-					s.submit();
+					try {
+						s.submit();
+					} catch (Exception e) {
+						notUploaded++;
+						LOG.log(Level.WARNING, "Error uploading score " + s, e);
+						resultStrings.add("Submit failed: " + scoreStr + ": " + e);
+						continue;
+					}
+					
+					if (s.getStatus() == Score.Status.UNKNOWN)
+						possiblyUploaded++;
+					else
+						uploaded++;
 					
 					resultStrings.add(
 						(s.getStatus() == Score.Status.UNKNOWN
 						 ? "Possibly submitted" : "Submitted") +
-						": " + s.getSong().getTitle() + " - " + s.getScore());
+						": " + scoreStr);
 				}
+				
+				resultStrings.add(
+					String.format("Submitted: %s, uncertain about: %s, failed: %s", uploaded, possiblyUploaded, notUploaded));
 				
 				progress.finished(
 					Summary.create(
-//						"Uploaded " + scoreCount + " score(s) successfuly.", null));
 						resultStrings.toArray(new String[0]), null));
 			} catch (Throwable e) {
-				LOG.log(Level.WARNING, "Failed to upload new score", e);
+				LOG.log(Level.WARNING, "Failed to upload score", e);
 				progress.failed("Failed to upload score: " + e.getMessage(), false);
-				ErrorInfo ei = new ErrorInfo("Error", "Failed to upload new score", null, null, e, null, null);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to upload score", null, null, e, null, null);
 				JXErrorPane.showDialog(null, ei);
 				return;
 			}

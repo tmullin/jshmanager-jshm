@@ -341,7 +341,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			
 			// can still double-click to edit score without opening
 			// a browser window
-			if (score.getStatus() == Score.Status.NEW) return;
+			if (score.isEditable()) return;
 			
 			// preference is given to the video link
 			// if both are present
@@ -375,7 +375,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			if (1 == column && o instanceof Score) {
 				Score score = (Score) o;
 				
-				if (score.getStatus() != Score.Status.NEW && 
+				if (!score.isEditable() && 
 					(!score.getImageUrl().isEmpty() || !score.getVideoUrl().isEmpty())) {
 					newCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
 				}
@@ -526,15 +526,11 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		
 		Score score = (Score) node;
 		
-		switch (score.getStatus()) {
-			case NEW:
-			case TEMPLATE:
-				switch (column) {
-					case 0: case 1: case 2: case 3: case 4:
-						return true;
-				}
-				
-				break;
+		if (score.isEditable()) {
+			switch (column) {
+				case 0: case 1: case 2: case 3: case 4:
+					return true;
+			}
 		}
 
 		return false;
@@ -547,80 +543,74 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		Score score = (Score) node;
 		String s = value.toString();
 		
-		switch (score.getStatus()) {
-			case NEW:
-			case TEMPLATE:
+		if (score.isEditable()) {
+			if (score.getStatus() == Score.Status.TEMPLATE)
 				score.setStatus(Score.Status.NEW);
-				
-				switch (column) {
-					case 0: score.setComment(s); break;
-					case 1:
-						try {
-							score.setScore(
-								s.isEmpty() ? 0 :
-								Integer.parseInt(s));
-						} catch (Exception e) {}
-						break;
-						
-					case 2:
-						score.setRating(0);
-						
-						if (score instanceof GhScore) {
-							for (int i : new Integer[] {3, 4, 5})
-								if (GhScore.getRatingIcon(i) == value) {
-									score.setRating(i);
-									break;
-								}
-						} else if (score instanceof RbScore) {
-							for (int i : new Integer[] {1, 2, 3, 4, 5, 6})
-								if (RbScore.getRatingIcon(i) == value) {
-									score.setRating(i);
-									break;
-								}
-						}
-						break;
-						
-					case 3:
-						try {
-							score.setPartHitPercent(1,
-								s.isEmpty() ? 0f :
-								Integer.parseInt(s) / 100.0f);
-						} catch (Exception e) {}
-						break;
-						
-					case 4:
-						try {
-							score.setPartStreak(1, 
-								s.isEmpty() ? 0 :
-								Integer.parseInt(s));
-						} catch (Exception e) {}
-						break;
-						
-					default:
-						throw new IllegalStateException("trying to set valut at a non-editable column: " + column);
-				}
-				
-				Session sess = null;
-				Transaction tx = null;
-				
-				try {
-					sess = HibernateUtil.getCurrentSession();
-					tx = sess.beginTransaction();
-					sess.saveOrUpdate(score);
-					sess.getTransaction().commit();
-				} catch (Exception e) {
-					if (null != tx) tx.rollback();
-					LOG.log(Level.SEVERE, "Failed to save to database", e);
-					ErrorInfo ei = new ErrorInfo("Error", "Failed to save to database", null, null, e, null, null);
-					JXErrorPane.showDialog(null, ei);
-				} finally {
-					if (sess.isOpen()) sess.close();
-				}
-				
-				break;
-				
-			default:
-				throw new IllegalStateException("setValueAt() called on a non NEW/TEMPLATE score");
+			
+			switch (column) {
+				case 0: score.setComment(s); break;
+				case 1:
+					try {
+						score.setScore(
+							s.isEmpty() ? 0 :
+							Integer.parseInt(s));
+					} catch (Exception e) {}
+					break;
+					
+				case 2:
+					score.setRating(0);
+					
+					if (score instanceof GhScore) {
+						for (int i : new Integer[] {3, 4, 5})
+							if (GhScore.getRatingIcon(i) == value) {
+								score.setRating(i);
+								break;
+							}
+					} else if (score instanceof RbScore) {
+						for (int i : new Integer[] {1, 2, 3, 4, 5, 6})
+							if (RbScore.getRatingIcon(i) == value) {
+								score.setRating(i);
+								break;
+							}
+					}
+					break;
+					
+				case 3:
+					try {
+						score.setPartHitPercent(1,
+							s.isEmpty() ? 0f :
+							Integer.parseInt(s) / 100.0f);
+					} catch (Exception e) {}
+					break;
+					
+				case 4:
+					try {
+						score.setPartStreak(1, 
+							s.isEmpty() ? 0 :
+							Integer.parseInt(s));
+					} catch (Exception e) {}
+					break;
+					
+				default:
+					throw new IllegalStateException("trying to set valut at a non-editable column: " + column);
+			}
+			
+			Session sess = null;
+			Transaction tx = null;
+			
+			try {
+				sess = HibernateUtil.getCurrentSession();
+				tx = sess.beginTransaction();
+				sess.saveOrUpdate(score);
+				sess.getTransaction().commit();
+			} catch (Exception e) {
+				if (null != tx) tx.rollback();
+				LOG.log(Level.SEVERE, "Failed to save to database", e);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to save to database", null, null, e, null, null);
+				JXErrorPane.showDialog(null, ei);
+			} finally {
+				if (sess.isOpen()) sess.close();
+			}
 		}
     }
 	

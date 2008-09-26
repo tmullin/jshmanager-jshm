@@ -9,6 +9,8 @@ Version 0.2.2
   launching an external browser, if possible.
 - Added better detection for determining if a score submission was successful. 
   Scores can be resubmitted if it is not certain they were submitted initially.
+  These scores will be highlighted red instead of blue to indicate their
+  status.
 
 Version 0.2.1
 -------------

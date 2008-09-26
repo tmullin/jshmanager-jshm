@@ -104,10 +104,19 @@ public class CsvImportWizard {
 				progress.setBusy("Parsing CSV file...");
 				
 				File f = new File((String) settings.get("file"));
-				boolean inferColumns =
-					null != settings.get("inferColumns")
-					? (Boolean) settings.get("inferColumns")
-					: true;
+				boolean inferColumns = true;
+				
+				try {
+					inferColumns = (Boolean) settings.get("inferColumns");
+				} catch (Exception e) {}
+				
+				
+				boolean importDuplicates = false;
+				
+				try {
+					importDuplicates = (Boolean) settings.get("duplicates");
+				} catch (Exception e) {}
+				
 					
 				CsvColumn[] columns = null;
 				
@@ -156,18 +165,14 @@ public class CsvImportWizard {
 					    String scoreStr =
 					    	String.format("%s %s \"%s\" - %s", s.getDifficulty().toShortString(), s.getGroup(), s.getSong().getTitle(), s.getScore());
 					    
-					    switch (result.size()) {
-					    	case 0:
-					    		LOG.info("Inserting score: " + s);
-					    		summary.add("Added score: " + scoreStr);
-					    		session.save(s);
-					    		insertedScores++;
-					    		break;
-					    		
-					    	default:
-					    		LOG.fine("Skipping existing score: " + s);
-					    		existingScores++;
-					    		break;
+					    if (result.size() == 0 || importDuplicates) {
+				    		LOG.info("Inserting score: " + s);
+				    		summary.add("Added score: " + scoreStr);
+				    		session.save(s);
+				    		insertedScores++;
+					    } else {
+				    		LOG.fine("Skipping existing score: " + s);
+				    		existingScores++;
 					    }
 					}
 					

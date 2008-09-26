@@ -42,7 +42,7 @@ public class Api {
 	static final Logger LOG = Logger.getLogger(Api.class.getName());
 
 	static final Pattern ERROR_PATTERN =
-		Pattern.compile("^.*<span class=\"error\">(.*?)</span>.*$", Pattern.DOTALL);
+		Pattern.compile("^.*<span class=\"error\">\\s*(.*?)\\s*</(?:span|td)>.*$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 	
 
 	public static void submitGhScore(final GhScore score) throws Exception {

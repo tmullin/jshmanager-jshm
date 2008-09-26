@@ -247,17 +247,12 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 	
 	private void setEnabled(Score score) {
 		if (null != score) {
-			switch (score.getStatus()) {
-				case NEW:
-				case TEMPLATE:
-					setEnabled(true);
-					saveButton.setEnabled(true);
-					break;
-					
-				default:
-					setEnabled(false);
-					saveButton.setEnabled(false);
-					break;
+			if (score.isEditable()) {
+				setEnabled(true);
+				saveButton.setEnabled(true);
+			} else {
+				setEnabled(false);
+				saveButton.setEnabled(false);
 			}
 
 			songCombo.setEnabled(isNewScore);

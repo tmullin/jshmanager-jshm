@@ -694,7 +694,7 @@ private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-F
 	uploadSelectedScoreMenuItem.setEnabled(
 		goodRowCount &&
 		isScore &&
-		score.getStatus() == Score.Status.NEW);
+		score.isSubmittable());
 	
 	scoreEditorPanel1.setScore(score);
 	

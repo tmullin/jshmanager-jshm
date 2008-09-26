@@ -176,7 +176,14 @@ public abstract class Score {
 	 */
 	@Transient
 	public boolean isEditable() {
-		return status == Status.NEW || status == Status.TEMPLATE;
+		switch (status) {
+			case NEW:
+			case TEMPLATE:
+			case UNKNOWN:
+				return true;
+		}
+		
+		return false;
 	}
 	
 	public void setGame(Game game) {

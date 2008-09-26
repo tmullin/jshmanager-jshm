@@ -33,10 +33,10 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel5" alignment="0" pref="592" max="32767" attributes="0"/>
+                  <Component id="jLabel5" alignment="0" pref="614" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -45,11 +45,11 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="fileField" pref="483" max="32767" attributes="0"/>
+                              <Component id="fileField" pref="505" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="selectFileButton" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="gameField" alignment="0" pref="539" max="32767" attributes="0"/>
+                          <Component id="gameField" alignment="0" pref="561" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -59,10 +59,11 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="diffCombo" alignment="0" pref="447" max="32767" attributes="0"/>
-                          <Component id="instrumentCombo" alignment="0" pref="447" max="32767" attributes="0"/>
+                          <Component id="diffCombo" alignment="0" pref="469" max="32767" attributes="0"/>
+                          <Component id="instrumentCombo" alignment="0" pref="469" max="32767" attributes="0"/>
                       </Group>
                   </Group>
+                  <Component id="importDuplicatesCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -94,7 +95,9 @@
                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="instrumentCombo" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="85" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="importDuplicatesCheckBox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -152,6 +155,12 @@
     <Component class="javax.swing.JLabel" name="jLabel5">
       <Properties>
         <Property name="text" type="java.lang.String" value="&lt;html&gt;* The file must be a CSV (comma-separated values) file. Most spreadsheet programs can export or &quot;Save As&quot; this format."/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="importDuplicatesCheckBox">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Import duplicate scores"/>
+        <Property name="name" type="java.lang.String" value="duplicates" noResource="true"/>
       </Properties>
     </Component>
   </SubComponents>
