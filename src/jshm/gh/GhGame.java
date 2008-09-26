@@ -129,6 +129,10 @@ public class GhGame extends jshm.Game {
 		return GhSong.getByTitle(this, title, diff);
 	}
 
+	@Override
+	public List<GhSong> getSongsOrderedByTitle(Group group, Difficulty diff) {
+		return GhSong.getSongsOrderedByTitles(this, diff);
+	}
 	
 	@Override
 	public Score createNewScore(Song song, Group group, Difficulty diff,

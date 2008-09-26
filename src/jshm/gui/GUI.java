@@ -86,6 +86,8 @@ public class GUI extends javax.swing.JFrame {
 	private Game curGame = null;
 	private Difficulty curDiff = null;
 	
+	private List<? extends Song> orderedSongs = null;
+	
 	private HoverHelp hh = null;
 	
     /** Creates new form GUITest */
@@ -261,6 +263,8 @@ public class GUI extends javax.swing.JFrame {
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
         scoresMenu = new javax.swing.JMenu();
+        goToSongMenuItem = new javax.swing.JMenuItem();
+        jSeparator7 = new javax.swing.JSeparator();
         addNewScoreMenuItem = new javax.swing.JMenuItem();
         addNewScoreViaEditorMenuItem = new javax.swing.JMenuItem();
         deleteSelectedScoreMenuItem = new javax.swing.JMenuItem();
@@ -355,6 +359,18 @@ public class GUI extends javax.swing.JFrame {
 
         scoresMenu.setMnemonic('S');
         scoresMenu.setText("Scores");
+
+        goToSongMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
+        goToSongMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/next32.png"))); // NOI18N
+        goToSongMenuItem.setText("Go to Song...");
+        goToSongMenuItem.setEnabled(false);
+        goToSongMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                goToSongMenuItemActionPerformed(evt);
+            }
+        });
+        scoresMenu.add(goToSongMenuItem);
+        scoresMenu.add(jSeparator7);
 
         addNewScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_INSERT, 0));
         addNewScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/add32.png"))); // NOI18N
@@ -892,6 +908,10 @@ private void importScoresFromCsvFileMenuItemActionPerformed(java.awt.event.Actio
 	myScoresMenuItemActionPerformed(null, curGame, curGroup, curDiff);
 }//GEN-LAST:event_importScoresFromCsvFileMenuItemActionPerformed
 
+private void goToSongMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goToSongMenuItemActionPerformed
+	// TODO
+}//GEN-LAST:event_goToSongMenuItemActionPerformed
+
 private void uploadLogsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                     
 	final ProgressDialog prog = new ProgressDialog(this);
 	
@@ -1421,10 +1441,8 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 				
 				model = new GhMyScoresTreeTableModel(game, songs, scores);
 	
-				final List<? extends Song> orderedSongs =
-					game instanceof GhGame
-					? GhSong.getSongsOrderedByTitles((GhGame) game, difficulty)
-					: RbSong.getSongsOrderedByTitles((RbGame) game, group);
+				orderedSongs =
+					game.getSongsOrderedByTitle(group, difficulty);
 				
 				SwingUtilities.invokeAndWait(new Runnable() {
 					public void run() {
@@ -1526,6 +1544,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JMenu ghMenu;
     private javax.swing.JMenu ghScoresMenu;
     private javax.swing.JMenu ghSongDataMenu;
+    private javax.swing.JMenuItem goToSongMenuItem;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuItem importScoresFromCsvFileMenuItem;
     private javax.swing.JMenuBar jMenuBar1;
@@ -1536,6 +1555,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
+    private javax.swing.JSeparator jSeparator7;
     private javax.swing.JMenuItem licenseMenuItem;
     private javax.swing.JMenu rbLinksMenu;
     private javax.swing.JMenu rbMenu;

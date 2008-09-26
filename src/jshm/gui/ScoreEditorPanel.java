@@ -34,11 +34,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
@@ -49,7 +47,6 @@ import jshm.StreakStrategy;
 import jshm.gh.GhScore;
 import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 import jshm.gui.editors.GhMyScoresRatingEditor;
-import jshm.gui.renderers.ScoreEditorSongComboRenderer;
 import jshm.hibernate.HibernateUtil;
 import jshm.rb.RbScore;
 
@@ -57,8 +54,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.jdesktop.swingx.JXCollapsiblePane;
 import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
-import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
@@ -122,29 +117,8 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 		saveButton.setEnabled(b);
 	}
 	
-	private final ListCellRenderer SONG_COMBO_RENDERER = new ScoreEditorSongComboRenderer();
-	private static final String SELECT_A_SONG = "Type a song name...";
-	private static final ObjectToStringConverter SONG_COMBO_CONVERTER = new ObjectToStringConverter() {
-		@Override
-		public String getPreferredStringForItem(Object item) {
-			if (null == item) return null;
-			if (item instanceof Song)
-				return ((Song) item).getTitle();
-			return item.toString();
-		}
-	};
-	
 	public void setSongs(List<? extends Song> songs) {
-		songCombo.setRenderer(SONG_COMBO_RENDERER);
-		DefaultComboBoxModel model = (DefaultComboBoxModel) songCombo.getModel();
-		model.removeAllElements();
-		
-		model.addElement(SELECT_A_SONG);
-		for (Song s : songs)
-			model.addElement(s);
-		
-		AutoCompleteDecorator.decorate(songCombo, SONG_COMBO_CONVERTER);
-		
+		GuiUtil.createSongCombo(songCombo, songs);
 		newButton.setEnabled(true);
 	}
 	
@@ -230,7 +204,7 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 			score.addPropertyChangeListener(this);
 		}
 		
-		songCombo.setSelectedItem(scoreNotNull && null != score.getSong() ? score.getSong() : SELECT_A_SONG);
+		songCombo.setSelectedItem(scoreNotNull && null != score.getSong() ? score.getSong() : GuiUtil.SELECT_A_SONG);
 		scoreField.setText(scoreNotNull && score.getScore() > 0 ? String.valueOf(score.getScore()) : "");
 		ratingCombo.setSelectedItem(scoreNotNull ? score.getRatingIcon(true) : ratingCombo.getItemAt(0));
 		percentField.setText(scoreNotNull && score.getHitPercent() != 0f ? String.valueOf((int) (score.getHitPercent() * 100)) : "");
@@ -296,6 +270,7 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         hideButton = new javax.swing.JButton();
+        goToSongButton = new javax.swing.JButton();
 
         scoreField.setEditable(false);
 
@@ -378,6 +353,14 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
             }
         });
 
+        goToSongButton.setText("Go to Song");
+        goToSongButton.setEnabled(false);
+        goToSongButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                goToSongButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -393,13 +376,13 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(imageUrlField, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
-                            .addComponent(videoUrlField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE))
+                            .addComponent(imageUrlField, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE)
+                            .addComponent(videoUrlField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(imageUrlOpenButton)
                             .addComponent(videoUrlOpenButton)))
-                    .addComponent(commentField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 673, Short.MAX_VALUE)
+                    .addComponent(commentField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 792, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -407,8 +390,10 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(saveButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(hideButton))
-                            .addComponent(songCombo, 0, 316, Short.MAX_VALUE))
+                                .addComponent(hideButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(goToSongButton))
+                            .addComponent(songCombo, 0, 435, Short.MAX_VALUE))
                         .addGap(16, 16, 16)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(scoreField, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -436,7 +421,8 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(newButton)
                             .addComponent(saveButton)
-                            .addComponent(hideButton))
+                            .addComponent(hideButton)
+                            .addComponent(goToSongButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
@@ -604,9 +590,14 @@ private void hideButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 	} catch (NullPointerException e) {}
 }//GEN-LAST:event_hideButtonActionPerformed
 
+private void goToSongButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goToSongButtonActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_goToSongButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField commentField;
+    private javax.swing.JButton goToSongButton;
     private javax.swing.JButton hideButton;
     private javax.swing.JTextField imageUrlField;
     private javax.swing.JButton imageUrlOpenButton;

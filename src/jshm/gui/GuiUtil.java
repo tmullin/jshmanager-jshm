@@ -30,20 +30,27 @@ import java.util.Enumeration;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
+import javax.swing.ListCellRenderer;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.tree.TreePath;
 
 import jshm.Config;
+import jshm.Song;
 import jshm.gui.components.SpInfoViewer;
+import jshm.gui.renderers.ScoreEditorSongComboRenderer;
 import jshm.util.Util;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.methods.HeadMethod;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
@@ -187,7 +194,30 @@ public class GuiUtil {
 		}
 	}
 	
+
+	public static final String SELECT_A_SONG = "Type a song name...";
+	private static final ListCellRenderer SONG_COMBO_RENDERER = new ScoreEditorSongComboRenderer();
+	private static final ObjectToStringConverter SONG_COMBO_CONVERTER = new ObjectToStringConverter() {
+		@Override
+		public String getPreferredStringForItem(Object item) {
+			if (null == item) return null;
+			if (item instanceof Song)
+				return ((Song) item).getTitle();
+			return item.toString();
+		}
+	};
 	
+	public static void createSongCombo(JComboBox cb, List<? extends Song> songs) {
+		cb.setRenderer(SONG_COMBO_RENDERER);
+		DefaultComboBoxModel model = (DefaultComboBoxModel) cb.getModel();
+		model.removeAllElements();
+		
+		model.addElement(SELECT_A_SONG);
+		for (Song s : songs)
+			model.addElement(s);
+		
+		AutoCompleteDecorator.decorate(cb, SONG_COMBO_CONVERTER);
+	}
 	
 	
 	// icon stuff

@@ -27,8 +27,8 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="imageUrlField" pref="593" max="32767" attributes="1"/>
-                          <Component id="videoUrlField" alignment="1" pref="593" max="32767" attributes="1"/>
+                          <Component id="imageUrlField" pref="712" max="32767" attributes="1"/>
+                          <Component id="videoUrlField" alignment="1" pref="712" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
@@ -36,7 +36,7 @@
                           <Component id="videoUrlOpenButton" alignment="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <Component id="commentField" alignment="1" pref="673" max="32767" attributes="0"/>
+                  <Component id="commentField" alignment="1" pref="792" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
@@ -45,8 +45,10 @@
                               <Component id="saveButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="hideButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="goToSongButton" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="songCombo" pref="316" max="32767" attributes="0"/>
+                          <Component id="songCombo" pref="435" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -84,6 +86,7 @@
                           <Component id="newButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="saveButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="hideButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="goToSongButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -287,6 +290,15 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hideButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="goToSongButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Go to Song"/>
+        <Property name="enabled" type="boolean" value="false"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="goToSongButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

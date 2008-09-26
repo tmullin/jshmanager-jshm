@@ -88,6 +88,11 @@ public class RbGame extends Game {
 	}
 
 	@Override
+	public List<RbSong> getSongsOrderedByTitle(Group group, Difficulty diff) {
+		return RbSong.getSongsOrderedByTitles(this, group);
+	}
+	
+	@Override
 	public Score createNewScore(Song song, Group group, Difficulty diff,
 			int score, int rating, float percent, int streak, String comment) {
 		
