@@ -247,17 +247,19 @@ public class SpInfoViewer extends javax.swing.JFrame {
 		SpInfoViewer.this.actualScale = scale;
 		
 		if (FIT_WIDTH == scale || FIT_ALL == scale) {
-			// it's almost assured that the image will be taller than wide
-			// but for completeness...
 			int imw = image.getWidth();
 			int imh = image.getHeight();
 			int vpw = imageScrollPane.getViewport().getWidth();
 			int vph = imageScrollPane.getViewport().getHeight();
 			
-			if (FIT_WIDTH == scale || imw > imh)
-				scale = (float) vpw / (float) imw;
-			else
-				scale = (float) vph / (float) imh;
+			float wScale = (float) vpw / (float) imw;
+			float hScale = (float) vph / (float) imh;
+			
+			if (FIT_WIDTH == scale)
+				scale = wScale;
+			else { // FIT_ALL
+				scale = Math.min(wScale, hScale);
+			}
 			
 			scale = Math.min(MAX_SCALE,
 				Math.max(MIN_SCALE, scale)
