@@ -119,7 +119,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
         
         EditPopupMenu.add(titleField);
         EditPopupMenu.add(referenceUrlField);
-        EditPopupMenu.add(textPane);
+        EditPopupMenu.add(descriptionTextArea);
         
         imagePainter.addMouseWheelListener(new MouseWheelListener() {
 			public void mouseWheelMoved(MouseWheelEvent e) {
@@ -161,7 +161,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
 //				cp.validate();	
 //			}
 			
-			textPane.setText(text);
+			descriptionTextArea.setText(text);
 //		}
 	}
 	
@@ -316,7 +316,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
         songDifficultyField = new javax.swing.JTextField();
         songInstrumentField = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        descriptionTextArea = new javax.swing.JTextArea();
         mainPanel = new javax.swing.JPanel();
         controlsPanel = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
@@ -407,7 +407,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(fromFileButton)
                     .addComponent(fromUrlButton))
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(5, 0, 0, 0), javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder("Saved Paths"), javax.swing.BorderFactory.createEmptyBorder(0, 5, 5, 5))));
@@ -464,14 +464,14 @@ public class SpInfoViewer extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(songInstrumentField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jScrollPane3.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 5, 5), javax.swing.BorderFactory.createTitledBorder("Description")));
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane3.setViewportView(jTextArea1);
+        descriptionTextArea.setColumns(20);
+        descriptionTextArea.setRows(5);
+        jScrollPane3.setViewportView(descriptionTextArea);
 
         javax.swing.GroupLayout editorPanelLayout = new javax.swing.GroupLayout(editorPanel);
         editorPanel.setLayout(editorPanelLayout);
@@ -489,7 +489,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
             editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(editorPanelLayout.createSequentialGroup()
                 .addGroup(editorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane2, 0, 0, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -664,6 +664,7 @@ private void fromUrlButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     private javax.swing.JButton closeButton;
     private javax.swing.JPanel controlsPanel;
     private javax.swing.JButton deleteButton;
+    private javax.swing.JTextArea descriptionTextArea;
     private javax.swing.JToolBar.Separator editActionsToolbarSeparator;
     private org.jdesktop.swingx.JXCollapsiblePane editorCollapsiblePane;
     private javax.swing.JPanel editorPanel;
@@ -681,7 +682,6 @@ private void fromUrlButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton newButton;

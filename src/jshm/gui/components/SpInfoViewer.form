@@ -67,7 +67,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" max="-2" attributes="0">
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="jPanel1" alignment="0" pref="159" max="32767" attributes="1"/>
+                              <Component id="jPanel1" alignment="0" max="32767" attributes="1"/>
                               <Component id="jScrollPane2" alignment="0" min="0" pref="0" max="32767" attributes="1"/>
                               <Component id="jPanel2" alignment="0" max="32767" attributes="1"/>
                           </Group>
@@ -143,7 +143,7 @@
                                   <Component id="fromFileButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="fromUrlButton" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="10" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -288,7 +288,7 @@
                                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="songInstrumentField" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="16" max="32767" attributes="0"/>
+                              <EmptySpace pref="22" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -347,7 +347,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
-                    <Component class="javax.swing.JTextArea" name="jTextArea1">
+                    <Component class="javax.swing.JTextArea" name="descriptionTextArea">
                       <Properties>
                         <Property name="columns" type="int" value="20"/>
                         <Property name="rows" type="int" value="5"/>
