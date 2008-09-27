@@ -232,11 +232,13 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 			songCombo.setEnabled(isNewScore);
 			imageUrlOpenButton.setEnabled(true);
 			videoUrlOpenButton.setEnabled(true);
+			goToSongButton.setEnabled(true);
 		} else {
 			setEnabled(false);
 			songCombo.setEnabled(false);
 			imageUrlOpenButton.setEnabled(false);
 			videoUrlOpenButton.setEnabled(false);
+			goToSongButton.setEnabled(false);
 		}
 	}
 	
@@ -591,7 +593,12 @@ private void hideButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 }//GEN-LAST:event_hideButtonActionPerformed
 
 private void goToSongButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goToSongButtonActionPerformed
-// TODO add your handling code here:
+	Object selected = songCombo.getSelectedItem();
+	
+	if (selected instanceof Song) {
+		((GhMyScoresTreeTableModel) gui.tree.getTreeTableModel())
+			.expandAndScrollTo((Song) selected);
+	}
 }//GEN-LAST:event_goToSongButtonActionPerformed
 
 

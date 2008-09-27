@@ -107,14 +107,9 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			this.name = name;
 		}
 
-		public SongScores addScore(Score score) {
+		public SongScores getSongScores(Song song) {
 			for (SongScores ss : songs) {
-				if (ss.song.equals(score.getSong())) {
-					if (ss.scores.contains(score)) {
-						return null;
-					}
-					
-					ss.scores.add(score);
+				if (ss.song.equals(song)) {
 					return ss;
 				}
 			}
@@ -122,12 +117,23 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			return null;
 		}
 		
+		public SongScores addScore(Score score) {
+			SongScores ss = getSongScores(score.getSong());
+			
+			if (null == ss || ss.scores.contains(score)) {
+				return null;
+			}
+					
+			ss.scores.add(score);
+			return ss;
+		}
+		
 		public SongScores removeScore(Score score) {
-			for (SongScores ss : songs) {
-				if (ss.song.equals(score.getSong())) {
-					ss.scores.remove(score);
-					return ss;
-				}
+			SongScores ss = getSongScores(score.getSong());
+			
+			if (null != ss) {
+				ss.scores.remove(score);
+				return ss;
 			}
 			
 			return null;
@@ -214,9 +220,29 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			TreePath tp = new TreePath(path);
 			modelSupport.fireTreeStructureChanged(tp);
 			tp = tp.pathByAddingChild(score);
-			parent.expandPath(tp);
-			parent.scrollPathToVisible(tp);
+			
+			expandAndScrollTo(tp);
 		}
+	}
+	
+	public void expandAndScrollTo(Song song) {
+		SongScores ss = model.tiers.get(song.getTierLevel() - 1)
+			.getSongScores(song);
+		
+		assert null != ss;
+		
+		Object[] path = new Object[3];
+		path[0] = getRoot();
+		path[1] = getChild(path[0], song.getTierLevel() - 1);
+		path[2] = ss;
+		
+		TreePath tp = new TreePath(path);
+		expandAndScrollTo(tp);
+	}
+	
+	public void expandAndScrollTo(TreePath tp) {
+		parent.expandPath(tp);
+		parent.scrollPathToVisible(tp);
 	}
 
 	public void deleteScore(TreePath p) {

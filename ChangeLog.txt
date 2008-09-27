@@ -11,6 +11,7 @@ Version 0.2.2
   Scores can be resubmitted if it is not certain they were submitted initially.
   These scores will be highlighted red instead of blue to indicate their
   status.
+- Added "Go to Song" item to the main "Scores" menu and the score editor.
 
 Version 0.2.1
 -------------

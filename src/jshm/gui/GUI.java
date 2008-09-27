@@ -59,6 +59,7 @@ import javax.swing.tree.TreePath;
 
 import jshm.*;
 import jshm.gh.*;
+import jshm.gui.components.SelectSongDialog;
 import jshm.gui.components.StatusBar;
 import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 import jshm.gui.datamodels.GhSongDataTreeTableModel;
@@ -909,7 +910,10 @@ private void importScoresFromCsvFileMenuItemActionPerformed(java.awt.event.Actio
 }//GEN-LAST:event_importScoresFromCsvFileMenuItemActionPerformed
 
 private void goToSongMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goToSongMenuItemActionPerformed
-	// TODO
+	Song song = SelectSongDialog.show(this, orderedSongs);
+//	System.out.println(song);
+	((GhMyScoresTreeTableModel) tree.getTreeTableModel())
+		.expandAndScrollTo(song);
 }//GEN-LAST:event_goToSongMenuItemActionPerformed
 
 private void uploadLogsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                     
@@ -1310,6 +1314,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 			addNewScoreViaEditorMenuItem.setEnabled(false);
 			toggleEditorMenuItem.setEnabled(false);
 			importScoresFromCsvFileMenuItem.setEnabled(false);
+			goToSongMenuItem.setEnabled(false);
 			
 			GUI.this.setIconImage(game.title.getIcon().getImage());
 			GUI.this.setTitle(game + " on " + difficulty + " - Song Data");
@@ -1384,6 +1389,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 			addNewScoreViaEditorMenuItem.setEnabled(false);
 			toggleEditorMenuItem.setEnabled(false);
 			importScoresFromCsvFileMenuItem.setEnabled(false);
+			goToSongMenuItem.setEnabled(false);
 			
 			GUI.this.setIconImage(game.title.getIcon().getImage());
 			GUI.this.setTitle(game + " " + group + " - Song Data");
@@ -1492,6 +1498,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			addNewScoreViaEditorMenuItem.setEnabled(true);
 			toggleEditorMenuItem.setEnabled(true);
 			importScoresFromCsvFileMenuItem.setEnabled(true);
+			goToSongMenuItem.setEnabled(true);
 			
 			if (scores.size() == 0 && null != evt) { // if evt == null we're recursing
 				if (JOptionPane.YES_OPTION ==
