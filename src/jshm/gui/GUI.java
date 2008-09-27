@@ -912,8 +912,10 @@ private void importScoresFromCsvFileMenuItemActionPerformed(java.awt.event.Actio
 private void goToSongMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goToSongMenuItemActionPerformed
 	Song song = SelectSongDialog.show(this, orderedSongs);
 //	System.out.println(song);
-	((GhMyScoresTreeTableModel) tree.getTreeTableModel())
-		.expandAndScrollTo(song);
+	
+	if (null != song)
+		((GhMyScoresTreeTableModel) tree.getTreeTableModel())
+			.expandAndScrollTo(song);
 }//GEN-LAST:event_goToSongMenuItemActionPerformed
 
 private void uploadLogsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                     
