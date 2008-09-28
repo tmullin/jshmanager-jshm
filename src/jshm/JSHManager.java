@@ -44,13 +44,13 @@ public class JSHManager {
 		public static final int MAJOR = 0;
 		public static final int MINOR = 2;
 		public static final int POINT = 2;
-		public static final boolean IS_BETA = true;
+		public static final boolean IS_BETA = false;
 		
 		public static final String STRING =
 			String.format("%s.%s.%s%s", MAJOR, MINOR, POINT, IS_BETA ? " beta" : "");
 		
-		public static final String LAST = "0.2.0";
-		public static final int LAST_REVISION = 188;
+		public static final String LAST = "0.2.1";
+		public static final int LAST_REVISION = 207;
 		
 		public static final java.util.Date DATE = initDate("$Date$");
 		public static final int REVISION = initRevision("$Revision$");

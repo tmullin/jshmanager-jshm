@@ -30,7 +30,7 @@ import java.util.*;
  *
  */
 public class SvnDiff {
-	static final String SVN_BASE = "http://jshmanager.googlecode.com/svn/trunk";
+	static final String SVN_BASE = "http://jshm.svn.sourceforge.net/svnroot/jshm/trunk";
 	static final int LAST_REVISION = jshm.JSHManager.Version.LAST_REVISION;
 //	static final int LAST_REVISION = 69; // making 0.0.x to 0.1.0 patch
 	
