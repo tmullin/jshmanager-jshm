@@ -28,8 +28,6 @@ package jshm.gui;
 
 import java.awt.Container;
 
-import javax.swing.SwingUtilities;
-
 import org.netbeans.spi.wizard.ResultProgressHandle;
 
 /**
@@ -65,40 +63,21 @@ public class ProgressDialog extends javax.swing.JDialog implements ResultProgres
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        statusLabel = new javax.swing.JLabel();
-        progressBar = new javax.swing.JProgressBar();
+        progPanel = new jshm.gui.components.ProgressLogPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
         setResizable(false);
 
-        statusLabel.setFont(statusLabel.getFont().deriveFont(statusLabel.getFont().getStyle() | java.awt.Font.BOLD));
-        statusLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        statusLabel.setText("Please wait...");
-        statusLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
-        statusLabel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-
-        progressBar.setIndeterminate(true);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(progressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
-                    .addComponent(statusLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE))
-                .addContainerGap())
+            .addComponent(progPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(statusLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addComponent(progPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -124,21 +103,21 @@ public class ProgressDialog extends javax.swing.JDialog implements ResultProgres
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JProgressBar progressBar;
-    private javax.swing.JLabel statusLabel;
+    private jshm.gui.components.ProgressLogPanel progPanel;
     // End of variables declaration//GEN-END:variables
     
     
     // implement org.netbeans.spi.wizard.ResultProgressHandle
-    
+    // forward to progPanel
+	
 	@Override
 	public void addProgressComponents(Container panel) {
-		// ignore
+		progPanel.addProgressComponents(panel);
 	}
 
 	@Override
 	public void failed(String message, boolean canNavigateBack) {
-		// ignore
+		progPanel.failed(message, canNavigateBack);
 	}
 
 	public void finished() {
@@ -147,63 +126,27 @@ public class ProgressDialog extends javax.swing.JDialog implements ResultProgres
 	
 	@Override
 	public void finished(Object result) {
+		progPanel.finished(result);
 		this.dispose();
 	}
 
 	@Override
 	public boolean isRunning() {
-		// not really used
-		return true;
+		return progPanel.isRunning();
 	}
 
 	@Override
 	public void setBusy(String description) {
-		setStatus(description);
-		setProgress(true, -1, -1);
+		progPanel.setBusy(description);
 	}
 
 	@Override
 	public void setProgress(int currentStep, int totalSteps) {
-		setProgress(false, currentStep, totalSteps);
-	}
-	
-	public void setProgress(final boolean indeterminate, final int currentStep, final int totalSteps) {
-		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					setProgress(indeterminate, currentStep, totalSteps);
-				}
-			});
-			
-			return;
-		}
-		
-		progressBar.setIndeterminate(indeterminate);
-		
-		if (!indeterminate) {
-			progressBar.setMinimum(0);
-			progressBar.setMaximum(totalSteps);
-			progressBar.setValue(currentStep);
-		}
+		progPanel.setProgress(currentStep, totalSteps);
 	}
 
 	@Override
 	public void setProgress(String description, int currentStep, int totalSteps) {
-		setStatus(description);
-		setProgress(currentStep, totalSteps);
-	}
-
-	public void setStatus(final String description) {
-		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					setStatus(description);
-				}
-			});
-			
-			return;
-		}
-		
-		statusLabel.setText(description);
+		progPanel.setProgress(description, currentStep, totalSteps);
 	}
 }

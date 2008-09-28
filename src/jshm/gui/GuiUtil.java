@@ -89,6 +89,10 @@ public class GuiUtil {
 				}
 			}
 		}
+		
+		
+		// hook into the wizard displayer
+		System.setProperty("WizardDisplayer.default", "jshm.gui.wizards.displayer.WizardDisplayerImpl");
 	}
 	
 	/**

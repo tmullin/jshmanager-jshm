@@ -35,7 +35,7 @@
 	<classpathentry kind="lib" path="lib/hsqldb.jar"/>
 	<classpathentry kind="lib" path="lib/swinglabs/swingx-0.9.3.jar" sourcepath="libsrc/swinglabs/swingx-0.9.3-src.zip"/>
 	<classpathentry kind="lib" path="lib/swinglabs/swing-worker-1.2.jar" sourcepath="libsrc/swinglabs/swing-worker-src-1.2.zip"/>
-	<classpathentry kind="lib" path="lib/swinglabs/wizard.jar">
+	<classpathentry kind="lib" path="lib/swinglabs/wizard.jar" sourcepath="libsrc/swinglabs/wizard-src.zip">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/JSHManager/libsrc/swinglabs/WizardAPI.zip!/"/>
 		</attributes>
