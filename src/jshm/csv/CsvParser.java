@@ -30,7 +30,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import jshm.*;
 import jshm.Instrument.Group;
 import jshm.exceptions.CsvException;
-import jshm.util.Util;
+import jshm.util.PhpUtil;
 
 public class CsvParser {
 	public static final CsvColumn[] REQUIRED_COLUMNS = new CsvColumn[] {
@@ -69,7 +69,7 @@ public class CsvParser {
 				}
 			}
 			
-			LOG.fine("Using columns: " + Util.implode(columns));
+			LOG.fine("Using columns: " + PhpUtil.implode(columns));
 			
 			Map<CsvColumn, Integer> columnMap = new HashMap<CsvColumn, Integer>();
 			
@@ -99,7 +99,7 @@ public class CsvParser {
 					continue;
 				}
 				
-				final String implodedLine = Util.implode(line);
+				final String implodedLine = PhpUtil.implode(line);
 				
 				LOG.fine("Parsing line " + lineNumber + " (" + line.length + " elements): " + implodedLine);
 				

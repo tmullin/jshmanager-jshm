@@ -203,7 +203,7 @@ public class RbSong extends Song {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append('[');
-		sb.append(jshm.util.Util.implode(platforms.toArray()));
+		sb.append(jshm.util.PhpUtil.implode(platforms.toArray()));
 		sb.append(']');
 		sb.append(',');
 		sb.append(getScoreHeroId());

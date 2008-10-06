@@ -33,7 +33,7 @@ import javax.swing.event.ListDataListener;
 import jshm.Game;
 import jshm.csv.CsvColumn;
 import jshm.gh.GhGame;
-import jshm.util.Util;
+import jshm.util.PhpUtil;
 
 import org.netbeans.spi.wizard.WizardPage;
 
@@ -240,7 +240,7 @@ private void moveRightButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
 private void moveLeftButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveLeftButtonActionPerformed
 	Object o = columnList.getSelectedValue();
 	assert o != null;
-	assert !Util.contains(o, REQUIRED_COLUMNS);
+	assert !PhpUtil.contains(o, REQUIRED_COLUMNS);
 	
 	((DefaultListModel) columnList.getModel())
 		.removeElement(o);
@@ -284,7 +284,7 @@ private void columnListValueChanged(javax.swing.event.ListSelectionEvent evt) {/
 	Object o = columnList.getSelectedValue();
 	boolean b = i > -1;
 	
-	boolean isSelectedRequired = Util.contains(o, REQUIRED_COLUMNS);
+	boolean isSelectedRequired = PhpUtil.contains(o, REQUIRED_COLUMNS);
 	
 	moveLeftButton.setEnabled(b && !isSelectedRequired);
 	moveUpButton.setEnabled(b && i > 0);

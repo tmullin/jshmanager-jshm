@@ -35,38 +35,6 @@ import org.jdesktop.swingx.error.ErrorInfo;
 public class Util {
 	static final Logger LOG = Logger.getLogger(Util.class.getName());
 	
-	/**
-	 * Simple linear search of an array.
-	 * @param <T>
-	 * @param needle
-	 * @param haystack
-	 * @return
-	 */
-	public static <T> boolean contains(Object needle, T ... haystack) {
-		for (T t : haystack) {
-			if (t.equals(needle)) return true;
-		}
-		
-		return false;
-	}
-	
-	public static <T> String implode(T ... pieces) {
-		return implode(",", pieces);
-	}
-	
-	public static <T> String implode(String glue, T ... pieces) {
-		if (pieces.length == 0) return "";
-		
-		StringBuilder sb = new StringBuilder(pieces[0].toString());
-		
-		for (int i = 1; i < pieces.length; i++) {
-			sb.append(glue);
-			sb.append(pieces[i]);
-		}
-		
-		return sb.toString();
-	}
-	
 	public static void openURL(String url) {
 		try {
 			openURL(url, true);

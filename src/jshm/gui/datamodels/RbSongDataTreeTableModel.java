@@ -129,7 +129,7 @@ public class RbSongDataTreeTableModel extends AbstractTreeTableModel implements 
 		
 		switch (column) {
 			case 0: ret = song.getTitle(); break;
-			case 1: ret = jshm.util.Util.implode(", ", song.getPlatforms().toArray()); break;
+			case 1: ret = jshm.util.PhpUtil.implode(", ", song.getPlatforms().toArray()); break;
 
 			default: assert false;
 		}
