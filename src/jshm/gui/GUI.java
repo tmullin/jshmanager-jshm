@@ -69,6 +69,7 @@ import jshm.gui.wizards.csvimport.CsvImportWizard;
 import jshm.gui.wizards.scoredownload.ScoreDownloadWizard;
 import jshm.gui.wizards.scoreupload.ScoreUploadWizard;
 import jshm.rb.*;
+import jshm.sh.URLs;
 import jshm.util.PasteBin;
 
 import org.jdesktop.swingx.JXErrorPane;
@@ -292,6 +293,10 @@ public class GUI extends javax.swing.JFrame {
         downloadRbSongDataMenuItem = new javax.swing.JMenuItem();
         jSeparator5 = new javax.swing.JSeparator();
         rbLinksMenu = new javax.swing.JMenu();
+        wikiMenu = new javax.swing.JMenu();
+        searchWikiMenuItem = new javax.swing.JMenuItem();
+        goToWikiPageMenuItem = new javax.swing.JMenuItem();
+        jSeparator8 = new javax.swing.JSeparator();
         helpMenu = new javax.swing.JMenu();
         readmeMenuItem = new javax.swing.JMenuItem();
         changeLogMenuItem = new javax.swing.JMenuItem();
@@ -553,6 +558,34 @@ public class GUI extends javax.swing.JFrame {
         rbMenu.add(rbLinksMenu);
 
         jMenuBar1.add(rbMenu);
+
+        wikiMenu.setMnemonic('W');
+        wikiMenu.setText("Wiki");
+
+        searchWikiMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/websearch32.png"))); // NOI18N
+        searchWikiMenuItem.setMnemonic('S');
+        searchWikiMenuItem.setText("Search...");
+        searchWikiMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchWikiMenuItemActionPerformed(evt);
+            }
+        });
+        wikiMenu.add(searchWikiMenuItem);
+
+        goToWikiPageMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/gowebsite32.png"))); // NOI18N
+        goToWikiPageMenuItem.setMnemonic('G');
+        goToWikiPageMenuItem.setText("Go to page...");
+        goToWikiPageMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                goToWikiPageMenuItemActionPerformed(evt);
+            }
+        });
+        wikiMenu.add(goToWikiPageMenuItem);
+        wikiMenu.add(jSeparator8);
+
+        initForumsMenu(wikiMenu);
+
+        jMenuBar1.add(wikiMenu);
 
         helpMenu.setMnemonic('H');
         helpMenu.setText("Help");
@@ -922,6 +955,26 @@ private void goToSongMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//
 			.expandAndScrollTo(song);
 }//GEN-LAST:event_goToSongMenuItemActionPerformed
 
+private void searchWikiMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchWikiMenuItemActionPerformed
+	String in = JOptionPane.showInputDialog(this, "Enter a search phrase:", "Input", JOptionPane.QUESTION_MESSAGE);
+	
+	try {
+		in = URLs.urlCodec.encode(in);
+	} catch (Exception e) {}
+	
+	if (null != in && !in.isEmpty()) {
+		jshm.util.Util.openURL(URLs.wiki.getPageUrl("TextSearch") + "?phrase=" + in);
+	}
+}//GEN-LAST:event_searchWikiMenuItemActionPerformed
+
+private void goToWikiPageMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goToWikiPageMenuItemActionPerformed
+	String in = JOptionPane.showInputDialog(this, "Enter a wiki page name:", "Input", JOptionPane.QUESTION_MESSAGE);
+	
+	if (null != in && !in.isEmpty()) {
+		jshm.util.Util.openURL(URLs.wiki.getPageUrl(in));
+	}
+}//GEN-LAST:event_goToWikiPageMenuItemActionPerformed
+
 private void uploadLogsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                     
 	final ProgressDialog prog = new ProgressDialog(this);
 	
@@ -1198,6 +1251,8 @@ private void initForumsMenu(final JMenu menu) {
 		initForumsMenu(menu, jshm.sh.links.Link.GH_ROOT);
 	} else if (menu == rbLinksMenu) {
 		initForumsMenu(menu, jshm.sh.links.Link.RB_ROOT);
+	} else if (menu == wikiMenu) {
+		initForumsMenu(menu, jshm.sh.links.Link.WIKI_ROOT);
 	}
 }
 
@@ -1558,6 +1613,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JMenu ghScoresMenu;
     private javax.swing.JMenu ghSongDataMenu;
     private javax.swing.JMenuItem goToSongMenuItem;
+    private javax.swing.JMenuItem goToWikiPageMenuItem;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuItem importScoresFromCsvFileMenuItem;
     private javax.swing.JMenuBar jMenuBar1;
@@ -1569,6 +1625,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
     private javax.swing.JSeparator jSeparator7;
+    private javax.swing.JSeparator jSeparator8;
     private javax.swing.JMenuItem licenseMenuItem;
     private javax.swing.JMenu rbLinksMenu;
     private javax.swing.JMenu rbMenu;
@@ -1577,6 +1634,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JMenuItem readmeMenuItem;
     private jshm.gui.ScoreEditorPanel scoreEditorPanel1;
     private javax.swing.JMenu scoresMenu;
+    private javax.swing.JMenuItem searchWikiMenuItem;
     private jshm.gui.components.StatusBar statusBar1;
     private jshm.gui.TextFileViewerDialog textFileViewerDialog1;
     private javax.swing.JMenuItem toggleEditorMenuItem;
@@ -1585,6 +1643,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JMenuItem uploadScoresMenuItem;
     private javax.swing.JMenuItem uploadSelectedScoreMenuItem;
     private javax.swing.JMenu viewLogMenu;
+    private javax.swing.JMenu wikiMenu;
     // End of variables declaration//GEN-END:variables
 
     public StatusBar getStatusBar() {

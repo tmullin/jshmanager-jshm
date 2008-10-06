@@ -6,6 +6,7 @@ Version 0.2.3
 - The splash screen is no longer always-on-top.
 - Added a context menu when you right-click on a song in the scores
   table with links to its wiki page as well as any links on its SP page.
+- Added wiki menu.
 
 Version 0.2.2
 -------------

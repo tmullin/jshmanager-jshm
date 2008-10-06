@@ -29,7 +29,7 @@ import jshm.gh.*;
 import jshm.rb.*;
 
 public class URLs {
-	private static URLCodec urlCodec = null;
+	public static final URLCodec urlCodec = new URLCodec();
 	
 	public static final String
 		ROOT_DOMAIN = "scorehero.com",
@@ -122,9 +122,6 @@ public class URLs {
 		 * @return
 		 */
 		private static String format(String format, Object ... args) {
-			if (null == urlCodec)
-				urlCodec = new URLCodec();
-			
 			try {
 				return BASE + "/" +
 					urlCodec.encode(

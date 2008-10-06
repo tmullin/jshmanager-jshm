@@ -34,7 +34,8 @@ import jshm.sh.URLs;
  *
  */
 public class Link {
-	public static final Link GH_ROOT = new Link("GH_ROOT")
+	public static final Link
+	GH_ROOT = new Link("GH_ROOT")
 		.add("Home", URLs.BASE)
 		.add(ForumLink.GH_ROOT)
 		.add(new GhGamesTemplate("Manage Scores", "manage_scores.php?")
@@ -42,15 +43,22 @@ public class Link {
 		.add(ScoreDatabaseLink.GH_ROOT)
 		.add("Leagues", URLs.BASE + "/leagues/")
 		.add("Custom Songs", URLs.BASE + "/custom_songs.php")
-		.add("Store", URLs.BASE + "/store.php");
+		.add("Store", URLs.BASE + "/store.php"),
 	
-	public static final Link RB_ROOT = new Link("RB_ROOT")
+	RB_ROOT = new Link("RB_ROOT")
 		.add("Home", URLs.rb.BASE)
 		.add(ForumLink.RB_ROOT)
 		.add(new RbTemplate("Manage Scores", "manage_scores.php?")
 			.add("Manage Teams", URLs.rb.BASE + "/teams.php"))
-		.add(ScoreDatabaseLink.RB_ROOT);
+		.add(ScoreDatabaseLink.RB_ROOT),
 	
+	WIKI_ROOT = new Link("WIKI_ROOT")
+		.add("Categories", URLs.wiki.getPageUrl("CategoryCategory"))
+		.add("User Index", URLs.wiki.getPageUrl("UserIndex"))
+		.add("Page Index", URLs.wiki.getPageUrl("PageIndex"))
+		.add("Recent Changes", URLs.wiki.getPageUrl("RecentChanges"))
+		.add("Recently Commented", URLs.wiki.getPageUrl("RecentlyCommented"))
+	;
 	
 	public final String name;
 	private String url;
