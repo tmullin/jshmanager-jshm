@@ -1024,7 +1024,7 @@ private void initDynamicGameMenu(final javax.swing.JMenu menu) {
 	for (jshm.GameTitle ttl : titles) {		
 //		System.out.println("Creating " + ttl);
 		
-		javax.swing.JMenu ttlMenu = new javax.swing.JMenu(ttl.toString());
+		javax.swing.JMenu ttlMenu = new javax.swing.JMenu(ttl.getLongName());
 		ttlMenu.setIcon(ttl.getIcon());
 		
 		java.util.List<jshm.Game> games =
@@ -1035,7 +1035,7 @@ private void initDynamicGameMenu(final javax.swing.JMenu menu) {
 			javax.swing.JMenu gameMenu = null;
 				
 			if (games.size() > 1) {
-				gameMenu = new javax.swing.JMenu(game.platform.toString());
+				gameMenu = new javax.swing.JMenu(game.platform.getShortName());
 				gameMenu.setIcon(game.platform.getIcon());
 			} else {
 				gameMenu = ttlMenu;
@@ -1047,7 +1047,7 @@ private void initDynamicGameMenu(final javax.swing.JMenu menu) {
 				
 //				System.out.println("    Creating " + diff);
 				
-				JMenuItem diffItem = new JMenuItem(diff.toString());
+				JMenuItem diffItem = new JMenuItem(diff.getLongName());
 				diffItem.setIcon(diff.getIcon());
 				
 				ActionListener al = null;
@@ -1090,24 +1090,24 @@ private void initRbGameMenu(final javax.swing.JMenu menu) {
 	
 	if (menu == rbScoresMenu) {
 		for (final GameTitle ttl : titles) {
-			JMenu ttlMenu = new JMenu(ttl.toString());
+			JMenu ttlMenu = new JMenu(ttl.getLongName());
 			ttlMenu.setIcon(ttl.getIcon());
 			
 			for (final Game g : Game.getByTitle(ttl)) {
-				JMenu platformMenu = new JMenu(g.platform.toString());
+				JMenu platformMenu = new JMenu(g.platform.getShortName());
 				platformMenu.setIcon(g.platform.getIcon());
 				
 				for (int groupSize = 1; groupSize <= 1; groupSize++) {
 					JMenu groupSizeMenu = platformMenu; // new JMenu(groupSize + "-part");
 					
 					for (final Instrument.Group group : Instrument.Group.getBySize(groupSize)) {
-						JMenu groupMenu = new JMenu(group.toString());
+						JMenu groupMenu = new JMenu(group.getLongName());
 						groupMenu.setIcon(group.getIcon());
 						
 						for (final Difficulty d : Difficulty.values()) {
 							if (Difficulty.CO_OP == d) continue;
 							
-							JMenuItem diffMenuItem = new JMenuItem(d.toString());
+							JMenuItem diffMenuItem = new JMenuItem(d.getLongName());
 							diffMenuItem.setIcon(d.getIcon());
 							
 							diffMenuItem.addActionListener(new ActionListener() {
@@ -1144,14 +1144,14 @@ private void initRbGameMenu(final javax.swing.JMenu menu) {
 		ttlMenu.setIcon(ttl.getIcon());
 		
 		for (final Game g : Game.getByTitle(ttl)) {
-			JMenu platformMenu = new JMenu(g.platform.toString());
+			JMenu platformMenu = new JMenu(g.platform.getShortName());
 			platformMenu.setIcon(g.platform.getIcon());
 			
 			for (int groupSize = 1; groupSize <= 4; groupSize++) {
 				JMenu groupSizeMenu = new JMenu(groupSize + "-part");
 				
 				for (final Instrument.Group group : Instrument.Group.getBySize(groupSize)) {
-					JMenuItem groupMenuItem = new JMenuItem(group.toString());
+					JMenuItem groupMenuItem = new JMenuItem(group.getLongName());
 					groupMenuItem.setIcon(group.getIcon());
 					
 					groupMenuItem.addActionListener(new ActionListener() {

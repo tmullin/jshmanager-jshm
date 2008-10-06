@@ -20,8 +20,24 @@
  */
 package jshm;
 
+import jshm.util.Text;
+
 public enum GameSeries {
 	GUITAR_HERO,
 	ROCKBAND
 	;
+	
+	public String getLongName() {
+		return getText("longName");
+	}
+	
+	
+	private static Text t = null;
+	
+	public final String getText(String key) {
+		if (null == t)
+			t = new Text(GameSeries.class);
+		
+		return t.get(name() + "." + key);
+	}
 }

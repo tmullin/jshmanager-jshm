@@ -22,6 +22,8 @@ package jshm;
 
 import java.util.*;
 
+import jshm.util.Text;
+
 public enum Instrument {
 	GUITAR("gtr"),
 	BASS("bass"), // will also mean rhythm for GH
@@ -50,6 +52,19 @@ public enum Instrument {
 	
 	public String toShortString() {
 		return shortString;
+	}
+	
+	public String getLongName() {
+		return getText("longName");
+	}
+	
+	private static Text t = null;
+	
+	public final String getText(String key) {
+		if (null == t)
+			t = new Text(Instrument.class);
+		
+		return t.get(name() + "." + key);
 	}
 	
 	public static Instrument smartValueOf(String value) {
@@ -99,6 +114,23 @@ public enum Instrument {
 			if (size != 1) return null;
 			return Instrument.valueOf(this.name()).getIcon();
 		}
+		
+		
+		public String getLongName() {
+			return getText("longName");
+		}
+		
+		public String getWikiUrl() {
+			return getText("wikiUrl");
+		}
+		
+		public final String getText(String key) {
+			if (null == t)
+				t = new Text(Instrument.class);
+			
+			return t.get(name() + "." + key);
+		}
+		
 		
 		/**
 		 * 

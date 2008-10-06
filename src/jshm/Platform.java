@@ -20,6 +20,8 @@
  */
 package jshm;
 
+import jshm.util.Text;
+
 public enum Platform {
 	PS2,
 	PS3,
@@ -40,5 +42,18 @@ public enum Platform {
 		}
 		
 		return icon;
+	}
+	
+	public String getShortName() {
+		return getText("shortName");
+	}
+	
+	private static Text t = null;
+	
+	public final String getText(String key) {
+		if (null == t)
+			t = new Text(Platform.class);
+		
+		return t.get(name() + "." + key);
 	}
 }

@@ -20,13 +20,17 @@
  */
 package jshm.sh;
 
-import jshm.Difficulty;
-import jshm.Instrument;
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.net.URLCodec;
+
+import jshm.*;
+import jshm.Instrument.Group;
 import jshm.gh.*;
-import jshm.rb.RbGame;
-import jshm.rb.RbScore;
+import jshm.rb.*;
 
 public class URLs {
+	private static URLCodec urlCodec = null;
+	
 	public static final String
 		ROOT_DOMAIN = "scorehero.com",
 		DOMAIN = "www." + ROOT_DOMAIN,
@@ -76,11 +80,11 @@ public class URLs {
 			DELETE_SCORES = BASE + "/delete_scores.php?" + ARGS_FMT
 			;
 				
-		public static String getManageScoresUrl(final RbGame game, final Instrument.Group group, final Difficulty difficulty) {
+		public static String getManageScoresUrl(final RbGame game, final Group group, final Difficulty difficulty) {
 			return format(MANAGE_SCORES, game, group, difficulty);
 		}
 		
-		public static String getTopScoresUrl(final RbGame game, final Instrument.Group group, final Difficulty difficulty) {
+		public static String getTopScoresUrl(final RbGame game, final Group group, final Difficulty difficulty) {
 			return format(TOP_SCORES, game, group, difficulty);
 		}
 
@@ -88,16 +92,79 @@ public class URLs {
 			return getInsertScoreUrl((RbGame) score.getGame(), score.getGroup(), score.getDifficulty());
 		}
 		
-		public static String getInsertScoreUrl(final RbGame game, final Instrument.Group group, final Difficulty difficulty) {
+		public static String getInsertScoreUrl(final RbGame game, final Group group, final Difficulty difficulty) {
 			return format(INSERT_SCORE, game, group, difficulty);
 		}
 		
-		public static String getDeleteScoresUrl(final RbGame game, final Instrument.Group group, final Difficulty difficulty) {
+		public static String getDeleteScoresUrl(final RbGame game, final Group group, final Difficulty difficulty) {
 			return format(DELETE_SCORES, game, group, difficulty);
 		}
 		
-		private static String format(final String fmt, final RbGame game, final Instrument.Group group, final Difficulty difficulty) {
+		private static String format(final String fmt, final RbGame game, final Group group, final Difficulty difficulty) {
 			return String.format(fmt, game.scoreHeroId, RbPlatform.getId(game.platform), group.instruments.length, group.id, difficulty.scoreHeroId);
+		}
+	}
+	
+	public static class wiki {
+		public static final String
+			DOMAIN = "wiki." + ROOT_DOMAIN,
+			BASE = "http://" + DOMAIN,
+			PAGE = "%s",
+			GAME = "Game_%s",
+			SONG = "Song_%s_%s",
+			SONG_SP = SONG + "_%s_%s";
+		
+		/**
+		 * Returns a formatted string that is additionally
+		 * url-encoded to try to account for special chars.
+		 * @param format
+		 * @param args
+		 * @return
+		 */
+		private static String format(String format, Object ... args) {
+			if (null == urlCodec)
+				urlCodec = new URLCodec();
+			
+			try {
+				return BASE + "/" +
+					urlCodec.encode(
+						String.format(format, args));
+			} catch (EncoderException e) {
+				return null;
+			}
+		}
+		
+		public static String getPageUrl(String page) {
+			return format(PAGE, page);
+		}
+		
+		public static String getGameUrl(GameTitle game) {
+			return format(GAME, Wiki.wikiize(game.getLongName()));
+		}
+		
+		public static String getSongUrl(Song song) {
+			return format(SONG,
+				song.getGameTitle().getWikiAbbr(),
+				Wiki.wikiize(song.getTitle()));
+		}
+		
+		public static String getSongSpUrl(Song song, Group group, Difficulty diff) {
+			if (Difficulty.CO_OP == diff)
+				throw new IllegalArgumentException("diff cannot be CO_OP");
+			
+			String groupStr = group.getWikiUrl();
+			
+			// for GH, use "Solo" or "Coop" instead of the actual group
+			if (song instanceof GhSong) {
+				groupStr = Group.GUITAR_BASS == group
+				? "Coop" : "Solo";
+			}
+			
+			return format(SONG_SP,
+				song.getGameTitle().getWikiAbbr(),
+				Wiki.wikiize(song.getTitle()),
+				groupStr,
+				Wiki.wikiize(diff.getLongName()));
 		}
 	}
 }

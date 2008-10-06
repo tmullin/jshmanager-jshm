@@ -22,6 +22,8 @@ package jshm;
 
 import java.util.*;
 
+import jshm.util.Text;
+
 
 /**
  * Represents a specific game title such as Guitar Hero 2
@@ -60,6 +62,7 @@ public abstract class GameTitle {
 	
 	static {
 		jshm.gh.GhGameTitle.init();
+		jshm.rb.RbGameTitle.init();
 	}
 	
 	
@@ -159,5 +162,22 @@ public abstract class GameTitle {
 			this.series.equals(g.series) &&
 			this.title.equals(g.title) &&
 			Arrays.equals(this.platforms, g.platforms);
+	}
+	
+	public String getLongName() {
+		return getText("longName");
+	}
+	
+	public String getWikiAbbr() {
+		return getText("wikiAbbr");
+	}
+	
+	private static Text t = null;
+	
+	public final String getText(String key) {
+		if (null == t)
+			t = new Text(GameTitle.class);
+		
+		return t.get(toString() + "." + key);
 	}
 }

@@ -20,6 +20,8 @@
  */
 package jshm;
 
+import jshm.util.Text;
+
 /**
  * This enum represents a song difficulty from
  * ScoreHero's point of view.
@@ -56,6 +58,20 @@ public enum Difficulty {
 		}
 		
 		return icon;
+	}
+	
+	
+	public String getLongName() {
+		return getText("longName");
+	}
+	
+	private static Text t = null;
+	
+	public final String getText(String key) {
+		if (null == t)
+			t = new Text(Difficulty.class);
+		
+		return t.get(name() + "." + key);
 	}
 	
 	public static Difficulty smartValueOf(final String value) {

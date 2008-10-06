@@ -25,6 +25,7 @@ import java.util.*;
 import jshm.Instrument.Group;
 import jshm.gh.GhGame;
 import jshm.rb.RbGame;
+import jshm.util.Text;
 
 /**
  * This represents a specific {@link GameTitle} and
@@ -183,4 +184,15 @@ public abstract class Game {
 	public abstract Score createNewScore(Song song, Group group,
 			Difficulty diff, int score, int rating, float percent,
 			int streak, String comment);
+	
+	
+	
+	private static Text t = null;
+	
+	protected final String getText(String key) {
+		if (null == t)
+			t = new Text(Game.class);
+		
+		return t.get(toString() + "." + key);
+	}
 }
