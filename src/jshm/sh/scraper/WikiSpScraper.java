@@ -119,8 +119,14 @@ public class WikiSpScraper {
 		
 		while (it.hasMoreNodes()) {
 			LinkTag cur = (LinkTag) it.nextNode();
+			
+			// trim non-alphanumeric chars
+			String title = cur.getChildrenHTML()
+				.replaceFirst("^[^\\p{L}\\p{N}]+", "")
+				.replaceFirst("[^\\p{L}\\p{N}]+$", "");;
+
 			ret.add(new Link(
-				cur.getChildrenHTML(),
+				title,
 				cur.getAttribute("href")
 			));
 		}

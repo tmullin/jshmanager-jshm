@@ -57,6 +57,14 @@ public class PhpUtilTest {
 		trim(L, ".: . \tfoo . bar\t . :.", ".: \t", "foo . bar\t . :.");	
 	}
 	
+	@Test public void ltrim7() {
+		trim(L, "", null, "");
+	}
+	
+	@Test public void ltrim8() {
+		trim(L, "", ".: \t", "");
+	}
+	
 	
 	@Test public void rtrim1() {
 		trim(R, "  \t\tfoo  bar  1234  baz\t\t  ", null,
@@ -86,6 +94,14 @@ public class PhpUtilTest {
 		trim(R, ".: . \tfoo . bar\t . :.", ".: \t", ".: . \tfoo . bar");	
 	}
 	
+	@Test public void rtrim7() {
+		trim(R, "", null, "");
+	}
+	
+	@Test public void rtrim8() {
+		trim(R, "", ".: \t", "");
+	}
+	
 	
 	@Test public void trim1() {
 		trim(T, "  \t\tfoo  bar  1234  baz\t\t  ", null,
@@ -113,5 +129,13 @@ public class PhpUtilTest {
 	
 	@Test public void trim6() {
 		trim(T, ".: . \tfoo . bar\t . :.", ".: \t", "foo . bar");	
+	}
+	
+	@Test public void trim7() {
+		trim(T, "", null, "");
+	}
+	
+	@Test public void trim8() {
+		trim(T, "", ".: \t", "");
 	}
 }
