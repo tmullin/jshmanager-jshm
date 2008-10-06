@@ -1,5 +1,12 @@
 JSHManager ChangeLog
 
+Version 0.2.3
+-------------
+- Some text has been converted to be more "friendly."
+- The splash screen is no longer always-on-top.
+- Added a context menu when you right-click on a song in the scores
+  table with links to its wiki page as well as any links on its SP page.
+
 Version 0.2.2
 -------------
 - Corrected a bug that prevented you from logging in if you did not

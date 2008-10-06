@@ -48,7 +48,6 @@ public class Splash extends JWindow {
 	}
 	
 	public Splash(String statusText) {
-		this.setAlwaysOnTop(true);
 		setBackground(bg);
 		
 		icon = new ImageIcon(Splash.class.getResource("/jshm/resources/images/splash.png"));
@@ -78,8 +77,10 @@ public class Splash extends JWindow {
 		add(botPanel, BorderLayout.SOUTH);
 		add(bgLabel, BorderLayout.CENTER);
 		pack();
+		
 		setLocationRelativeTo(null);
 		setVisible(true);
+		toFront();
 	}
 	
 //	public void setProgress(int value) {

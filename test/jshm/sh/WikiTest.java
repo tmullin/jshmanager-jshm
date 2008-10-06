@@ -47,5 +47,8 @@ public class WikiTest {
 		wikiize("Co-op", "Coop");
 	}
 	
-	// TODO add test for Motörhead once SH works it out
+	// TODO see how SH deals with the encoding issue
+	@Test public void wikiize10() {
+		wikiize("Ernten Was Wir Säen", "ErntenWasWirSäen");
+	}
 }

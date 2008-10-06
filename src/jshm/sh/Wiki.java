@@ -5,7 +5,7 @@ public class Wiki {
 		StringBuilder sb = new StringBuilder();
 		String[] parts = str
 			.replace("&", "And")
-			.replaceAll("[^\\w\\s]+", "")
+			.replaceAll("[^\\p{L}\\p{N}\\s]+", "")
 			.split("\\s+");
 		
 		for (String s : parts) {

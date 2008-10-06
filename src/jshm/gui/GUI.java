@@ -90,6 +90,7 @@ public class GUI extends javax.swing.JFrame {
 	private List<? extends Song> orderedSongs = null;
 	
 	private HoverHelp hh = null;
+	TreePopupMenu treePopup = null;
 	
     /** Creates new form GUITest */
     public GUI() {
@@ -204,6 +205,9 @@ public class GUI extends javax.swing.JFrame {
 				return null;
 			}
         });
+        
+        
+        treePopup = new TreePopupMenu(this, tree);
     }
 
     @Override
