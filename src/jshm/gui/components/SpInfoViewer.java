@@ -28,12 +28,19 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
+
+import javax.swing.filechooser.FileFilter;
+
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 import jshm.gui.EditPopupMenu;
 import jshm.gui.GuiUtil;
@@ -92,9 +99,50 @@ public class SpInfoViewer extends javax.swing.JFrame {
 			
 		}
 	},
-	SAVE_ACTION = new AbstractAction("Save", new ImageIcon(SpInfoViewer.class.getResource("/jshm/resources/images/toolbar/saveas32.png"))) {
+	SAVE_ACTION = new AbstractAction("Save", new ImageIcon(SpInfoViewer.class.getResource("/jshm/resources/images/toolbar/save32.png"))) {
 		public void actionPerformed(ActionEvent e) {
 			
+		}
+	},
+	SAVE_IMAGE_AS_ACTION = new AbstractAction("Save image as...", new ImageIcon(SpInfoViewer.class.getResource("/jshm/resources/images/toolbar/saveas32.png"))) {
+		public void actionPerformed(ActionEvent e) {
+			String name = getTitle();
+			int i = name.lastIndexOf('/');
+			int j = name.lastIndexOf('.');
+			
+			if (i >= 0) {
+				name = name.substring(i, j >= 0 ? j : name.length());
+				name = name.trim();
+			}
+			
+			name += ".png";
+			jfc.setSelectedFile(new File(name));
+			jfc.showSaveDialog(SpInfoViewer.this);
+			
+			final File selected = jfc.getSelectedFile();
+			
+			if (!selected.getName().toLowerCase().endsWith(".png")) {
+				JOptionPane.showMessageDialog(SpInfoViewer.this, "The filename must end with .png", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			if (selected.exists()) {
+				if (JOptionPane.YES_OPTION != 
+					JOptionPane.showConfirmDialog(SpInfoViewer.this, 
+						"Overwrite existing file?",
+						"File already exists",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE))
+					return;
+			}
+			
+			try {
+				ImageIO.write(image, "png", selected);
+			} catch (IOException x) {
+				ErrorInfo ei = new ErrorInfo("Error",
+					"Failed to save image", null, null, x, null, null);
+				JXErrorPane.showDialog(null, ei);
+			}
 		}
 	},
 	DELETE_ACTION = new AbstractAction("Delete", new ImageIcon(SpInfoViewer.class.getResource("/jshm/resources/images/toolbar/delete32.png"))) {
@@ -110,11 +158,24 @@ public class SpInfoViewer extends javax.swing.JFrame {
     	for (Action a : new Action[] {
     		ZOOM_IN_ACTION, ZOOM_OUT_ACTION,
     		CLOSE_ACTION,
-    		NEW_ACTION, SAVE_ACTION, DELETE_ACTION})
+    		NEW_ACTION, SAVE_ACTION, SAVE_IMAGE_AS_ACTION, DELETE_ACTION})
     		a.putValue(Action.SHORT_DESCRIPTION, a.getValue(Action.NAME));
 
         initComponents();
         
+        jfc.setCurrentDirectory(new File("."));
+		jfc.addChoosableFileFilter(new FileFilter() {
+			public String getDescription() {
+				return "PNG";
+			}
+
+			public boolean accept(File f) {
+				String name = f.getName().toLowerCase();
+				return f.isDirectory() ||
+					name.endsWith(".png");
+			}
+		});
+		
         setImage((Image) null, true);
         
         EditPopupMenu.add(titleField);
@@ -219,7 +280,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
 		newButton.setVisible(!hideEditor);
 		saveButton.setVisible(!hideEditor);
 		deleteButton.setVisible(!hideEditor);
-		editActionsToolbarSeparator.setVisible(!hideEditor);
+//		editActionsToolbarSeparator.setVisible(!hideEditor);
 		
 		if (null == image) {
 			this.image = null;
@@ -296,6 +357,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jfc = new javax.swing.JFileChooser();
         jSplitPane1 = new javax.swing.JSplitPane();
         editorCollapsiblePane = new org.jdesktop.swingx.JXCollapsiblePane();
         editorPanel = new javax.swing.JPanel();
@@ -324,6 +386,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
         jToolBar1 = new javax.swing.JToolBar();
         newButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
+        saveImageAsButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
         editActionsToolbarSeparator = new javax.swing.JToolBar.Separator();
         zoomOutButton = new javax.swing.JButton();
@@ -332,6 +395,9 @@ public class SpInfoViewer extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JToolBar.Separator();
         closeButton = new javax.swing.JButton();
         imageScrollPane = new JScrollPane(imagePainter);
+
+        jfc.setAcceptAllFileFilterUsed(false);
+        jfc.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("SP Path Viewer");
@@ -466,7 +532,7 @@ public class SpInfoViewer extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(songInstrumentField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jScrollPane3.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 5, 5), javax.swing.BorderFactory.createTitledBorder("Description")));
@@ -520,6 +586,13 @@ public class SpInfoViewer extends javax.swing.JFrame {
         saveButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         saveButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(saveButton);
+
+        saveImageAsButton.setAction(SAVE_IMAGE_AS_ACTION);
+        saveImageAsButton.setFocusable(false);
+        saveImageAsButton.setHideActionText(true);
+        saveImageAsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        saveImageAsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(saveImageAsButton);
 
         deleteButton.setAction(DELETE_ACTION);
         deleteButton.setFocusable(false);
@@ -685,11 +758,13 @@ private void fromUrlButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JFileChooser jfc;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton newButton;
     private javax.swing.JButton openReferenceUrlButton;
     private javax.swing.JTextField referenceUrlField;
     private javax.swing.JButton saveButton;
+    private javax.swing.JButton saveImageAsButton;
     private javax.swing.JTextField songDifficultyField;
     private javax.swing.JTextField songInstrumentField;
     private javax.swing.JTextField songTitleField;
@@ -767,9 +842,12 @@ private void fromUrlButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN
 			if (null == image) return;
 			
 			Graphics2D g2 = (Graphics2D) g;
-			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-			
+
 			float scale = getScale();
+			
+			if (scale < 1f) {
+				g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			}
 			
 			float iscale = 1f / scale;
 			Rectangle clip = g2.getClipBounds();
