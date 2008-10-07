@@ -95,7 +95,7 @@ public class Scraper {
 		final boolean removeWhitespace,
 		final org.apache.commons.httpclient.Cookie[] cookies) throws ParserException {
 		
-		LOG.finest("entered Scraper.scrape()");
+		LOG.finest("entered Scraper.scrape(), url=" + url);
 		
         FilterBean bean = new FilterBean();
         bean.getParser().setFeedback(PARSER_FEEDBACK);

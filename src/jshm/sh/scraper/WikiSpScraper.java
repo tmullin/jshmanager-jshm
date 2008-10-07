@@ -81,8 +81,12 @@ public class WikiSpScraper {
 		final String cacheKey = String.format("%s_%s_%s",
 			song.getScoreHeroId(), group, diff); 
 		
-		if (useCache && null != cache.get(cacheKey))
+		LOG.finer("scraping sp images for " + cacheKey);
+		
+		if (useCache && null != cache.get(cacheKey)) {
+			LOG.finest("returning cached data");
 			return cache.get(cacheKey);
+		}
 		
 		List<Link> ret = new ArrayList<Link>();
 		
@@ -103,6 +107,7 @@ public class WikiSpScraper {
 			String href = ((LinkTag) chartNodes.elementAt(0)).getAttribute("href");
 			
 //			System.out.println(href);
+			LOG.finest("found blank chart: " + href);
 			
 			if (null != href)
 				ret.add(new Link("Blank Chart", href));
@@ -133,6 +138,7 @@ public class WikiSpScraper {
 		
 //		System.out.println(linkNodes.toHtml());
 		
+		LOG.finest("found " + ret.size() + " images in total");
 		cache.put(cacheKey, ret);
 		
 		return ret;

@@ -1,6 +1,10 @@
 package jshm.sh;
 
+import java.util.logging.Logger;
+
 public class Wiki {
+	static final Logger LOG = Logger.getLogger(Wiki.class.getName());
+	
 	public static String wikiize(String str) {
 		StringBuilder sb = new StringBuilder();
 		String[] parts = str
@@ -13,6 +17,8 @@ public class Wiki {
 			sb.append(s.substring(1));
 		}
 		
-		return sb.toString();
+		String ret = sb.toString();
+		LOG.finest(String.format("wikiized \"%s\" to \"%s\"", str, ret));
+		return ret;
 	}
 }
