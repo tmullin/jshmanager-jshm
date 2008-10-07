@@ -36,7 +36,7 @@ class GhGamesTemplate extends Link {
 		for (GameTitle t : GameTitle.getTitlesBySeries(GameSeries.GUITAR_HERO)) {
 			GhGameTitle tt = (GhGameTitle) t;
 			
-			Link ttlLink = new Link(t.title);
+			Link ttlLink = new Link(t.getLongName());
 			ttlLink.icon = t.getIcon();
 			
 			List<Game> games = Game.getByTitle(t);
@@ -45,7 +45,7 @@ class GhGamesTemplate extends Link {
 				Link gameLink = null;
 				
 				if (games.size() > 1) {
-					gameLink = new Link(g.platform.toString());
+					gameLink = new Link(g.platform.getShortName());
 					gameLink.icon = g.platform.getIcon();
 				} else {
 					gameLink = ttlLink;
@@ -55,7 +55,7 @@ class GhGamesTemplate extends Link {
 					if (Difficulty.CO_OP == d && !tt.supportsCoOp) continue;
 					
 					Link diffLink = new Link(
-						d.toString(),
+						d.getLongName(),
 						String.format(URLs.BASE + "/" + urlFmt + "game=%s&diff=%s", g.scoreHeroId, d.scoreHeroId),
 						d.getIcon());
 					gameLink.add(diffLink);
@@ -74,7 +74,7 @@ class GhGamesTemplate extends Link {
 					if (Difficulty.CO_OP == d && !tt.supportsCoOp) continue;
 					
 					Link diffLink = new Link(
-						d.toString(),
+						d.getLongName(),
 						String.format(URLs.BASE + "/" + urlFmt + "group=%s&game=0&diff=%s", tt.scoreHeroGroupId, d.scoreHeroId),
 						d.getIcon());
 					allLink.add(diffLink);

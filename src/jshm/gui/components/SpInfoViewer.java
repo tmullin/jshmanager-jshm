@@ -282,8 +282,14 @@ public class SpInfoViewer extends javax.swing.JFrame {
 		deleteButton.setVisible(!hideEditor);
 //		editActionsToolbarSeparator.setVisible(!hideEditor);
 		
+		if (null != this.image)
+			this.image.setAccelerationPriority(0f);
+		
 		if (null == image) {
 			this.image = null;
+		} else if (image instanceof BufferedImage) {
+			this.image = (BufferedImage) image;
+			this.image.setAccelerationPriority(1f);
 		} else {
 //		    GraphicsEnvironment ge = GraphicsEnvironment
 //					.getLocalGraphicsEnvironment();

@@ -36,11 +36,11 @@ public class RbTemplate extends Link {
 		for (GameTitle t : GameTitle.getTitlesBySeries(GameSeries.ROCKBAND)) {
 			RbGameTitle tt = (RbGameTitle) t;
 			
-			Link ttlLink = new Link(t.title);
+			Link ttlLink = new Link(t.getLongName());
 			ttlLink.icon = t.getIcon();
 			
 			for (Platform p : t.platforms) {
-				Link platLink = new Link(p.toString(), p.getIcon());
+				Link platLink = new Link(p.getShortName(), p.getIcon());
 				
 				for (int groupSize = 1; groupSize <= 4; groupSize++) {
 					Link sizeLink = new Link(groupSize + "-part");
@@ -49,7 +49,7 @@ public class RbTemplate extends Link {
 						Link groupLink =
 							groupSize == 4
 							? sizeLink
-							: new Link(g.toString(),
+							: new Link(g.getLongName(),
 								g.size == 1
 								? Instrument.valueOf(g.toString()).getIcon()
 								: null);
@@ -57,7 +57,7 @@ public class RbTemplate extends Link {
 						for (Difficulty d : Difficulty.values()) {
 							if (Difficulty.CO_OP == d) continue;
 							
-							Link diffLink = new Link(d.toString(),
+							Link diffLink = new Link(d.getLongName(),
 								String.format(URLs.rb.BASE + "/" + urlFmt + "game=%s&platform=%s&size=%s&group=%s&diff=%s", tt.scoreHeroId, RbPlatform.getId(p), groupSize, g.id, d.scoreHeroId),
 								d.getIcon());
 							groupLink.add(diffLink);

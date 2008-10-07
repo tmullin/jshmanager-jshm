@@ -1197,7 +1197,7 @@ private void initRbGameMenu(final javax.swing.JMenu menu) {
 	
 	
 	for (final GameTitle ttl : titles) {
-		JMenu ttlMenu = new JMenu(ttl.toString());
+		JMenu ttlMenu = new JMenu(ttl.getLongName());
 		ttlMenu.setIcon(ttl.getIcon());
 		
 		for (final Game g : Game.getByTitle(ttl)) {
