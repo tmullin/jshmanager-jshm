@@ -661,7 +661,7 @@ private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 
 private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
 	// this.aboutDialog1
-	this.aboutDialog1.setLocationRelativeTo(null);
+	this.aboutDialog1.setLocationRelativeTo(this);
 	this.aboutDialog1.setVisible(true);
 }//GEN-LAST:event_aboutMenuItemActionPerformed
 

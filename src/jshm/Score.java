@@ -574,13 +574,13 @@ public abstract class Score {
 		boolean partsEqual = this.parts.size() == s.parts.size();
 		
 		if (partsEqual) { // same size
-OuterPartLoop:
-			for (Part p1 : parts) {
-				for (Part p2 : s.parts) {
-					if (!p1.equals(p2)) {
-						partsEqual = false;
-						break OuterPartLoop;
-					}
+			Iterator<Part> it1 = this.parts.iterator();
+			Iterator<Part> it2 = s.parts.iterator();
+			
+			while (it1.hasNext() && it2.hasNext()) {
+				if (!it1.next().equals(it2.next())) {
+					partsEqual = false;
+					break;
 				}
 			}
 		}
@@ -588,7 +588,8 @@ OuterPartLoop:
 		// TODO figure out why !this.parts.equals(s.parts)
 		
 		return 
-			this.song.equals(s.song) &&
+			((null == this.song && null == s.song) || 
+			 this.song.equals(s.song)) &&
 			this.score == s.score &&
 			((null == this.submissionDate && null == s.submissionDate) ||
 			 (this.submissionDate.equals(s.submissionDate))) &&
