@@ -147,4 +147,14 @@ public class GhGame extends jshm.Game {
 		
 		return ret;
 	}
+
+	@Override
+	public List<? extends Song> getSongs(Group group, Difficulty diff) {
+		return GhSong.getSongs(this, diff);
+	}
+
+	@Override
+	public List<? extends Score> getScores(Group group, Difficulty diff) {
+		return GhScore.getScores(this, diff);
+	}
 }

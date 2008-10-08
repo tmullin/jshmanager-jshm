@@ -1523,23 +1523,12 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		@Override
 		protected Void doInBackground() throws Exception {			
 			try {
-				// TODO put these methods in the Game subclasses to take advantage of polymorphism
-				
-				if (game instanceof GhGame)
-					songs = GhSong.getSongs((GhGame) game, difficulty);
-				else if (game instanceof RbGame)
-					songs = RbSong.getSongs(true, (RbGame) game, group);
-				else
-					assert false: "game not a GhGame or RbGame";
-				
 				getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				statusBar1.setTempText("Loading score data from database...", true);
 				
-				if (game instanceof GhGame)
-					scores = GhScore.getScores((GhGame) game, difficulty);
-				else
-					scores = RbScore.getScores((RbGame) game, group, difficulty);
-				
+				songs = game.getSongs(group, difficulty);
+				scores = game.getScores(group, difficulty);
+
 				model = new GhMyScoresTreeTableModel(game, songs, scores);
 	
 				orderedSongs =

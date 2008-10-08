@@ -106,4 +106,13 @@ public class RbGame extends Game {
 		return ret;
 	}
 
+	@Override
+	public List<? extends Song> getSongs(Group group, Difficulty diff) {
+		return RbSong.getSongs(true, this, group);
+	}
+
+	@Override
+	public List<? extends Score> getScores(Group group, Difficulty diff) {
+		return RbScore.getScores(this, group, diff);
+	}
 }
