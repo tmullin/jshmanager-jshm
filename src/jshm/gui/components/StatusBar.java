@@ -28,6 +28,10 @@ package jshm.gui.components;
 
 //import java.util.logging.Logger;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
 /**
@@ -58,6 +62,7 @@ public class StatusBar extends javax.swing.JPanel {
     public StatusBar() {
         initComponents();
 		setProgressVisible(false);
+		hideExtra();
 		setText("");
     }
     
@@ -144,6 +149,30 @@ public class StatusBar extends javax.swing.JPanel {
 		progSeparator.setVisible(value);
 		jProgressBar1.setVisible(value);
 	}
+	
+	public void setExtraComp(JComponent comp) {
+		extraPanel.removeAll();
+		extraPanel.add(comp, BorderLayout.CENTER);
+		extraSeparator.setVisible(true);
+		extraPanel.setVisible(true);
+	}
+	
+	public void setExtraText(String str) {
+		setExtraComp(new JLabel(str));
+	}
+	
+	public void setExtraLink(final String title, final String url) {
+		Hyperlink link = new Hyperlink(title, url);
+		setExtraComp(link);
+	}
+	
+	public void hideExtra() {
+		extraSeparator.setVisible(false);
+		extraPanel.setVisible(false);
+	}
+	
+	
+		
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -158,8 +187,10 @@ public class StatusBar extends javax.swing.JPanel {
         topSeparator = new javax.swing.JSeparator();
         jPanel1 = new javax.swing.JPanel();
         textLabel = new javax.swing.JLabel();
-        jProgressBar1 = new javax.swing.JProgressBar();
         progSeparator = new javax.swing.JSeparator();
+        jProgressBar1 = new javax.swing.JProgressBar();
+        extraSeparator = new javax.swing.JSeparator();
+        extraPanel = new javax.swing.JPanel();
 
         setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -169,6 +200,7 @@ public class StatusBar extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         add(topSeparator, gridBagConstraints);
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10));
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
         textLabel.setText("Status text here...");
@@ -177,16 +209,8 @@ public class StatusBar extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 15, 5, 5);
-        jPanel1.add(textLabel, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.2;
-        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel1.add(jProgressBar1, gridBagConstraints);
+        jPanel1.add(textLabel, gridBagConstraints);
 
         progSeparator.setOrientation(javax.swing.SwingConstants.VERTICAL);
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -196,6 +220,32 @@ public class StatusBar extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel1.add(progSeparator, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.2;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel1.add(jProgressBar1, gridBagConstraints);
+
+        extraSeparator.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel1.add(extraSeparator, gridBagConstraints);
+
+        extraPanel.setLayout(new java.awt.BorderLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel1.add(extraPanel, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -208,6 +258,8 @@ public class StatusBar extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel extraPanel;
+    private javax.swing.JSeparator extraSeparator;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JSeparator progSeparator;

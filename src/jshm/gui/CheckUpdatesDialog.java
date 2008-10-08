@@ -34,17 +34,18 @@ public class CheckUpdatesDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         defaultLabelFg = statusLabel.getForeground();
-        checkForUpdates();
+        checkForUpdates(true);
     }
     
-    private void checkForUpdates() {
+    private void checkForUpdates(final boolean useCache) {
 		downloadLink.setVisible(false);
+		pack();
 		statusLabel.setForeground(defaultLabelFg);
 		statusLabel.setText("Checking for updates...");
 		
     	new SwingWorker<Void, Void>() {
 			protected Void doInBackground() throws Exception {
-				info = UpdateChecker.getInfo(true);
+				info = UpdateChecker.getInfo(useCache);
 				return null;
 			}
 			
@@ -52,6 +53,7 @@ public class CheckUpdatesDialog extends javax.swing.JDialog {
 				if (null == info) {
 					statusLabel.setForeground(errorFg);
 					statusLabel.setText("Unable to retrieve update data.");
+					latestVersionField.setText("Unknown");
 					return;
 				}
 				
@@ -61,7 +63,9 @@ public class CheckUpdatesDialog extends javax.swing.JDialog {
 				if (versionComp < 0) {
 					statusLabel.setForeground(runningOldFg);
 					statusLabel.setText("A newer version is available.");
+					downloadLink.setToolTipText(info.getUpdateUrl());
 					downloadLink.setVisible(true);
+					pack();
 				} else if (versionComp > 0) {
 					statusLabel.setText("You are running a beta version.");
 				} else {
@@ -87,8 +91,8 @@ public class CheckUpdatesDialog extends javax.swing.JDialog {
         latestVersionField = new javax.swing.JTextField();
         statusLabel = new javax.swing.JLabel();
         linkPanel = new javax.swing.JPanel();
-        downloadLink = new org.jdesktop.swingx.JXHyperlink();
-        jPanel1 = new javax.swing.JPanel();
+        downloadLink = new jshm.gui.components.Hyperlink();
+        buttonPanel = new javax.swing.JPanel();
         checkButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
 
@@ -111,7 +115,6 @@ public class CheckUpdatesDialog extends javax.swing.JDialog {
         linkPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
         downloadLink.setText("Download");
-        downloadLink.setDefaultCapable(false);
         downloadLink.setFont(downloadLink.getFont().deriveFont(downloadLink.getFont().getSize()+3f));
         downloadLink.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -120,15 +123,15 @@ public class CheckUpdatesDialog extends javax.swing.JDialog {
         });
         linkPanel.add(downloadLink);
 
-        jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 10));
+        buttonPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 10));
 
-        checkButton.setText("Check for Updates");
+        checkButton.setText("Refresh");
         checkButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkButtonActionPerformed(evt);
             }
         });
-        jPanel1.add(checkButton);
+        buttonPanel.add(checkButton);
 
         closeButton.setText("Close");
         closeButton.addActionListener(new java.awt.event.ActionListener() {
@@ -136,7 +139,7 @@ public class CheckUpdatesDialog extends javax.swing.JDialog {
                 closeButtonActionPerformed(evt);
             }
         });
-        jPanel1.add(closeButton);
+        buttonPanel.add(closeButton);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -144,12 +147,12 @@ public class CheckUpdatesDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(statusLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                .addComponent(statusLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE)
+            .addComponent(buttonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(linkPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                .addComponent(linkPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -178,26 +181,24 @@ public class CheckUpdatesDialog extends javax.swing.JDialog {
                     .addComponent(jLabel2)
                     .addComponent(latestVersionField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-private void downloadLinkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadLinkActionPerformed
-	assert info != null;
-	
-	String url = info.versions.get(0).url;
-	Util.openURL(url);
-}//GEN-LAST:event_downloadLinkActionPerformed
-
 private void checkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkButtonActionPerformed
-	checkForUpdates();
+	checkForUpdates(false);
 }//GEN-LAST:event_checkButtonActionPerformed
 
 private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
 	dispose();
 }//GEN-LAST:event_closeButtonActionPerformed
+
+private void downloadLinkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadLinkActionPerformed
+	assert info != null;
+	Util.openURL(info.getUpdateUrl());
+}//GEN-LAST:event_downloadLinkActionPerformed
 
     /**
     * @param args the command line arguments
@@ -217,13 +218,13 @@ private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel buttonPanel;
     private javax.swing.JButton checkButton;
     private javax.swing.JButton closeButton;
-    private org.jdesktop.swingx.JXHyperlink downloadLink;
+    private jshm.gui.components.Hyperlink downloadLink;
     private javax.swing.JTextField installedVersionField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField latestVersionField;
     private javax.swing.JPanel linkPanel;
     private javax.swing.JLabel statusLabel;

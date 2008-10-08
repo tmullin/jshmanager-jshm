@@ -166,7 +166,6 @@ public class GUI extends javax.swing.JFrame {
         
         hh.setStatus(statusBar1);
         
-        // TODO move this text to the tooltip for each item
         hh.add(addNewScoreMenuItem);
         hh.add(downloadScoresMenuItem);
         hh.add(downloadGhSongDataMenuItem);
@@ -209,6 +208,24 @@ public class GUI extends javax.swing.JFrame {
         
         
         treePopup = new TreePopupMenu(this, tree);
+        
+        
+        // check for updates
+        new SwingWorker<Void, Void>() {
+        	UpdateChecker.Info info = null;
+        	
+			protected Void doInBackground() throws Exception {
+				info = UpdateChecker.getInfo();
+				return null;
+			}
+        	
+			protected void done() {
+				if (null == info || !info.isUpdateAvailable())
+					return;
+				
+				statusBar1.setExtraLink("JSHManager update available", info.getUpdateUrl());
+			}
+        }.execute();
     }
 
     @Override

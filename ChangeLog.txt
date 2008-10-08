@@ -9,8 +9,8 @@ Version 0.2.3
   SP wiki pages as well as a menu for any links from the SP wiki page,
   which are usually links to SP path images.
 - Added wiki menu for quick wiki access.
-- Added "Check for updates" item to the Help menu, which provides a
-  download link if a new version is available (you must still install
+- Added an update checker. A download link will be displayed in the 
+  status bar if a newer version is available (you must still install
   the update manually).
 
 Version 0.2.2
