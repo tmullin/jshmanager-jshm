@@ -22,14 +22,18 @@ package jshm.concepts;
 
 import java.util.List;
 
+import jshm.UpdateChecker;
 import jshm.logging.Log;
 import jshm.scraper.JshmUpdateScraper;
 
+@SuppressWarnings("unused")
 public class JshmUpdateScraperTest {
 	public static void main(String[] args) throws Exception {
 		Log.configTestLogging();
-		List<String> ret = JshmUpdateScraper.scrape();
+		System.out.println(UpdateChecker.getInfo());
 		
-		for (String s : ret) System.out.println(s);
+//		List<String> ret = JshmUpdateScraper.scrape();
+//		
+//		for (String s : ret) System.out.println(s);
 	}
 }

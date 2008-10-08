@@ -46,8 +46,11 @@ public class JSHManager {
 		public static final int POINT = 3;
 		public static final boolean IS_BETA = true;
 		
-		public static final String STRING =
-			String.format("%s.%s.%s%s", MAJOR, MINOR, POINT, IS_BETA ? " beta" : "");
+		public static final String
+		VERSION =
+			String.format("%s.%s.%s", MAJOR, MINOR, POINT),
+		STRING =
+			String.format("%s%s", VERSION, IS_BETA ? " beta" : "");
 		
 		public static final String LAST = "0.2.2";
 		public static final int LAST_REVISION = 225;

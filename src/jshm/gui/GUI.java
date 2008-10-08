@@ -260,6 +260,7 @@ public class GUI extends javax.swing.JFrame {
 
         aboutDialog1 = new AboutDialog(this);
         textFileViewerDialog1 = new TextFileViewerDialog(this, true);
+        checkUpdatesDialog1 = new jshm.gui.CheckUpdatesDialog();
         statusBar1 = new jshm.gui.components.StatusBar();
         jScrollPane1 = new javax.swing.JScrollPane();
         tree = new org.jdesktop.swingx.JXTreeTable();
@@ -305,6 +306,7 @@ public class GUI extends javax.swing.JFrame {
         uploadLogsMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator4 = new javax.swing.JSeparator();
+        checkForUpdatesMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
 
         textFileViewerDialog1.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -636,6 +638,15 @@ public class GUI extends javax.swing.JFrame {
 
         helpMenu.add(viewLogMenu);
         helpMenu.add(jSeparator4);
+
+        checkForUpdatesMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/websearch32.png"))); // NOI18N
+        checkForUpdatesMenuItem.setText("Check for updates");
+        checkForUpdatesMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkForUpdatesMenuItemActionPerformed(evt);
+            }
+        });
+        helpMenu.add(checkForUpdatesMenuItem);
 
         aboutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/infoabout32.png"))); // NOI18N
         aboutMenuItem.setMnemonic('A');
@@ -974,6 +985,12 @@ private void goToWikiPageMenuItemActionPerformed(java.awt.event.ActionEvent evt)
 		jshm.util.Util.openURL(URLs.wiki.getPageUrl(in));
 	}
 }//GEN-LAST:event_goToWikiPageMenuItemActionPerformed
+
+private void checkForUpdatesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkForUpdatesMenuItemActionPerformed
+	// this.checkUpdatesDialog1
+	this.checkUpdatesDialog1.setLocationRelativeTo(this);
+	this.checkUpdatesDialog1.setVisible(true);
+}//GEN-LAST:event_checkForUpdatesMenuItemActionPerformed
 
 private void uploadLogsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                     
 	final ProgressDialog prog = new ProgressDialog(this);
@@ -1601,6 +1618,8 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JMenuItem addNewScoreMenuItem;
     private javax.swing.JMenuItem addNewScoreViaEditorMenuItem;
     private javax.swing.JMenuItem changeLogMenuItem;
+    private javax.swing.JMenuItem checkForUpdatesMenuItem;
+    private jshm.gui.CheckUpdatesDialog checkUpdatesDialog1;
     private javax.swing.JMenuItem deleteSelectedScoreMenuItem;
     private javax.swing.JMenuItem downloadGhSongDataMenuItem;
     private javax.swing.JMenuItem downloadRbSongDataMenuItem;

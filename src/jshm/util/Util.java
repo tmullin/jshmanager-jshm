@@ -35,6 +35,54 @@ import org.jdesktop.swingx.error.ErrorInfo;
 public class Util {
 	static final Logger LOG = Logger.getLogger(Util.class.getName());
 	
+	public static int versionCompare(int ... args) {
+		if (args.length < 2 || args.length % 2 != 0)
+			throw new IllegalArgumentException("args must have a positive, even number of elements");
+		
+		int i = 0;
+		String v1 = String.valueOf(args[i++]);
+		
+		for (; i < args.length / 2; i++)
+			v1 += "." + args[i];
+		
+		String v2 = String.valueOf(args[i++]);
+		
+		for (; i < args.length; i++)
+			v2 += "." + args[i];
+		
+		return versionCompare(v1, v2);
+	}
+	
+	public static int versionCompare(String v1, String v2) {
+		String[] parts1 = v1.split("\\.");
+		String[] parts2 = v2.split("\\.");
+		
+		if (parts1.length != parts2.length)
+			throw new IllegalArgumentException("v1 and v2 must have the same number of parts");
+		
+		int[] i1 = new int[parts1.length];
+		int[] i2 = new int[parts2.length];
+		
+		for (int i = 0; i < i1.length; i++) {
+			try {
+				i1[i] = Integer.parseInt(parts1[i]);
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException("v1 contained an invalid string", e);
+			}
+			
+			try {
+				i2[i] = Integer.parseInt(parts2[i]);
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException("v2 contained an invalid string", e);
+			}
+			
+			if (i1[i] != i2[i])
+				return i1[i] < i2[i] ? -1 : 1;
+		}
+		
+		return 0;
+	}
+	
 	public static void openURL(String url) {
 		try {
 			openURL(url, true);
