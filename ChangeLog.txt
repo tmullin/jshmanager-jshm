@@ -5,8 +5,13 @@ Version 0.2.3
 - Some text has been converted to be more "friendly."
 - The splash screen is no longer always-on-top.
 - Added a context menu when you right-click on a song in the scores
-  table with links to its wiki page as well as any links on its SP page.
-- Added wiki menu.
+  table. It has items to bring you to the song's rankings, wiki, and
+  SP wiki pages as well as a menu for any links from the SP wiki page,
+  which are usually links to SP path images.
+- Added wiki menu for quick wiki access.
+- Added "Check for updates" item to the Help menu, which provides a
+  download link if a new version is available (you must still install
+  the update manually).
 
 Version 0.2.2
 -------------

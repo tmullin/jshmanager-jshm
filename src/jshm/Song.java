@@ -22,6 +22,8 @@ package jshm;
 
 import javax.persistence.*;
 
+import jshm.Instrument.Group;
+
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.*;
@@ -138,4 +140,7 @@ public abstract class Song implements Comparable<Song> {
 	public int compareTo(Song song) {
 		return this.title.compareTo(song.title);
 	}
+	
+	
+	public abstract String getRankingsUrl(Game game, Group group, Difficulty diff);
 }

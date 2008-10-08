@@ -31,6 +31,9 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.validator.*;
 
 import jshm.Difficulty;
+import jshm.Game;
+import jshm.Instrument.Group;
+import jshm.sh.URLs;
 
 
 /**
@@ -443,5 +446,11 @@ public class GhSong extends jshm.Song {
 		if (nineStarCutoff < -1)
 			throw new IllegalArgumentException("nineStarCutoff must be >= -1");
 		this.nineStarCutoff = nineStarCutoff;
+	}
+
+	
+	@Override
+	public String getRankingsUrl(Game game, Group group, Difficulty diff) {
+		return URLs.gh.getRankingsUrl(this);
 	}
 }

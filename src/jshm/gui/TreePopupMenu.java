@@ -49,11 +49,13 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 		this.gui = gui;
 		this.comp = comp;
 		
+		rankingsPageMenuItem = new JMenuItem("Go to song's rankings page");
+		rankingsPageMenuItem.addActionListener(this);
 		wikiPageMenuItem = new JMenuItem("Go to song's wiki page");
 		wikiPageMenuItem.addActionListener(this);
 		spPageMenuItem = new JMenuItem("Go to song's SP page");
 		spPageMenuItem.addActionListener(this);
-		spChartsMenu = new JMenu("View chart");
+		spChartsMenu = new JMenu("View chart from wiki");
 			loadingChartsMenuItem = new JMenuItem("Loading...");
 			loadingChartsMenuItem.setEnabled(false);
 			noChartsMenuItem = new JMenuItem("None available");
@@ -61,6 +63,7 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 		cancelMenuItem = new JMenuItem("Cancel");
 		cancelMenuItem.addActionListener(this);
 		
+		add(rankingsPageMenuItem);
 		add(wikiPageMenuItem);
 		add(spPageMenuItem);
 		add(spChartsMenu);
@@ -137,7 +140,14 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 		try {
 			assert selected != null;
 			
-			if (src == wikiPageMenuItem) {
+			if (src == rankingsPageMenuItem) { 
+				if (null != selected)
+					Util.openURL(
+						selected.getRankingsUrl(
+							gui.getCurGame(),
+							gui.getCurGroup(),
+							gui.getCurDiff()));
+			} else if (src == wikiPageMenuItem) {
 				if (null != selected)
 					Util.openURL(URLs.wiki.getSongUrl(selected));
 			} else if (src == spPageMenuItem) {
@@ -156,7 +166,8 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 	
 	// GUI components
 	
-	private JMenuItem 
+	private JMenuItem
+		rankingsPageMenuItem,
 		wikiPageMenuItem,
 		spPageMenuItem,
 		loadingChartsMenuItem,

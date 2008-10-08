@@ -44,6 +44,7 @@ public class URLs {
 			SONG_STATS  = BASE + "/songstats.php?stat=%s&game=%s&diff=%s",
 			MANAGE_SCORES = BASE + "/manage_scores.php?game=%s&diff=%s",
 			TOP_SCORES = BASE + "/top_scores.php?game=%s&diff=%s",
+			RANKINGS = BASE + "/rankings.php?group=%s&game=%s&diff=%s&song=%s",
 			INSERT_SCORE = BASE + "/insert_score.php?song=%s",
 			DELETE_SCORES = BASE + "/delete_scores.php?song=%s"
 			;
@@ -58,6 +59,14 @@ public class URLs {
 		
 		public static String getTopScoresUrl(final GhGame game, final Difficulty difficulty) {
 			return String.format(TOP_SCORES, game.scoreHeroId, difficulty.scoreHeroId);
+		}
+		
+		public static String getRankingsUrl(final GhSong song) {
+			return String.format(RANKINGS,
+				((GhGameTitle) song.getGame().title).scoreHeroGroupId,
+				song.getGame().scoreHeroId,
+				song.getDifficulty().scoreHeroId,
+				song.getScoreHeroId());
 		}
 		
 		public static String getInsertScoreUrl(final GhScore score) {
@@ -76,6 +85,7 @@ public class URLs {
 			BASE = "http://" + DOMAIN,
 			MANAGE_SCORES = BASE + "/manage_scores.php?" + ARGS_FMT,
 			TOP_SCORES = BASE + "/top_scores.php?" + ARGS_FMT,
+			RANKINGS = BASE + "/rankings.php?%s&song=%s",
 			INSERT_SCORE = BASE + "/insert_score.php?" + ARGS_FMT,
 			DELETE_SCORES = BASE + "/delete_scores.php?" + ARGS_FMT
 			;
@@ -86,6 +96,13 @@ public class URLs {
 		
 		public static String getTopScoresUrl(final RbGame game, final Group group, final Difficulty difficulty) {
 			return format(TOP_SCORES, game, group, difficulty);
+		}
+		
+		public static String getRankingsUrl(final RbGame game, final Group group, final Difficulty diff, final RbSong song) {
+			return String.format(RANKINGS,
+				format(ARGS_FMT, game, group, diff),
+				song.getScoreHeroId()
+			);
 		}
 
 		public static String getInsertScoreUrl(final RbScore score) {

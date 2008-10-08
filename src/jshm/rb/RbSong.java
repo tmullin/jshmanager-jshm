@@ -32,11 +32,15 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 
+import jshm.Difficulty;
+import jshm.Game;
 import jshm.GameTitle;
 import jshm.Instrument;
 import jshm.Platform;
 import jshm.Song;
 import jshm.SongOrder;
+import jshm.Instrument.Group;
+import jshm.sh.URLs;
 
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Sort;
@@ -211,5 +215,11 @@ public class RbSong extends Song {
 		sb.append(getTitle());
 		
 		return sb.toString();
+	}
+
+	
+	@Override
+	public String getRankingsUrl(Game game, Group group, Difficulty diff) {
+		return URLs.rb.getRankingsUrl((RbGame) game, group, diff, this);
 	}
 }
