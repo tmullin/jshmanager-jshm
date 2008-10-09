@@ -463,6 +463,7 @@ public class GUI extends javax.swing.JFrame {
         });
         scoresMenu.add(downloadScoresMenuItem);
 
+        uploadScoresMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         uploadScoresMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/up32.png"))); // NOI18N
         uploadScoresMenuItem.setMnemonic('U');
         uploadScoresMenuItem.setText("Upload to ScoreHero...");

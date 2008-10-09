@@ -12,6 +12,7 @@ Version 0.2.3
 - Added an update checker. A download link will be displayed in the 
   status bar if a newer version is available (you must still install
   the update manually however).
+- Added CTRL+ALT+U shortcut to open the Score Upload Wizard.
 
 Version 0.2.2
 -------------
