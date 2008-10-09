@@ -11,7 +11,7 @@ Version 0.2.3
 - Added wiki menu for quick wiki access.
 - Added an update checker. A download link will be displayed in the 
   status bar if a newer version is available (you must still install
-  the update manually).
+  the update manually however).
 
 Version 0.2.2
 -------------

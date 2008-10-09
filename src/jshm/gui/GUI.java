@@ -978,9 +978,12 @@ private void goToSongMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//
 	Song song = SelectSongDialog.show(this, orderedSongs);
 //	System.out.println(song);
 	
-	if (null != song)
+	if (null != song) {
+		assert tree.getTreeTableModel() instanceof GhMyScoresTreeTableModel;
+		
 		((GhMyScoresTreeTableModel) tree.getTreeTableModel())
 			.expandAndScrollTo(song);
+	}
 }//GEN-LAST:event_goToSongMenuItemActionPerformed
 
 private void searchWikiMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchWikiMenuItemActionPerformed

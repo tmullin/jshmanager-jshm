@@ -149,6 +149,12 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			return String.format("%s (%d %s)", name, scores,
 					scores != 1 ? "scores" : "score");
 		}
+		
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (!(o instanceof Tier)) return false;
+			return this.name.equals(((Tier) o).name);
+		}
 	}
 
 	public class SongScores {
@@ -162,7 +168,12 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		public String toString() {
 			return String.format("%s (%d %s)", song.getTitle(), scores.size(),
 					scores.size() != 1 ? "scores" : "score");
-
+		}
+		
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (!(o instanceof SongScores)) return false;
+			return this.song.equals(((SongScores) o).song);
 		}
 	}
 
@@ -237,6 +248,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		path[2] = ss;
 		
 		TreePath tp = new TreePath(path);
+		System.out.println("ex+scroll to: " + tp);
 		expandAndScrollTo(tp);
 	}
 	
