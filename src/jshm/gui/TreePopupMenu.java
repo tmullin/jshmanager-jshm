@@ -209,7 +209,13 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 							
 							item.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
-									GuiUtil.openImageOrBrowser(gui, l.getUrl());
+									int mods = e.getModifiers();
+									
+									// force opening in a browser regardless
+									if ((mods & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK)
+										Util.openURL(l.getUrl());
+									else
+										GuiUtil.openImageOrBrowser(gui, l.getUrl());
 								}
 							});
 							

@@ -28,8 +28,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -52,9 +53,12 @@ import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 import org.jdesktop.swingx.error.ErrorInfo;
+import org.jdesktop.swingx.graphics.GraphicsUtilities;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 public class GuiUtil {
+	static final Logger LOG = Logger.getLogger(GuiUtil.class.getName());
+	
 	/**
 	 * This sets the default L&F as well as sets some icons
 	 */
@@ -77,6 +81,8 @@ public class GuiUtil {
 		float scale = Config.getFloat("font.scale"); 
 		
 		if (1f != scale) {
+			LOG.finest("setting ui font scale to + " + scale);
+			
 			Enumeration<Object> keys = UIManager.getDefaults().keys();
 			while (keys.hasMoreElements()) {
 				Object key = keys.nextElement();
@@ -237,7 +243,7 @@ public class GuiUtil {
 	 * @param height The new height
 	 */
 	public final static javax.swing.ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
-		System.out.println("Resizing to " + width + "x" + height);
+		LOG.info("Resizing to " + width + "x" + height);
 		Image img = icon.getImage();
 		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		
@@ -250,7 +256,7 @@ public class GuiUtil {
 	
 	public static void openImageOrBrowser(final Frame owner, final String urlStr) {
 		new SwingWorker<Void, Void>() {
-			Image image = null;
+			BufferedImage image = null;
 			URL url = null;
 			Throwable t = null;
 			
@@ -265,10 +271,10 @@ public class GuiUtil {
 					Header h = method.getResponseHeader("Content-type");
 					method.releaseConnection();
 
-					if (h.getValue().toLowerCase().startsWith("image")) {
-						image = ImageIO.read(url);
+					if (h.getValue().toLowerCase().startsWith("image/")) {
+						image = GraphicsUtilities.loadCompatibleImage(url);
 					}
-				} catch (Exception e) {
+				} catch (Throwable e) {
 					t = e;
 				}
 				
@@ -281,6 +287,7 @@ public class GuiUtil {
 						// no error, just the url wasn't an image, so launch the browser
 						Util.openURL(url.toExternalForm());
 					} else {
+						LOG.log(Level.WARNING, "Error opening image URL", t);
 						ErrorInfo ei = new ErrorInfo("Error", "Error opening image URL", null, null, t, null, null);
 						JXErrorPane.showDialog(owner, ei);
 					}

@@ -268,7 +268,8 @@ public class SpInfoViewer extends javax.swing.JFrame {
 		} else if (image instanceof BufferedImage) {
 			newImage = (BufferedImage) image;
 		} else {
-			newImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_RGB);
+			newImage = GraphicsUtilities.createCompatibleImage(
+				image.getWidth(null), image.getHeight(null)); 
 			newImage.getGraphics().drawImage(image, 
 				0, 0, newImage.getWidth(), newImage.getHeight(), 
 				0, 0, newImage.getWidth(), newImage.getHeight(), null);
