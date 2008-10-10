@@ -1,3 +1,23 @@
+/*
+ * -----LICENSE START-----
+ * JSHManager - A Java-based tool for managing one's ScoreHero account.
+ * Copyright (C) 2008 Tim Mullin
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * -----LICENSE END-----
+*/
 package jshm.internal;
 
 import java.io.*;
@@ -8,6 +28,7 @@ import java.util.List;
 import jshm.GameSeries;
 import jshm.JSHManager;
 import jshm.gui.LoginDialog;
+import jshm.logging.Log;
 import jshm.sh.Forum;
 import jshm.sh.Forum.PostMode;
 import jshm.util.PhpUtil;
@@ -25,7 +46,7 @@ public class JshmThreadManager {
 	static final String
 		VERSION = JSHManager.Version.VERSION,
 		DOWNLOAD_URL =
-			"http://sourceforge.net/project/showfiles.php?group_id=240590&package_id=292656&release_id=629242",
+			"http://sourceforge.net/project/showfiles.php?group_id=240590&package_id=292656&release_id=632098",
 		SUBJECT =
 			"JSHManager " + VERSION +
 			" - Manage Scores Locally and Upload to SH";
@@ -37,6 +58,8 @@ public class JshmThreadManager {
 		RB_POST_ID = 226303;
 	
 	public static void main(String[] args) throws Exception {
+		Log.configTestLogging();
+		
 		List<String> lines = new ArrayList<String>();
 
 		
@@ -113,14 +136,16 @@ public class JshmThreadManager {
 //	    System.out.println("-------------------------------------------");
 //	    System.out.println(newVersionPostBody);
 //	    System.out.println("-------------------------------------------\n\n");
+//	    
+//	    System.exit(0);
 	    
 	    LoginDialog.showDialog();
 	    Forum.post(GameSeries.GUITAR_HERO, PostMode.EDIT, GH_POST_ID, SUBJECT, mainThreadBody);
 	    Forum.post(GameSeries.ROCKBAND, PostMode.EDIT, RB_POST_ID, SUBJECT, mainThreadBody);
 	    
 	    if (CREATE_NEW_VERSION_POST) {
-		    Forum.post(GameSeries.GUITAR_HERO, PostMode.REPLY, GH_THREAD_ID, SUBJECT, newVersionPostBody);
-		    Forum.post(GameSeries.ROCKBAND, PostMode.REPLY, RB_THREAD_ID, SUBJECT, newVersionPostBody);
+		    Forum.post(GameSeries.GUITAR_HERO, PostMode.REPLY, GH_THREAD_ID, newVersionPostBody);
+		    Forum.post(GameSeries.ROCKBAND, PostMode.REPLY, RB_THREAD_ID, newVersionPostBody);
 	    }
 	}
 	

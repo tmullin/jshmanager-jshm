@@ -63,7 +63,7 @@
 		destfile="${dist_dir}/${jshm.name}-patch-${jshm.last_version}-to-${jshm.version}.jar" 
 		-->
 		
-		<!-- unzipping for changed/new libs, comment if not needed -->
+		<!-- unzipping for changed/new libs, comment if not needed 
 		<unzip 
 			src="${lib_dir}/opencsv-1.8.jar"
 			dest="${bin_dir}">
@@ -72,7 +72,7 @@
 				<exclude name="META-INF/"/>
 			</patternset>
 		</unzip>
-		
+		-->
 		
 		<jar
 			destfile="${dist_dir}/${jshm.name}-patch-${jshm.last_version}-to-${jshm.version}.jar"
