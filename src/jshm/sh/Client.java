@@ -20,10 +20,13 @@
  */
 package jshm.sh;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.methods.HeadMethod;
 
 import jshm.exceptions.*;
 import jshm.sh.URLs;
@@ -44,6 +47,15 @@ public class Client {
 	
 	public static String getUsername() {
 		return username;
+	}
+	
+	public static String getPhpBb2MySqlSid() {
+		for (Cookie c : getHttpClient().getState().getCookies()) {
+			if (c.getName().equals("phpbb2mysql_sid"))
+				return c.getValue();
+		}
+		
+		return "";
 	}
 	
 	private static Cookie[] cookieCache = null;
@@ -157,6 +169,8 @@ public class Client {
 		return cookieCache;
 	}
 	
+	static final int REQUIRED_MATCHING_COOKIES = 2;
+	
 	/**
 	 * Checks if the retrieved cookies match what we're expecting
 	 * from the server.
@@ -180,11 +194,22 @@ public class Client {
 				found++;
 		}
 		
-		if (found != 2) {
-			HttpForm.LOG.warning("expecting to match 2 cookies but got " + found);
+		if (found != REQUIRED_MATCHING_COOKIES) {
+			HttpForm.LOG.warning("expecting to match " + REQUIRED_MATCHING_COOKIES + " cookies but got " + found);
 			return false;
 		}
 		
 		return true;
+	}
+	
+	public static HeadMethod makeHeadRequest(URL url) throws HttpException, IOException {
+		return makeHeadRequest(url.toExternalForm());
+	}
+	
+	public static HeadMethod makeHeadRequest(String url) throws HttpException, IOException {
+		HeadMethod method = new HeadMethod(url);
+		getHttpClient().executeMethod(method);
+		method.releaseConnection();
+		return method;
 	}
 }

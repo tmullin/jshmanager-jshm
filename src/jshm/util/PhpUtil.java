@@ -1,5 +1,7 @@
 package jshm.util;
 
+import java.util.List;
+
 /**
  * This class contains Java equivalents of various PHP functions.
  * @author Tim Mullin
@@ -21,10 +23,18 @@ public class PhpUtil {
 		return false;
 	}
 
+	public static String implode(List<?> pieces) {
+		return implode(pieces.toArray());
+	}
+	
 	public static <T> String implode(T ... pieces) {
 		return implode(",", pieces);
 	}
 
+	public static String implode(String glue, List<?> pieces) {
+		return implode(glue, pieces.toArray());
+	}
+	
 	public static <T> String implode(String glue, T ... pieces) {
 		if (pieces.length == 0) return "";
 		

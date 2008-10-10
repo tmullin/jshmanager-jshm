@@ -181,4 +181,41 @@ public class URLs {
 				Wiki.wikiize(diff.getLongName()));
 		}
 	}
+	
+	public static class forum {
+		public static final String
+			BASE = "%%s/forum",
+			POSTING = BASE + "/posting.php?mode=%s&%s=%%s",
+			NEW_POST = String.format(POSTING, "newtopic", "f"),
+			REPLY_TO_POST = String.format(POSTING, "reply", "t"),
+			EDIT_POST = String.format(POSTING, "editpost", "p");
+		
+		public static String getDomain(GameSeries series) {
+			switch (series) {
+				case GUITAR_HERO:
+					return gh.BASE;
+				case ROCKBAND:
+					return rb.BASE;
+				default:
+					assert false;
+			}
+			
+			return null;
+		}
+		
+		public static String getNewPostUrl(GameSeries series, int forumId) {
+			return String.format(NEW_POST,
+				getDomain(series), forumId);
+		}
+		
+		public static String getReplyToPostUrl(GameSeries series, int topicId) {
+			return String.format(REPLY_TO_POST,
+				getDomain(series), topicId);
+		}
+		
+		public static String getEditPostUrl(GameSeries series, int postId) {
+			return String.format(EDIT_POST,
+				getDomain(series), postId);
+		}
+	}
 }

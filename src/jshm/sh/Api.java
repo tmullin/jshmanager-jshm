@@ -110,7 +110,7 @@ public class Api {
 	public static void submitRbScore(final RbScore score) throws Exception {
 		Client.getAuthCookies();
 		
-		String[] staticData = new String[] {
+		String[] staticData = {
 			"song", String.valueOf(score.getSong().getScoreHeroId()),
 			"game", String.valueOf(score.getGame().scoreHeroId),
 			"platform", String.valueOf(RbPlatform.getId(score.getGame().platform)),
@@ -137,7 +137,7 @@ public class Api {
 			data.add(p.getStreak() != 0 ? String.valueOf(p.getStreak()) : "");
 		}
 		
-		new HttpForm((Object) URLs.rb.getInsertScoreUrl(score), data.toArray(new String[] {})) {
+		new HttpForm((Object) URLs.rb.getInsertScoreUrl(score), data) {
 			@Override
 			public void afterSubmit(final int response, final HttpClient client, final HttpMethod method) throws Exception {
 				// TODO more vigorous error handing?

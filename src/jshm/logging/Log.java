@@ -42,6 +42,8 @@ public class Log {
 		cur = Logger.getLogger("jshm");
 		cur.setLevel(Level.ALL);
 		
+		cur = Logger.getLogger("httpclient.wire.header");
+		cur.setLevel(Level.ALL);
 		
 //		cur = Logger.getLogger("org.hibernate");
 //		removeHandlers(cur);

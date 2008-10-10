@@ -44,6 +44,7 @@ import jshm.Config;
 import jshm.Song;
 import jshm.gui.components.SpInfoViewer;
 import jshm.gui.renderers.ScoreEditorSongComboRenderer;
+import jshm.sh.Client;
 import jshm.util.Util;
 
 import org.apache.commons.httpclient.Header;
@@ -266,10 +267,8 @@ public class GuiUtil {
 
 					// try to see if it's an image before downloading the
 					// whole thing
-					HeadMethod method = new HeadMethod(url.toExternalForm());
-					jshm.sh.Client.getHttpClient().executeMethod(method);
+					HeadMethod method = Client.makeHeadRequest(urlStr);
 					Header h = method.getResponseHeader("Content-type");
-					method.releaseConnection();
 
 					if (h.getValue().toLowerCase().startsWith("image/")) {
 						image = GraphicsUtilities.loadCompatibleImage(url);
@@ -285,7 +284,7 @@ public class GuiUtil {
 				if (null == image) {
 					if (null == t) {
 						// no error, just the url wasn't an image, so launch the browser
-						Util.openURL(url.toExternalForm());
+						Util.openURL(urlStr);
 					} else {
 						LOG.log(Level.WARNING, "Error opening image URL", t);
 						ErrorInfo ei = new ErrorInfo("Error", "Error opening image URL", null, null, t, null, null);

@@ -20,6 +20,7 @@
  */
 package jshm.sh.client;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import jshm.sh.Client;
@@ -37,8 +38,16 @@ public class HttpForm {
 	
 	protected Object userData;
 	
+	public HttpForm(final Object url, final List<String> data) {
+		this(url, data.toArray(new String[] {}));
+	}
+	
 	public HttpForm(final Object url, final String ... data) {
 		this("POST", url, data);
+	}
+
+	public HttpForm(final String method, final Object url, final List<String> data) {
+		this(method, url, data.toArray(new String[] {}));
 	}
 	
 	/**
