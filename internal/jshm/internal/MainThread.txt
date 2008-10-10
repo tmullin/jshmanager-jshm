@@ -1,9 +1,10 @@
 JSHManager - A Java-based program to manage your ScoreHero account.
 
-Current version: [b]0.2.2[/b]
-Download: http://sourceforge.net/project/showfiles.php?group_id=240590
+Current version: [b]$version[/b]
+Download: $downloadUrl
 
 Please refer to the Readme.txt for installation and usage instructions. I tried to make that pretty clear and would rather not have to duplicate it here any time I make a change.
+
 
 [b]In a nutshell:[/b]
 The idea is that you enter your scores into JSHManager and then upload them to ScoreHero from within the program.
@@ -14,6 +15,7 @@ If you have issues, please report them here so I can fix them.
 
 Please read the Readme.txt carefully. If you ask a question I have answered there I will likely ignore it. However, if you feel I have not adequately explained something in the Readme, please say so. I do my best but I am a rather technical person.
 
+
 [b]Important links:[/b]
 [list]
 [*][url=http://jshm.sourceforge.net/]Project Homepage[/url]
@@ -22,6 +24,6 @@ Please read the Readme.txt carefully. If you ask a question I have answered ther
 [*][url=http://sourceforge.net/project/showfiles.php?group_id=240590]Downloads[/url]
 [/list]
 
-[b]ChangeLog[/b]
 
+[b]ChangeLog[/b]
 

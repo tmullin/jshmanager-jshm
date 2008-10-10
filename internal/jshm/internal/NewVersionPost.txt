@@ -1,0 +1,5 @@
+Bump for $version
+
+[url=http://jshm.sourceforge.net]Home Page[/url]
+[url=$downloadUrl]Download[/url]
+

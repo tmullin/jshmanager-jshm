@@ -15,16 +15,32 @@ import org.apache.commons.httpclient.HttpMethod;
 public class Forum {
 	static final Logger LOG = Logger.getLogger(Forum.class.getName());
 	
-	public static void editPost(GameSeries series, int postId, String body) throws Exception {
-		editPost(series, postId, "", body);
+	public static enum PostMode {
+		NEW("newtopic", "f"),
+		REPLY("reply", "t"),
+		EDIT("editpost", "p"),
+		DELETE("delete", "p");
+		
+		public final String value;
+		public final String idName;
+		
+		private PostMode(String value, String idName) {
+			this.value = value;
+			this.idName = idName;
+		}
 	}
 	
-	public static void editPost(GameSeries series, int postId, String subject, String body) throws Exception {
-		editPost(series, postId, subject, body, false, false, true, true);
+	public static void post(GameSeries series, PostMode mode, int postId, String body) throws Exception {
+		post(series, mode, postId, "", body);
 	}
 	
-	public static void editPost(
+	public static void post(GameSeries series, PostMode mode, int postId, String subject, String body) throws Exception {
+		post(series, mode, postId, subject, body, false, false, true, true);
+	}
+	
+	public static void post(
 		GameSeries series,
+		PostMode mode,
 		int postId,
 		String subject, String body,
 		boolean disableHtml,
@@ -34,13 +50,13 @@ public class Forum {
 		
 		Client.getAuthCookies();
 		
-		String url = URLs.forum.getEditPostUrl(series, postId);
+		String url = URLs.forum.getPostUrl(series, mode, postId);
 		Client.makeHeadRequest(url);
 		
 		String[] staticData = {
 			"subject", subject,
 			"message", body,
-			"mode", "editpost",
+			"mode", mode.value,
 			"p", String.valueOf(postId),
 			"sid", Client.getPhpBb2MySqlSid(),
 			"post", "Submit"
@@ -71,7 +87,7 @@ public class Forum {
 				method.releaseConnection();
 				
 				if (body.contains("Your message has been entered successfully.")) {
-					LOG.fine("edited post successfully");
+					LOG.fine("Posted successfully");
 				} else {
 					int start = -1, end = -1;
 					String needle = "<td align=\"center\"><span class=\"gen\">";

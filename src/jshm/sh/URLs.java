@@ -27,6 +27,7 @@ import jshm.*;
 import jshm.Instrument.Group;
 import jshm.gh.*;
 import jshm.rb.*;
+import jshm.sh.Forum.PostMode;
 
 public class URLs {
 	public static final URLCodec urlCodec = new URLCodec();
@@ -182,13 +183,10 @@ public class URLs {
 		}
 	}
 	
-	public static class forum {
+	public static class forum {		
 		public static final String
-			BASE = "%%s/forum",
-			POSTING = BASE + "/posting.php?mode=%s&%s=%%s",
-			NEW_POST = String.format(POSTING, "newtopic", "f"),
-			REPLY_TO_POST = String.format(POSTING, "reply", "t"),
-			EDIT_POST = String.format(POSTING, "editpost", "p");
+			BASE = "%s/forum",
+			POST = BASE + "/posting.php?mode=%s&%s=%s";
 		
 		public static String getDomain(GameSeries series) {
 			switch (series) {
@@ -196,26 +194,15 @@ public class URLs {
 					return gh.BASE;
 				case ROCKBAND:
 					return rb.BASE;
-				default:
-					assert false;
 			}
-			
+
+			assert false;
 			return null;
 		}
 		
-		public static String getNewPostUrl(GameSeries series, int forumId) {
-			return String.format(NEW_POST,
-				getDomain(series), forumId);
-		}
-		
-		public static String getReplyToPostUrl(GameSeries series, int topicId) {
-			return String.format(REPLY_TO_POST,
-				getDomain(series), topicId);
-		}
-		
-		public static String getEditPostUrl(GameSeries series, int postId) {
-			return String.format(EDIT_POST,
-				getDomain(series), postId);
+		public static String getPostUrl(GameSeries series, PostMode mode, int id) {
+			return String.format(POST,
+				getDomain(series), mode.value, mode.idName, id);
 		}
 	}
 }
