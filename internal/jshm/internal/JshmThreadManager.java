@@ -41,7 +41,7 @@ import jshm.util.PhpUtil;
 @SuppressWarnings("unused")
 public class JshmThreadManager {
 	static final boolean
-		CREATE_NEW_VERSION_POST = true;
+		CREATE_NEW_VERSION_POST = false;
 	
 	static final String
 		VERSION = JSHManager.Version.VERSION,
@@ -127,16 +127,6 @@ public class JshmThreadManager {
 	    
 	    String newVersionPostBody = PhpUtil.implode("\n", newVersionLines);
 	    
-	    
-//	    System.out.println("Main thread body:");
-//	    System.out.println("-------------------------------------------");
-//	    System.out.println(mainThreadBody);
-//	    System.out.println("-------------------------------------------\n\n");
-//	    System.out.println("New version post body:");
-//	    System.out.println("-------------------------------------------");
-//	    System.out.println(newVersionPostBody);
-//	    System.out.println("-------------------------------------------\n\n");
-//	    
 //	    System.exit(0);
 	    
 	    LoginDialog.showDialog();

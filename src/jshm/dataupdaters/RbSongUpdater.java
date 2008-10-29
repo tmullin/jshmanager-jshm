@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Example;
+//import org.hibernate.criterion.Example;
 import org.netbeans.spi.wizard.ResultProgressHandle;
 
 import jshm.*;
@@ -68,12 +68,7 @@ public class RbSongUpdater {
 						progress.setProgress(
 							String.format("Processing song %s of %s", i + 1, total), i, total);
 							
-				    Example ex = Example.create(song)
-				    	.excludeProperty("gameStrs");
-				    RbSong result =
-				    	(RbSong)
-				    	session.createCriteria(RbSong.class).add(ex)
-				    		.uniqueResult();
+				    RbSong result = RbSong.getByScoreHeroId(song.getScoreHeroId());
 				    
 				    if (null == result) {
 				    	// new insert
@@ -105,37 +100,45 @@ public class RbSongUpdater {
 				
 				LOG.finer("scraped " + orders.size() + " song orderings for " + g);
 				
+				int deletedOrders = session.createQuery(
+					String.format(
+						"delete from SongOrder where GameTitle='%s' and Platform='%s'",
+						g.title, g.platform)
+				).executeUpdate();
+				
+				LOG.fine("Deleted " + deletedOrders + " old song orderings");
+				
 				int i = 0, total = orders.size();
 				for (SongOrder order : orders) {
 					if (null != progress)
 						progress.setProgress(
 							"Processing song order lists...", i, total);
 					
-				    Example ex = Example.create(order)
-				    	.excludeProperty("tier")
-				    	.excludeProperty("order");
-				    SongOrder result =
-				    	(SongOrder)
-				    	session.createCriteria(SongOrder.class)
-				    	.add(ex)
-				    		.createCriteria("song")
-				    			.add(Example.create(order.getSong()))
-				    	.uniqueResult();
+//				    Example ex = Example.create(order)
+//				    	.excludeProperty("tier")
+//				    	.excludeProperty("order");
+//				    SongOrder result =
+//				    	(SongOrder)
+//				    	session.createCriteria(SongOrder.class)
+//				    	.add(ex)
+//				    		.createCriteria("song")
+//				    			.add(Example.create(order.getSong()))
+//				    	.uniqueResult();
 				    
-				    if (null == result) {
+//				    if (null == result) {
 				    	// new insert
 				    	LOG.info("Inserting song order: " + order);
 					    session.save(order);
-				    } else {
-				    	LOG.finest("Found song order: " + result);
-				    	// update existing
-				    	if (result.update(order)) {
-					    	LOG.info("Updating song order to: " + result);
-					    	session.update(result);
-				    	} else {
-				    		LOG.finest("No changes to song order: " + result);
-				    	}
-				    }
+//				    } else {
+//				    	LOG.finest("Found song order: " + result);
+//				    	// update existing
+//				    	if (result.update(order)) {
+//					    	LOG.info("Updating song order to: " + result);
+//					    	session.update(result);
+//				    	} else {
+//				    		LOG.finest("No changes to song order: " + result);
+//				    	}
+//				    }
 				    
 				    i++;
 				}

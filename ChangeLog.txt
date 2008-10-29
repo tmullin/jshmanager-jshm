@@ -1,5 +1,11 @@
 JSHManager ChangeLog
 
+Version 0.2.4
+-------------
+- Fixed error when trying to download song data after a song's name
+  had been changed on ScoreHero.
+- Added Rock Band 2 for PS3.
+
 Version 0.2.3
 -------------
 - Some text has been converted to be more "friendly."

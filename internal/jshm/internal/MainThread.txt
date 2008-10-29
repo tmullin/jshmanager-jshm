@@ -15,6 +15,10 @@ If you have issues, please report them here so I can fix them.
 
 Please read the Readme.txt carefully. If you ask a question I have answered there I will likely ignore it. However, if you feel I have not adequately explained something in the Readme, please say so. I do my best but I am a rather technical person.
 
+[b]Video Tutorials:[/b]
+[list]
+[*][url=http://www.youtube.com/watch?v=jnqsSJEkRU8&fmt=18]Quick Start Tutorial[/url]
+[/list]
 
 [b]Important links:[/b]
 [list]

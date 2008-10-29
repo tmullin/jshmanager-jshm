@@ -186,7 +186,13 @@ public class RbSong extends Song {
 	}
 	
 	public boolean update(RbSong song) {
-		return updatePlatforms(song);
+		return updateTitle(song) || updatePlatforms(song);
+	}
+	
+	public boolean updateTitle(RbSong song) {
+		if (this.getTitle().equals(song.getTitle())) return false;
+		setTitle(song.getTitle());
+		return true;
 	}
 	
 	/**
