@@ -6,6 +6,7 @@ Version 0.2.4
   had been changed on ScoreHero.
 - Added Rock Band 2 for PS3.
 - Added AC/DC Live Track Pack tier for Rock Band games.
+- Added additional forum links.
 
 Version 0.2.3
 -------------

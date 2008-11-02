@@ -41,6 +41,7 @@ public class ForumLink extends Link {
 	
 	public static final Link GH_ROOT = new ForumLink("Forums")
 		.add(new ForumLink("ScoreHero")
+			.add("ScoreHero Announcements", 81)
 			.add("Website Discussion", 1)
 			.add("Wiki Brainstorming", 74)
 			.add("Bug Reports", 10)
@@ -131,6 +132,7 @@ public class ForumLink extends Link {
 		.add(new ForumLink("General")
 			.add("Gaming Discussion (Non-Music Games)", 19)
 			.add(new ForumLink("Other Music Games", 9)
+				.add("Rock Revolution", 75)
 				.add("Dance Dance Revolution", 7)
 				.add("Popn'Music and Beatmania", 8)
 			)
