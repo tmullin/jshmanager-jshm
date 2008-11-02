@@ -213,7 +213,7 @@ public class GhScoreScraper {
 					Integer.parseInt(data[2][0]));
 			
 			if (null == song)
-				throw new ScraperException("GhSong not found, scoreHeroId: " + data[2][0]);
+				throw new ScraperException("GhSong not found, scoreHeroId: " + data[2][0] + ". Try updating your song data.");
 			
 			// see how many total scores there are so we know if
 			// we need to make an additional request

@@ -20,6 +20,7 @@
 */
 package jshm.rb;
 
+import java.util.Arrays;
 import java.util.List;
 
 import jshm.*;
@@ -28,22 +29,22 @@ import jshm.Instrument.Group;
 public class RbGame extends Game {
 	private static class RbTiers {
 		public static final String[]
-			RB1_DLC = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|Downloaded Songs".split("\\|"),
-			RB1 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|European Exclusives|Track Pack Volume 1".split("\\|"),
+		    RB1_PS2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|European Exclusives|Track Pack Volume 1|AC/DC Live Track Pack".split("\\|"),
+			RB1_NEXTGEN = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|AC/DC Live Track Pack|Downloaded Songs".split("\\|"),
+			RB1_WII = Arrays.copyOf(RB1_PS2, RB1_PS2.length - 1),
 			
-			RB2_DLC = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Rock Band Imported|Downloaded Songs".split("\\|")
-//			RB2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs".split("\\|")
+			RB2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Rock Band Imported|AC/DC Live Track Pack|Downloaded Songs".split("\\|")
 			;
 	}
 	
 	public static final RbGame
-		RB1_PS2 = new RbGame(RbGameTitle.RB1, RbTiers.RB1, Platform.PS2, false),
-		RB1_XBOX360 = new RbGame(RbGameTitle.RB1, RbTiers.RB1_DLC, Platform.XBOX360, true),
-		RB1_PS3 = new RbGame(RbGameTitle.RB1, RbTiers.RB1_DLC, Platform.PS3, true),
-		RB1_WII = new RbGame(RbGameTitle.RB1, RbTiers.RB1, Platform.WII, false),
+		RB1_PS2 = new RbGame(RbGameTitle.RB1, RbTiers.RB1_PS2, Platform.PS2, false),
+		RB1_XBOX360 = new RbGame(RbGameTitle.RB1, RbTiers.RB1_NEXTGEN, Platform.XBOX360, true),
+		RB1_PS3 = new RbGame(RbGameTitle.RB1, RbTiers.RB1_NEXTGEN, Platform.PS3, true),
+		RB1_WII = new RbGame(RbGameTitle.RB1, RbTiers.RB1_WII, Platform.WII, false),
 	
-		RB2_XBOX360 = new RbGame(RbGameTitle.RB2, RbTiers.RB2_DLC, Platform.XBOX360, true),
-		RB2_PS3 = new RbGame(RbGameTitle.RB2, RbTiers.RB2_DLC, Platform.PS3, true)
+		RB2_XBOX360 = new RbGame(RbGameTitle.RB2, RbTiers.RB2, Platform.XBOX360, true),
+		RB2_PS3 = new RbGame(RbGameTitle.RB2, RbTiers.RB2, Platform.PS3, true)
 		;
 	
 	public static void init() {}
