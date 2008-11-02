@@ -67,6 +67,8 @@ public class ColumnsPage extends WizardPage {
 		
 		model.addElement(CsvColumn.IGNORE);
 		model.addElement(CsvColumn.DIFFICULTY);
+		model.addElement(CsvColumn.GAME);
+		model.addElement(CsvColumn.PLATFORM);
 		
 		if (!(game instanceof GhGame))
 			model.addElement(CsvColumn.INSTRUMENT);
@@ -88,7 +90,14 @@ public class ColumnsPage extends WizardPage {
 		});
 		
 		for (CsvColumn c : CsvColumn.values()) {
-			if (CsvColumn.DIFFICULTY == c) break;
+			switch (c) {
+				case IGNORE:
+				case DIFFICULTY:
+				case GAME:
+				case PLATFORM:
+					continue;
+			}
+			
 			model.addElement(c);
 		}
 		

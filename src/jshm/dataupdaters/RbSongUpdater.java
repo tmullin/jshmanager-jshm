@@ -32,6 +32,7 @@ import org.hibernate.Transaction;
 import org.netbeans.spi.wizard.ResultProgressHandle;
 
 import jshm.*;
+import jshm.exceptions.ScraperException;
 import jshm.rb.*;
 import jshm.sh.scraper.RbSongScraper;
 
@@ -73,6 +74,10 @@ public class RbSongUpdater {
 				    if (null == result) {
 				    	// new insert
 				    	LOG.info("Inserting song: " + song);
+				    	
+				    	if (song.getPlatforms().size() == 0)
+				    		throw new ScraperException("Song didn't have any associated platforms");
+				    	
 					    session.save(song);
 				    } else {
 				    	LOG.finest("found song: " + result);

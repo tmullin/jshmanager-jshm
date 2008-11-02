@@ -43,7 +43,7 @@ public class CsvParser {
 		return parse(null, csvFile, columns, game, group, diff);
 	}
 	
-	public static List<Score> parse(final List<String> summary, final File csvFile, CsvColumn[] columns, final Game game, Group group, Difficulty diff) throws Exception {
+	public static List<Score> parse(final List<String> summary, final File csvFile, CsvColumn[] columns, Game game, Group group, Difficulty diff) throws Exception {
 		CSVReader in = null;
 		
 		try {
@@ -84,6 +84,9 @@ public class CsvParser {
 					throw new CsvException("Required column not found: " + c);
 			}
 			
+			boolean isDifferentGame = false;
+			GameTitle curTitle = game.title;
+			Platform curPlat = game.platform;
 			Song curSong = null;
 			Group curGroup = group;
 			Difficulty curDiff = diff;
@@ -180,6 +183,62 @@ SongCheckSwitch:
 					LOG.log(Level.WARNING, s, e);
 					if (null != summary) summary.add(s);
 					continue;
+				}
+				
+				
+				// get game(title)
+				col = columnMap.get(CsvColumn.GAME);
+				
+				if (null != col && col < line.length) {
+					String str = line[col].trim();
+					
+					if (!str.isEmpty()) {
+						GameTitle t = GameTitle.valueOf(str);
+						
+						if (null == t) {
+							String s = String.format("Skipped line %s, invalid game: \"%s\"", lineNumber, str);
+							LOG.log(Level.WARNING, s);
+							if (null != summary) summary.add(s);
+							continue;
+						} else {
+							curTitle = t;
+							isDifferentGame = true;
+						}
+					}
+				}
+				
+				
+				// get platform
+				col = columnMap.get(CsvColumn.PLATFORM);
+				
+				if (null != col && col < line.length) {
+					String str = line[col].trim();
+					
+					if (!str.isEmpty()) {
+						Platform p = Platform.valueOf(str);
+						
+						if (null == p) {
+							String s = String.format("Skipped line %s, invalid platform: \"%s\"", lineNumber, str);
+							LOG.log(Level.WARNING, s);
+							if (null != summary) summary.add(s);
+							continue;
+						} else {
+							curPlat = p;
+							isDifferentGame = true;
+						}
+					}
+				}
+				
+				
+				if (isDifferentGame) {
+					try {
+						game = Game.getByTitleAndPlatform(curTitle, curPlat);
+					} catch (IllegalArgumentException e) {
+						String s = String.format("Invalid game/platform combination near line %s: %s_%s", lineNumber, curTitle, curPlat);
+						LOG.log(Level.WARNING, s, e);
+						if (null != summary) summary.add(s);
+						throw e;
+					}
 				}
 				
 				

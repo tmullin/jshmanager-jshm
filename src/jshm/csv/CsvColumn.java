@@ -23,6 +23,8 @@ package jshm.csv;
 import jshm.exceptions.CsvException;
 
 public enum CsvColumn {
+	GAME,
+	PLATFORM,
 	SONG,
 	SCORE,
 	RATING,
