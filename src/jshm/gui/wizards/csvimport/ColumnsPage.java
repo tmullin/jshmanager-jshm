@@ -95,6 +95,7 @@ public class ColumnsPage extends WizardPage {
 				case DIFFICULTY:
 				case GAME:
 				case PLATFORM:
+				case INSTRUMENT:
 					continue;
 			}
 			
