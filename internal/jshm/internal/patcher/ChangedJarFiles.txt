@@ -1,11 +1,4 @@
-jshm/dataupdaters/RbSongUpdater*.class
-jshm/gui/wizards/csvimport/ColumnsPage*.class
-jshm/csv/CsvParser*.class
-jshm/csv/CsvColumn*.class
 jshm/JSHManager*.class
-jshm/rb/RbGameTitle*.class
-jshm/rb/RbSong*.class
+jshm/scraper/format/TableRowFormat*.class
 jshm/rb/RbGame*.class
-jshm/sh/scraper/RbScoreScraper*.class
-jshm/sh/scraper/GhScoreScraper*.class
-jshm/sh/links/ForumLink*.class
+jshm/resources/images/gametitles/GHWT_32.png
