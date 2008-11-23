@@ -20,7 +20,7 @@
 */
 package jshm.rb;
 
-import java.util.Arrays;
+//import java.util.Arrays;
 import java.util.List;
 
 import jshm.*;
@@ -29,9 +29,10 @@ import jshm.Instrument.Group;
 public class RbGame extends Game {
 	private static class RbTiers {
 		public static final String[]
-		    RB1_PS2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|European Exclusives|Track Pack Volume 1|AC/DC Live Track Pack".split("\\|"),
+		    RB1_PS2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|European Exclusives|Track Pack Volume 1|AC/DC Live Track Pack|Track Pack Volume 2".split("\\|"),
 			RB1_NEXTGEN = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|AC/DC Live Track Pack|Downloaded Songs".split("\\|"),
-			RB1_WII = Arrays.copyOf(RB1_PS2, RB1_PS2.length - 1),
+			RB1_WII = RB1_PS2,
+//			RB1_WII = Arrays.copyOf(RB1_PS2, RB1_PS2.length - 1),
 			
 			RB2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Rock Band Imported|AC/DC Live Track Pack|Downloaded Songs".split("\\|")
 			;

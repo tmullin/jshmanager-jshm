@@ -41,12 +41,12 @@ import jshm.util.PhpUtil;
 @SuppressWarnings("unused")
 public class JshmThreadManager {
 	static final boolean
-		CREATE_NEW_VERSION_POST = false;
+		CREATE_NEW_VERSION_POST = true;
 	
 	static final String
 		VERSION = JSHManager.Version.VERSION,
 		DOWNLOAD_URL =
-			"http://sourceforge.net/project/showfiles.php?group_id=240590&package_id=292656&release_id=632098",
+			"http://sourceforge.net/project/showfiles.php?group_id=240590&package_id=292656&release_id=637775",
 		SUBJECT =
 			"JSHManager " + VERSION +
 			" - Manage Scores Locally and Upload to SH";
