@@ -110,7 +110,7 @@ public class RbSongUpdater {
 				for (SongOrder order : orders) {
 					if (null != progress)
 						progress.setProgress(
-							"Processing song order lists...", i, total);
+							"Processing song order lists... (this blows I know...)", i, total);
 					
 				    Example ex = Example.create(order)
 				    	.excludeProperty("tier")

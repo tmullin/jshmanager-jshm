@@ -1,5 +1,9 @@
 JSHManager ChangeLog
 
+Version 0.2.6
+-------------
+- Added Rock Band 2 for PS2 and Wii (finally).
+
 Version 0.2.5
 -------------
 - Added Track Pack Volume 2 tier for PS2 and Wii and AC/DC Live Track Pack
