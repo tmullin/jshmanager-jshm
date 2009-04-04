@@ -1,4 +1,4 @@
+jshm/dataupdaters/RbSongUpdater*.class
 jshm/JSHManager*.class
-jshm/scraper/format/TableRowFormat*.class
+jshm/rb/RbGameTitle*.class
 jshm/rb/RbGame*.class
-jshm/resources/images/gametitles/GHWT_32.png
