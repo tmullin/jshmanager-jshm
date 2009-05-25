@@ -117,6 +117,30 @@ public class GuiUtil {
 		collapseTreeToDepth(tree, model, root, new TreePath(root), 0, startDepth);
 	}
 	
+	/**
+	 * Recursively expands all children of path.
+	 * @param tree
+	 * @param path
+	 */
+	public static void expandTreeBelowNode(JXTreeTable tree, TreePath path) {
+		expandTreeBelowNode(tree, tree.getTreeTableModel(), path);
+	}
+	
+	private static void expandTreeBelowNode(JXTreeTable tree, TreeTableModel model, TreePath path) {
+		Object parent = path.getLastPathComponent();
+		
+		int childCount = model.getChildCount(parent);
+		
+		for (int i = 0; i < childCount; i++) {
+			TreePath childPath = path.pathByAddingChild(model.getChild(parent, i));
+			
+			if (!model.isLeaf(childPath.getLastPathComponent())) {
+				tree.expandPath(childPath);
+				expandTreeBelowNode(tree, model, childPath);
+			}
+		}
+	}
+	
 //	private static void expandTreeFromDepth(JXTreeTable tree, TreeTableModel model, Object parent, TreePath path, int curDepth, int startDepth) {		
 //		if (curDepth >= startDepth && model.isLeaf(parent)) {
 //			System.out.println("expanding: " + path);

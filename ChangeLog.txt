@@ -1,5 +1,13 @@
 JSHManager ChangeLog
 
+Version 0.2.7
+-------------
+- Added some performance improvements, it shouldn't take as long between
+  clicking a game/instrument/difficulty menu item and the data appearing.
+  The "Downloaded Songs" tier in Rock Band takes a noticable amount
+  of time to expand due to the large number of songs in that tier. This
+  is a known issue.
+
 Version 0.2.6
 -------------
 - Added Rock Band 2 for PS2 and Wii (finally).

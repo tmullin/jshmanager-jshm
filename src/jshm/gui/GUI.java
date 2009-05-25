@@ -57,8 +57,18 @@ import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.tree.TreePath;
 
-import jshm.*;
-import jshm.gh.*;
+import jshm.Config;
+import jshm.Difficulty;
+import jshm.Game;
+import jshm.GameSeries;
+import jshm.GameTitle;
+import jshm.Instrument;
+import jshm.JSHManager;
+import jshm.Score;
+import jshm.Song;
+import jshm.SongOrder;
+import jshm.UpdateChecker;
+import jshm.gh.GhGame;
 import jshm.gui.components.SelectSongDialog;
 import jshm.gui.components.StatusBar;
 import jshm.gui.datamodels.GhMyScoresTreeTableModel;
@@ -68,7 +78,8 @@ import jshm.gui.datamodels.RbSongDataTreeTableModel;
 import jshm.gui.wizards.csvimport.CsvImportWizard;
 import jshm.gui.wizards.scoredownload.ScoreDownloadWizard;
 import jshm.gui.wizards.scoreupload.ScoreUploadWizard;
-import jshm.rb.*;
+import jshm.rb.RbGame;
+import jshm.rb.RbSong;
 import jshm.sh.URLs;
 import jshm.util.PasteBin;
 
@@ -1537,7 +1548,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 	
 				orderedSongs =
 					game.getSongsOrderedByTitle(group, difficulty);
-				
+
 				SwingUtilities.invokeAndWait(new Runnable() {
 					public void run() {
 						if (null != model && null != tree) {
@@ -1550,7 +1561,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 //							if (null != expandedPaths) {
 //								GuiUtil.restoreExpandedPaths(jXTreeTable1, expandedPaths);
 //							} else {
-								GuiUtil.expandTreeFromDepth(tree, 2);
+//
 //							}
 							
 							tree.repaint();

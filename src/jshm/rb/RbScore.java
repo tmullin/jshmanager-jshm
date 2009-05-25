@@ -63,7 +63,7 @@ public class RbScore extends Score {
 			(List<RbScore>)
 			session.createQuery(
 				String.format(
-					"from RbScore where game='%s' and instrumentgroup='%s' and difficulty='%s' order by score DESC",
+					"FROM RbScore WHERE game='%s' AND instrumentgroup='%s' AND difficulty='%s' ORDER BY score DESC",
 					game.toString(), group.toString(), difficulty.toString()))
 				.list();
 		

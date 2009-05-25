@@ -31,6 +31,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeWillExpandListener;
+import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreePath;
 
 import jshm.Difficulty;
@@ -357,7 +360,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		return scores;
 	}
 	
-	private static MouseListener myParentMouseListener = new MouseAdapter() {
+	private MouseListener myParentMouseListener = new MouseAdapter() {
 		// TODO figure out if it's possible to determine whether the
 		// score was clicked for the image url or if the video icon
 		// was clicked for the video url
@@ -401,7 +404,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		}
 	};
 	
-	private static MouseMotionListener myParentMouseMotionListener = new MouseMotionAdapter() {
+	private MouseMotionListener myParentMouseMotionListener = new MouseMotionAdapter() {
 		public void mouseMoved(MouseEvent e) {
 			int row = parent.rowAtPoint(e.getPoint());
 			int column = parent.columnAtPoint(e.getPoint());
@@ -423,6 +426,26 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		}
 	};
 	
+	private TreeWillExpandListener myParentTreeWillExpandListener = new TreeWillExpandListener() {
+		public void treeWillCollapse(TreeExpansionEvent event)
+				throws ExpandVetoException {} // not interested
+
+		Object lastExpanded = null;
+		
+		public void treeWillExpand(TreeExpansionEvent event)
+				throws ExpandVetoException {
+			Object o = event.getPath().getLastPathComponent();
+//			System.out.println(event.getPath());
+//			System.out.println(o.getClass().getCanonicalName() + ": " + o);
+//			System.out.println();
+			
+			if (lastExpanded != o && o instanceof Tier) {
+				lastExpanded = o;
+				GuiUtil.expandTreeBelowNode(parent, event.getPath());
+			}
+		}
+	};
+	
 	// TODO some of the stuff in here might not necessary fit 
 	// as part of the "data model"/mvc stuff...
 	public void setParent(final JXTreeTable parent) {
@@ -438,6 +461,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 
 		parent.addMouseListener(myParentMouseListener);
 		parent.addMouseMotionListener(myParentMouseMotionListener);
+		parent.addTreeWillExpandListener(myParentTreeWillExpandListener);
 		
 		Highlighter[] highlighters = new Highlighter[] {
 			HighlighterFactory.createSimpleStriping(),
@@ -479,6 +503,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	}
 
 	public void removeParent(JXTreeTable parent) {
+		parent.removeTreeWillExpandListener(myParentTreeWillExpandListener);
 		parent.removeMouseListener(myParentMouseListener);
 		parent.removeMouseMotionListener(myParentMouseMotionListener);
 		GhMyScoresTreeTableModel.parent = null;
