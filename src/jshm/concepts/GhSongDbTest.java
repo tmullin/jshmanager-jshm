@@ -44,7 +44,7 @@ public class GhSongDbTest {
 		
 		jshm.util.TestTimer.start();
 //		GhSongUpdater.update(GhGame.GH3_XBOX360, Difficulty.EXPERT);
-		RbSongUpdater.update(game.title);
+		RbSongUpdater.updateViaScraping(game.title);
 		jshm.util.TestTimer.stop();
 		
 //		printSongs();

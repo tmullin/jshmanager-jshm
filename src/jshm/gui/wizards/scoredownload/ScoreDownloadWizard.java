@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JOptionPane;
+
 import jshm.*;
 import jshm.dataupdaters.GhScoreUpdater;
 import jshm.dataupdaters.RbScoreUpdater;
@@ -179,7 +181,20 @@ public class ScoreDownloadWizard {
 									LOG.fine("Downloading song data first");
 									progress.setBusy("Downloading song data");
 			//						ProgressDialog progDialog = new ProgressDialog();
-									jshm.dataupdaters.RbSongUpdater.update(progress, rgame.title);
+									
+									try {
+										jshm.dataupdaters.RbSongUpdater.updateViaXml(progress, rgame.title);
+									} catch (Exception e1) {
+										LOG.log(Level.WARNING, "Failed to download song data via XML", e1);
+										
+										int result = JOptionPane.showConfirmDialog(null,
+											"Failed to download song data via the quicker way.\nDo you want to download it the old, slow way?", "Download Song Data", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+										
+										if (JOptionPane.YES_OPTION == result) {
+											jshm.dataupdaters.RbSongUpdater.updateViaScraping(progress, rgame.title);
+										}
+									}
+									
 			//						progDialog.dispose();
 								}
 							

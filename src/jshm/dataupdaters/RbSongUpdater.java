@@ -34,15 +34,133 @@ import org.netbeans.spi.wizard.ResultProgressHandle;
 import jshm.*;
 import jshm.rb.*;
 import jshm.sh.scraper.RbSongScraper;
+import jshm.xml.RbSongDataFetcher;
 
 public class RbSongUpdater {
 	static final Logger LOG = Logger.getLogger(RbSongUpdater.class.getName());
 	
-	public static void update(final GameTitle game) throws Exception {
-		update(null, game);
+	public static void updateViaXml(final GameTitle game) throws Exception {
+		updateViaXml(null, game);
 	}
 	
-	public static void update(final ResultProgressHandle progress, final GameTitle game) throws Exception {
+	public static void updateViaXml(final ResultProgressHandle progress, final GameTitle game) throws Exception {
+		if (!(game instanceof RbGameTitle))
+			throw new IllegalArgumentException("game must be an RbGameTitle");
+		
+		Session session = null;
+		Transaction tx = null;
+		
+		try {
+			session = openSession();
+		    tx = session.beginTransaction();
+		
+		    // first get the songs themselves
+
+			if (null != progress)
+				progress.setBusy("Downloading song data for " + game);
+			
+			RbSongDataFetcher fetcher = new RbSongDataFetcher();
+			fetcher.fetch((RbGameTitle) game);
+			
+			List<RbSong> songs = fetcher.songs;
+			
+			LOG.finer("xml had " + songs.size() + " songs for " + game);
+			
+			int i = 0, total = songs.size(); 
+			for (RbSong song : songs) {
+				if (null != progress)
+					progress.setProgress(
+						String.format("Processing song %s of %s", i + 1, total), i, total);
+						
+			    Example ex = Example.create(song)
+			    	.excludeProperty("gameStrs")
+			    	.excludeProperty("title");
+			    RbSong result =
+			    	(RbSong)
+			    	session.createCriteria(RbSong.class).add(ex)
+			    		.uniqueResult();
+			    
+			    if (null == result) {
+			    	// new insert
+			    	LOG.info("Inserting song: " + song);
+				    session.save(song);
+			    } else {
+			    	LOG.finest("found song: " + result);
+			    	// update existing
+			    	if (result.update(song)) {
+				    	LOG.info("Updating song to: " + result);
+				    	session.update(result);
+			    	} else {
+			    		LOG.finest("No changes to song: " + result);
+			    	}
+			    }
+			    
+			    i++;
+			}
+			
+		    
+			// now get song orders
+			List<SongOrder> orders = fetcher.orders;
+			
+			LOG.finer("xml had " + orders.size() + " song orderings for " + game);
+			
+			i = 0; total = orders.size();
+			for (SongOrder order : orders) {
+				if (null != progress)
+					progress.setProgress(
+						"Processing song order lists... (this blows I know...)", i, total);
+				
+				// we need to get an instance of the RbSong that's in the db,
+				// not the detached one we used before from the xml
+				order.setSong(
+					RbSong.getByScoreHeroId(
+						order.getSong().getScoreHeroId()));
+				
+			    Example ex = Example.create(order)
+			    	.excludeProperty("tier")
+			    	.excludeProperty("order");
+			    SongOrder result =
+			    	(SongOrder)
+			    	session.createCriteria(SongOrder.class)
+			    	.add(ex)
+			    		.createCriteria("song")
+			    			.add(Example.create(order.getSong()))
+			    	.uniqueResult();
+			    
+			    if (null == result) {
+			    	// new insert
+			    	LOG.info("Inserting song order: " + order);
+				    session.save(order);
+			    } else {
+			    	LOG.finest("Found song order: " + result);
+			    	// update existing
+			    	if (result.update(order)) {
+				    	LOG.info("Updating song order to: " + result);
+				    	session.update(result);
+			    	} else {
+			    		LOG.finest("No changes to song order: " + result);
+			    	}
+			    }
+			    
+			    i++;
+			}
+			
+		    tx.commit();
+		} catch (HibernateException e) {
+			if (null != tx && tx.isActive()) tx.rollback();
+			LOG.throwing("RbSongUpdater", "update", e);
+			throw e;
+		} finally {
+			if (null != session && session.isOpen())
+				session.close();
+		}
+	}
+	
+	public static void updateViaScraping(final GameTitle game) throws Exception {
+		updateViaScraping(null, game);
+	}
+	
+	public static void updateViaScraping(final ResultProgressHandle progress, final GameTitle game) throws Exception {
 		if (!(game instanceof RbGameTitle))
 			throw new IllegalArgumentException("game must be an RbGameTitle");
 		

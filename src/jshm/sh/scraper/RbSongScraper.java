@@ -22,22 +22,24 @@ package jshm.sh.scraper;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.htmlparser.util.NodeList;
-import org.htmlparser.util.ParserException;
-import org.netbeans.spi.wizard.ResultProgressHandle;
+import java.util.Map;
 
 import jshm.Difficulty;
 import jshm.Instrument;
 import jshm.SongOrder;
 import jshm.exceptions.ScraperException;
-import jshm.rb.*;
+import jshm.rb.RbGame;
+import jshm.rb.RbSong;
 import jshm.scraper.DataTable;
 import jshm.scraper.Scraper;
 import jshm.scraper.TieredTabularDataAdapter;
 import jshm.scraper.TieredTabularDataExtractor;
 import jshm.scraper.TieredTabularDataExtractor.InvalidChildCountStrategy;
 import jshm.sh.URLs;
+
+import org.htmlparser.util.NodeList;
+import org.htmlparser.util.ParserException;
+import org.netbeans.spi.wizard.ResultProgressHandle;
 
 public class RbSongScraper {
 	static {
@@ -65,11 +67,32 @@ public class RbSongScraper {
 
 	public static List<SongOrder> scrapeOrders(final RbGame game) 
 		throws ScraperException, ParserException {
-		return scrapeOrders(null, game);
+		return scrapeOrders(null, game, null);
 	}
 	
 	public static List<SongOrder> scrapeOrders(
-			ResultProgressHandle progress, final RbGame game) 
+			ResultProgressHandle progress, final RbGame game)
+		throws ParserException, ScraperException {
+		return scrapeOrders(progress, game, null);
+	}
+	
+	/**
+	 * Scrape the song orders without needing to use the database by
+	 * providing a list of the songs.
+	 * @param game
+	 * @param songMap
+	 * @return
+	 * @throws ParserException
+	 * @throws ScraperException
+	 */
+	public static List<SongOrder> scrapeOrders(
+			final RbGame game, final Map<Integer, RbSong> songMap)
+		throws ParserException, ScraperException {
+		return scrapeOrders(null, game, songMap);
+	}
+	
+	public static List<SongOrder> scrapeOrders(
+			ResultProgressHandle progress, final RbGame game, final Map<Integer, RbSong> songMap) 
 		throws ScraperException, ParserException {
 		
 		List<SongOrder> orders = new ArrayList<SongOrder>();
@@ -82,7 +105,8 @@ public class RbSongScraper {
 				progress.setBusy("Downloading list for " + game + " " + g);
 			
 //			List<SongOrder> curOrders = new ArrayList<SongOrder>();
-			TieredTabularDataAdapter handler = new SongOrderHandler(game, g, orders);
+			TieredTabularDataAdapter handler =
+				new SongOrderHandler(game, g, orders, songMap);
 		
 			NodeList nodes = Scraper.scrape(
 				URLs.rb.getTopScoresUrl(
@@ -135,13 +159,15 @@ public class RbSongScraper {
 		final RbGame game;
 		final Instrument.Group group;
 		final List<SongOrder> orders;
+		final Map<Integer, RbSong> songMap;
 		int curTierLevel = 0, curOrder = 0;
 		
-		public SongOrderHandler(RbGame game, Instrument.Group group, List<SongOrder> orders) {
+		public SongOrderHandler(RbGame game, Instrument.Group group, List<SongOrder> orders, Map<Integer, RbSong> songMap) {
 			this.invalidChildCountStrategy = InvalidChildCountStrategy.HANDLE;
 			this.game = game;
 			this.group = group;
 			this.orders = orders;
+			this.songMap = songMap;
 		}
 
 		@Override
@@ -177,7 +203,9 @@ public class RbSongScraper {
 //				s.setScoreHeroId(Integer.parseInt(data[1][1]));
 //				s.addPlatform(game.platform);
 //				order.setSong(s);
-				RbSong s = RbSong.getByScoreHeroId(Integer.parseInt(data[1][1]));
+				RbSong s = songMap != null
+					? songMap.get(Integer.parseInt(data[1][1]))
+					: RbSong.getByScoreHeroId(Integer.parseInt(data[1][1]));
 				if (null == s)
 					throw new ScraperException("Song not found with scoreHeroId=" + data[1][1]);
     			order.setSong(s);

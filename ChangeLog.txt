@@ -7,6 +7,8 @@ Version 0.2.7
   The "Downloaded Songs" tier in Rock Band takes a noticable amount
   of time to expand due to the large number of songs in that tier. This
   is a known issue.
+- Added a new update mechanism for Rock Band song data that should make
+  updating the song data a little faster.
 
 Version 0.2.6
 -------------

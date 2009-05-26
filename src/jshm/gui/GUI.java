@@ -944,11 +944,28 @@ private void downloadRbSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 			
 			try {
 				ProgressDialog progress = new ProgressDialog(GUI.this);
-				jshm.dataupdaters.RbSongUpdater.update(progress, curGame.title);
-				progress.dispose();
-				return true;
+				
+				try {
+					jshm.dataupdaters.RbSongUpdater.updateViaXml(progress, curGame.title);
+					progress.dispose();
+					return true;
+				} catch (Exception e1) {
+					LOG.log(Level.WARNING, "Failed to download song data via XML", e1);
+					
+					int result = JOptionPane.showConfirmDialog(GUI.this,
+						"Failed to download song data via the quicker way.\nDo you want to download it the old, slow way?", "Download Song Data", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+					
+					if (JOptionPane.YES_OPTION == result) {
+						jshm.dataupdaters.RbSongUpdater.updateViaScraping(progress, curGame.title);
+						progress.dispose();
+						return true;
+					}
+					
+					progress.dispose();
+					return false;
+				}
 			} catch (Exception e) {
-				LOG.log(Level.SEVERE, "Failed to download song data ", e);
+				LOG.log(Level.SEVERE, "Failed to download song data via scraping", e);
 				ErrorInfo ei = new ErrorInfo("Error", "Failed to download song data", null, null, e, null, null);
 				JXErrorPane.showDialog(GUI.this, ei);
 			} finally {

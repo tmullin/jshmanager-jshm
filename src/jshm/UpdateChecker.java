@@ -57,6 +57,7 @@ public class UpdateChecker {
 			NamedNodeMap attrs = null;
 			
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setValidating(true);
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document doc = db.parse(UPDATE_URL);
 			doc.getDocumentElement().normalize();
@@ -64,15 +65,7 @@ public class UpdateChecker {
 			
 			// get <latest version="..."/>
 			nodes = doc.getElementsByTagName("latest");
-			
-			if (nodes.getLength() != 1)
-				throw new IllegalArgumentException("expected to find 1 latest tag, found " + nodes.getLength());
-			
 			attrs = nodes.item(0).getAttributes();
-			
-			if (null == attrs || null == attrs.getNamedItem("version"))
-				throw new IllegalArgumentException("latest tag did not have version attribute");
-			
 			String latestVersion = attrs.getNamedItem("version").getTextContent();
 			
 			
@@ -82,17 +75,6 @@ public class UpdateChecker {
 			
 			for (int i = 0; i < nodes.getLength(); i++) {
 				attrs = nodes.item(i).getAttributes();
-				
-				if (null == attrs)
-					throw new IllegalArgumentException("version tag " + i + " didn't have any attributes");
-				if (null == attrs.getNamedItem("version"))
-					throw new IllegalArgumentException("version tag " + i + " didn't have version attribute");
-				if (null == attrs.getNamedItem("oldVersion"))
-					throw new IllegalArgumentException("version tag " + i + " didn't have oldVersion attribute");
-				if (null == attrs.getNamedItem("url"))
-					throw new IllegalArgumentException("version tag " + i + " didn't have url attribute");
-				if (null == attrs.getNamedItem("directUrl"))
-					throw new IllegalArgumentException("version tag " + i + " didn't have directUrl attribute");
 				
 				versions.add(new Version(
 					attrs.getNamedItem("version").getTextContent(),

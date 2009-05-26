@@ -31,6 +31,14 @@ public enum Platform {
 	DS
 	;
 	
+	/**
+	 * A constant array of the "big four" systems,
+	 * PS2, Xbox 360, PS3, and Wii
+	 */
+	public static final Platform[] BIG_FOUR = {
+		PS2, XBOX360, PS3, WII
+	};
+	
 	private transient javax.swing.ImageIcon icon = null;
 	
 	public javax.swing.ImageIcon getIcon() {
