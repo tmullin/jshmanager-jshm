@@ -49,7 +49,7 @@ public class RbGame extends Game {
 //			RB2_WII = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Downloaded Songs",
 //			Time: 5.527 seconds
 //			Mem: 6.740/15.379 (used/total) mb
-			RB2_PS2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs".split("\\|"),
+			RB2_PS2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Classic Rock Track Pack".split("\\|"),
 			RB2_NEXTGEN = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Rock Band Imported|AC/DC Live Track Pack|Downloaded Songs".split("\\|"),
 			RB2_WII = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Downloaded Songs".split("\\|")
 			;

@@ -39,7 +39,7 @@ public class TierGrabber {
 	public static void main(String[] args) throws Exception {
 		Logger.getLogger("").setLevel(Level.ALL);
 		
-		List<Game> games = Game.getByTitle(RbGameTitle.RB1); // .getBySeries(GameSeries.ROCKBAND);
+		List<Game> games = Game.getByTitle(RbGameTitle.RB2); // .getBySeries(GameSeries.ROCKBAND);
 		
 		jshm.util.TestTimer.start();
 		
