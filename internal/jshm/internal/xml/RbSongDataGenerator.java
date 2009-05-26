@@ -30,17 +30,19 @@ import jshm.rb.RbGame;
 import jshm.rb.RbGameTitle;
 import jshm.rb.RbSong;
 import jshm.sh.scraper.RbSongScraper;
-import jshm.xml.RbSongDataFetcher;
 
 public class RbSongDataGenerator {
+	public static final String DTD_URL = "http://jshm.sourceforge.net/songdata/rb_songdata.dtd";
+	
 	private static void usage() {
 		System.out.println("Usage: java " + RbSongDataGenerator.class.getName() + " <RB1|RB2>");
 		System.exit(-1);
 	}
 	
 	public static void main(String[] args) throws Exception {
-		// if (args.length != 1) usage();
-		final String ttlString = "RB2"; // = args[0];
+		if (args.length != 1) usage();
+		
+		final String ttlString = args[0];
 		GameTitle ttl = GameTitle.valueOf(ttlString);
 		
 		if (!(ttl instanceof RbGameTitle)) usage();
@@ -148,8 +150,7 @@ public class RbSongDataGenerator {
 			StreamResult streamResult = new StreamResult(out);
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer serializer = tf.newTransformer();
-			serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM,
-				RbSongDataFetcher.DTD_URL);
+			serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, DTD_URL);
 			serializer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			serializer.setOutputProperty(OutputKeys.INDENT, "yes");
 			serializer.transform(domSource, streamResult);

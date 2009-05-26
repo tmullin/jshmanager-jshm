@@ -25,8 +25,6 @@ import jshm.rb.RbSong;
 
 public class RbSongDataFetcher {
 	public static final String
-	DTD_URL = "http://zero.selfip.net/jshm/htdocs/songdata/rb_songdata.dtd",
-	//		"http://jshm.sourceforge.net/songdata/rb_songdata.dtd",
 	XML_URL = "http://jshm.sourceforge.net/songdata/%s.xml"
 	;
 	
@@ -35,8 +33,8 @@ public class RbSongDataFetcher {
 	public List<SongOrder> orders = null;
 	
 	public void fetch(final RbGameTitle ttl) throws ParserConfigurationException, SAXException, IOException {
-		File in = new File(ttl.toString() + ".xml");
-		// String in = String.format(XML_URL, ttl);
+//		File in = new File(ttl.toString() + ".xml");
+		String in = String.format(XML_URL, ttl);
 		
 		DocumentBuilderFactory f 
 			= DocumentBuilderFactory.newInstance();

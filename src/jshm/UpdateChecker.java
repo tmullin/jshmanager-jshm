@@ -40,6 +40,7 @@ public class UpdateChecker {
 	
 	public static final String UPDATE_URL =
 		"http://jshm.sourceforge.net/version.xml";
+//		"http://zero.selfip.net/jshm/htdocs/version.xml";
 	
 	private static Info cache = null;
 	
