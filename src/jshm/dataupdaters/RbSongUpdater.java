@@ -62,6 +62,8 @@ public class RbSongUpdater {
 			RbSongDataFetcher fetcher = new RbSongDataFetcher();
 			fetcher.fetch((RbGameTitle) game);
 			
+			LOG.finer("xml updated at " + fetcher.updated);
+			
 			List<RbSong> songs = fetcher.songs;
 			
 			LOG.finer("xml had " + songs.size() + " songs for " + game);
