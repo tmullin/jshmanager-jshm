@@ -1,4 +1,16 @@
-jshm/dataupdaters/RbSongUpdater*.class
 jshm/JSHManager*.class
 jshm/rb/RbGameTitle*.class
+jshm/rb/RbScore*.class
 jshm/rb/RbGame*.class
+jshm/Platform*.class
+jshm/dataupdaters/RbSongUpdater*.class
+jshm/gui/wizards/scoredownload/ScoreDownloadWizard*.class
+jshm/gui/GuiUtil*.class
+jshm/gui/GUI*.class
+jshm/gui/datamodels/GhMyScoresTreeTableModel*.class
+jshm/UpdateChecker*.class
+jshm/xml/RbSongDataFetcher*.class
+jshm/xml/ErrorHandler*.class
+jshm/hibernate/hibernate.cfg.xml
+jshm/sh/scraper/RbSongScraper*.class
+jshm/util/IsoDateParser*.class
