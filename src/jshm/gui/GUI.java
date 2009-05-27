@@ -86,6 +86,7 @@ import jshm.util.PasteBin;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.error.ErrorInfo;
+import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.netbeans.spi.wizard.Wizard;
 
 /**
@@ -695,7 +696,15 @@ public class GUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
-//	System.exit(0);
+	int ret = checkForNewScores();
+	
+	switch (ret) {
+		case JOptionPane.YES_OPTION:
+		case JOptionPane.CANCEL_OPTION: return;
+		case JOptionPane.NO_OPTION: break;
+		default: assert false;
+	}
+	
 	JSHManager.dispose();
 }//GEN-LAST:event_exitMenuItemActionPerformed
 
@@ -1107,6 +1116,52 @@ public void showTextFileViewer(final String file) {
 private void formWindowClosing(java.awt.event.WindowEvent evt) {                                    
 	jshm.JSHManager.dispose();
 }                                  
+
+/**
+ * Checks if there are any un-uploaded scores and opens the 
+ * score upload wizard if there are.
+ * @return The result from {@link JOptionPane#showConfirmDialog()}
+ * <ul>
+ *   <li>{@link JOptionPane#NO_OPTION} - did not want to upload, continue action
+ *   <li>{@link JOptionPane#YES_OPTION} - we did upload, may want to cancel the action
+ *   <li>{@link JOptionPane#CANCEL_OPTION} - did not want to upload, cancel action
+ * </ul>
+ */
+private int checkForNewScores() {
+	int ret = JOptionPane.NO_OPTION;
+	TreeTableModel model = tree.getTreeTableModel();
+	
+	if (model instanceof GhMyScoresTreeTableModel) {
+		GhMyScoresTreeTableModel newModel = 
+			((GhMyScoresTreeTableModel) tree.getTreeTableModel()).createNewScoresModel();
+		
+		if (newModel.getScoreCount() != 0) {
+			ret = JOptionPane.showConfirmDialog(this, 
+				"There are new scores that have not been uploaded.\n" +
+				"Do you want to upload them?\n\n" +
+				"Yes: upload the scores\n" +
+				"No: continue without uploading\n" +
+				"Cancel: do nothing",
+				"Confirm",
+				JOptionPane.YES_NO_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+			
+			switch (ret) {
+				case JOptionPane.YES_OPTION:
+					// bring up upload wizard
+					uploadScoresMenuItemActionPerformed(null);
+					
+				case JOptionPane.CANCEL_OPTION:
+				case JOptionPane.NO_OPTION:
+					break;
+					
+				default: assert false;
+			}
+		}
+	}
+	
+	return ret;
+}
 
 /**
  * Load the menu with all avaialable GH games.
@@ -1541,6 +1596,15 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 //		getCurGame() == game && getCurDiff() == difficulty
 //		? GuiUtil.getExpandedPaths(jXTreeTable1)
 //		: null;
+	
+	int ret = checkForNewScores();
+	
+	switch (ret) {
+		case JOptionPane.YES_OPTION:
+		case JOptionPane.CANCEL_OPTION: return;
+		case JOptionPane.NO_OPTION: break;
+		default: assert false;
+	}
 	
 	this.setCurGame(game);
 	this.setCurDiff(difficulty);

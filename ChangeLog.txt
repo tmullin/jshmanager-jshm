@@ -10,6 +10,8 @@ Version 0.2.7
 - Added a new update mechanism for Rock Band song data that should make
   updating the song data a little faster.
 - Added Classic Rock Track Pack tier for RB2 on PS2.
+- Added confirmation dialog if you have un-uploaded scores when you try
+  to exit the program or switch games/instruments/difficulties.
 
 Version 0.2.6
 -------------
