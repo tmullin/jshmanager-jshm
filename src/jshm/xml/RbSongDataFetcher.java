@@ -8,6 +8,7 @@ import org.xml.sax.SAXException;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +23,14 @@ import jshm.Platform;
 import jshm.SongOrder;
 import jshm.rb.RbGameTitle;
 import jshm.rb.RbSong;
+import jshm.util.IsoDateParser;
 
 public class RbSongDataFetcher {
 	public static final String
 	XML_URL = "http://jshm.sourceforge.net/songdata/%s.xml"
 	;
 	
+	public Date updated = null;
 	public List<RbSong> songs = null;
 	public Map<Integer, RbSong> songMap = null;
 	public List<SongOrder> orders = null;
@@ -49,6 +52,10 @@ public class RbSongDataFetcher {
 			.item(0).getAttributes()
 			.getNamedItem("id").getTextContent());
 		
+		updated = IsoDateParser.parse(
+			d.getElementsByTagName("date")
+			.item(0).getFirstChild().getTextContent()
+		);
 		
 		NodeList songNodes = d.getElementsByTagName("song");
 		songs = new ArrayList<RbSong>(songNodes.getLength());

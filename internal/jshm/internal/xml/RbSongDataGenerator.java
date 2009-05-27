@@ -4,6 +4,7 @@ import java.awt.Container;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import jshm.rb.RbGame;
 import jshm.rb.RbGameTitle;
 import jshm.rb.RbSong;
 import jshm.sh.scraper.RbSongScraper;
+import jshm.util.IsoDateParser;
 
 public class RbSongDataGenerator {
 	public static final String DTD_URL = "http://jshm.sourceforge.net/songdata/rb_songdata.dtd";
@@ -98,7 +100,7 @@ public class RbSongDataGenerator {
 			tmp.setAttribute("id", ttl.toString());
 			AC(root, tmp);
 			
-			_(xml, root, "date", new java.util.Date());
+			_(xml, root, "date", IsoDateParser.getIsoDate(new Date()));
 			
 			
 			// create songs section
