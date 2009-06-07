@@ -1,5 +1,13 @@
 JSHManager ChangeLog
 
+Version 0.2.8
+-------------
+- Added more performance improvements. The "Downloaded Songs" tier in
+  Rock Band shouldn't take as much time to load now though it will still
+  be slower depending on how many different songs you have scores for
+  (this won't affect you unless you have scores for the majority of the
+  songs in the DLC tier).
+
 Version 0.2.7
 -------------
 - Added some performance improvements, it shouldn't take as long between

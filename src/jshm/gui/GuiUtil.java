@@ -134,7 +134,10 @@ public class GuiUtil {
 		for (int i = 0; i < childCount; i++) {
 			TreePath childPath = path.pathByAddingChild(model.getChild(parent, i));
 			
-			if (!model.isLeaf(childPath.getLastPathComponent())) {
+			// using childCount is faster and plain better than isLeaf
+			// since a non-leaf might have 0 children which would be
+			// useless to expand
+			if (0 < model.getChildCount(childPath.getLastPathComponent())) {
 				tree.expandPath(childPath);
 				expandTreeBelowNode(tree, model, childPath);
 			}
