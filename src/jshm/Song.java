@@ -131,6 +131,11 @@ public abstract class Song implements Comparable<Song> {
 		if (!(o instanceof Song)) return false;
 		if (this == o) return true;
 		Song s = (Song) o;
+		
+		if ((this.game == null && s.game != null) ||
+			(this.game != null && s.game == null))
+			return false;
+		
 		return this.scoreHeroId == s.scoreHeroId &&
 			this.title.equals(s.title) &&
 			((this.game == null && s.game == null) ||

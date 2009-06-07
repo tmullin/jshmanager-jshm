@@ -3,9 +3,16 @@ Bump for $version
 [url=http://jshm.sourceforge.net]Home Page[/url]
 [url=$downloadUrl]Download[/url]
 
-This release has some much needed speed improvements.
-The time it takes between selecting a game/difficulty and the data showing up has been reduced.
-The problem was actually relating to the GUI, not the database. The Downloaded Songs tier in Rock Band games still takes a small amount of time to open due the the very large number of items.
+This is a very small update (really just one line of code) that greatly
+helps the load time for the "Downloaded Songs" tier in Rock Band. The time
+it takes to load shouldn't be nearly as long. In my case it's the difference
+between 3 seconds and almost not noticeable. The issue is now the number
+of songs that you have scores for in the DLC tier. Previously it was the
+total number of songs in the DLC tier regardless of whether you had a score
+or not. That is, it might take 3 seconds to load if you have scores for
+every single DLC song but since most people don't it's not too big of 
+an issue.
 
-Also, I've changed the way song data is downloaded for Rock Band. Basically I now maintain an XML file of the song data on SourceForge that JSHManager will attempt to download first. It will fall back to the old, slow way if the XML way fails.
-I've set it up to update the XML file once a day. It's still hardly instaneous, but it's definately an improvement.
+I'm going to be working on more sorting options for a future release to
+make it more like the in-game sorting options.
+

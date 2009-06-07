@@ -587,6 +587,14 @@ public abstract class Score {
 		
 		// TODO figure out why !this.parts.equals(s.parts)
 		
+		if ((null == this.song && null != s.song) ||
+			(null != this.song && null == s.song))
+			return false;
+		
+		if ((null == this.submissionDate && null != s.submissionDate) ||
+			(null != this.submissionDate && null == s.submissionDate))
+			return false;
+		
 		return 
 			((null == this.song && null == s.song) || 
 			 this.song.equals(s.song)) &&

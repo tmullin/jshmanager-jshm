@@ -46,7 +46,7 @@ public class JshmThreadManager {
 	static final String
 		VERSION = JSHManager.Version.VERSION,
 		DOWNLOAD_URL =
-			"http://sourceforge.net/project/showfiles.php?group_id=240590&package_id=292656&release_id=685538",
+			"http://sourceforge.net/project/showfiles.php?group_id=240590&package_id=292656&release_id=688081",
 		SUBJECT =
 			"JSHManager " + VERSION +
 			" - Now Faster - Manage Scores Locally and Upload to SH";
