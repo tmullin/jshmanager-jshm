@@ -6,6 +6,8 @@ Version 0.2.9
   jshm.Score.equals(Score.java:590). Hard to test this though.
 - The last game/instrument/difficulty you viewed is now saved and
   restored when you restart the program.
+- Menu items that used Control for the accelerator keystroke should now
+  use Command on Macs (though I can't really test this).
 
 Version 0.2.8
 -------------

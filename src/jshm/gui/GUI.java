@@ -31,8 +31,10 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -107,7 +109,7 @@ public class GUI extends javax.swing.JFrame {
 	TreePopupMenu treePopup = null;
 	
     /** Creates new form GUITest */
-    public GUI() {
+    public GUI() {    	
     	GuiUtil.init();
     	
     	hh = new HoverHelp();
@@ -434,7 +436,7 @@ public class GUI extends javax.swing.JFrame {
         scoresMenu.setMnemonic('S');
         scoresMenu.setText("Scores");
 
-        goToSongMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
+        goToSongMenuItem.setAccelerator(KeyStroke.getKeyStroke('G', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         goToSongMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/next32.png"))); // NOI18N
         goToSongMenuItem.setText("Go to Song...");
         goToSongMenuItem.setEnabled(false);
@@ -459,7 +461,7 @@ public class GUI extends javax.swing.JFrame {
         });
         scoresMenu.add(addNewScoreMenuItem);
 
-        addNewScoreViaEditorMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        addNewScoreViaEditorMenuItem.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         addNewScoreViaEditorMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/add32.png"))); // NOI18N
         addNewScoreViaEditorMenuItem.setMnemonic('E');
         addNewScoreViaEditorMenuItem.setText("Add Score via Editor");
@@ -483,7 +485,7 @@ public class GUI extends javax.swing.JFrame {
         });
         scoresMenu.add(deleteSelectedScoreMenuItem);
 
-        toggleEditorMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+        toggleEditorMenuItem.setAccelerator(KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         toggleEditorMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/edit32.png"))); // NOI18N
         toggleEditorMenuItem.setMnemonic('E');
         toggleEditorMenuItem.setText("Toggle Editor");
@@ -508,7 +510,7 @@ public class GUI extends javax.swing.JFrame {
         });
         scoresMenu.add(downloadScoresMenuItem);
 
-        uploadScoresMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        uploadScoresMenuItem.setAccelerator(KeyStroke.getKeyStroke('U', InputEvent.ALT_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         uploadScoresMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/up32.png"))); // NOI18N
         uploadScoresMenuItem.setMnemonic('U');
         uploadScoresMenuItem.setText("Upload to ScoreHero...");
@@ -520,7 +522,7 @@ public class GUI extends javax.swing.JFrame {
         });
         scoresMenu.add(uploadScoresMenuItem);
 
-        uploadSelectedScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.CTRL_MASK));
+        uploadSelectedScoreMenuItem.setAccelerator(KeyStroke.getKeyStroke('U', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         uploadSelectedScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/up32.png"))); // NOI18N
         uploadSelectedScoreMenuItem.setMnemonic('S');
         uploadSelectedScoreMenuItem.setText("Upload Selected Score");
