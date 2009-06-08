@@ -696,16 +696,7 @@ public class GUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
-	int ret = checkForNewScores();
-	
-	switch (ret) {
-		case JOptionPane.YES_OPTION:
-		case JOptionPane.CANCEL_OPTION: return;
-		case JOptionPane.NO_OPTION: break;
-		default: assert false;
-	}
-	
-	JSHManager.dispose();
+	formWindowClosing(null);
 }//GEN-LAST:event_exitMenuItemActionPerformed
 
 private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
@@ -1114,7 +1105,16 @@ public void showTextFileViewer(final String file) {
 }
 
 private void formWindowClosing(java.awt.event.WindowEvent evt) {                                    
-	jshm.JSHManager.dispose();
+	int ret = checkForNewScores();
+	
+	switch (ret) {
+		case JOptionPane.YES_OPTION:
+		case JOptionPane.CANCEL_OPTION: return;
+		case JOptionPane.NO_OPTION: break;
+		default: assert false;
+	}
+	
+	JSHManager.dispose();
 }                                  
 
 /**
