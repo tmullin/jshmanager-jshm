@@ -129,8 +129,8 @@ public class RbGame extends Game {
 	}
 
 	@Override
-	public List<? extends Song> getSongs(Group group, Difficulty diff) {
-		return RbSong.getSongs(true, this, group);
+	public List<? extends Song> getSongs(Group group, Difficulty diff, Song.Sorting sorting) {
+		return RbSong.getSongs(true, this, group, sorting);
 	}
 
 	@Override

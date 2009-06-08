@@ -149,7 +149,7 @@ public class GhGame extends jshm.Game {
 	}
 
 	@Override
-	public List<? extends Song> getSongs(Group group, Difficulty diff) {
+	public List<? extends Song> getSongs(Group group, Difficulty diff, Song.Sorting sorting) {
 		return GhSong.getSongs(this, diff);
 	}
 

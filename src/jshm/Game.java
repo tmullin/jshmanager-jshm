@@ -144,7 +144,11 @@ public abstract class Game {
 	}
 	
 	
-	public abstract List<? extends Song> getSongs(Group group, Difficulty diff);
+	public List<? extends Song> getSongs(Group group, Difficulty diff) {
+		return getSongs(group, diff, null);
+	}
+	
+	public abstract List<? extends Song> getSongs(Group group, Difficulty diff, Song.Sorting sorting);
 	public abstract List<? extends Song> getAllSongsByTitle(String title, Difficulty diff);
 	public abstract Song getSongByTitle(String title, Difficulty diff);
 	public abstract Song getSongByScoreHeroId(int scoreHeroId, Difficulty diff);

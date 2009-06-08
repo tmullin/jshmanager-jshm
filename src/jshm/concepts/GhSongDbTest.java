@@ -25,6 +25,8 @@ import java.util.List;
 import org.hibernate.Session;
 
 import jshm.*;
+import jshm.Instrument.Group;
+import jshm.Song.Sorting;
 import jshm.dataupdaters.*;
 import jshm.gh.*;
 import jshm.rb.*;
@@ -36,55 +38,20 @@ import jshm.sh.scraper.*;
 public class GhSongDbTest {
 	public static void main(String[] args) throws Exception {
 		Log.configTestLogging();
-//		HibernateUtil.getCurrentSession();
-//		System.exit(0);
 		
-		final RbGame game = RbGame.RB1_XBOX360;
-//		final Difficulty difficulty = Difficulty.EXPERT;
-		
+		RbGame game = RbGame.RB2_XBOX360;
+		Group group = Group.GUITAR;
+		Difficulty diff = null;
+		Sorting sorting = Sorting.TITLE;
+
 		jshm.util.TestTimer.start();
-//		GhSongUpdater.update(GhGame.GH3_XBOX360, Difficulty.EXPERT);
-		RbSongUpdater.updateViaScraping(game.title);
+		
+		List<RbSong> songs = RbSong.getSongs(true, game, group, sorting);
+		
+		for (int i = 0; i < 10 && i < songs.size(); i++) {
+			System.out.println(songs.get(i));
+		}
+		
 		jshm.util.TestTimer.stop();
-		
-//		printSongs();
-		
-//		jshm.util.TestTimer.stop();
-		
-//		jshm.sh.Client.getAuthCookies("someuser", "somepass");
-//		jshm.dataupdaters.GhScoreUpdater.update(false, game, difficulty);
-//		
-//		jshm.util.TestTimer.stop();
-		
-//		printScores();
-		
-//		jshm.util.TestTimer.stop();
-		
-//		HibernateUtil.shutdown();
-	}
-	
-	static void printSongs() {
-//	    Session session = HibernateUtil.getCurrentSession();
-//	    session.beginTransaction();
-//	    List<Song> result = (List<Song>) session.createQuery("from RbSong").list();
-//	    session.getTransaction().commit();
-//	    
-//	    for (Song s : result)
-//	    	System.out.println(s);
-	    
-		List<SongOrder> orders = RbSong.getSongs(RbGame.RB1_WII, Instrument.Group.GUITAR);
-		
-		for (SongOrder o : orders)
-			System.out.println(o);
-	}
-	
-	static void printScores() {
-//	    Session session = HibernateUtil.getCurrentSession();
-//	    session.beginTransaction();
-//	    List<GhScore> result = (List<GhScore>) session.createQuery("from GhScore").list();
-//	    session.getTransaction().commit();
-//	    
-//	    for (GhScore s : result)
-//	    	System.out.println(s);
 	}
 }

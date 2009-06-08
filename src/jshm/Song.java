@@ -290,4 +290,8 @@ public abstract class Song implements Comparable<Song> {
 			return null;
 		}
 	}
+	
+	public static enum Sorting {
+		DIFFICULTY, TITLE, ARTIST, DECADE, GENRE, LOCATION
+	}
 }

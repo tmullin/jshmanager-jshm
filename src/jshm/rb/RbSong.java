@@ -74,13 +74,48 @@ public class RbSong extends Song {
 	}
 	
 	public static List<RbSong> getSongs(final boolean asRbSongList, final RbGame game, Instrument.Group group) {
-		List<SongOrder> orders = getSongs(game, group);
-		List<RbSong> ret = new ArrayList<RbSong>(orders.size());
+		return getSongs(asRbSongList, game, group, null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<RbSong> getSongs(final boolean asRbSongList, final RbGame game, Instrument.Group group, final Song.Sorting sorting) {
+		if (null == sorting) {
+			List<SongOrder> orders = getSongs(game, group);
+			List<RbSong> ret = new ArrayList<RbSong>(orders.size());
+			
+			for (SongOrder o : orders)
+				ret.add((RbSong) o.getSong());
+			
+			return ret;
+		}
 		
-		for (SongOrder o : orders)
-			ret.add((RbSong) o.getSong());
 		
-		return ret;
+		// TODO change GUITAR_BASS to a constant in RbGameTitle
+		if (group.size > 1)
+			group = Instrument.Group.GUITAR_BASS;
+		
+		String orderClause = "title";
+		
+		switch (sorting) {
+			case ARTIST: orderClause = "artist"; break;
+			case DECADE: orderClause = "year"; break;
+			case GENRE: orderClause = "genre"; break;
+		}
+		
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    List<RbSong> result =
+			(List<RbSong>)
+			session.createQuery(
+				"from RbSong where gameTitle=:ttl and " +
+				":plat in elements(platforms) " +
+				"order by " + orderClause)
+			.setString("ttl", game.title.toString())
+			.setString("plat", game.platform.toString())
+			.list();
+	    session.getTransaction().commit();
+		
+		return result;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -96,12 +131,11 @@ public class RbSong extends Song {
 	    List<SongOrder> result =
 			(List<SongOrder>)
 			session.createQuery(
-				String.format(
-					"from SongOrder where gameTitle='%s' and platform='%s' and instrumentgroup='%s' order by tier, ordering",
-					game.title,
-					game.platform,
-					group))
-				.list();
+				"from SongOrder where gameTitle=:ttl and platform=:plat and instrumentgroup=:group order by tier, ordering")
+			.setString("ttl", game.title.toString())
+			.setString("plat", game.platform.toString())
+			.setString("group", group.toString())
+			.list();
 	    session.getTransaction().commit();
 		
 		return result;

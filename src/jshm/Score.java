@@ -92,7 +92,7 @@ public abstract class Score {
 		}
 	}
 	
-	
+	// TODO make abstract method in Game class
 	public static Score createNewScoreTemplate(final Game game, final Instrument.Group group, final Difficulty difficulty, final Song song) {
 		if (game instanceof GhGame && (null == song || song instanceof GhSong)) {
 			return GhScore.createNewScoreTemplate((GhGame) game, group, difficulty, (GhSong) song);
