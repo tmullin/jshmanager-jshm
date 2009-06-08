@@ -68,6 +68,7 @@ import jshm.Score;
 import jshm.Song;
 import jshm.SongOrder;
 import jshm.UpdateChecker;
+import jshm.Instrument.Group;
 import jshm.gh.GhGame;
 import jshm.gui.components.SelectSongDialog;
 import jshm.gui.components.StatusBar;
@@ -238,6 +239,28 @@ public class GUI extends javax.swing.JFrame {
 				statusBar1.setExtraLink("JSHManager update available", info.getUpdateUrl());
 			}
         }.execute();
+        
+        
+        // restore last game/group/diff
+        Game lastGame = null;
+        Group lastGroup = null;
+        Difficulty lastDiff = null;
+        
+        try {
+	        lastGame = Game.valueOf(Config.get("window.lastgame"));
+	        lastGroup = Group.valueOf(Config.get("window.lastgroup"));
+	        lastDiff = Difficulty.valueOf(Config.get("window.lastdiff"));
+        } catch (Exception e) {
+        	LOG.log(Level.FINEST, "Didn't find previous game/group/diff", e);
+        }
+        
+        if (lastGame != null && lastGroup != null && lastDiff != null) {
+            LOG.finer(String.format("Restoring game/group/diff: %s/%s/%s",
+                lastGame, lastGroup, lastDiff));
+        	myScoresMenuItemActionPerformed(null, lastGame, lastGroup, lastDiff);
+        } else {
+        	LOG.finer("No previous game/group/diff found");
+        }
     }
 
     @Override
@@ -275,6 +298,16 @@ public class GUI extends javax.swing.JFrame {
 		Config.set("window.textfileviewer.width", size.width);
 		Config.set("window.textfileviewer.height", size.height);
     	
+		
+		// now save last game/group/diff
+		LOG.finer(
+			String.format("Saving current game/group/diff: %s/%s/%s",
+				curGame, curGroup, curDiff));
+		
+		Config.set("window.lastgame", null == curGame ? "" : curGame);
+		Config.set("window.lastgroup", null == curGroup ? "" : curGroup);
+		Config.set("window.lastdiff", null == curDiff ? "" : curDiff);
+		
     	super.dispose();
     }
     

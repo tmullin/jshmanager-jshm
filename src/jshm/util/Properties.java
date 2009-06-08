@@ -160,6 +160,6 @@ public class Properties extends java.util.Properties {
 	}
 
 	public void set(String propertyName, Object value) {
-		setProperty(propertyName, value.toString());
+		setProperty(propertyName.toLowerCase(), value.toString());
 	}
 }

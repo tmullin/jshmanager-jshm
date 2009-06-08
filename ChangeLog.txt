@@ -1,5 +1,12 @@
 JSHManager ChangeLog
 
+Version 0.2.9
+-------------
+- May possibly have fixed NullPointerException related to
+  jshm.Score.equals(Score.java:590). Hard to test this though.
+- The last game/instrument/difficulty you viewed is now saved and
+  restored when you restart the program.
+
 Version 0.2.8
 -------------
 - Added more performance improvements. The "Downloaded Songs" tier in
