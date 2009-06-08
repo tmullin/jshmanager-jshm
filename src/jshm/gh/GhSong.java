@@ -138,15 +138,17 @@ public class GhSong extends jshm.Song {
 	 * @param source
 	 * @return Whether any values were changed
 	 */
-	public boolean update(final GhSong source) {
-		boolean test = false;
+	public boolean update(GhSong source) {
+		boolean updated = super.update(source);
 		
 		if (this.noteCount != source.noteCount) {
-			test = true;
 			this.noteCount = source.noteCount;
+			updated = true;
 		}
 		
-		return test || this.setScoreAndCutoffs(source);
+		updated = setScoreAndCutoffs(source) || updated;
+		
+		return updated;
 	}
 	
 	/**

@@ -153,6 +153,7 @@ public class RbSong extends Song {
 	}
 	
 	
+	
 	private GameTitle gameTitle;
 	
 	@Type(type="jshm.hibernate.GameTitleUserType")
@@ -166,6 +167,68 @@ public class RbSong extends Song {
 			throw new IllegalArgumentException("gameTitle must be an RbGameTitle, got a " + gameTitle.getClass().getName());
 		this.gameTitle = gameTitle;
 	}
+	
+	
+	// fields for http://pksage.com/xml.php
+	private String
+		songSource;
+	
+	private int
+		rawGuitarDiff,
+		rawBassDiff,
+		rawVocalsDiff,
+		rawDrumsDiff,
+		rawBandDiff;
+	
+	public String getSongSource() {
+		return songSource;
+	}
+
+	public void setSongSource(String songSource) {
+		this.songSource = songSource;
+	}
+
+	public int getRawGuitarDiff() {
+		return rawGuitarDiff;
+	}
+
+	public void setRawGuitarDiff(Integer rawGuitarDiff) {
+		this.rawGuitarDiff = rawGuitarDiff == null ? 0 : rawGuitarDiff;
+	}
+
+	public int getRawBassDiff() {
+		return rawBassDiff;
+	}
+
+	public void setRawBassDiff(Integer rawBassDiff) {
+		this.rawBassDiff = rawBassDiff == null ? 0 : rawBassDiff;
+	}
+
+	public int getRawVocalsDiff() {
+		return rawVocalsDiff;
+	}
+
+	public void setRawVocalsDiff(Integer rawVocalsDiff) {
+		this.rawVocalsDiff = rawVocalsDiff == null ? 0 : rawVocalsDiff;
+	}
+
+	public int getRawDrumsDiff() {
+		return rawDrumsDiff;
+	}
+
+	public void setRawDrumsDiff(Integer rawDrumsDiff) {
+		this.rawDrumsDiff = rawDrumsDiff == null ? 0 : rawDrumsDiff;
+	}
+
+	public int getRawBandDiff() {
+		return rawBandDiff;
+	}
+
+	public void setRawBandDiff(Integer rawBandDiff) {
+		this.rawBandDiff = rawBandDiff == null ? 0 : rawBandDiff;
+	}
+
+	
 	
 	private SortedSet<Platform> platforms = new TreeSet<Platform>();
 	
@@ -186,13 +249,9 @@ public class RbSong extends Song {
 	}
 	
 	public boolean update(RbSong song) {
-		return updateTitle(song) || updatePlatforms(song);
-	}
-	
-	public boolean updateTitle(RbSong song) {
-		if (this.getTitle().equals(song.getTitle())) return false;
-		setTitle(song.getTitle());
-		return true;
+		boolean updated = super.update(song);
+		updated = updatePlatforms(song) || updated;
+		return updated;
 	}
 	
 	/**

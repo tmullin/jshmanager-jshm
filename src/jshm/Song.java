@@ -47,7 +47,18 @@ public abstract class Song implements Comparable<Song> {
 	 */
 	private int		scoreHeroId	= 0;
 	private Game	game		= null;
-	private String	title		= "UNKNOWN";
+	private String
+		title		= "UNKNOWN",
+		artist		= null,
+		album		= null,
+		genre		= null,
+		songPack	= null;
+	
+	private int
+		trackNum	= 0,
+		year		= 0;
+	
+	private RecordingType recordingType = null;
 	
 	private SongOrder songOrder = null;
 	
@@ -109,6 +120,63 @@ public abstract class Song implements Comparable<Song> {
 		this.title = title;
 	}
 	
+	public String getArtist() {
+		return artist;
+	}
+
+	public void setArtist(String artist) {
+		this.artist = artist;
+	}
+
+	public String getAlbum() {
+		return album;
+	}
+
+	public void setAlbum(String album) {
+		this.album = album;
+	}
+
+	public String getGenre() {
+		return genre;
+	}
+
+	public void setGenre(String genre) {
+		this.genre = genre;
+	}
+
+	public String getSongPack() {
+		return songPack;
+	}
+
+	public void setSongPack(String songPack) {
+		this.songPack = songPack;
+	}
+
+	public int getTrackNum() {
+		return trackNum;
+	}
+
+	public void setTrackNum(Integer trackNum) {
+		this.trackNum = null == trackNum ? 0 : trackNum;
+	}
+
+	public int getYear() {
+		return year;
+	}
+
+	public void setYear(Integer year) {
+		this.year = null == year ? 0 : year;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public RecordingType getRecordingType() {
+		return recordingType;
+	}
+
+	public void setRecordingType(RecordingType recordingType) {
+		this.recordingType = recordingType;
+	}
+
 	@Transient
 	public SongOrder getSongOrder() {
 		return songOrder;
@@ -123,6 +191,58 @@ public abstract class Song implements Comparable<Song> {
 		if (null == songOrder) return 0;
 		return songOrder.getTier();
 	}
+	
+	
+	public boolean update(final Song other) {
+		boolean updated = false;
+		
+		if (!title.equals(other.getTitle())) {
+			setTitle(other.getTitle());
+			updated = true;
+		}
+		
+		if ((null == artist && null != other.artist) ||
+			!artist.equals(other.artist)) {
+			setArtist(other.artist);
+			updated = true;
+		}
+		
+		if ((null == album && null != other.album) ||
+			!album.equals(other.album)) {
+			setAlbum(other.album);
+			updated = true;
+		}
+		
+		if ((null == genre && null != other.genre) ||
+			!genre.equals(other.genre)) {
+			setGenre(other.genre);
+			updated = true;
+		}
+		
+		if ((null == songPack && null != other.songPack) ||
+			!songPack.equals(other.songPack)) {
+			setSongPack(other.songPack);
+			updated = true;
+		}
+		
+		if (year != other.year) {
+			setYear(other.year);
+			updated = true;
+		}
+		
+		if (trackNum != other.trackNum) {
+			setTrackNum(other.trackNum);
+			updated = true;
+		}
+		
+		if (recordingType != other.recordingType) {
+			setRecordingType(other.recordingType);
+			updated = true;
+		}
+		
+		return updated;
+	}
+	
 	
 	// override object methods
 	
@@ -148,4 +268,26 @@ public abstract class Song implements Comparable<Song> {
 	
 	
 	public abstract String getRankingsUrl(Game game, Group group, Difficulty diff);
+	
+	
+	public static enum RecordingType {
+		MASTER, COVER, RE_RECORDED;
+		
+		public char getAbbrChar() {
+			return name().charAt(0);
+		}
+		
+		public static RecordingType smartValueOf(String str) {
+			if (str.length() < 1)
+				throw new IllegalArgumentException("str must have length >= 1");
+			
+			char c = str.charAt(0);
+			
+			for (RecordingType t : values()) {
+				if (t.name().charAt(0) == c) return t;
+			}
+			
+			return null;
+		}
+	}
 }

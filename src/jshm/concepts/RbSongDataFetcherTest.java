@@ -21,14 +21,18 @@
 package jshm.concepts;
 
 import jshm.rb.RbGameTitle;
-import jshm.xml.RbSongDataFetcher;
+import jshm.xml.*;
 
+@SuppressWarnings("unused")
 public class RbSongDataFetcherTest {
 	public static void main(String[] args) throws Exception {
-		RbSongDataFetcher fetcher = new RbSongDataFetcher();
-		fetcher.fetch(RbGameTitle.RB2);
+//		RbSongDataFetcher fetcher = new RbSongDataFetcher();
+//		fetcher.fetch(RbGameTitle.RB2);
 		
-		for (Integer key : fetcher.songMap.keySet())
+		RbSongInfoFetcher fetcher = new RbSongInfoFetcher();
+		fetcher.fetch();
+		
+		for (Object key : fetcher.songMap.keySet())
 			System.out.println(fetcher.songMap.get(key));
 		
 //		for (jshm.SongOrder o : fetcher.orders)
