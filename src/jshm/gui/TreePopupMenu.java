@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.swing.*;
 
+import jshm.Score;
 import jshm.Song;
 import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 import jshm.sh.URLs;
@@ -42,30 +43,63 @@ import org.jdesktop.swingx.JXTreeTable;
 public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseListener {
 	private GUI gui;
 	private JXTreeTable comp;
-	private Song selected = null;
+	private Song selectedSong = null;
+	private Score selectedScore = null;
 	private SpChartsMenuMouseListener spChartsMenuMouseListener;
 	
 	public TreePopupMenu(GUI gui, JXTreeTable comp) {
 		this.gui = gui;
 		this.comp = comp;
 		
-		rankingsPageMenuItem = new JMenuItem("Go to song's rankings page");
-		rankingsPageMenuItem.addActionListener(this);
-		wikiPageMenuItem = new JMenuItem("Go to song's wiki page");
-		wikiPageMenuItem.addActionListener(this);
-		spPageMenuItem = new JMenuItem("Go to song's SP page");
-		spPageMenuItem.addActionListener(this);
+		// TODO convert to using Actions...
+		
+		insertScoreMenuItem = new JMenuItem("Insert new score", 'I');
+		insertScoreMenuItem.setIcon(gui.addNewScoreMenuItem.getIcon());
+		insertScoreMenuItem.addActionListener(this);
+		
+		editScoreMenuItem = new JMenuItem("Edit this score", 'E');
+		editScoreMenuItem.setIcon(gui.toggleEditorMenuItem.getIcon());
+		editScoreMenuItem.addActionListener(this);
+		
+		uploadScoreMenuItem = new JMenuItem("Upload this score", 'U');
+		uploadScoreMenuItem.setIcon(gui.uploadSelectedScoreMenuItem.getIcon());
+		uploadScoreMenuItem.addActionListener(this);
+		
+		deleteScoreMenuItem = new JMenuItem("Delete this score", 'D');
+		deleteScoreMenuItem.setIcon(gui.deleteSelectedScoreMenuItem.getIcon());
+		deleteScoreMenuItem.addActionListener(this);
+		
+		
+		gotoMenu = new JMenu("Go to");
+		gotoMenu.setIcon(gui.goToWikiPageMenuItem.getIcon());
+		gotoMenu.setMnemonic('G');
+			rankingsPageMenuItem = new JMenuItem("song's rankings page", 'r');
+			rankingsPageMenuItem.addActionListener(this);
+			wikiPageMenuItem = new JMenuItem("song's wiki page", 'w');
+			wikiPageMenuItem.addActionListener(this);
+			spPageMenuItem = new JMenuItem("song's SP page", 'S');
+			spPageMenuItem.addActionListener(this);
+		
 		spChartsMenu = new JMenu("View chart from wiki");
+		spChartsMenu.setIcon(gui.searchWikiMenuItem.getIcon());
+		spChartsMenu.setMnemonic('V');
 			loadingChartsMenuItem = new JMenuItem("Loading...");
 			loadingChartsMenuItem.setEnabled(false);
 			noChartsMenuItem = new JMenuItem("None available");
 			noChartsMenuItem.setEnabled(false);
-		cancelMenuItem = new JMenuItem("Cancel");
+			
+		cancelMenuItem = new JMenuItem("Cancel", 'C');
 		cancelMenuItem.addActionListener(this);
 		
-		add(rankingsPageMenuItem);
-		add(wikiPageMenuItem);
-		add(spPageMenuItem);
+		add(insertScoreMenuItem);
+		add(editScoreMenuItem);
+		add(uploadScoreMenuItem);
+		add(deleteScoreMenuItem);
+		addSeparator();
+		add(gotoMenu);
+			gotoMenu.add(rankingsPageMenuItem);
+			gotoMenu.add(wikiPageMenuItem);
+			gotoMenu.add(spPageMenuItem);
 		add(spChartsMenu);
 		spChartsMenuMouseListener = new SpChartsMenuMouseListener();
 			spChartsMenu.add(loadingChartsMenuItem);
@@ -102,7 +136,8 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 	}
 
 	private void maybeShowPopup(MouseEvent e) {
-		selected = null;
+		selectedSong = null;
+		selectedScore = null;
 		
 		if (e.isPopupTrigger()) {
 			if (!(e.getComponent() instanceof JXTreeTable)) return;
@@ -110,14 +145,35 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 			
 			if (!(comp.getTreeTableModel() instanceof GhMyScoresTreeTableModel)) return;
 			
-			Object hovered = comp.getValueAt(comp.rowAtPoint(e.getPoint()), 0);
+			int row = comp.rowAtPoint(e.getPoint());
+			comp.getSelectionModel().setSelectionInterval(row, row);
+			comp.repaint();
+			
+//			Object hovered = comp.getValueAt(comp.rowAtPoint(e.getPoint()), 0);
+			Object hovered = comp.getPathForRow(row).getLastPathComponent();
 			
 //			System.out.println("Hovered: " + hovered);
 			
-			if (null == hovered || !(hovered instanceof GhMyScoresTreeTableModel.SongScores)) return;
+			if (null == hovered) return;
 			
-			selected = 
-				((GhMyScoresTreeTableModel.SongScores) hovered).song;
+			editScoreMenuItem.setVisible(false);
+			uploadScoreMenuItem.setVisible(false);
+			deleteScoreMenuItem.setVisible(false);
+			
+			if (hovered instanceof GhMyScoresTreeTableModel.SongScores) {
+				selectedSong = 
+					((GhMyScoresTreeTableModel.SongScores) hovered).song;
+			} else if (hovered instanceof Score) {
+				selectedScore = (Score) hovered;
+				selectedSong = selectedScore.getSong();
+				
+				editScoreMenuItem.setVisible(selectedScore.isEditable());
+				uploadScoreMenuItem.setVisible(selectedScore.isSubmittable());
+				deleteScoreMenuItem.setVisible(true);
+			} else {
+//				System.out.println("Class of hovered: " + hovered.getClass().getName());
+				return;
+			}
 			
 			checkEnabled();
 			spChartsMenuMouseListener.mouseEntered(null);
@@ -138,23 +194,31 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 		final Object src = e.getSource();
 		
 		try {
-			assert selected != null;
+			assert selectedSong != null;
 			
-			if (src == rankingsPageMenuItem) { 
-				if (null != selected)
+			if (src == insertScoreMenuItem) {
+				gui.addNewScoreMenuItem.doClick();
+			} else if (src == editScoreMenuItem) {
+				gui.editorCollapsiblePane.setCollapsed(false);
+			} else if (src == uploadScoreMenuItem) {
+				gui.uploadSelectedScoreMenuItem.doClick();
+			} else if (src == deleteScoreMenuItem) {
+				gui.deleteSelectedScoreMenuItem.doClick();
+			} else if (src == rankingsPageMenuItem) { 
+				if (null != selectedSong)
 					Util.openURL(
-						selected.getRankingsUrl(
+						selectedSong.getRankingsUrl(
 							gui.getCurGame(),
 							gui.getCurGroup(),
 							gui.getCurDiff()));
 			} else if (src == wikiPageMenuItem) {
-				if (null != selected)
-					Util.openURL(URLs.wiki.getSongUrl(selected));
+				if (null != selectedSong)
+					Util.openURL(URLs.wiki.getSongUrl(selectedSong));
 			} else if (src == spPageMenuItem) {
-				if (null != selected)
+				if (null != selectedSong)
 					Util.openURL(
 						URLs.wiki.getSongSpUrl(
-							selected, gui.getCurGroup(), gui.getCurDiff()));
+							selectedSong, gui.getCurGroup(), gui.getCurDiff()));
 			} else if (src == cancelMenuItem) {
 				setVisible(false);
 			}
@@ -167,14 +231,21 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 	// GUI components
 	
 	private JMenuItem
+		insertScoreMenuItem,
+		editScoreMenuItem,
+		uploadScoreMenuItem,
+		deleteScoreMenuItem,
+		
 		rankingsPageMenuItem,
 		wikiPageMenuItem,
 		spPageMenuItem,
+		
 		loadingChartsMenuItem,
 		noChartsMenuItem,
 		cancelMenuItem;
 	
 	private JMenu
+		gotoMenu,
 		spChartsMenu;
 	
 	
@@ -189,7 +260,7 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 				
 				protected Void doInBackground() {
 					try {
-						links = WikiSpScraper.scrape(selected, gui.getCurGroup(), gui.getCurDiff());
+						links = WikiSpScraper.scrape(selectedSong, gui.getCurGroup(), gui.getCurDiff());
 					} catch (Exception x) {
 						x.printStackTrace();
 					}
