@@ -8,6 +8,9 @@ Version 0.2.9
   restored when you restart the program.
 - Menu items that used Control for the accelerator keystroke should now
   use Command on Macs (though I can't really test this).
+- Added more options to the right-click menu when browsing scores.
+- Fixed bug that made the go to song feature stop working after opening
+  the score upload wizard.
 
 Version 0.2.8
 -------------

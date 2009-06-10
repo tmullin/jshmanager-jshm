@@ -20,6 +20,7 @@
 */
 package jshm.rb;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -62,11 +63,50 @@ public class RbScore extends Score {
 	    List<RbScore> result =
 			(List<RbScore>)
 			session.createQuery(
-				String.format(
-					"FROM RbScore WHERE game='%s' AND instrumentgroup='%s' AND difficulty='%s' ORDER BY score DESC",
-					game.toString(), group.toString(), difficulty.toString()))
+				"FROM RbScore WHERE game=:game AND instrumentgroup=:group AND difficulty=:diff ORDER BY score DESC")
+				.setString("game", game.toString())
+				.setString("group", group.toString())
+				.setString("diff", difficulty.toString())
 				.list();
 		
+	    // set the SongOrder for each
+	    for (RbScore s : result) {
+	    	s.getSong().setSongOrder(
+	    		(SongOrder)
+	    		session.createCriteria(SongOrder.class)
+	    			.add(Restrictions.eq("gameTitle", s.getGame().title))
+	    			.add(Restrictions.eq("platform", s.getGame().platform))
+	    			.add(Restrictions.eq("group", s.getGroup()))
+	    			.add(Restrictions.eq("song", s.getSong()))
+	    		.uniqueResult()
+	    	);
+	    }
+	    
+	    session.getTransaction().commit();
+	    
+		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<RbScore> getSubmittableScores(final RbGame game, final Instrument.Group group, final Difficulty difficulty) {
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    List<RbScore> result =
+			(List<RbScore>)
+			session.createQuery(
+				"FROM RbScore WHERE status IN ('NEW', 'UNKNOWN') AND score > 0 AND game=:game AND instrumentgroup=:group AND difficulty=:diff ORDER BY score DESC")
+				.setString("game", game.toString())
+				.setString("group", group.toString())
+				.setString("diff", difficulty.toString())
+				.list();
+		
+	    Iterator<RbScore> it = result.iterator();
+	    
+	    while (it.hasNext()) {
+	    	if (!it.next().isSubmittable())
+	    		it.remove();
+	    }
+	    
 	    // set the SongOrder for each
 	    for (RbScore s : result) {
 	    	s.getSong().setSongOrder(

@@ -157,4 +157,9 @@ public class GhGame extends jshm.Game {
 	public List<? extends Score> getScores(Group group, Difficulty diff) {
 		return GhScore.getScores(this, diff);
 	}
+	
+	@Override
+	public List<? extends Score> getSubmittableScores(Group group, Difficulty diff) {
+		return GhScore.getSubmittableScores(this, diff);
+	}
 }

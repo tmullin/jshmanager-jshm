@@ -137,4 +137,9 @@ public class RbGame extends Game {
 	public List<? extends Score> getScores(Group group, Difficulty diff) {
 		return RbScore.getScores(this, group, diff);
 	}
+	
+	@Override
+	public List<? extends Score> getSubmittableScores(Group group, Difficulty diff) {
+		return RbScore.getSubmittableScores(this, group, diff);
+	}
 }

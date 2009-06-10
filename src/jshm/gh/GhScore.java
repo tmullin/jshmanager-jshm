@@ -59,12 +59,35 @@ public class GhScore extends jshm.Score {
 	    List<GhScore> result =
 			(List<GhScore>)
 			session.createQuery(
-				String.format(
-					"from GhScore where game='%s' and difficulty='%s' order by score DESC",
-					game.toString(), difficulty.toString()))
+				"FROM GhScore WHERE game=:game AND difficulty=:diff ORDER BY score DESC")
+				.setString("game", game.toString())
+				.setString("diff", difficulty.toString())
 				.list();
 	    session.getTransaction().commit();
 		
+		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<GhScore> getSubmittableScores(final GhGame game, final Difficulty difficulty) {
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    List<GhScore> result =
+			(List<GhScore>)
+			session.createQuery(
+				"FROM GhScore WHERE status IN ('NEW', 'UNKNOWN') AND score > 0 AND game=:game AND difficulty=:diff ORDER BY score DESC")
+				.setString("game", game.toString())
+				.setString("diff", difficulty.toString())
+				.list();
+	    session.getTransaction().commit();
+		
+	    java.util.Iterator<GhScore> it = result.iterator();
+	    
+	    while (it.hasNext()) {
+	    	if (!it.next().isSubmittable())
+	    		it.remove();
+	    }
+	    
 		return result;
 	}
 	

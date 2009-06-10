@@ -150,7 +150,9 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			}
 
 			return String.format("%s (%d %s)", name, scores,
-					scores != 1 ? "scores" : "score");
+					scores != 1 ? "scores" : "score")
+//					+ " @" + Integer.toHexString(hashCode())
+					;
 		}
 		
 		public boolean equals(Object o) {
@@ -170,7 +172,9 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 
 		public String toString() {
 			return String.format("%s (%d %s)", song.getTitle(), scores.size(),
-					scores.size() != 1 ? "scores" : "score");
+					scores.size() != 1 ? "scores" : "score")
+//					+ " @" + Integer.toHexString(hashCode())
+					;
 		}
 		
 		public boolean equals(Object o) {
@@ -180,15 +184,20 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		}
 	}
 
-	private static JXTreeTable parent;
+	private JXTreeTable parent;
 	private final DataModel	model;
 	private final Game game;
+	private final Group	group;
+	private final Difficulty diff;
 
-	public GhMyScoresTreeTableModel(final Game game,
+	public GhMyScoresTreeTableModel(
+			final Game game, final Group group, final Difficulty diff,
 			final List<? extends Song> songs, final List<? extends Score> scores) {
 
 		super("ROOT");
 		this.game = game;
+		this.group = group;
+		this.diff = diff;
 		this.model = new DataModel(game, songs, scores);
 	}
 	
@@ -251,7 +260,21 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		path[2] = ss;
 		
 		TreePath tp = new TreePath(path);
-		System.out.println("ex+scroll to: " + tp);
+		
+//        StringBuilder tempSpot = new StringBuilder("[");
+//
+//        for (int counter = 0, maxCounter = tp.getPathCount(); counter < maxCounter; counter++) {
+//            if(counter > 0)
+//                tempSpot.append(", ");
+//            
+//            tempSpot.append(tp.getPathComponent(counter));
+//            tempSpot.append('@');
+//            tempSpot.append(Integer.toHexString(tp.getPathComponent(counter).hashCode()));
+//        }
+//        tempSpot.append("]");
+//		
+//        System.out.println("ex+scroll to: " + tempSpot.toString());
+        
 		expandAndScrollTo(tp);
 	}
 	
@@ -329,7 +352,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			}
 		}
 		
-		return new GhMyScoresTreeTableModel(this.game, songs, newScores);
+		return new GhMyScoresTreeTableModel(game, group, diff, songs, newScores);
 	}
 	
 	/**
@@ -449,7 +472,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	// TODO some of the stuff in here might not necessary fit 
 	// as part of the "data model"/mvc stuff...
 	public void setParent(final JXTreeTable parent) {
-		GhMyScoresTreeTableModel.parent = parent;
+		this.parent = parent;
 		
 		GhMyScoresTreeCellRenderer treeRenderer = new GhMyScoresTreeCellRenderer();
 		parent.setTreeCellRenderer(treeRenderer);
@@ -506,7 +529,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		parent.removeTreeWillExpandListener(myParentTreeWillExpandListener);
 		parent.removeMouseListener(myParentMouseListener);
 		parent.removeMouseMotionListener(myParentMouseMotionListener);
-		GhMyScoresTreeTableModel.parent = null;
+		this.parent = null;
 	}
 	
 	

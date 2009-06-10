@@ -1660,7 +1660,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 				songs = game.getSongs(group, difficulty);
 				scores = game.getScores(group, difficulty);
 
-				model = new GhMyScoresTreeTableModel(game, songs, scores);
+				model = new GhMyScoresTreeTableModel(game, group, difficulty, songs, scores);
 	
 				orderedSongs =
 					game.getSongsOrderedByTitle(group, difficulty);

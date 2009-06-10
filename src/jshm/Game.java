@@ -155,6 +155,7 @@ public abstract class Game {
 	public abstract List<? extends Song> getSongsOrderedByTitle(Group group, Difficulty diff);
 
 	public abstract List<? extends Score> getScores(Group group, Difficulty diff);
+	public abstract List<? extends Score> getSubmittableScores(Group group, Difficulty diff);
 	
 	// override Object methods
 	
