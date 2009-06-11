@@ -80,13 +80,13 @@ public class CheckUpdatesDialog extends javax.swing.JDialog {
 				latestVersionField.setText(info.latestVersion);
 				int versionComp = Util.versionCompare(JSHManager.Version.VERSION, info.latestVersion);
 				
-				if (versionComp < 0) {
+				if (versionComp < 0 || (versionComp == 0 && JSHManager.Version.IS_BETA)) {
 					statusLabel.setForeground(runningOldFg);
 					statusLabel.setText("A newer version is available.");
 					downloadLink.setToolTipText(info.getUpdateUrl());
 					downloadLink.setVisible(true);
 					pack();
-				} else if (versionComp > 0) {
+				} else if (versionComp > 0 || JSHManager.Version.IS_BETA) {
 					statusLabel.setText("You are running a beta version.");
 				} else {
 					statusLabel.setForeground(runningLatestFg);
