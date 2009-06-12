@@ -32,6 +32,7 @@ import jshm.logging.Log;
 import jshm.sh.Forum;
 import jshm.sh.Forum.PostMode;
 import jshm.util.PhpUtil;
+import jshm.util.Util;
 
 /**
  * This updates the first post of the 2 JSHManager threads. 
@@ -41,10 +42,11 @@ import jshm.util.PhpUtil;
 @SuppressWarnings("unused")
 public class JshmThreadManager {
 	static final boolean
-		CREATE_NEW_VERSION_POST = true;
+		CREATE_NEW_VERSION_POST = false,
+		APPEND_NEW_VERSION_CHANGELOG = true;
 	
 	static final String
-		VERSION = JSHManager.Version.VERSION,
+		VERSION = "0.2.8", //JSHManager.Version.VERSION,
 		DOWNLOAD_URL =
 			"http://sourceforge.net/project/showfiles.php?group_id=240590&package_id=292656&release_id=688081",
 		SUBJECT =
@@ -90,12 +92,28 @@ public class JshmThreadManager {
 	    int versionsRead = 0;
 	    int changesStartLine = lines.size();
 	    int lastLatestChangeLine = changesStartLine;
+	    boolean ignoreCurrentVersion = false;
 	    
 	    while (null != (line = in.readLine())) {
-	    	lines.add(line);
+	    	if (line.startsWith("Version ")) {
+	    		String curVersion = line.substring("Version ".length());
+	    		int comp = Util.versionCompare(curVersion, VERSION);
+	    		
+	    		// perhaps we're editing the original post without
+	    		// adding a new version so we don't want to show
+	    		// the changelog for the beta version
+	    		if (comp > 0) {
+	    			System.out.println("Skipping changelog for version " + curVersion);
+	    			ignoreCurrentVersion = true;
+	    		} else {
+	    			ignoreCurrentVersion = false;
+	    			versionsRead++;
+	    		}
+	    	}
+
+	    	if (ignoreCurrentVersion) continue;
 	    	
-	    	if (line.startsWith("--------"))
-	    		versionsRead++;
+	    	lines.add(line);
 	    	
 	    	if (versionsRead < 2) {
 	    		lastLatestChangeLine++;
@@ -123,7 +141,9 @@ public class JshmThreadManager {
 	    in.close();
 	    
 	    // add the changes for the latest version
-	    newVersionLines.addAll(lines.subList(changesStartLine, lastLatestChangeLine));
+	    if (APPEND_NEW_VERSION_CHANGELOG)
+	    	newVersionLines.addAll(lines.subList(
+	    		changesStartLine, lastLatestChangeLine));
 	    
 	    String newVersionPostBody = PhpUtil.implode("\n", newVersionLines);
 	    

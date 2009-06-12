@@ -23,6 +23,7 @@ Please read the Readme.txt carefully. If you ask a question I have answered ther
 [b]Important links:[/b]
 [list]
 [*][url=http://jshm.sourceforge.net/]Project Homepage[/url]
+[*][url=http://jshm.uservoice.com/]Suggest Features via UserVoice[/url]
 [*][url=http://jshm.sourceforge.net/faq]FAQ[/url]
 [*][url=http://jshm.sourceforge.net/features]Implemented/Future Features[/url]
 [*][url=http://sourceforge.net/project/showfiles.php?group_id=240590]Downloads[/url]

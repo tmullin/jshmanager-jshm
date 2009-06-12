@@ -49,7 +49,6 @@ import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -1661,37 +1660,6 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 	final Actions actions = new Actions();
 	
 	class Actions {		
-		abstract class MyAction extends AbstractAction {
-			MyAction(String name, Icon smallIcon,
-					String shortDescription,
-					KeyStroke accelerator, int mnemonic) {
-				this(true, name, smallIcon,
-					shortDescription,
-					accelerator, mnemonic);
-			}
-			
-			MyAction(boolean enabled, String name, Icon smallIcon,
-					String shortDescription,
-					KeyStroke accelerator, int mnemonic) {
-				this(enabled, name, smallIcon, smallIcon,
-					shortDescription, shortDescription,
-					accelerator, mnemonic);
-			}
-			
-			MyAction(boolean enabled, String name, Icon smallIcon, Icon largeIcon,
-				String shortDescription, String longDescription,
-				KeyStroke accelerator, int mnemonic) {
-				setEnabled(enabled);
-				putValue(Action.NAME, name);
-				putValue(Action.SMALL_ICON, smallIcon);
-				putValue(Action.LARGE_ICON_KEY, largeIcon);
-				putValue(Action.SHORT_DESCRIPTION, shortDescription);
-				putValue(Action.LONG_DESCRIPTION, longDescription);
-				putValue(Action.ACCELERATOR_KEY, accelerator);
-				putValue(Action.MNEMONIC_KEY, mnemonic);
-			}
-		}
-		
 		final MyAction gotoSong = new MyAction(false,
 			"Go to Song...", getIcon("toolbar/next32.png"),
 			"Find a song by name",
@@ -1711,7 +1679,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		};
 		
 		final MyAction addNewScore = new MyAction(false,
-			"Add New Score", getIcon("toolbar/add32.png"),
+			"Add", getIcon("toolbar/add32.png"),
 			"Add a new score for the selected song",
 			KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, 0), 'n'){
 			
@@ -1724,8 +1692,8 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		};
 		
 		final MyAction addScoreViaEditor = new MyAction(false,
-			"Add Score via Editor", getIcon("toolbar/add32.png"),
-			"Add a new score for the selected song using the editor",
+			"Add via Editor", getIcon("toolbar/add32.png"),
+			"Add a new score using the editor",
 			KeyStroke.getKeyStroke(KeyEvent.VK_N, CTRL_MASK), 'E'){
 
 			public void actionPerformed(ActionEvent e) {
@@ -1735,7 +1703,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		};
 		
 		final MyAction editSelectedScore = new MyAction(false,
-			"Edit Selected Score", getIcon("toolbar/edit32.png"),
+			"Edit", getIcon("toolbar/edit32.png"),
 			"Edit the selected score via the score editor",
 			null, 'E'){
 
@@ -1745,7 +1713,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		};
 		
 		final MyAction deleteSelectedScore = new MyAction(false,
-			"Delete Selected Score", getIcon("toolbar/delete32.png"),
+			"Delete", getIcon("toolbar/delete32.png"),
 			"Delete the currently selected score from the database",
 			KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), 'D'){
 
@@ -1776,7 +1744,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		};
 		
 		final MyAction toggleEditor = new MyAction(false,
-			"Toggle editor", getIcon("toolbar/edit32.png"),
+			"Toggle Editor", getIcon("toolbar/edit32.png"),
 			"Show or hide the score editor",
 			KeyStroke.getKeyStroke(KeyEvent.VK_E, CTRL_MASK), 'g'){
 
@@ -1787,7 +1755,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		};
 		
 		final MyAction downloadScores = new MyAction(false,
-			"Download from ScoreHero...", getIcon("toolbar/down32.png"),
+			"Download...", getIcon("toolbar/down32.png"),
 			"Download your scores so they can be viewed within JSHManager",
 			null, 'l'){
 
@@ -1799,7 +1767,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		};
 		
 		final MyAction uploadScores = new MyAction(false,
-			"Upload to ScoreHero...", getIcon("toolbar/up32.png"),
+			"Upload All...", getIcon("toolbar/up32.png"),
 			"Upload your new scores to ScoreHero",
 			KeyStroke.getKeyStroke(KeyEvent.VK_U, CTRL_MASK | KeyEvent.ALT_DOWN_MASK), 'U'){
 
@@ -1819,7 +1787,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		};
 		
 		final MyAction uploadSelectedScore = new MyAction(false,
-			"Upload Selected Score", getIcon("toolbar/up32.png"),
+			"Upload", getIcon("toolbar/up32.png"),
 			"Uploaded only the selected score to ScoreHero",
 			KeyStroke.getKeyStroke(KeyEvent.VK_U, CTRL_MASK), 'S'){
 
@@ -1899,8 +1867,8 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		};
 		
 		final MyAction importScoresFromCsv = new MyAction(false,
-			"Import from CSV File...", getIcon("toolbar/addfile32.png"),
-			"Import scores from a comma-separated values file",
+			"Import...", getIcon("toolbar/addfile32.png"),
+			"Import scores from a CSV file",
 			null, 'I'){
 
 			public void actionPerformed(ActionEvent e) {

@@ -3,16 +3,3 @@ Bump for $version
 [url=http://jshm.sourceforge.net]Home Page[/url]
 [url=$downloadUrl]Download[/url]
 
-This is a very small update (really just one line of code) that greatly
-helps the load time for the "Downloaded Songs" tier in Rock Band. The time
-it takes to load shouldn't be nearly as long. In my case it's the difference
-between 3 seconds and almost not noticeable. The issue is now the number
-of songs that you have scores for in the DLC tier. Previously it was the
-total number of songs in the DLC tier regardless of whether you had a score
-or not. That is, it might take 3 seconds to load if you have scores for
-every single DLC song but since most people don't it's not too big of 
-an issue.
-
-I'm going to be working on more sorting options for a future release to
-make it more like the in-game sorting options.
-
