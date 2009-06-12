@@ -11,6 +11,7 @@ Version 0.2.9
 - Added more options to the right-click menu when browsing scores.
 - Fixed bug that made the go to song feature stop working after opening
   the score upload wizard.
+- Added a toolbar for quicker access to some of the menu commands.
 
 Version 0.2.8
 -------------

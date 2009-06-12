@@ -251,24 +251,26 @@ public class GUI extends javax.swing.JFrame {
         
         
         // restore last game/group/diff
-        Game lastGame = null;
-        Group lastGroup = null;
-        Difficulty lastDiff = null;
-        
-        try {
-	        lastGame = Game.valueOf(Config.get("window.lastgame"));
-	        lastGroup = Group.valueOf(Config.get("window.lastgroup"));
-	        lastDiff = Difficulty.valueOf(Config.get("window.lastdiff"));
-        } catch (Exception e) {
-        	LOG.log(Level.FINEST, "Didn't find previous game/group/diff", e);
-        }
-        
-        if (lastGame != null && lastGroup != null && lastDiff != null) {
-            LOG.finer(String.format("Restoring game/group/diff: %s/%s/%s",
-                lastGame, lastGroup, lastDiff));
-        	myScoresMenuItemActionPerformed(null, lastGame, lastGroup, lastDiff);
-        } else {
-        	LOG.finer("No previous game/group/diff found");
+        if (true) {
+	        Game lastGame = null;
+	        Group lastGroup = null;
+	        Difficulty lastDiff = null;
+	        
+	        try {
+		        lastGame = Game.valueOf(Config.get("window.lastgame"));
+		        lastGroup = Group.valueOf(Config.get("window.lastgroup"));
+		        lastDiff = Difficulty.valueOf(Config.get("window.lastdiff"));
+	        } catch (Exception e) {
+	        	LOG.log(Level.FINEST, "Didn't find previous game/group/diff", e);
+	        }
+	        
+	        if (lastGame != null && lastGroup != null && lastDiff != null) {
+	            LOG.finer(String.format("Restoring game/group/diff: %s/%s/%s",
+	                lastGame, lastGroup, lastDiff));
+	        	myScoresMenuItemActionPerformed(null, lastGame, lastGroup, lastDiff);
+	        } else {
+	        	LOG.finer("No previous game/group/diff found");
+	        }
         }
     }
 
@@ -332,11 +334,13 @@ public class GUI extends javax.swing.JFrame {
         aboutDialog1 = new AboutDialog(this);
         textFileViewerDialog1 = new TextFileViewerDialog(this, true);
         checkUpdatesDialog1 = new jshm.gui.CheckUpdatesDialog();
+        innerPanel = new javax.swing.JPanel();
         statusBar1 = new jshm.gui.components.StatusBar();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        treeScrollPane = new javax.swing.JScrollPane();
         tree = new org.jdesktop.swingx.JXTreeTable();
         editorCollapsiblePane = new org.jdesktop.swingx.JXCollapsiblePane();
         scoreEditorPanel1 = new ScoreEditorPanel(this);
+        toolbar = new javax.swing.JToolBar();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -396,7 +400,9 @@ public class GUI extends javax.swing.JFrame {
                 formComponentResized(evt);
             }
         });
-        getContentPane().add(statusBar1, java.awt.BorderLayout.SOUTH);
+
+        innerPanel.setLayout(new java.awt.BorderLayout());
+        innerPanel.add(statusBar1, java.awt.BorderLayout.SOUTH);
 
         tree.setColumnControlVisible(true);
         tree.setPreferredScrollableViewportSize(new java.awt.Dimension(800, 600));
@@ -414,15 +420,32 @@ public class GUI extends javax.swing.JFrame {
                 treeValueChanged(evt);
             }
         });
-        jScrollPane1.setViewportView(tree);
+        treeScrollPane.setViewportView(tree);
 
-        getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        innerPanel.add(treeScrollPane, java.awt.BorderLayout.CENTER);
 
         editorCollapsiblePane.setCollapsed(true);
         editorCollapsiblePane.getContentPane().setLayout(new java.awt.BorderLayout());
         editorCollapsiblePane.getContentPane().add(scoreEditorPanel1, java.awt.BorderLayout.CENTER);
 
-        getContentPane().add(editorCollapsiblePane, java.awt.BorderLayout.NORTH);
+        innerPanel.add(editorCollapsiblePane, java.awt.BorderLayout.NORTH);
+
+        getContentPane().add(innerPanel, java.awt.BorderLayout.CENTER);
+
+        toolbar.setRollover(true);
+        toolbar.add(actions.gotoSong);
+        toolbar.addSeparator();
+        toolbar.add(actions.addNewScore);
+        toolbar.add(actions.addScoreViaEditor);
+        toolbar.add(actions.toggleEditor);
+        toolbar.add(actions.deleteSelectedScore);
+        toolbar.addSeparator();
+        toolbar.add(actions.downloadScores);
+        toolbar.add(actions.uploadScores);
+        toolbar.add(actions.uploadSelectedScore);
+        toolbar.addSeparator();
+        toolbar.add(actions.importScoresFromCsv);
+        getContentPane().add(toolbar, java.awt.BorderLayout.NORTH);
 
         fileMenu.setMnemonic('F');
         fileMenu.setText("File");
@@ -1569,8 +1592,8 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     javax.swing.JMenuItem goToWikiPageMenuItem;
     private javax.swing.JMenu helpMenu;
     javax.swing.JMenuItem importScoresFromCsvFileMenuItem;
+    private javax.swing.JPanel innerPanel;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
@@ -1591,7 +1614,9 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private jshm.gui.components.StatusBar statusBar1;
     private jshm.gui.TextFileViewerDialog textFileViewerDialog1;
     javax.swing.JMenuItem toggleEditorMenuItem;
+    private javax.swing.JToolBar toolbar;
     org.jdesktop.swingx.JXTreeTable tree;
+    private javax.swing.JScrollPane treeScrollPane;
     private javax.swing.JMenuItem uploadLogsMenuItem;
     javax.swing.JMenuItem uploadScoresMenuItem;
     javax.swing.JMenuItem uploadSelectedScoreMenuItem;
