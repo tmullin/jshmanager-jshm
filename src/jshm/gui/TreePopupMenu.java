@@ -51,24 +51,10 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 		this.gui = gui;
 		this.comp = comp;
 		
-		// TODO convert to using Actions...
-		
-		insertScoreMenuItem = new JMenuItem("Insert new score", 'I');
-		insertScoreMenuItem.setIcon(gui.addNewScoreMenuItem.getIcon());
-		insertScoreMenuItem.addActionListener(this);
-		
-		editScoreMenuItem = new JMenuItem("Edit this score", 'E');
-		editScoreMenuItem.setIcon(gui.toggleEditorMenuItem.getIcon());
-		editScoreMenuItem.addActionListener(this);
-		
-		uploadScoreMenuItem = new JMenuItem("Upload this score", 'U');
-		uploadScoreMenuItem.setIcon(gui.uploadSelectedScoreMenuItem.getIcon());
-		uploadScoreMenuItem.addActionListener(this);
-		
-		deleteScoreMenuItem = new JMenuItem("Delete this score", 'D');
-		deleteScoreMenuItem.setIcon(gui.deleteSelectedScoreMenuItem.getIcon());
-		deleteScoreMenuItem.addActionListener(this);
-		
+		insertScoreMenuItem = new JMenuItem(gui.actions.addNewScore);
+		editScoreMenuItem = new JMenuItem(gui.actions.editSelectedScore);
+		uploadScoreMenuItem = new JMenuItem(gui.actions.uploadSelectedScore);
+		deleteScoreMenuItem = new JMenuItem(gui.actions.deleteSelectedScore);
 		
 		gotoMenu = new JMenu("Go to");
 		gotoMenu.setIcon(gui.goToWikiPageMenuItem.getIcon());
@@ -106,7 +92,7 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 		addSeparator();
 		add(cancelMenuItem);
 		
-		addPopupTo();	
+		addPopupTo();
 	}
 	
 	private void checkEnabled() {
@@ -196,15 +182,7 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 		try {
 			assert selectedSong != null;
 			
-			if (src == insertScoreMenuItem) {
-				gui.addNewScoreMenuItem.doClick();
-			} else if (src == editScoreMenuItem) {
-				gui.editorCollapsiblePane.setCollapsed(false);
-			} else if (src == uploadScoreMenuItem) {
-				gui.uploadSelectedScoreMenuItem.doClick();
-			} else if (src == deleteScoreMenuItem) {
-				gui.deleteSelectedScoreMenuItem.doClick();
-			} else if (src == rankingsPageMenuItem) { 
+			if (src == rankingsPageMenuItem) { 
 				if (null != selectedSong)
 					Util.openURL(
 						selectedSong.getRankingsUrl(

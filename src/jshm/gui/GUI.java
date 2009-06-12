@@ -34,13 +34,14 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -48,6 +49,8 @@ import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -87,7 +90,6 @@ import jshm.sh.URLs;
 import jshm.util.PasteBin;
 
 import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.netbeans.spi.wizard.Wizard;
@@ -99,6 +101,11 @@ import org.netbeans.spi.wizard.Wizard;
 public class GUI extends javax.swing.JFrame {
 	static final Logger LOG = Logger.getLogger(GUI.class.getName());
 	
+	/**
+	 * The "real" control key accelerator mask via {@link Toolkit#getMenuShortcutKeyMask()}. 
+	 */
+	static final int CTRL_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+		
 	private Instrument.Group curGroup = null;
 	private Game curGame = null;
 	private Difficulty curDiff = null;
@@ -436,114 +443,34 @@ public class GUI extends javax.swing.JFrame {
         scoresMenu.setMnemonic('S');
         scoresMenu.setText("Scores");
 
-        goToSongMenuItem.setAccelerator(KeyStroke.getKeyStroke('G', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        goToSongMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/next32.png"))); // NOI18N
-        goToSongMenuItem.setText("Go to Song...");
-        goToSongMenuItem.setEnabled(false);
-        goToSongMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                goToSongMenuItemActionPerformed(evt);
-            }
-        });
+        goToSongMenuItem.setAction(actions.gotoSong);
         scoresMenu.add(goToSongMenuItem);
         scoresMenu.add(jSeparator7);
 
-        addNewScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_INSERT, 0));
-        addNewScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/add32.png"))); // NOI18N
-        addNewScoreMenuItem.setMnemonic('n');
-        addNewScoreMenuItem.setText("Add New Score");
-        addNewScoreMenuItem.setToolTipText("Insert a new score for the selected song");
-        addNewScoreMenuItem.setEnabled(false);
-        addNewScoreMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addNewScoreMenuItemActionPerformed(evt);
-            }
-        });
+        addNewScoreMenuItem.setAction(actions.addNewScore);
         scoresMenu.add(addNewScoreMenuItem);
 
-        addNewScoreViaEditorMenuItem.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        addNewScoreViaEditorMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/add32.png"))); // NOI18N
-        addNewScoreViaEditorMenuItem.setMnemonic('E');
-        addNewScoreViaEditorMenuItem.setText("Add Score via Editor");
-        addNewScoreViaEditorMenuItem.setEnabled(false);
-        addNewScoreViaEditorMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addNewScoreViaEditorMenuItemActionPerformed(evt);
-            }
-        });
+        addNewScoreViaEditorMenuItem.setAction(actions.addScoreViaEditor);
         scoresMenu.add(addNewScoreViaEditorMenuItem);
 
-        deleteSelectedScoreMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
-        deleteSelectedScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/delete32.png"))); // NOI18N
-        deleteSelectedScoreMenuItem.setMnemonic('D');
-        deleteSelectedScoreMenuItem.setText("Delete Selected Score");
-        deleteSelectedScoreMenuItem.setEnabled(false);
-        deleteSelectedScoreMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteSelectedScoreMenuItemActionPerformed(evt);
-            }
-        });
+        deleteSelectedScoreMenuItem.setAction(actions.deleteSelectedScore);
         scoresMenu.add(deleteSelectedScoreMenuItem);
 
-        toggleEditorMenuItem.setAccelerator(KeyStroke.getKeyStroke('E', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        toggleEditorMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/edit32.png"))); // NOI18N
-        toggleEditorMenuItem.setMnemonic('E');
-        toggleEditorMenuItem.setText("Toggle Editor");
-        toggleEditorMenuItem.setEnabled(false);
-        toggleEditorMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                toggleEditorMenuItemActionPerformed(evt);
-            }
-        });
+        toggleEditorMenuItem.setAction(actions.toggleEditor);
         scoresMenu.add(toggleEditorMenuItem);
         scoresMenu.add(jSeparator3);
 
-        downloadScoresMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/down32.png"))); // NOI18N
-        downloadScoresMenuItem.setMnemonic('L');
-        downloadScoresMenuItem.setText("Download from ScoreHero...");
-        downloadScoresMenuItem.setToolTipText("Sync the local score list for the current game and difficulty to ScoreHero's");
-        downloadScoresMenuItem.setEnabled(false);
-        downloadScoresMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                downloadScoresMenuItemActionPerformed(evt);
-            }
-        });
+        downloadScoresMenuItem.setAction(actions.downloadScores);
         scoresMenu.add(downloadScoresMenuItem);
 
-        uploadScoresMenuItem.setAccelerator(KeyStroke.getKeyStroke('U', InputEvent.ALT_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        uploadScoresMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/up32.png"))); // NOI18N
-        uploadScoresMenuItem.setMnemonic('U');
-        uploadScoresMenuItem.setText("Upload to ScoreHero...");
-        uploadScoresMenuItem.setEnabled(false);
-        uploadScoresMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                uploadScoresMenuItemActionPerformed(evt);
-            }
-        });
+        uploadScoresMenuItem.setAction(actions.uploadScores);
         scoresMenu.add(uploadScoresMenuItem);
 
-        uploadSelectedScoreMenuItem.setAccelerator(KeyStroke.getKeyStroke('U', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        uploadSelectedScoreMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/up32.png"))); // NOI18N
-        uploadSelectedScoreMenuItem.setMnemonic('S');
-        uploadSelectedScoreMenuItem.setText("Upload Selected Score");
-        uploadSelectedScoreMenuItem.setEnabled(false);
-        uploadSelectedScoreMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                uploadSelectedScoreMenuItemActionPerformed(evt);
-            }
-        });
+        uploadSelectedScoreMenuItem.setAction(actions.uploadSelectedScore);
         scoresMenu.add(uploadSelectedScoreMenuItem);
         scoresMenu.add(jSeparator6);
 
-        importScoresFromCsvFileMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/addfile32.png"))); // NOI18N
-        importScoresFromCsvFileMenuItem.setMnemonic('I');
-        importScoresFromCsvFileMenuItem.setText("Import from CSV File...");
-        importScoresFromCsvFileMenuItem.setEnabled(false);
-        importScoresFromCsvFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                importScoresFromCsvFileMenuItemActionPerformed(evt);
-            }
-        });
+        importScoresFromCsvFileMenuItem.setAction(actions.importScoresFromCsv);
         scoresMenu.add(importScoresFromCsvFileMenuItem);
 
         jMenuBar1.add(scoresMenu);
@@ -750,12 +677,6 @@ private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event
 //	this.setLocationRelativeTo(null);
 }//GEN-LAST:event_formWindowOpened
 
-private void downloadScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadScoresMenuItemActionPerformed
-	Wizard wiz = ScoreDownloadWizard
-		.createWizard(GUI.this, curGame, curGroup, curDiff);
-	wiz.show();
-}//GEN-LAST:event_downloadScoresMenuItemActionPerformed
-
 private void downloadGhSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                      
 	new SwingWorker<Boolean, Void>() {		
 		@Override
@@ -814,13 +735,16 @@ private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-F
 	final boolean isScore = o instanceof Score;
 	final Score score = isScore ? (Score) o : null;
 	
-	addNewScoreMenuItem.setEnabled(
+	actions.addNewScore.setEnabled(
 		goodRowCount &&
 		(isScore || o instanceof GhMyScoresTreeTableModel.SongScores));
-	deleteSelectedScoreMenuItem.setEnabled(
+	actions.deleteSelectedScore.setEnabled(
 		goodRowCount &&
 		isScore);
-	uploadSelectedScoreMenuItem.setEnabled(
+	actions.editSelectedScore.setEnabled(
+		goodRowCount &&
+		isScore && score.isEditable());
+	actions.uploadSelectedScore.setEnabled(
 		goodRowCount &&
 		isScore &&
 		score.isSubmittable());
@@ -833,53 +757,6 @@ private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-F
 	}
 }//GEN-LAST:event_treeValueChanged
 
-private void addNewScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNewScoreMenuItemActionPerformed
-	GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) tree.getTreeTableModel(); 
-	model.createScoreTemplate(
-		getCurGame(), getCurGroup(), getCurDiff(),
-		tree.getPathForRow(tree.getSelectedRow()));
-//	jXTreeTable1.repaint();
-}//GEN-LAST:event_addNewScoreMenuItemActionPerformed
-
-private void deleteSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteSelectedScoreMenuItemActionPerformed
-	GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) tree.getTreeTableModel();
-	TreePath path = tree.getPathForRow(tree.getSelectedRow());
-	
-	Score score = (Score) path.getLastPathComponent();
-	
-	switch (score.getStatus()) {
-		case NEW:
-		case TEMPLATE:
-			break;
-			
-		default:
-			if (JOptionPane.YES_OPTION !=
-				JOptionPane.showConfirmDialog(this,
-					"Are you sure you want to delete the\n" +
-					"selected score from the local database?\n" +
-					"(It will not be deleted from ScoreHero)",
-					"Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))
-				return;
-	}
-	
-	model.deleteScore(path);
-	scoreEditorPanel1.setScore(null);
-}//GEN-LAST:event_deleteSelectedScoreMenuItemActionPerformed
-
-private void uploadScoresMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadScoresMenuItemActionPerformed
-	GhMyScoresTreeTableModel newModel = 
-		((GhMyScoresTreeTableModel) tree.getTreeTableModel()).createNewScoresModel();
-	
-	if (newModel.getScoreCount() == 0) {
-		JOptionPane.showMessageDialog(this, "There are no new scores to upload", "Error", JOptionPane.WARNING_MESSAGE);
-		return;
-	}
-	
-	Wizard wiz = ScoreUploadWizard.createWizard(newModel);
-	wiz.show();
-	tree.repaint(); // takes care of de-highlighting the new scores
-}//GEN-LAST:event_uploadScoresMenuItemActionPerformed
-
 private void readmeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readmeMenuItemActionPerformed
 	showTextFileViewer("Readme.txt");
 }//GEN-LAST:event_readmeMenuItemActionPerformed
@@ -891,83 +768,6 @@ private void changeLogMenuItemActionPerformed(java.awt.event.ActionEvent evt) {/
 private void licenseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_licenseMenuItemActionPerformed
 	showTextFileViewer("License.txt");
 }//GEN-LAST:event_licenseMenuItemActionPerformed
-
-private void uploadSelectedScoreMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadSelectedScoreMenuItemActionPerformed
-	final Object selected =
-		// not obscure at all....
-		((JXTree) tree.getCellRenderer(0, tree.getHierarchicalColumn()))
-			.getSelectionPath().getLastPathComponent();
-	
-	if (!(selected instanceof Score)) {
-		LOG.fine("Expecting selected to be a Score but it was a " + selected.getClass().getName());
-		return;
-	}
-	
-	if (!((Score) selected).isSubmittable()) {
-		JOptionPane.showMessageDialog(this,
-			"That score cannot be uploaded.",
-			"Error", JOptionPane.WARNING_MESSAGE);
-		return;
-	}
-	
-	new SwingWorker<Void, Void>() {
-		@Override
-		protected Void doInBackground() throws Exception {
-			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			statusBar1.setTempText("Uploading score to ScoreHero...", true);
-			
-			try {
-				if (!jshm.sh.Client.hasAuthCookies()) {
-					LoginDialog.showDialog(GUI.this);
-				}
-				
-				Score score = (Score) selected;
-				score.submit();
-				
-				// this will cause the fields to be disabled as needed
-				scoreEditorPanel1.setScore(score);
-				statusBar1.setTempText(
-					"Uploaded " + score.getSong().getTitle() + " (" + score.getScore() + ")" +
-					(score.getStatus() == Score.Status.SUBMITTED
-					 ? " successfully"
-					 : ", success uncertain")
-				);
-			} catch (Exception e) {
-				LOG.log(Level.SEVERE, "Failed to upload score", e);
-				ErrorInfo ei = new ErrorInfo("Error", "Failed to upload score", null, null, e, null, null);
-				JXErrorPane.showDialog(GUI.this, ei);
-				statusBar1.revertText();
-			} finally {
-				statusBar1.setProgressVisible(false);
-				getContentPane().setCursor(Cursor.getDefaultCursor());
-			}
-			
-			return null;
-		}
-		
-		@Override
-		public void done() {
-			// let the message be seen for a couple of seconds
-			new Timer().schedule(new TimerTask() {
-				@Override
-				public void run() {
-					if (!EventQueue.isDispatchThread()) {
-						EventQueue.invokeLater(this);
-						return;
-					}
-
-					statusBar1.revertText();
-				}
-			}, 3000);
-		}
-		
-	}.execute();
-}//GEN-LAST:event_uploadSelectedScoreMenuItemActionPerformed
-
-private void toggleEditorMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleEditorMenuItemActionPerformed
-	editorCollapsiblePane.setCollapsed(
-		!editorCollapsiblePane.isCollapsed());
-}//GEN-LAST:event_toggleEditorMenuItemActionPerformed
 
 // TODO convert this and downloading gh song data into one method?
 private void downloadRbSongDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadRbSongDataMenuItemActionPerformed
@@ -1025,30 +825,6 @@ private void downloadRbSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 		}	
 	}.execute();
 }//GEN-LAST:event_downloadRbSongDataMenuItemActionPerformed
-
-private void addNewScoreViaEditorMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNewScoreViaEditorMenuItemActionPerformed
-	editorCollapsiblePane.setCollapsed(false);
-	scoreEditorPanel1.newButton.doClick();
-}//GEN-LAST:event_addNewScoreViaEditorMenuItemActionPerformed
-
-private void importScoresFromCsvFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importScoresFromCsvFileMenuItemActionPerformed
-	Wizard wiz = CsvImportWizard
-		.createWizard(GUI.this, curGame, curGroup, curDiff);
-	wiz.show();
-	myScoresMenuItemActionPerformed(null, curGame, curGroup, curDiff);
-}//GEN-LAST:event_importScoresFromCsvFileMenuItemActionPerformed
-
-private void goToSongMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goToSongMenuItemActionPerformed
-	Song song = SelectSongDialog.show(this, orderedSongs);
-//	System.out.println(song);
-	
-	if (null != song) {
-		assert tree.getTreeTableModel() instanceof GhMyScoresTreeTableModel;
-		
-		((GhMyScoresTreeTableModel) tree.getTreeTableModel())
-			.expandAndScrollTo(song);
-	}
-}//GEN-LAST:event_goToSongMenuItemActionPerformed
 
 private void searchWikiMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchWikiMenuItemActionPerformed
 	String in = JOptionPane.showInputDialog(this, "Enter a search phrase:", "Input", JOptionPane.QUESTION_MESSAGE);
@@ -1184,7 +960,7 @@ private int checkForNewScores() {
 			switch (ret) {
 				case JOptionPane.YES_OPTION:
 					// bring up upload wizard
-					uploadScoresMenuItemActionPerformed(null);
+					actions.uploadScores.actionPerformed(null);
 					
 				case JOptionPane.CANCEL_OPTION:
 				case JOptionPane.NO_OPTION:
@@ -1196,6 +972,19 @@ private int checkForNewScores() {
 	}
 	
 	return ret;
+}
+
+private transient Map<String, ImageIcon> iconCache = new HashMap<String, ImageIcon>(); 
+
+ImageIcon getIcon(String path) {
+	path = "/jshm/resources/images/" + path;
+	
+	if (null == iconCache.get(path)) {
+		iconCache.put(path,
+			new ImageIcon(JSHManager.class.getResource(path)));
+	}
+	
+	return iconCache.get(path);
 }
 
 /**
@@ -1523,15 +1312,18 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 			if (null == songs) return;
 			
 			statusBar1.setText("Viewing song data for " + game + " on " + difficulty);
-			downloadScoresMenuItem.setEnabled(true);
+			
+			actions.downloadScores.setEnabled(true);
+			actions.uploadScores.setEnabled(false);
+			actions.addScoreViaEditor.setEnabled(false);
+			actions.editSelectedScore.setEnabled(false);
+			actions.toggleEditor.setEnabled(false);
+			actions.importScoresFromCsv.setEnabled(false);
+			actions.gotoSong.setEnabled(false);
+			
 			downloadGhSongDataMenuItem.setEnabled(true);
 			downloadRbSongDataMenuItem.setEnabled(false);
-			uploadScoresMenuItem.setEnabled(false);
 			editorCollapsiblePane.setCollapsed(true);
-			addNewScoreViaEditorMenuItem.setEnabled(false);
-			toggleEditorMenuItem.setEnabled(false);
-			importScoresFromCsvFileMenuItem.setEnabled(false);
-			goToSongMenuItem.setEnabled(false);
 			
 			GUI.this.setIconImage(game.title.getIcon().getImage());
 			GUI.this.setTitle(game + " on " + difficulty + " - Song Data");
@@ -1598,15 +1390,18 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 			if (null == songs) return;
 			
 			statusBar1.setText("Viewing song data for " + game);
-			downloadScoresMenuItem.setEnabled(false);
+			
+			actions.downloadScores.setEnabled(false);
+			actions.uploadScores.setEnabled(false);
+			actions.addScoreViaEditor.setEnabled(false);
+			actions.editSelectedScore.setEnabled(false);
+			actions.toggleEditor.setEnabled(false);
+			actions.importScoresFromCsv.setEnabled(false);
+			actions.gotoSong.setEnabled(false);
+			
 			downloadGhSongDataMenuItem.setEnabled(false);
 			downloadRbSongDataMenuItem.setEnabled(true);
-			uploadScoresMenuItem.setEnabled(false);
 			editorCollapsiblePane.setCollapsed(true);
-			addNewScoreViaEditorMenuItem.setEnabled(false);
-			toggleEditorMenuItem.setEnabled(false);
-			importScoresFromCsvFileMenuItem.setEnabled(false);
-			goToSongMenuItem.setEnabled(false);
 			
 			GUI.this.setIconImage(game.title.getIcon().getImage());
 			GUI.this.setTitle(game + " " + group + " - Song Data");
@@ -1706,14 +1501,16 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			GUI.this.setTitle(game + " on " + difficulty + " " + group + " - Scores");
 			
 			statusBar1.setText("Viewing scores for " + game + " on " + difficulty);
-			downloadScoresMenuItem.setEnabled(true);
+			
+			actions.downloadScores.setEnabled(true);
+			actions.uploadScores.setEnabled(true);
+			actions.addScoreViaEditor.setEnabled(true);
+			actions.toggleEditor.setEnabled(true);
+			actions.importScoresFromCsv.setEnabled(true);
+			actions.gotoSong.setEnabled(true);
+			
 			downloadGhSongDataMenuItem.setEnabled(game instanceof GhGame);
 			downloadRbSongDataMenuItem.setEnabled(game instanceof RbGame);
-			uploadScoresMenuItem.setEnabled(true);
-			addNewScoreViaEditorMenuItem.setEnabled(true);
-			toggleEditorMenuItem.setEnabled(true);
-			importScoresFromCsvFileMenuItem.setEnabled(true);
-			goToSongMenuItem.setEnabled(true);
 			
 			if (scores.size() == 0 && null != evt) { // if evt == null we're recursing
 				if (JOptionPane.YES_OPTION ==
@@ -1721,7 +1518,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 						GUI.this, "No scores are present.\nDownload from ScoreHero?", "",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 					
-					downloadScoresMenuItemActionPerformed(null);
+					actions.downloadScores.actionPerformed(null);
 				}
 
 				return;
@@ -1833,5 +1630,260 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 	
 	public void openImageOrBrowser(String url) {
 		GuiUtil.openImageOrBrowser(this, url);
+	}
+	
+	
+	final Actions actions = new Actions();
+	
+	class Actions {		
+		abstract class MyAction extends AbstractAction {
+			MyAction(String name, Icon smallIcon,
+					String shortDescription,
+					KeyStroke accelerator, int mnemonic) {
+				this(true, name, smallIcon,
+					shortDescription,
+					accelerator, mnemonic);
+			}
+			
+			MyAction(boolean enabled, String name, Icon smallIcon,
+					String shortDescription,
+					KeyStroke accelerator, int mnemonic) {
+				this(enabled, name, smallIcon, smallIcon,
+					shortDescription, shortDescription,
+					accelerator, mnemonic);
+			}
+			
+			MyAction(boolean enabled, String name, Icon smallIcon, Icon largeIcon,
+				String shortDescription, String longDescription,
+				KeyStroke accelerator, int mnemonic) {
+				setEnabled(enabled);
+				putValue(Action.NAME, name);
+				putValue(Action.SMALL_ICON, smallIcon);
+				putValue(Action.LARGE_ICON_KEY, largeIcon);
+				putValue(Action.SHORT_DESCRIPTION, shortDescription);
+				putValue(Action.LONG_DESCRIPTION, longDescription);
+				putValue(Action.ACCELERATOR_KEY, accelerator);
+				putValue(Action.MNEMONIC_KEY, mnemonic);
+			}
+		}
+		
+		final MyAction gotoSong = new MyAction(false,
+			"Go to Song...", getIcon("toolbar/next32.png"),
+			"Find a song by name",
+			KeyStroke.getKeyStroke(KeyEvent.VK_G, CTRL_MASK), 0){
+
+			public void actionPerformed(ActionEvent e) {
+				Song song = SelectSongDialog.show(GUI.this, orderedSongs);
+//				System.out.println(song);
+				
+				if (null != song) {
+					assert tree.getTreeTableModel() instanceof GhMyScoresTreeTableModel;
+					
+					((GhMyScoresTreeTableModel) tree.getTreeTableModel())
+						.expandAndScrollTo(song);
+				}
+			}
+		};
+		
+		final MyAction addNewScore = new MyAction(false,
+			"Add New Score", getIcon("toolbar/add32.png"),
+			"Add a new score for the selected song",
+			KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, 0), 'n'){
+			
+			public void actionPerformed(ActionEvent e) {
+				GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) tree.getTreeTableModel(); 
+				model.createScoreTemplate(
+					getCurGame(), getCurGroup(), getCurDiff(),
+					tree.getPathForRow(tree.getSelectedRow()));
+			}
+		};
+		
+		final MyAction addScoreViaEditor = new MyAction(false,
+			"Add Score via Editor", getIcon("toolbar/add32.png"),
+			"Add a new score for the selected song using the editor",
+			KeyStroke.getKeyStroke(KeyEvent.VK_N, CTRL_MASK), 'E'){
+
+			public void actionPerformed(ActionEvent e) {
+				editorCollapsiblePane.setCollapsed(false);
+				scoreEditorPanel1.newButton.doClick();
+			}
+		};
+		
+		final MyAction editSelectedScore = new MyAction(false,
+			"Edit Selected Score", getIcon("toolbar/edit32.png"),
+			"Edit the selected score via the score editor",
+			null, 'E'){
+
+			public void actionPerformed(ActionEvent e) {
+				editorCollapsiblePane.setCollapsed(false);
+			}
+		};
+		
+		final MyAction deleteSelectedScore = new MyAction(false,
+			"Delete Selected Score", getIcon("toolbar/delete32.png"),
+			"Delete the currently selected score from the database",
+			KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), 'D'){
+
+			public void actionPerformed(ActionEvent e) {
+				GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) tree.getTreeTableModel();
+				TreePath path = tree.getPathForRow(tree.getSelectedRow());
+				
+				Score score = (Score) path.getLastPathComponent();
+				
+				switch (score.getStatus()) {
+					case NEW:
+					case TEMPLATE:
+						break;
+						
+					default:
+						if (JOptionPane.YES_OPTION !=
+							JOptionPane.showConfirmDialog(GUI.this,
+								"Are you sure you want to delete the\n" +
+								"selected score from the local database?\n" +
+								"(It will not be deleted from ScoreHero)",
+								"Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))
+							return;
+				}
+				
+				model.deleteScore(path);
+				scoreEditorPanel1.setScore(null);
+			}
+		};
+		
+		final MyAction toggleEditor = new MyAction(false,
+			"Toggle editor", getIcon("toolbar/edit32.png"),
+			"Show or hide the score editor",
+			KeyStroke.getKeyStroke(KeyEvent.VK_E, CTRL_MASK), 'g'){
+
+			public void actionPerformed(ActionEvent e) {
+				editorCollapsiblePane.setCollapsed(
+					!editorCollapsiblePane.isCollapsed());
+			}
+		};
+		
+		final MyAction downloadScores = new MyAction(false,
+			"Download from ScoreHero...", getIcon("toolbar/down32.png"),
+			"Download your scores so they can be viewed within JSHManager",
+			null, 'l'){
+
+			public void actionPerformed(ActionEvent e) {
+				Wizard wiz = ScoreDownloadWizard
+					.createWizard(GUI.this, curGame, curGroup, curDiff);
+				wiz.show();
+			}
+		};
+		
+		final MyAction uploadScores = new MyAction(false,
+			"Upload to ScoreHero...", getIcon("toolbar/up32.png"),
+			"Upload your new scores to ScoreHero",
+			KeyStroke.getKeyStroke(KeyEvent.VK_U, CTRL_MASK | KeyEvent.ALT_DOWN_MASK), 'U'){
+
+			public void actionPerformed(ActionEvent e) {
+				GhMyScoresTreeTableModel newModel = 
+					((GhMyScoresTreeTableModel) tree.getTreeTableModel()).createNewScoresModel();
+				
+				if (newModel.getScoreCount() == 0) {
+					JOptionPane.showMessageDialog(GUI.this, "There are no new scores to upload", "Error", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
+				Wizard wiz = ScoreUploadWizard.createWizard(newModel);
+				wiz.show();
+				tree.repaint(); // takes care of de-highlighting the new scores
+			}
+		};
+		
+		final MyAction uploadSelectedScore = new MyAction(false,
+			"Upload Selected Score", getIcon("toolbar/up32.png"),
+			"Uploaded only the selected score to ScoreHero",
+			KeyStroke.getKeyStroke(KeyEvent.VK_U, CTRL_MASK), 'S'){
+
+			public void actionPerformed(ActionEvent e) {
+				final Object selected =
+//					// not obscure at all....
+//					((JXTree) tree.getCellRenderer(0, tree.getHierarchicalColumn()))
+//						.getSelectionPath().getLastPathComponent();
+					tree.getPathForRow(
+						tree.getSelectedRow()).getLastPathComponent();
+					
+				if (!(selected instanceof Score)) {
+					LOG.fine("Expecting selected to be a Score but it was a " + selected.getClass().getName());
+					return;
+				}
+				
+				if (!((Score) selected).isSubmittable()) {
+					JOptionPane.showMessageDialog(GUI.this,
+						"That score cannot be uploaded.",
+						"Error", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
+				new SwingWorker<Void, Void>() {
+					@Override
+					protected Void doInBackground() throws Exception {
+						getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+						statusBar1.setTempText("Uploading score to ScoreHero...", true);
+						
+						try {
+							if (!jshm.sh.Client.hasAuthCookies()) {
+								LoginDialog.showDialog(GUI.this);
+							}
+							
+							Score score = (Score) selected;
+							score.submit();
+							
+							// this will cause the fields to be disabled as needed
+							scoreEditorPanel1.setScore(score);
+							statusBar1.setTempText(
+								"Uploaded " + score.getSong().getTitle() + " (" + score.getScore() + ")" +
+								(score.getStatus() == Score.Status.SUBMITTED
+								 ? " successfully"
+								 : ", success uncertain")
+							);
+						} catch (Exception e) {
+							LOG.log(Level.SEVERE, "Failed to upload score", e);
+							ErrorInfo ei = new ErrorInfo("Error", "Failed to upload score", null, null, e, null, null);
+							JXErrorPane.showDialog(GUI.this, ei);
+							statusBar1.revertText();
+						} finally {
+							statusBar1.setProgressVisible(false);
+							getContentPane().setCursor(Cursor.getDefaultCursor());
+						}
+						
+						return null;
+					}
+					
+					@Override
+					public void done() {
+						// let the message be seen for a couple of seconds
+						new Timer().schedule(new TimerTask() {
+							@Override
+							public void run() {
+								if (!EventQueue.isDispatchThread()) {
+									EventQueue.invokeLater(this);
+									return;
+								}
+
+								statusBar1.revertText();
+							}
+						}, 3000);
+					}
+					
+				}.execute();
+			}
+		};
+		
+		final MyAction importScoresFromCsv = new MyAction(false,
+			"Import from CSV File...", getIcon("toolbar/addfile32.png"),
+			"Import scores from a comma-separated values file",
+			null, 'I'){
+
+			public void actionPerformed(ActionEvent e) {
+				Wizard wiz = CsvImportWizard
+					.createWizard(GUI.this, curGame, curGroup, curDiff);
+				wiz.show();
+				myScoresMenuItemActionPerformed(null, curGame, curGroup, curDiff);
+			}
+		};
 	}
 }
