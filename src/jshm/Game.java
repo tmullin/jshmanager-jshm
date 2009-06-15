@@ -131,9 +131,6 @@ public abstract class Game {
 	protected void initDynamicTiersInternal() {}
 	
 	private final void initSortingComparators() {
-		mapSortingComparator(Sorting.SCOREHERO, SongComparators.SCOREHERO);
-		mapSortingComparator(Sorting.TITLE, SongComparators.TITLE);
-		
 		initSortingComparatorsInternal();
 	}
 	
@@ -212,8 +209,11 @@ public abstract class Game {
 	}
 	
 	public Comparator<Song> getSortingComparator(final Sorting sorting) {
-		if (null == sortingComparatorMap.get(sorting))
-			throw new UnsupportedOperationException("sorting not implemented: " + sorting);
+		if (null == sortingComparatorMap.get(sorting)) {
+			if (null == sorting.comparator)
+				throw new UnsupportedOperationException("sorting not implemented: " + sorting);
+			return sorting.comparator;
+		}
 		
 		return sortingComparatorMap.get(sorting);
 	}
@@ -275,22 +275,5 @@ public abstract class Game {
 			t = new Text(Game.class);
 		
 		return t.get(toString() + "." + key);
-	}
-	
-	
-	
-	public static class SongComparators {
-		public static final Comparator<Song>
-		SCOREHERO = new Comparator<Song>() {
-			@Override public int compare(Song o1, Song o2) {
-				return o1.getSongOrder().compareTo(o2.getSongOrder());
-			}
-		},
-		
-		TITLE = new Comparator<Song>() {
-			@Override public int compare(Song o1, Song o2) {
-				return o1.getTitle().compareTo(o2.getTitle());
-			}
-		};
 	}
 }

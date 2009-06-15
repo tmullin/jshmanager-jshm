@@ -20,6 +20,8 @@
  */
 package jshm;
 
+import java.util.Comparator;
+
 import javax.persistence.*;
 
 import jshm.Instrument.Group;
@@ -49,10 +51,10 @@ public abstract class Song implements Comparable<Song> {
 	private Game	game		= null;
 	private String
 		title		= "UNKNOWN",
-		artist		= null,
-		album		= null,
-		genre		= null,
-		songPack	= null;
+		artist		= "UNKNOWN",
+		album		= "UNKNOWN",
+		genre		= "UNKNOWN",
+		songPack	= "UNKNOWN";
 	
 	private int
 		trackNum	= 0,
@@ -60,7 +62,7 @@ public abstract class Song implements Comparable<Song> {
 	
 	private RecordingType recordingType = null;
 	
-	private SongOrder songOrder = null;
+	protected SongOrder songOrder = null;
 	
 	/**
 	 * If the game's {@link Difficulty.Strategy} is BY_SONG this
@@ -125,7 +127,7 @@ public abstract class Song implements Comparable<Song> {
 	}
 
 	public void setArtist(String artist) {
-		this.artist = artist;
+		this.artist = null == artist ? "UNKNOWN" : artist;
 	}
 
 	public String getAlbum() {
@@ -133,7 +135,7 @@ public abstract class Song implements Comparable<Song> {
 	}
 
 	public void setAlbum(String album) {
-		this.album = album;
+		this.album = null == album ? "UNKNOWN" : album;
 	}
 
 	public String getGenre() {
@@ -141,7 +143,7 @@ public abstract class Song implements Comparable<Song> {
 	}
 
 	public void setGenre(String genre) {
-		this.genre = genre;
+		this.genre = null == genre ? "UNKNOWN" : genre;
 	}
 
 	public String getSongPack() {
@@ -149,7 +151,7 @@ public abstract class Song implements Comparable<Song> {
 	}
 
 	public void setSongPack(String songPack) {
-		this.songPack = songPack;
+		this.songPack = null == songPack ? "UNKNOWN" : songPack;
 	}
 
 	public int getTrackNum() {
@@ -313,6 +315,122 @@ public abstract class Song implements Comparable<Song> {
 	}
 	
 	public static enum Sorting {
-		SCOREHERO, DIFFICULTY, TITLE, ARTIST, DECADE, GENRE, LOCATION
+		SCOREHERO(Comparators.SCOREHERO),
+		TITLE(Comparators.TITLE),
+		ARTIST(Comparators.ARTIST),
+		GENRE(Comparators.GENRE),
+		DECADE(Comparators.REVERSE_DECADE),
+		DIFFICULTY, LOCATION;
+		
+		public final Comparator<Song> comparator;
+		
+		private Sorting() {
+			this(null);
+		}
+		
+		private Sorting(Comparator<Song> comp) {
+			this.comparator = comp;
+		}
+	}
+	
+	public static class Comparators {
+		public static final Comparator<Song>
+		SCOREHERO = new Comparator<Song>() {
+			@Override public int compare(Song o1, Song o2) {
+				return o1.getSongOrder().compareTo(o2.getSongOrder());
+			}
+		},
+		
+		TITLE = new Comparator<Song>() {
+			@Override public int compare(Song o1, Song o2) {
+				return o1.getTitle().compareTo(o2.getTitle());
+			}
+		},
+		
+		ARTIST = new Comparator<Song>() {
+			@Override public int compare(Song o1, Song o2) {
+				int ret = 0;
+				
+				if (null == o1.artist && null != o2.artist) {
+					ret = -1;
+				} else if (null != o1.artist && null == o2.artist) {
+					ret = 1;
+				} else {
+					ret = o1.artist.compareTo(o2.artist);
+					
+					if (0 == ret)
+						ret = TITLE.compare(o1, o2);
+				}
+				
+				return ret;
+			}
+		},
+		
+		GENRE = new Comparator<Song>() {
+			@Override public int compare(Song o1, Song o2) {
+				int ret = 0;
+				
+				if (null == o1.genre && null != o2.genre) {
+					ret = -1;
+				} else if (null != o1.genre && null == o2.genre) {
+					ret = 1;
+				} else {
+					ret = o1.genre.compareTo(o2.genre);
+					
+					if (0 == ret)
+						ret = TITLE.compare(o1, o2);
+				}
+				
+				return ret;
+			}
+		},
+		
+		DECADE = new Comparator<Song>() {
+			@Override public int compare(Song o1, Song o2) {
+				int ret = 0;
+				
+				// unknown years come first
+				if (0 == o1.year && 0 != o2.year) {
+					ret = -1;
+				} else if (0 != o1.year && 0 == o2.year) {
+					ret = 1;
+				} else {
+					// multiplying by 10 probably isn't necessary
+					Integer decade1 = o1.year / 10 * 10;
+					Integer decade2 = o2.year / 10 * 10;
+					
+					ret = decade1.compareTo(decade2);
+					
+					if (0 == ret)
+						ret = TITLE.compare(o1, o2);
+				}
+				
+				return ret;
+			}
+		},
+		
+		REVERSE_DECADE = new Comparator<Song>() {
+			@Override public int compare(Song o1, Song o2) {
+				int ret = 0;
+				
+				// unknown years come first
+				if (0 == o1.year && 0 != o2.year) {
+					ret = -1;
+				} else if (0 != o1.year && 0 == o2.year) {
+					ret = 1;
+				} else {
+					// multiplying by 10 probably isn't necessary
+					Integer decade1 = o1.year / 10 * 10;
+					Integer decade2 = o2.year / 10 * 10;
+					
+					ret = decade2.compareTo(decade1);
+					
+					if (0 == ret)
+						ret = TITLE.compare(o1, o2);
+				}
+				
+				return ret;
+			}
+		};
 	}
 }

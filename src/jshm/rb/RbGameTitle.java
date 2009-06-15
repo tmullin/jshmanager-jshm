@@ -23,10 +23,10 @@ package jshm.rb;
 import jshm.GameSeries;
 import jshm.GameTitle;
 import jshm.Platform;
-import jshm.Song;
 import jshm.StreakStrategy;
 import jshm.Difficulty.Strategy;
 import jshm.Instrument.Group;
+import jshm.Song.Sorting;
 
 public class RbGameTitle extends GameTitle {
 	public static void init() {}
@@ -68,12 +68,12 @@ public class RbGameTitle extends GameTitle {
 		return Group.getBySize(1).toArray(new Group[0]);
 	}
 	
-	private static final Song.Sorting[] SUPPORTED_SORTINGS = {
-		Song.Sorting.SCOREHERO, Song.Sorting.TITLE
+	private static final Sorting[] SUPPORTED_SORTINGS = {
+		Sorting.SCOREHERO, Sorting.TITLE
 	};
 	
 	@Override
-	public Song.Sorting[] getSupportedSortings() {
+	public Sorting[] getSupportedSortings() {
 		return SUPPORTED_SORTINGS;
 	}
 

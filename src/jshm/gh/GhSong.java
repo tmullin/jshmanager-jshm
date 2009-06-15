@@ -32,6 +32,8 @@ import org.hibernate.validator.*;
 
 import jshm.Difficulty;
 import jshm.Game;
+import jshm.Instrument;
+import jshm.SongOrder;
 import jshm.Instrument.Group;
 import jshm.sh.URLs;
 
@@ -123,6 +125,7 @@ public class GhSong extends jshm.Song {
 	private Difficulty	difficulty	= null;
 	
 	private int 	tierLevel		= 0;
+	private int		tierOrder		= 0;
 	private int 	noteCount 		= -1;
 	private int 	baseScore 		= -1;
 	private int 	fourStarCutoff 	= -1;
@@ -131,6 +134,21 @@ public class GhSong extends jshm.Song {
 	private int 	sevenStarCutoff = -1;
 	private int 	eightStarCutoff = -1;
 	private int 	nineStarCutoff 	= -1;
+	
+	@Transient
+	@Override public SongOrder getSongOrder() {
+		if (null == songOrder) {
+			songOrder = new SongOrder();
+			songOrder.setGameTitle(getGameTitle());
+			songOrder.setPlatform(getGame().platform);
+			songOrder.setGroup(Instrument.Group.GUITAR);
+			songOrder.setSong(this);
+			songOrder.setTier(tierLevel);
+			songOrder.setOrder(tierOrder);
+		}
+		
+		return songOrder;
+	}
 	
 	/**
 	 * Sets the noteCount, baseScore and cutoffs of
@@ -143,6 +161,16 @@ public class GhSong extends jshm.Song {
 		
 		if (this.noteCount != source.noteCount) {
 			this.noteCount = source.noteCount;
+			updated = true;
+		}
+		
+		if (this.tierLevel != source.tierLevel) {
+			this.tierLevel = source.tierLevel;
+			updated = true;
+		}
+		
+		if (this.tierOrder != source.tierOrder) {
+			this.tierOrder = source.tierOrder;
 			updated = true;
 		}
 		
@@ -319,6 +347,18 @@ public class GhSong extends jshm.Song {
 		if (tierLevel < 0)
 			throw new IllegalArgumentException("tierLevel must be >= 0");
 		this.tierLevel = tierLevel;
+	}
+	
+	@Min(0)
+	public int getTierOrder() {
+		return tierOrder;
+	}
+	
+	public void setTierOrder(Integer tierOrder) {
+		if (null == tierOrder || tierOrder < 0)
+			tierOrder = 0;
+		
+		this.tierOrder = tierOrder;
 	}
 	
 	/**

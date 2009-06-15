@@ -49,11 +49,13 @@ import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
@@ -81,6 +83,7 @@ import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 import jshm.gui.datamodels.GhSongDataTreeTableModel;
 import jshm.gui.datamodels.Parentable;
 import jshm.gui.datamodels.RbSongDataTreeTableModel;
+import jshm.gui.datamodels.SongSortable;
 import jshm.gui.wizards.csvimport.CsvImportWizard;
 import jshm.gui.wizards.scoredownload.ScoreDownloadWizard;
 import jshm.gui.wizards.scoreupload.ScoreUploadWizard;
@@ -109,7 +112,7 @@ public class GUI extends javax.swing.JFrame {
 	private Instrument.Group curGroup = null;
 	private Game curGame = null;
 	private Difficulty curDiff = null;
-	private Sorting curSorting = Sorting.TITLE;
+	private Sorting curSorting = Sorting.SCOREHERO;
 	
 	private List<? extends Song> orderedSongs = null;
 	
@@ -189,8 +192,6 @@ public class GUI extends javax.swing.JFrame {
         
         hh.setStatus(statusBar1);
         
-        hh.add(addNewScoreMenuItem);
-        hh.add(downloadScoresMenuItem);
         hh.add(downloadGhSongDataMenuItem);
         hh.add(tree, new HoverHelp.Callback() {
 			@Override
@@ -342,22 +343,13 @@ public class GUI extends javax.swing.JFrame {
         editorCollapsiblePane = new org.jdesktop.swingx.JXCollapsiblePane();
         scoreEditorPanel1 = new ScoreEditorPanel(this);
         toolbar = new javax.swing.JToolBar();
-        jMenuBar1 = new javax.swing.JMenuBar();
+        menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
+        songSortingMenu = new javax.swing.JMenu();
+        hideEmptySongsMenuItem = new javax.swing.JCheckBoxMenuItem();
+        jSeparator3 = new javax.swing.JSeparator();
         exitMenuItem = new javax.swing.JMenuItem();
         scoresMenu = new javax.swing.JMenu();
-        goToSongMenuItem = new javax.swing.JMenuItem();
-        jSeparator7 = new javax.swing.JSeparator();
-        addNewScoreMenuItem = new javax.swing.JMenuItem();
-        addNewScoreViaEditorMenuItem = new javax.swing.JMenuItem();
-        deleteSelectedScoreMenuItem = new javax.swing.JMenuItem();
-        toggleEditorMenuItem = new javax.swing.JMenuItem();
-        jSeparator3 = new javax.swing.JSeparator();
-        downloadScoresMenuItem = new javax.swing.JMenuItem();
-        uploadScoresMenuItem = new javax.swing.JMenuItem();
-        uploadSelectedScoreMenuItem = new javax.swing.JMenuItem();
-        jSeparator6 = new javax.swing.JSeparator();
-        importScoresFromCsvFileMenuItem = new javax.swing.JMenuItem();
         ghMenu = new javax.swing.JMenu();
         ghScoresMenu = new javax.swing.JMenu();
         ghSongDataMenu = new javax.swing.JMenu();
@@ -451,6 +443,21 @@ public class GUI extends javax.swing.JFrame {
         fileMenu.setMnemonic('F');
         fileMenu.setText("File");
 
+        songSortingMenu.setMnemonic('S');
+        songSortingMenu.setText("Sort Songs by");
+        songSortingMenu.setEnabled(false);
+
+        initSongSortingMenu();
+
+        fileMenu.add(songSortingMenu);
+
+        hideEmptySongsMenuItem.setMnemonic('H');
+        hideEmptySongsMenuItem.setSelected(true);
+        hideEmptySongsMenuItem.setText("Hide Empty Songs");
+        hideEmptySongsMenuItem.setToolTipText("Don't show songs or tiers with no scores");
+        fileMenu.add(hideEmptySongsMenuItem);
+        fileMenu.add(jSeparator3);
+
         exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
         exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/close32.png"))); // NOI18N
         exitMenuItem.setMnemonic('x');
@@ -462,42 +469,14 @@ public class GUI extends javax.swing.JFrame {
         });
         fileMenu.add(exitMenuItem);
 
-        jMenuBar1.add(fileMenu);
+        menuBar.add(fileMenu);
 
         scoresMenu.setMnemonic('S');
         scoresMenu.setText("Scores");
 
-        goToSongMenuItem.setAction(actions.gotoSong);
-        scoresMenu.add(goToSongMenuItem);
-        scoresMenu.add(jSeparator7);
+        initScoresMenu(scoresMenu);
 
-        addNewScoreMenuItem.setAction(actions.addNewScore);
-        scoresMenu.add(addNewScoreMenuItem);
-
-        addNewScoreViaEditorMenuItem.setAction(actions.addScoreViaEditor);
-        scoresMenu.add(addNewScoreViaEditorMenuItem);
-
-        deleteSelectedScoreMenuItem.setAction(actions.deleteSelectedScore);
-        scoresMenu.add(deleteSelectedScoreMenuItem);
-
-        toggleEditorMenuItem.setAction(actions.toggleEditor);
-        scoresMenu.add(toggleEditorMenuItem);
-        scoresMenu.add(jSeparator3);
-
-        downloadScoresMenuItem.setAction(actions.downloadScores);
-        scoresMenu.add(downloadScoresMenuItem);
-
-        uploadScoresMenuItem.setAction(actions.uploadScores);
-        scoresMenu.add(uploadScoresMenuItem);
-
-        uploadSelectedScoreMenuItem.setAction(actions.uploadSelectedScore);
-        scoresMenu.add(uploadSelectedScoreMenuItem);
-        scoresMenu.add(jSeparator6);
-
-        importScoresFromCsvFileMenuItem.setAction(actions.importScoresFromCsv);
-        scoresMenu.add(importScoresFromCsvFileMenuItem);
-
-        jMenuBar1.add(scoresMenu);
+        menuBar.add(scoresMenu);
 
         ghMenu.setMnemonic('G');
         ghMenu.setText("Guitar Hero");
@@ -537,7 +516,7 @@ public class GUI extends javax.swing.JFrame {
 
         ghMenu.add(ghLinksMenu);
 
-        jMenuBar1.add(ghMenu);
+        menuBar.add(ghMenu);
 
         rbMenu.setMnemonic('R');
         rbMenu.setText("Rock Band");
@@ -575,7 +554,7 @@ public class GUI extends javax.swing.JFrame {
 
         rbMenu.add(rbLinksMenu);
 
-        jMenuBar1.add(rbMenu);
+        menuBar.add(rbMenu);
 
         wikiMenu.setMnemonic('W');
         wikiMenu.setText("Wiki");
@@ -603,7 +582,7 @@ public class GUI extends javax.swing.JFrame {
 
         initForumsMenu(wikiMenu);
 
-        jMenuBar1.add(wikiMenu);
+        menuBar.add(wikiMenu);
 
         helpMenu.setMnemonic('H');
         helpMenu.setText("Help");
@@ -674,9 +653,9 @@ public class GUI extends javax.swing.JFrame {
         });
         helpMenu.add(aboutMenuItem);
 
-        jMenuBar1.add(helpMenu);
+        menuBar.add(helpMenu);
 
-        setJMenuBar(jMenuBar1);
+        setJMenuBar(menuBar);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -967,10 +946,10 @@ private int checkForNewScores() {
 	TreeTableModel model = tree.getTreeTableModel();
 	
 	if (model instanceof GhMyScoresTreeTableModel) {
-		GhMyScoresTreeTableModel newModel = 
-			((GhMyScoresTreeTableModel) tree.getTreeTableModel()).createNewScoresModel();
+		int scoreCount = 
+			((GhMyScoresTreeTableModel) tree.getTreeTableModel()).getSubmittableScoreCount();
 		
-		if (newModel.getScoreCount() != 0) {
+		if (scoreCount != 0) {
 			ret = JOptionPane.showConfirmDialog(this, 
 				"There are new scores that have not been uploaded.\n" +
 				"Do you want to upload them?\n\n" +
@@ -1011,11 +990,55 @@ ImageIcon getIcon(String path) {
 	return iconCache.get(path);
 }
 
+private void initSongSortingMenu() {
+	JMenu m = songSortingMenu;
+	m.removeAll();
+	
+	if (null == curGame || 0 == curGame.title.getSupportedSortings().length) {
+		m.setEnabled(false);
+	} else {
+		ButtonGroup group = new ButtonGroup();
+		
+		for (final Song.Sorting s : curGame.title.getSupportedSortings()) {
+			JMenuItem item = new JRadioButtonMenuItem(s.toString(), s == curSorting);
+			group.add(item);
+			item.addActionListener(new ActionListener() {
+				@Override public void actionPerformed(ActionEvent e) {
+					GUI.this.setCurSorting(s);
+				}
+			});
+			m.add(item);
+		}
+		
+		m.setEnabled(true);
+	}
+}
+
+private void initScoresMenu(final JMenu menu) {
+	// TODO add returned menu items to hover help
+	
+	menu.add(actions.gotoSong);
+	menu.addSeparator();
+
+	menu.add(actions.addNewScore);
+	menu.add(actions.addScoreViaEditor);
+	menu.add(actions.deleteSelectedScore);
+	menu.add(actions.toggleEditor);
+	menu.addSeparator();
+
+	menu.add(actions.downloadScores);
+	menu.add(actions.uploadScores);
+	menu.add(actions.uploadSelectedScore);
+	menu.addSeparator();
+
+	menu.add(actions.importScoresFromCsv);
+}
+
 /**
  * Load the menu with all avaialable GH games.
  * @param menu
  */
-private void initDynamicGameMenu(final javax.swing.JMenu menu) {
+private void initDynamicGameMenu(final JMenu menu) {
 	if (menu == viewLogMenu) {
 		try {
 			final File logDir = new File("data/logs");
@@ -1109,7 +1132,7 @@ private void initDynamicGameMenu(final javax.swing.JMenu menu) {
 	}
 }
 
-private void initRbGameMenu(final javax.swing.JMenu menu) {
+private void initRbGameMenu(final JMenu menu) {
 	java.util.List<GameTitle> titles =
 		GameTitle.getTitlesBySeries(GameSeries.ROCKBAND);
 	
@@ -1289,6 +1312,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 		throw new IllegalArgumentException("game is not a GhGame");
 	
 	this.setCurGame(game);
+	initSongSortingMenu();
 	this.setCurDiff(difficulty);
 	curGroup = Instrument.Group.GUITAR;
 	
@@ -1369,6 +1393,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 
 private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGame game, final Instrument.Group group) {
 	setCurGame(game);
+	initSongSortingMenu();
 	curGroup = group;
 	setCurDiff(null);
 	
@@ -1460,9 +1485,10 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		default: assert false;
 	}
 	
-	this.setCurGame(game);
-	this.setCurDiff(difficulty);
-	this.curGroup = group;
+	setCurGame(game);
+	initSongSortingMenu();
+	setCurDiff(difficulty);
+	curGroup = group;
 	scoreEditorPanel1.setScore(null);
 	
 	new SwingWorker<Void, Void>() {
@@ -1573,15 +1599,11 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private jshm.gui.AboutDialog aboutDialog1;
     private javax.swing.JMenuItem aboutMenuItem;
-    javax.swing.JMenuItem addNewScoreMenuItem;
-    javax.swing.JMenuItem addNewScoreViaEditorMenuItem;
     private javax.swing.JMenuItem changeLogMenuItem;
     private javax.swing.JMenuItem checkForUpdatesMenuItem;
     private jshm.gui.CheckUpdatesDialog checkUpdatesDialog1;
-    javax.swing.JMenuItem deleteSelectedScoreMenuItem;
     private javax.swing.JMenuItem downloadGhSongDataMenuItem;
     private javax.swing.JMenuItem downloadRbSongDataMenuItem;
-    javax.swing.JMenuItem downloadScoresMenuItem;
     org.jdesktop.swingx.JXCollapsiblePane editorCollapsiblePane;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
@@ -1589,21 +1611,18 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JMenu ghMenu;
     private javax.swing.JMenu ghScoresMenu;
     private javax.swing.JMenu ghSongDataMenu;
-    javax.swing.JMenuItem goToSongMenuItem;
     javax.swing.JMenuItem goToWikiPageMenuItem;
     private javax.swing.JMenu helpMenu;
-    javax.swing.JMenuItem importScoresFromCsvFileMenuItem;
+    javax.swing.JCheckBoxMenuItem hideEmptySongsMenuItem;
     private javax.swing.JPanel innerPanel;
-    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
-    private javax.swing.JSeparator jSeparator6;
-    private javax.swing.JSeparator jSeparator7;
     private javax.swing.JSeparator jSeparator8;
     private javax.swing.JMenuItem licenseMenuItem;
+    private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu rbLinksMenu;
     private javax.swing.JMenu rbMenu;
     private javax.swing.JMenu rbScoresMenu;
@@ -1612,15 +1631,13 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private jshm.gui.ScoreEditorPanel scoreEditorPanel1;
     private javax.swing.JMenu scoresMenu;
     javax.swing.JMenuItem searchWikiMenuItem;
+    private javax.swing.JMenu songSortingMenu;
     private jshm.gui.components.StatusBar statusBar1;
     private jshm.gui.TextFileViewerDialog textFileViewerDialog1;
-    javax.swing.JMenuItem toggleEditorMenuItem;
     private javax.swing.JToolBar toolbar;
     org.jdesktop.swingx.JXTreeTable tree;
     private javax.swing.JScrollPane treeScrollPane;
     private javax.swing.JMenuItem uploadLogsMenuItem;
-    javax.swing.JMenuItem uploadScoresMenuItem;
-    javax.swing.JMenuItem uploadSelectedScoreMenuItem;
     private javax.swing.JMenu viewLogMenu;
     private javax.swing.JMenu wikiMenu;
     // End of variables declaration//GEN-END:variables
@@ -1651,6 +1668,19 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 	
 	void setCurGroup(Instrument.Group group) {
 		this.curGroup = group;
+	}
+	
+	public Song.Sorting getCurSorting() {
+		return curSorting;
+	}
+	
+	void setCurSorting(Song.Sorting sorting) {
+		this.curSorting = sorting;
+		
+		if (tree.getTreeTableModel() instanceof SongSortable) {
+			((SongSortable) tree.getTreeTableModel()).setSorting(sorting);
+			tree.packAll();
+		}
 	}
 	
 	

@@ -146,6 +146,12 @@ public abstract class GameTitle {
 	
 	public abstract Song.Sorting[] getSupportedSortings();
 	
+	public boolean supportsSorting(final Song.Sorting sorting) {
+		for (Song.Sorting s : getSupportedSortings())
+			if (sorting == s) return true;
+		return false;
+	}
+	
 	public abstract StreakStrategy getStreakStrategy();
 	
 	// override Object methods

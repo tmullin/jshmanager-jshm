@@ -70,7 +70,7 @@ import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
  * 
  * @author Tim Mullin
  */
-public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements Parentable {
+public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements Parentable, SongSortable {
 	static final Logger LOG = Logger.getLogger(GhMyScoresTreeTableModel.class.getName());
 	
 	/*

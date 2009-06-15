@@ -81,6 +81,7 @@ public class GhSongScraper {
 		
 		String curTierName = "UNKNOWN";
 		int curTierLevel = 0;
+		int curTierOrder = 0;
 		
 		public IdAndNoteHandler(
 			final GhGame game,
@@ -109,6 +110,7 @@ public class GhSongScraper {
 			
 			curTierName = tierName;
 			curTierLevel++;
+			curTierOrder = 0;
 		}
 		
 		// "link=songid|-|text|text=int|-|-"
@@ -118,6 +120,7 @@ public class GhSongScraper {
         	curSong.setGame(game);
         	curSong.setDifficulty(difficulty);
         	curSong.setTierLevel(curTierLevel);
+        	curSong.setTierOrder(curTierOrder++);
         	
     		try {
     			curSong.setScoreHeroId(Integer.parseInt(data[0][0]));
