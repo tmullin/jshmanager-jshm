@@ -92,11 +92,12 @@ public abstract class Game {
 	public final Platform platform;
 	public final boolean supportsDLC;
 	
-	protected final Map<Instrument.Group, Tiers> tiersMap =
+	private final Map<Instrument.Group, Tiers> tiersMap =
 		new HashMap<Instrument.Group, Tiers>();
-	
-	protected final Map<Song.Sorting, Tiers> sortingTiersMap =
-		new HashMap<Song.Sorting, Tiers>();
+	private final Map<Sorting, Tiers> sortingTiersMap =
+		new HashMap<Sorting, Tiers>();
+	private final Map<Sorting, Comparator<Song>> sortingComparatorMap =
+		new HashMap<Sorting, Comparator<Song>>();
 	
 	protected Game(
 		final int scoreHeroId,
@@ -111,6 +112,7 @@ public abstract class Game {
 		
 		values.add(this);
 		initDynamicTiers();
+		initSortingComparators();
 	}
 
 	/**
@@ -128,6 +130,15 @@ public abstract class Game {
 	
 	protected void initDynamicTiersInternal() {}
 	
+	private final void initSortingComparators() {
+		mapSortingComparator(Sorting.SCOREHERO, SongComparators.SCOREHERO);
+		mapSortingComparator(Sorting.TITLE, SongComparators.TITLE);
+		
+		initSortingComparatorsInternal();
+	}
+	
+	protected void initSortingComparatorsInternal() {}
+	
 	protected void mapTiers(final Group group, final String[] tiers) {
 		mapTiers(group, new Tiers(tiers));
 	}
@@ -142,6 +153,10 @@ public abstract class Game {
 	
 	protected void mapTiers(final Sorting sorting, final Tiers tiers) {
 		sortingTiersMap.put(sorting, tiers);
+	}
+	
+	protected void mapSortingComparator(final Sorting sorting, final Comparator<Song> comp) {
+		sortingComparatorMap.put(sorting, comp);
 	}
 	
 	/**
@@ -196,6 +211,12 @@ public abstract class Game {
 		return tiersMap.get(group).getCount();
 	}
 	
+	public Comparator<Song> getSortingComparator(final Sorting sorting) {
+		if (null == sortingComparatorMap.get(sorting))
+			throw new UnsupportedOperationException("sorting not implemented: " + sorting);
+		
+		return sortingComparatorMap.get(sorting);
+	}
 	
 	public List<? extends Song> getSongs(Group group, Difficulty diff) {
 		return getSongs(group, diff, null);
@@ -254,5 +275,22 @@ public abstract class Game {
 			t = new Text(Game.class);
 		
 		return t.get(toString() + "." + key);
+	}
+	
+	
+	
+	public static class SongComparators {
+		public static final Comparator<Song>
+		SCOREHERO = new Comparator<Song>() {
+			@Override public int compare(Song o1, Song o2) {
+				return o1.getSongOrder().compareTo(o2.getSongOrder());
+			}
+		},
+		
+		TITLE = new Comparator<Song>() {
+			@Override public int compare(Song o1, Song o2) {
+				return o1.getTitle().compareTo(o2.getTitle());
+			}
+		};
 	}
 }

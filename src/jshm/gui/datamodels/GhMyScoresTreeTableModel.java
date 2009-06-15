@@ -27,6 +27,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -210,6 +211,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	
 	public void setSorting(final Sorting sorting) {
 		this.sorting = sorting;
+		Collections.sort(songs, game.getSortingComparator(sorting));
 		model = new DataModel(game, songs, scores);
 		modelSupport.fireNewRoot();
 	}

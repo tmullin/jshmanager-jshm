@@ -1714,6 +1714,17 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			}
 		};
 		
+		final MyAction saveEditorScore = new MyAction(false,
+			"Save", getIcon("toolbar/save32.png"),
+			"Save the score currently being edited in the editor",
+			KeyStroke.getKeyStroke(KeyEvent.VK_S, CTRL_MASK), 'S'){
+
+			public void actionPerformed(ActionEvent e) {
+				// TODO move save button's action to here
+//				scoreEditorPanel1.saveButton.doClick();
+			}
+		};
+		
 		final MyAction deleteSelectedScore = new MyAction(false,
 			"Delete", getIcon("toolbar/delete32.png"),
 			"Delete the currently selected score from the database",
