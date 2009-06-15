@@ -23,6 +23,7 @@ package jshm;
 import java.util.*;
 
 import jshm.Instrument.Group;
+import jshm.Song.Sorting;
 import jshm.gh.GhGame;
 import jshm.rb.RbGame;
 import jshm.util.Text;
@@ -94,6 +95,9 @@ public abstract class Game {
 	protected final Map<Instrument.Group, Tiers> tiersMap =
 		new HashMap<Instrument.Group, Tiers>();
 	
+	protected final Map<Song.Sorting, Tiers> sortingTiersMap =
+		new HashMap<Song.Sorting, Tiers>();
+	
 	protected Game(
 		final int scoreHeroId,
 		final GameTitle title,
@@ -106,22 +110,61 @@ public abstract class Game {
 		this.supportsDLC = supportsDLC;
 		
 		values.add(this);
+		initDynamicTiers();
 	}
 
-	protected void mapTiers(final Instrument.Group group, final String[] tiers) {
+	/**
+	 * This method takes care of refreshing the sorting tier map
+	 * when tiers may change, i.e. a new artist exists after updating
+	 * song data. Sub-classes should override {@link #initDynamicTiersInternal()}
+	 * to handle class-specific sorting options. 
+	 */
+	public final void initDynamicTiers() {
+		mapTiers(Song.Sorting.TITLE, Tiers.ALPHA_NUM_TIERS);
+		// TODO SQL for artist, genre, etc. that are defined in Song
+		
+		initDynamicTiersInternal();
+	}
+	
+	protected void initDynamicTiersInternal() {}
+	
+	protected void mapTiers(final Group group, final String[] tiers) {
 		mapTiers(group, new Tiers(tiers));
 	}
 	
-	protected void mapTiers(final Instrument.Group group, final Tiers tiers) {
+	protected void mapTiers(final Group group, final Tiers tiers) {
 		tiersMap.put(group, tiers);
 	}
 	
+	protected void mapTiers(final Sorting sorting, final String[] tiers) {
+		mapTiers(sorting, new Tiers(tiers));
+	}
+	
+	protected void mapTiers(final Sorting sorting, final Tiers tiers) {
+		sortingTiersMap.put(sorting, tiers);
+	}
+	
+	/**
+	 * 
+	 * @param tierLevel
+	 * @return The name of the 1-based tier level
+	 */
 	public String getTierName(final int tierLevel) {
 		throw new UnsupportedOperationException();
 	}
 	
-	public String getTierName(final Instrument.Group group, final int tierLevel) {
-		if (!tiersMap.containsKey(group)) return "UNKNOWN";
+	public String getTierName(final Sorting sorting, final int tierLevel) {
+		if (Sorting.SCOREHERO == sorting)
+			return getTierName(tierLevel);
+		
+		if (null != sortingTiersMap.get(sorting))
+			return sortingTiersMap.get(sorting).getName(tierLevel);
+		
+		throw new UnsupportedOperationException("sorting not implemented: " + sorting);
+	}
+	
+	public String getTierName(final Group group, final int tierLevel) {
+		if (null == tiersMap.get(group)) return "UNKNOWN";
 		return tiersMap.get(group).getName(tierLevel);
 	}
 	
@@ -129,8 +172,8 @@ public abstract class Game {
 		throw new UnsupportedOperationException();
 	}
 	
-	public int getTierLevel(final Instrument.Group group, final String tierName) {
-		if (!tiersMap.containsKey(group)) return 0;
+	public int getTierLevel(final Group group, final String tierName) {
+		if (null == tiersMap.get(group)) return 0;
 		return tiersMap.get(group).getLevel(tierName);
 	}
 	
@@ -138,8 +181,18 @@ public abstract class Game {
 		throw new UnsupportedOperationException();
 	}
 	
+	public int getTierCount(final Sorting sorting) {
+		if (Sorting.SCOREHERO == sorting)
+			return getTierCount();
+		
+		if (null != sortingTiersMap.get(sorting))
+			return sortingTiersMap.get(sorting).getCount();
+		
+		throw new UnsupportedOperationException("sorting not implemented: " + sorting);
+	}
+	
 	public int getTierCount(final Instrument.Group group) {
-		if (!tiersMap.containsKey(group)) return 0;
+		if (null == tiersMap.get(group)) return 0;
 		return tiersMap.get(group).getCount();
 	}
 	

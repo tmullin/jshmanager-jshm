@@ -144,6 +144,8 @@ public abstract class GameTitle {
 	 */
 	public abstract Instrument.Group[] getSupportedInstrumentGroups();
 	
+	public abstract Song.Sorting[] getSupportedSortings();
+	
 	public abstract StreakStrategy getStreakStrategy();
 	
 	// override Object methods

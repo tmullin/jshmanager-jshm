@@ -57,8 +57,12 @@ public class GhGameTitle extends jshm.GameTitle {
 	
 	// override abstract methods
 	
-	private static final Instrument.Group[] SUPPORTED_INSTRUMENT_GROUPS = new Instrument.Group[] {
+	private static final Instrument.Group[] SUPPORTED_INSTRUMENT_GROUPS = {
 		SINGLE_PLAYER_GROUP /*, CO_OP_PLAYER_GROUP*/
+	};
+	
+	private static final Song.Sorting[] SUPPORTED_SORTINGS = {
+		Song.Sorting.SCOREHERO, Song.Sorting.TITLE
 	};
 	
 	private static final int
@@ -100,6 +104,11 @@ public class GhGameTitle extends jshm.GameTitle {
 	@Override
 	public Instrument.Group[] getSupportedInstrumentGroups() {
 		return SUPPORTED_INSTRUMENT_GROUPS;
+	}
+	
+	@Override
+	public Song.Sorting[] getSupportedSortings() {
+		return SUPPORTED_SORTINGS;
 	}
 
 	@Override

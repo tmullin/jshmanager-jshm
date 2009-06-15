@@ -28,6 +28,18 @@ package jshm;
  *
  */
 public class Tiers {
+	public static final Tiers ALPHA_NUM_TIERS;
+	
+	static {
+		String[] strs = new String[27];
+		strs[0] = "123/Symbol";
+		
+		for (char c = 'A'; c <= 'Z'; c++)
+			strs[c - 'A' + 1] = Character.toString(c);
+		
+		ALPHA_NUM_TIERS = new Tiers(strs);
+	}
+	
 	private final String[] tiers;
 	
 	public Tiers(final String tiers) {

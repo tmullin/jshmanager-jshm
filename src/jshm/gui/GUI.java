@@ -73,6 +73,7 @@ import jshm.Song;
 import jshm.SongOrder;
 import jshm.UpdateChecker;
 import jshm.Instrument.Group;
+import jshm.Song.Sorting;
 import jshm.gh.GhGame;
 import jshm.gui.components.SelectSongDialog;
 import jshm.gui.components.StatusBar;
@@ -108,6 +109,7 @@ public class GUI extends javax.swing.JFrame {
 	private Instrument.Group curGroup = null;
 	private Game curGame = null;
 	private Difficulty curDiff = null;
+	private Sorting curSorting = Sorting.TITLE;
 	
 	private List<? extends Song> orderedSongs = null;
 	
@@ -1477,7 +1479,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 				songs = game.getSongs(group, difficulty);
 				scores = game.getScores(group, difficulty);
 
-				model = new GhMyScoresTreeTableModel(game, group, difficulty, songs, scores);
+				model = new GhMyScoresTreeTableModel(game, group, difficulty, curSorting, songs, scores);
 	
 				orderedSongs =
 					game.getSongsOrderedByTitle(group, difficulty);

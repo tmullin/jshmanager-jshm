@@ -36,7 +36,7 @@ import jshm.sh.client.HttpForm;
  */
 public class PasteBin {
 	public static final String
-		BASE_URL = "http://jshmanager.pastebin.com",
+		BASE_URL = "http://jshm.pastebin.com",
 		PASTEBIN_URL = BASE_URL + "/pastebin.php";
 	
 	public static String post(File file) throws Exception {

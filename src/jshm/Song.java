@@ -186,10 +186,31 @@ public abstract class Song implements Comparable<Song> {
 		this.songOrder = songOrder;
 	}
 	
+	/**
+	 * 
+	 * @return Return the <b>1-based</b> index of this song's tier.
+	 */
 	@Transient
 	public int getTierLevel() {
 		if (null == songOrder) return 0;
 		return songOrder.getTier();
+	}
+	
+	@Transient
+	public int getTierLevel(Sorting sorting) {		
+		switch (sorting) {
+			case SCOREHERO:
+				return getTierLevel();
+				
+			case TITLE:
+				char c = Character.toUpperCase(title.charAt(0));
+				
+				if ('A' <= c && c <= 'Z')
+					return c - 'A' + 2; // 2 because it's 1-based, not 0
+				return 1; // 1 is for 123/Symbol
+		}
+		
+		throw new UnsupportedOperationException("sorting not implemented: " + sorting);
 	}
 	
 	
@@ -292,6 +313,6 @@ public abstract class Song implements Comparable<Song> {
 	}
 	
 	public static enum Sorting {
-		DIFFICULTY, TITLE, ARTIST, DECADE, GENRE, LOCATION
+		SCOREHERO, DIFFICULTY, TITLE, ARTIST, DECADE, GENRE, LOCATION
 	}
 }

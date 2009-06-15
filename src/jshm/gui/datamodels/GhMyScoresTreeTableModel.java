@@ -41,6 +41,7 @@ import jshm.Game;
 import jshm.Score;
 import jshm.Song;
 import jshm.Instrument.Group;
+import jshm.Song.Sorting;
 import jshm.gh.GhScore;
 import jshm.gui.GuiUtil;
 import jshm.gui.editors.GhMyScoresEditor;
@@ -81,17 +82,17 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		public DataModel(final Game game, final List<? extends Song> songs,
 				final List<? extends Score> scores) {
 
-			for (int i = 1; i <= game.getTierCount(); i++) {
-				tiers.add(new Tier(game.getTierName(i)));
+			for (int i = 1; i <= game.getTierCount(sorting); i++) {
+				tiers.add(new Tier(game.getTierName(sorting, i)));
 			}
 			
 			for (Song song : songs) {
-				tiers.get(song.getTierLevel() - 1).songs.add(
+				tiers.get(song.getTierLevel(sorting) - 1).songs.add(
 					new SongScores(song));
 			}
 
 			for (Score score : scores) {
-				tiers.get(Math.max(score.getSong().getTierLevel() - 1, 0))
+				tiers.get(Math.max(score.getSong().getTierLevel(sorting) - 1, 0))
 					.addScore(score);
 			}
 
@@ -185,20 +186,32 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	}
 
 	private JXTreeTable parent;
-	private final DataModel	model;
+	private DataModel	model;
 	private final Game game;
 	private final Group	group;
 	private final Difficulty diff;
+	private Sorting sorting = null;
+	private final List<? extends Song> songs;
+	private final List<? extends Score> scores;
 
 	public GhMyScoresTreeTableModel(
-			final Game game, final Group group, final Difficulty diff,
+			final Game game, final Group group, final Difficulty diff, final Sorting sorting,
 			final List<? extends Song> songs, final List<? extends Score> scores) {
 
 		super("ROOT");
 		this.game = game;
 		this.group = group;
 		this.diff = diff;
-		this.model = new DataModel(game, songs, scores);
+		this.songs = songs;
+		this.scores = scores;
+
+		setSorting(sorting);
+	}
+	
+	public void setSorting(final Sorting sorting) {
+		this.sorting = sorting;
+		model = new DataModel(game, songs, scores);
+		modelSupport.fireNewRoot();
 	}
 	
 	public void createScoreTemplate(Game game, Group group, Difficulty difficulty, TreePath p) {
@@ -231,13 +244,13 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	
 	public void insertScore(Score score) {
 		Song song = score.getSong();		
-		SongScores ss = model.tiers.get(song.getTierLevel() - 1)
+		SongScores ss = model.tiers.get(song.getTierLevel(sorting) - 1)
 			.addScore(score);
 		
 		if (null != ss) {
 			Object[] path = new Object[3];
 			path[0] = getRoot();
-			path[1] = getChild(path[0], song.getTierLevel() - 1);
+			path[1] = getChild(path[0], song.getTierLevel(sorting) - 1);
 			path[2] = ss;
 			
 			TreePath tp = new TreePath(path);
@@ -249,14 +262,14 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	}
 	
 	public void expandAndScrollTo(Song song) {
-		SongScores ss = model.tiers.get(song.getTierLevel() - 1)
+		SongScores ss = model.tiers.get(song.getTierLevel(sorting) - 1)
 			.getSongScores(song);
 		
 		assert null != ss;
 		
 		Object[] path = new Object[3];
 		path[0] = getRoot();
-		path[1] = getChild(path[0], song.getTierLevel() - 1);
+		path[1] = getChild(path[0], song.getTierLevel(sorting) - 1);
 		path[2] = ss;
 		
 		TreePath tp = new TreePath(path);
@@ -320,7 +333,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 				}
 				
 			case TEMPLATE:
-				model.tiers.get(score.getSong().getTierLevel() - 1)
+				model.tiers.get(score.getSong().getTierLevel(sorting) - 1)
 					.removeScore(score);
 				modelSupport.fireTreeStructureChanged(p.getParentPath());
 
@@ -352,7 +365,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			}
 		}
 		
-		return new GhMyScoresTreeTableModel(game, group, diff, songs, newScores);
+		return new GhMyScoresTreeTableModel(game, group, diff, sorting, songs, newScores);
 	}
 	
 	/**
@@ -365,6 +378,21 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		for (Tier t : model.tiers) {
 			for (SongScores ss : t.songs) {
 				count += ss.scores.size();
+			}
+		}
+		
+		return count;
+	}
+	
+	public int getSubmittableScoreCount() {
+		int count = 0;
+		
+		for (Tier t : model.tiers) {
+			for (SongScores ss : t.songs) {
+				for (Score score : ss.scores) {
+					if (score.isSubmittable())
+						count++;
+				}
 			}
 		}
 		
