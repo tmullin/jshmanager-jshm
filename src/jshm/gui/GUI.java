@@ -83,7 +83,6 @@ import jshm.gui.datamodels.GhMyScoresTreeTableModel;
 import jshm.gui.datamodels.GhSongDataTreeTableModel;
 import jshm.gui.datamodels.Parentable;
 import jshm.gui.datamodels.RbSongDataTreeTableModel;
-import jshm.gui.datamodels.SongSortable;
 import jshm.gui.wizards.csvimport.CsvImportWizard;
 import jshm.gui.wizards.scoredownload.ScoreDownloadWizard;
 import jshm.gui.wizards.scoreupload.ScoreUploadWizard;
@@ -1312,7 +1311,6 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 		throw new IllegalArgumentException("game is not a GhGame");
 	
 	this.setCurGame(game);
-	initSongSortingMenu();
 	this.setCurDiff(difficulty);
 	curGroup = Instrument.Group.GUITAR;
 	
@@ -1393,7 +1391,6 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 
 private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGame game, final Instrument.Group group) {
 	setCurGame(game);
-	initSongSortingMenu();
 	curGroup = group;
 	setCurDiff(null);
 	
@@ -1486,7 +1483,6 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 	}
 	
 	setCurGame(game);
-	initSongSortingMenu();
 	setCurDiff(difficulty);
 	curGroup = group;
 	scoreEditorPanel1.setScore(null);
@@ -1652,6 +1648,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 
 	private void setCurGame(Game curGame) {
 		this.curGame = curGame;
+		initSongSortingMenu();
 	}
 
 	public Difficulty getCurDiff() {
@@ -1677,9 +1674,16 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 	void setCurSorting(Song.Sorting sorting) {
 		this.curSorting = sorting;
 		
-		if (tree.getTreeTableModel() instanceof SongSortable) {
-			((SongSortable) tree.getTreeTableModel()).setSorting(sorting);
+		if (tree.getTreeTableModel() instanceof GhMyScoresTreeTableModel) {
+			// I'd prefer not to have to do it this way but it seems to work
+			GhMyScoresTreeTableModel model =
+				(GhMyScoresTreeTableModel) tree.getTreeTableModel();
+			model.removeParent(tree);
+			model = model.createSortedModel(sorting);
+			tree.setTreeTableModel(model);
+			model.setParent(tree);
 			tree.packAll();
+//			sorting = sorting;
 		}
 	}
 	

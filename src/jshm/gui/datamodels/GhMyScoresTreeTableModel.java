@@ -209,11 +209,23 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		setSorting(sorting);
 	}
 	
+	/* TODO I don't understand why just calling setSorting() after
+	 * instantiation causes issues. I think it has something to do with
+	 * various listeners that get added somewhere along the line that
+	 * cause a default cell renderer to be used instead of
+	 * GhMyScoresCellRenderer
+	 */
+	public GhMyScoresTreeTableModel createSortedModel(final Sorting sorting) {
+		Collections.sort(songs, game.getSortingComparator(sorting));
+		return new GhMyScoresTreeTableModel(game, group, diff, sorting, songs, scores);
+	}
+	
 	public void setSorting(final Sorting sorting) {
 		this.sorting = sorting;
 		Collections.sort(songs, game.getSortingComparator(sorting));
 		model = new DataModel(game, songs, scores);
 		modelSupport.fireNewRoot();
+//		if (null != parent) parent.repaint();
 	}
 	
 	public void createScoreTemplate(Game game, Group group, Difficulty difficulty, TreePath p) {
@@ -509,7 +521,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		
 		GhMyScoresCellRenderer renderer = new GhMyScoresCellRenderer();
 		
-		for (int i = 0; i <= 6; i++)
+		for (int i = 0; i < getColumnCount(); i++)
 			parent.getColumn(i).setCellRenderer(renderer);
 
 		parent.addMouseListener(myParentMouseListener);
@@ -562,10 +574,13 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		this.parent = null;
 	}
 	
-	
-	@Override
-	public int getColumnCount() {
-		return 7;
+	// TODO this shouldn't be necessary
+	public void resetParent() {
+		if (null == this.parent) return;
+		
+		JXTreeTable tmp = this.parent;
+		removeParent(tmp);
+		setParent(tmp);
 	}
 
 	@Override
@@ -593,6 +608,11 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	@Override
 	public String getColumnName(int arg0) {
 		return COLUMN_NAMES[arg0];
+	}
+	
+	@Override
+	public int getColumnCount() {
+		return COLUMN_NAMES.length;
 	}
 
 	@Override

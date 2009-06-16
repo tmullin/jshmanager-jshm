@@ -39,9 +39,9 @@ public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
 
-//		System.out.println(row + "x" + column + ": " + value);
+//		System.out.println(System.currentTimeMillis() + ": " + row + "x" + column + ": " + value.getClass().getName() + ": " + value);
     	setIcon(null);
-    	    	    	
+
     	super.getTableCellRendererComponent(
        		table, value, isSelected, hasFocus, row, column);
     	

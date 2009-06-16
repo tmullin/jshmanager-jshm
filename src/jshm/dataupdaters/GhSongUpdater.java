@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Example;
+//import org.hibernate.criterion.Example;
 
 import jshm.*;
 import static jshm.hibernate.HibernateUtil.openSession;
