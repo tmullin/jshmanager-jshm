@@ -69,7 +69,8 @@ public class RbGameTitle extends GameTitle {
 	}
 	
 	private static final Sorting[] SUPPORTED_SORTINGS = {
-		Sorting.SCOREHERO, Sorting.TITLE
+		Sorting.SCOREHERO, Sorting.TITLE, Sorting.ARTIST, 
+		Sorting.GENRE, Sorting.DECADE
 	};
 	
 	@Override

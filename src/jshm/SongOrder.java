@@ -89,7 +89,8 @@ public class SongOrder implements Comparable<SongOrder> {
 
 	@Transient
 	public Game getGame() {
-		return getSong().getGame();
+//		return getSong().getGame();
+		return Game.getByTitleAndPlatform(gameTitle, platform);
 	}
 	
 	@Type(type="jshm.hibernate.GameTitleUserType")

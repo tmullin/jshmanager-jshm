@@ -20,6 +20,8 @@
  */
 package jshm.util;
 
+import java.util.Collection;
+
 public class Print {
 	/**
 	 * Prints a two-dimensional array in a reasonable format
@@ -39,6 +41,17 @@ public class Print {
 			
 //			if (cur.length > 0)
 				System.out.println();
+		}
+	}
+	
+	public static <T> void print(Collection<T> c) {
+		print(c, "");
+	}
+	
+	public static <T> void print(Collection<T> c, String prepend) {
+		for (T t : c) {
+//			System.out.println(prepend + t.getClass().getName() + ": " + t);
+			System.out.println(prepend + t);
 		}
 	}
 }

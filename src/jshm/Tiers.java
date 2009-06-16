@@ -20,6 +20,8 @@
  */
 package jshm;
 
+import java.util.Collection;
+
 /**
  * Represents a collection of tier headings.
  * Ideally this will be able to handle multiple
@@ -32,7 +34,7 @@ public class Tiers {
 	
 	static {
 		String[] strs = new String[27];
-		strs[0] = "123/Symbol";
+		strs[0] = "123";
 		
 		for (char c = 'A'; c <= 'Z'; c++)
 			strs[c - 'A' + 1] = Character.toString(c);
@@ -44,6 +46,10 @@ public class Tiers {
 	
 	public Tiers(final String tiers) {
 		this(tiers.split("\\|"));
+	}
+	
+	public Tiers(final Collection<String> tiers) {
+		this(tiers.toArray(new String[0]));
 	}
 	
 	public Tiers(final String[] tiers) {

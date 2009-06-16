@@ -124,7 +124,7 @@ public abstract class Game {
 	public final void initDynamicTiers() {
 		mapTiers(Song.Sorting.TITLE, Tiers.ALPHA_NUM_TIERS);
 		// TODO SQL for artist, genre, etc. that are defined in Song
-		
+
 		initDynamicTiersInternal();
 	}
 	
@@ -145,6 +145,10 @@ public abstract class Game {
 	}
 	
 	protected void mapTiers(final Sorting sorting, final String[] tiers) {
+		mapTiers(sorting, new Tiers(tiers));
+	}
+	
+	protected void mapTiers(final Sorting sorting, final Collection<String> tiers) {
 		mapTiers(sorting, new Tiers(tiers));
 	}
 	

@@ -64,9 +64,8 @@ public class RbSong extends Song {
 	    List<RbSong> result =
 			(List<RbSong>)
 			session.createQuery(
-				String.format(
-					"from RbSong where gameTitle='%s'",
-					game.toString()))
+				"from RbSong where gameTitle=:ttl")
+				.setString("ttl", game.toString())
 				.list();
 	    session.getTransaction().commit();
 		
@@ -155,8 +154,8 @@ public class RbSong extends Song {
 	    RbSong result =
 			(RbSong)
 			session.createQuery(
-				String.format(
-					"from RbSong where scoreHeroId=%d", id))
+				"from RbSong where scoreHeroId=:shid")
+				.setInteger("shid", id)
 				.uniqueResult();
 	    session.getTransaction().commit();
 		
@@ -186,8 +185,6 @@ public class RbSong extends Song {
 		return result;
 	}
 	
-	
-	
 	private GameTitle gameTitle;
 	
 	@Type(type="jshm.hibernate.GameTitleUserType")
@@ -201,7 +198,6 @@ public class RbSong extends Song {
 			throw new IllegalArgumentException("gameTitle must be an RbGameTitle, got a " + gameTitle.getClass().getName());
 		this.gameTitle = gameTitle;
 	}
-	
 	
 	// fields for http://pksage.com/xml.php
 	private String

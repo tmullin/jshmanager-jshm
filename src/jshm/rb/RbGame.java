@@ -21,10 +21,13 @@
 package jshm.rb;
 
 //import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import jshm.*;
 import jshm.Instrument.Group;
+import jshm.Song.Sorting;
 
 public class RbGame extends Game {
 	private static class RbTiers {
@@ -78,6 +81,85 @@ public class RbGame extends Game {
 		for (Instrument.Group g : title.getSupportedInstrumentGroups()) {
 			mapTiers(g, t);
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * implemented Sortings:
+	 *   DECADE, GENRE, ARTIST
+	 * @see jshm.Game#initDynamicTiersInternal()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override protected void initDynamicTiersInternal() {
+		List<String> tiers = new ArrayList<String>();
+		List<String> list_s = null;
+		List<Integer> list_i = null;
+		
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    
+	    // make the decades tier
+	    list_i = (List<Integer>) session.createQuery(
+	    	"SELECT DISTINCT (year / 10) FROM RbSong")
+	    	.list();
+
+	    Collections.sort(list_i);
+	    
+	    tiers.clear();
+	    for (Integer i : list_i) {
+	    	if (null == i || 0 == i) {
+	    		tiers.add("UNKNOWN");
+	    	} else {
+	    		tiers.add(String.valueOf(i * 10) + "s");
+	    	}
+	    }
+	    
+	    System.out.println("RB Decade List");
+	    jshm.util.Print.print(tiers, "\t");
+	    
+	    mapTiers(Sorting.DECADE, tiers);
+	    
+	    
+	    // make genre tier
+	    list_s = (List<String>) session.createQuery(
+	    	"SELECT DISTINCT genre FROM RbSong ORDER BY genre")
+	    	.list();
+	    
+	    tiers.clear();
+	    for (String s : list_s) {
+	    	if (null == s) {
+	    		tiers.add("UNKNOWN");
+	    	} else {
+	    		tiers.add(s);
+	    	}
+	    }
+	    
+	    System.out.println("RB Genre List");
+	    jshm.util.Print.print(tiers, "\t");
+	    
+	    mapTiers(Sorting.GENRE, tiers);
+	    
+	    
+	    // make artist tier
+	    list_s = (List<String>) session.createQuery(
+	    	"SELECT DISTINCT artist FROM RbSong ORDER BY artist")
+	    	.list();
+	    
+	    tiers.clear();
+	    for (String s : list_s) {
+	    	if (null == s) {
+	    		tiers.add("UNKNOWN");
+	    	} else {
+	    		tiers.add(s);
+	    	}
+	    }
+	    
+	    System.out.println("RB Artists List");
+	    jshm.util.Print.print(tiers, "\t");
+	    
+	    mapTiers(Sorting.ARTIST, tiers);
+	    
+	    session.getTransaction().commit();
 	}
 	
 	public String getTierName(int tierLevel) {

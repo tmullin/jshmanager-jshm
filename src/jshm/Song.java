@@ -25,6 +25,7 @@ import java.util.Comparator;
 import javax.persistence.*;
 
 import jshm.Instrument.Group;
+import jshm.util.Text;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -106,9 +107,31 @@ public abstract class Song implements Comparable<Song> {
 		this.game = game;
 	}
 	
+	/**
+	 * This method is necessary to sidestep issues involving
+	 * song sorting support.
+	 * 
+	 * @return The so-called "active game" that the user is
+	 * currently dealing with.
+	 */
+	@Transient
+	public Game getActiveGame() {
+		return
+		game != null
+		? game
+		: songOrder != null
+		  ? songOrder.getGame()
+		  : null;
+	}
+	
 	@Transient
 	public GameTitle getGameTitle() {
-		return game != null ? game.title : null;
+		return
+		game != null
+		? game.title
+		: songOrder != null
+		  ? songOrder.getGameTitle()
+		  : null;
 	}
 	
 	@NotEmpty
@@ -198,6 +221,7 @@ public abstract class Song implements Comparable<Song> {
 		return songOrder.getTier();
 	}
 	
+	// TODO this probably isn't that efficient
 	@Transient
 	public int getTierLevel(Sorting sorting) {		
 		switch (sorting) {
@@ -210,6 +234,34 @@ public abstract class Song implements Comparable<Song> {
 				if ('A' <= c && c <= 'Z')
 					return c - 'A' + 2; // 2 because it's 1-based, not 0
 				return 1; // 1 is for 123/Symbol
+				
+			case ARTIST:
+				for (int i = 1; i <= getActiveGame().getTierCount(sorting); i++) {
+					if (artist.equals(getActiveGame().getTierName(sorting, i)))
+						return i;
+				}
+				
+				throw new IllegalStateException("no tier found for artist");
+				
+			case GENRE:
+				for (int i = 1; i <= getActiveGame().getTierCount(sorting); i++) {
+					if (genre.equals(getActiveGame().getTierName(sorting, i)))
+						return i;
+				}
+				
+				throw new IllegalStateException("no tier found for genre");
+				
+			case DECADE:
+				if (0 == year) return 1; // "UNKNOWN"
+				
+				String decadeStr = (year / 10 * 10) + "s";
+				
+				for (int i = 1; i <= getActiveGame().getTierCount(sorting); i++) {
+					if (decadeStr.equals(getActiveGame().getTierName(sorting, i)))
+						return i;
+				}
+				
+				throw new IllegalStateException("no tier found for decade");
 		}
 		
 		throw new UnsupportedOperationException("sorting not implemented: " + sorting);
@@ -317,10 +369,11 @@ public abstract class Song implements Comparable<Song> {
 	public static enum Sorting {
 		SCOREHERO(Comparators.SCOREHERO),
 		TITLE(Comparators.TITLE),
-		ARTIST(Comparators.ARTIST),
+		ARTIST(Comparators.ARTIST_TITLE),
 		GENRE(Comparators.GENRE),
 		DECADE(Comparators.REVERSE_DECADE),
-		DIFFICULTY, LOCATION;
+		DIFFICULTY,
+		LOCATION;
 		
 		public final Comparator<Song> comparator;
 		
@@ -330,6 +383,23 @@ public abstract class Song implements Comparable<Song> {
 		
 		private Sorting(Comparator<Song> comp) {
 			this.comparator = comp;
+		}
+		
+		public String getShortName() {
+			return getText("shortName");
+		}
+		
+		public String getShortDescription() {
+			return getText("shortDescription");
+		}
+		
+		private static Text t = null;
+		
+		public final String getText(String key) {
+			if (null == t)
+				t = new Text(Sorting.class);
+			
+			return t.get(name() + "." + key);
 		}
 	}
 	
@@ -347,7 +417,7 @@ public abstract class Song implements Comparable<Song> {
 			}
 		},
 		
-		ARTIST = new Comparator<Song>() {
+		ARTIST_TITLE = new Comparator<Song>() {
 			@Override public int compare(Song o1, Song o2) {
 				int ret = 0;
 				
@@ -402,7 +472,7 @@ public abstract class Song implements Comparable<Song> {
 					ret = decade1.compareTo(decade2);
 					
 					if (0 == ret)
-						ret = TITLE.compare(o1, o2);
+						ret = ARTIST_TITLE.compare(o1, o2);
 				}
 				
 				return ret;
@@ -426,7 +496,7 @@ public abstract class Song implements Comparable<Song> {
 					ret = decade2.compareTo(decade1);
 					
 					if (0 == ret)
-						ret = TITLE.compare(o1, o2);
+						ret = ARTIST_TITLE.compare(o1, o2);
 				}
 				
 				return ret;

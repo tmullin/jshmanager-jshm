@@ -976,9 +976,9 @@ private int checkForNewScores() {
 	return ret;
 }
 
-private transient Map<String, ImageIcon> iconCache = new HashMap<String, ImageIcon>(); 
+private static Map<String, ImageIcon> iconCache = new HashMap<String, ImageIcon>(); 
 
-ImageIcon getIcon(String path) {
+public static ImageIcon getIcon(String path) {
 	path = "/jshm/resources/images/" + path;
 	
 	if (null == iconCache.get(path)) {
@@ -999,7 +999,8 @@ private void initSongSortingMenu() {
 		ButtonGroup group = new ButtonGroup();
 		
 		for (final Song.Sorting s : curGame.title.getSupportedSortings()) {
-			JMenuItem item = new JRadioButtonMenuItem(s.toString(), s == curSorting);
+			JMenuItem item = new JRadioButtonMenuItem(s.getShortName(), s == curSorting);
+			item.setToolTipText(s.getShortDescription());
 			group.add(item);
 			item.addActionListener(new ActionListener() {
 				@Override public void actionPerformed(ActionEvent e) {
