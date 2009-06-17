@@ -223,7 +223,7 @@ public abstract class Song implements Comparable<Song> {
 	
 	// TODO this probably isn't that efficient
 	@Transient
-	public int getTierLevel(Sorting sorting) {		
+	public int getTierLevel(Sorting sorting) {
 		switch (sorting) {
 			case SCOREHERO:
 				return getTierLevel();
@@ -356,10 +356,10 @@ public abstract class Song implements Comparable<Song> {
 			if (str.length() < 1)
 				throw new IllegalArgumentException("str must have length >= 1");
 			
-			char c = str.charAt(0);
+			char c = Character.toUpperCase(str.charAt(0));
 			
 			for (RecordingType t : values()) {
-				if (t.name().charAt(0) == c) return t;
+				if (t.getAbbrChar() == c) return t;
 			}
 			
 			return null;
@@ -371,7 +371,7 @@ public abstract class Song implements Comparable<Song> {
 		TITLE(Comparators.TITLE),
 		ARTIST(Comparators.ARTIST_TITLE),
 		GENRE(Comparators.GENRE),
-		DECADE(Comparators.REVERSE_DECADE),
+		DECADE(Comparators.DECADE),
 		DIFFICULTY,
 		LOCATION;
 		
@@ -469,6 +469,7 @@ public abstract class Song implements Comparable<Song> {
 					Integer decade1 = o1.year / 10 * 10;
 					Integer decade2 = o2.year / 10 * 10;
 					
+					// TODO inline int comparison
 					ret = decade1.compareTo(decade2);
 					
 					if (0 == ret)
@@ -493,6 +494,7 @@ public abstract class Song implements Comparable<Song> {
 					Integer decade1 = o1.year / 10 * 10;
 					Integer decade2 = o2.year / 10 * 10;
 					
+					// TODO inline int comparison
 					ret = decade2.compareTo(decade1);
 					
 					if (0 == ret)

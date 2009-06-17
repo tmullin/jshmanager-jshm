@@ -779,13 +779,15 @@ private void downloadRbSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			statusBar1.setTempText("Downloading song data from ScoreHero...", true);
 			
+			boolean ret = false;
+			ProgressDialog progress = null;
+			
 			try {
-				ProgressDialog progress = new ProgressDialog(GUI.this);
+				progress = new ProgressDialog(GUI.this);
 				
 				try {
 					jshm.dataupdaters.RbSongUpdater.updateViaXml(progress, curGame.title);
-					progress.dispose();
-					return true;
+					ret = true;
 				} catch (Exception e1) {
 					LOG.log(Level.WARNING, "Failed to download song data via XML", e1);
 					
@@ -794,23 +796,27 @@ private void downloadRbSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 					
 					if (JOptionPane.YES_OPTION == result) {
 						jshm.dataupdaters.RbSongUpdater.updateViaScraping(progress, curGame.title);
-						progress.dispose();
-						return true;
+						ret = true;
 					}
-					
-					progress.dispose();
-					return false;
 				}
-			} catch (Exception e) {
-				LOG.log(Level.SEVERE, "Failed to download song data via scraping", e);
+				
+				// now get song info
+				jshm.dataupdaters.RbSongUpdater.updateSongInfo(progress);
+				
+			} catch (Exception e) {			
+				ret = false;
+				LOG.log(Level.SEVERE, "Failed to download song data", e);
 				ErrorInfo ei = new ErrorInfo("Error", "Failed to download song data", null, null, e, null, null);
 				JXErrorPane.showDialog(GUI.this, ei);
 			} finally {
+				if (null != progress)
+					progress.dispose();
+				
 				statusBar1.revertText();
 				getContentPane().setCursor(Cursor.getDefaultCursor());
 			}
 			
-			return false;
+			return ret;
 		}
 		
 		@Override

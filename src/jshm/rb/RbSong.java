@@ -22,6 +22,7 @@ package jshm.rb;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -31,6 +32,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.Transient;
 
 import jshm.Difficulty;
 import jshm.Game;
@@ -41,6 +43,7 @@ import jshm.Song;
 import jshm.SongOrder;
 import jshm.Instrument.Group;
 import jshm.sh.URLs;
+import jshm.xml.RbSongInfoFetcher;
 
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Sort;
@@ -185,6 +188,27 @@ public class RbSong extends Song {
 		return result;
 	}
 	
+	@Transient
+	public int getTierLevel(Sorting sorting) {
+		switch (sorting) {
+			case DIFFICULTY:
+				int ret = 0;
+				
+				switch (getSongOrder().getGroup()) {
+					case GUITAR: ret = rb2GuitarDiff; break;
+					case BASS: ret = rb2BassDiff; break;
+					case VOCALS: ret = rb2VocalsDiff; break;
+					case DRUMS: ret = rb2DrumsDiff; break;
+					default: ret = rb2BandDiff; break;
+				}
+				
+				return ret + 1;
+				
+			default:
+				return super.getTierLevel(sorting);
+		}
+	}
+	
 	private GameTitle gameTitle;
 	
 	@Type(type="jshm.hibernate.GameTitleUserType")
@@ -208,7 +232,13 @@ public class RbSong extends Song {
 		rawBassDiff,
 		rawVocalsDiff,
 		rawDrumsDiff,
-		rawBandDiff;
+		rawBandDiff,
+		
+		rb2GuitarDiff,
+		rb2BassDiff,
+		rb2VocalsDiff,
+		rb2DrumsDiff,
+		rb2BandDiff;
 	
 	public String getSongSource() {
 		return songSource;
@@ -257,9 +287,47 @@ public class RbSong extends Song {
 	public void setRawBandDiff(Integer rawBandDiff) {
 		this.rawBandDiff = rawBandDiff == null ? 0 : rawBandDiff;
 	}
+	
+	public int getRb2GuitarDiff() {
+		return rb2GuitarDiff;
+	}
 
-	
-	
+	public void setRb2GuitarDiff(Integer rb2GuitarDiff) {
+		this.rb2GuitarDiff = rb2GuitarDiff == null ? 0 : rb2GuitarDiff;
+	}
+
+	public int getRb2BassDiff() {
+		return rb2BassDiff;
+	}
+
+	public void setRb2BassDiff(Integer rb2BassDiff) {
+		this.rb2BassDiff = rb2BassDiff == null ? 0 : rb2BassDiff;
+	}
+
+	public int getRb2VocalsDiff() {
+		return rb2VocalsDiff;
+	}
+
+	public void setRb2VocalsDiff(Integer rb2VocalsDiff) {
+		this.rb2VocalsDiff = rb2VocalsDiff == null ? 0 : rb2VocalsDiff;
+	}
+
+	public int getRb2DrumsDiff() {
+		return rb2DrumsDiff;
+	}
+
+	public void setRb2DrumsDiff(Integer rb2DrumsDiff) {
+		this.rb2DrumsDiff = rb2DrumsDiff == null ? 0 : rb2DrumsDiff;
+	}
+
+	public int getRb2BandDiff() {
+		return rb2BandDiff;
+	}
+
+	public void setRb2BandDiff(Integer rb2BandDiff) {
+		this.rb2BandDiff = rb2BandDiff == null ? 0 : rb2BandDiff;
+	}
+
 	private SortedSet<Platform> platforms = new TreeSet<Platform>();
 	
 	@CollectionOfElements(fetch=FetchType.EAGER)
@@ -281,6 +349,101 @@ public class RbSong extends Song {
 	public boolean update(RbSong song) {
 		boolean updated = super.update(song);
 		updated = updatePlatforms(song) || updated;
+		return updated;
+	}
+	
+	public boolean update(final RbSongInfoFetcher.SongInfo info) {
+		boolean updated = false;
+		
+		if (!getArtist().equals(info.artist)) {
+			setArtist(info.artist);
+			updated = true;
+		}
+		
+		if (!getAlbum().equals(info.album)) {
+			setAlbum(info.album);
+			updated = true;
+		}
+		
+		if (!getGenre().equals(info.genre)) {
+			setGenre(info.genre);
+			updated = true;
+		}
+		
+		if (!getSongPack().equals(info.pack)) {
+			setSongPack(info.pack);
+			updated = true;
+		}
+		
+		if (getYear() != info.year) {
+			setYear(info.year);
+			updated = true;
+		}
+		
+		if (getTrackNum() != info.trackNum) {
+			setTrackNum(info.trackNum);
+			updated = true;
+		}
+		
+		if (getRecordingType() != info.recording) {
+			setRecordingType(info.recording);
+			updated = true;
+		}
+		
+		
+		
+		if (rawGuitarDiff != info.guitar) {
+			rawGuitarDiff = info.guitar;
+			updated = true;
+		}
+		
+		if (rawBassDiff != info.bass) {
+			rawBassDiff = info.bass;
+			updated = true;
+		}
+		
+		if (rawVocalsDiff != info.vocals) {
+			rawVocalsDiff = info.vocals;
+			updated = true;
+		}
+		
+		if (rawDrumsDiff != info.drums) {
+			rawDrumsDiff = info.drums;
+			updated = true;
+		}
+		
+		if (rawBandDiff != info.band) {
+			rawBandDiff = info.band;
+			updated = true;
+		}
+		
+		
+		if (rb2GuitarDiff != info.guitarRb2) {
+			rb2GuitarDiff = info.guitarRb2;
+			updated = true;
+		}
+		
+		if (rb2BassDiff != info.bassRb2) {
+			rb2BassDiff = info.bassRb2;
+			updated = true;
+		}
+		
+		if (rb2VocalsDiff != info.vocalsRb2) {
+			rb2VocalsDiff = info.vocalsRb2;
+			updated = true;
+		}
+		
+		if (rb2DrumsDiff != info.drumsRb2) {
+			rb2DrumsDiff = info.drumsRb2;
+			updated = true;
+		}
+		
+		if (rb2BandDiff != info.bandRb2) {
+			rb2BandDiff = info.bandRb2;
+			updated = true;
+		}
+		
+		
 		return updated;
 	}
 	
@@ -316,5 +479,69 @@ public class RbSong extends Song {
 	@Override
 	public String getRankingsUrl(Game game, Group group, Difficulty diff) {
 		return URLs.rb.getRankingsUrl((RbGame) game, group, diff, this);
+	}
+	
+	
+	public static class Comparators {
+		public static final Comparator<Song>
+		DIFFICULTY = new Comparator<Song>() {
+			@Override public int compare(Song o1, Song o2) {
+				if (!(o1 instanceof RbSong && o2 instanceof RbSong))
+					throw new ClassCastException();
+				
+				RbSong r1 = (RbSong) o1;
+				RbSong r2 = (RbSong) o2;
+				
+				int raw1, raw2, tier1, tier2;
+				
+				switch (r1.songOrder.getGroup()) {
+					case GUITAR:
+						raw1 = r1.rawGuitarDiff;
+						raw2 = r2.rawGuitarDiff;
+						tier1 = r1.rb2GuitarDiff;
+						tier2 = r2.rb2GuitarDiff;
+						break;
+						
+					case BASS:
+						raw1 = r1.rawBassDiff;
+						raw2 = r2.rawBassDiff;
+						tier1 = r1.rb2BassDiff;
+						tier2 = r2.rb2BassDiff;
+						break;
+						
+					case VOCALS:
+						raw1 = r1.rawVocalsDiff;
+						raw2 = r2.rawVocalsDiff;
+						tier1 = r1.rb2VocalsDiff;
+						tier2 = r2.rb2VocalsDiff;
+						break;
+						
+					case DRUMS:
+						raw1 = r1.rawDrumsDiff;
+						raw2 = r2.rawDrumsDiff;
+						tier1 = r1.rb2DrumsDiff;
+						tier2 = r2.rb2DrumsDiff;
+						break;
+						
+					default:
+						raw1 = r1.rawBandDiff;
+						raw2 = r2.rawBandDiff;
+						tier1 = r1.rb2BandDiff;
+						tier2 = r2.rb2BandDiff;
+						break;
+				}
+				
+				// TODO inline the comparison instead of making the object
+				int ret = new Integer(tier1).compareTo(tier2);
+				
+				if (0 == ret)
+					ret = new Integer(raw1).compareTo(raw2);
+				
+				if (0 == ret)
+					ret = Song.Comparators.TITLE.compare(o1, o2);
+				
+				return ret;
+			}
+		};
 	}
 }

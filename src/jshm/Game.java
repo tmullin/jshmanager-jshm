@@ -123,7 +123,6 @@ public abstract class Game {
 	 */
 	public final void initDynamicTiers() {
 		mapTiers(Song.Sorting.TITLE, Tiers.ALPHA_NUM_TIERS);
-		// TODO SQL for artist, genre, etc. that are defined in Song
 
 		initDynamicTiersInternal();
 	}

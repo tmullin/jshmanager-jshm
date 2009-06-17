@@ -28,9 +28,11 @@ import java.util.List;
 import jshm.*;
 import jshm.Instrument.Group;
 import jshm.Song.Sorting;
+import jshm.rb.RbSong.Comparators;
 
 public class RbGame extends Game {
 	private static class RbTiers {
+		// TODO make these Tiers instead of String[] for less allocation?
 		public static final String[]
 //			TierGrabber - 4/3/09:
 //			Mem: 0.500/4.938 (used/total) mb
@@ -54,7 +56,9 @@ public class RbGame extends Game {
 //			Mem: 6.740/15.379 (used/total) mb
 			RB2_PS2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Classic Rock Track Pack".split("\\|"),
 			RB2_NEXTGEN = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Rock Band Imported|AC/DC Live Track Pack|Downloaded Songs".split("\\|"),
-			RB2_WII = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Downloaded Songs".split("\\|")
+			RB2_WII = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Downloaded Songs".split("\\|"),
+			
+			RB2_DIFFS = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs".split("\\|")
 			;
 	}
 	
@@ -91,6 +95,11 @@ public class RbGame extends Game {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override protected void initDynamicTiersInternal() {
+		// make difficulty tier
+		// not necessarily dynamic but whatever
+		mapTiers(Sorting.DIFFICULTY, RbTiers.RB2_DIFFS);
+		
+		
 		List<String> tiers = new ArrayList<String>();
 		List<String> list_s = null;
 		List<Integer> list_i = null;
@@ -147,7 +156,7 @@ public class RbGame extends Game {
 	    
 	    tiers.clear();
 	    for (String s : list_s) {
-	    	if (null == s) {
+	    	if (null == s || s.isEmpty()) {
 	    		tiers.add("UNKNOWN");
 	    	} else {
 	    		tiers.add(s);
@@ -160,6 +169,10 @@ public class RbGame extends Game {
 	    mapTiers(Sorting.ARTIST, tiers);
 	    
 	    session.getTransaction().commit();
+	}
+	
+	protected void initSortingComparatorsInternal() {
+		mapSortingComparator(Sorting.DIFFICULTY, Comparators.DIFFICULTY);
 	}
 	
 	public String getTierName(int tierLevel) {

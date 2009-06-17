@@ -35,6 +35,7 @@ import jshm.*;
 import jshm.rb.*;
 import jshm.sh.scraper.RbSongScraper;
 import jshm.xml.RbSongDataFetcher;
+import jshm.xml.RbSongInfoFetcher;
 
 public class RbSongUpdater {
 	static final Logger LOG = Logger.getLogger(RbSongUpdater.class.getName());
@@ -298,7 +299,61 @@ public class RbSongUpdater {
 				session.close();
 		}
 	}
+
+	public static void updateSongInfo() throws Exception {
+		updateSongInfo(null);
+	}
 	
-	
-	// TODO implement updateSongInfo()
+	@SuppressWarnings("unchecked")
+	public static void updateSongInfo(final ResultProgressHandle progress) throws Exception {
+		if (null != progress)
+			progress.setBusy("Downloading song meta data...");
+		RbSongInfoFetcher fetcher = new RbSongInfoFetcher();
+		fetcher.fetch();
+		Session session = null;
+		Transaction tx = null;
+		
+		try {
+			session = openSession();
+		    tx = session.beginTransaction();
+		    
+			int i = 0, total = fetcher.songMap.size(); 
+						
+			for (String key : fetcher.songMap.keySet()) {
+				if (null != progress)
+					progress.setProgress(
+						String.format("Processing song %s of %s", i + 1, total), i, total);
+				
+				List<RbSong> result =
+					(List<RbSong>) session.createQuery(
+						"FROM RbSong WHERE title=:ttl")
+					.setString("ttl", key)
+					.list();
+				
+				for (RbSong s : result) {
+					if (s.update(fetcher.songMap.get(key))) {
+						LOG.info("Updating song to: " + s);
+						session.update(s);
+					} else {
+						LOG.finer("No changes to song: " + s);
+					}
+				}
+				
+				i++;
+			}
+			
+		    tx.commit();
+		} catch (HibernateException e) {
+			if (null != tx && tx.isActive()) tx.rollback();
+			LOG.throwing("RbSongUpdater", "updateSongInfo", e);
+			throw e;
+		} finally {
+			if (null != session && session.isOpen())
+				session.close();
+		}
+		
+		for (Game g : Game.getBySeries(GameSeries.ROCKBAND)) {
+			g.initDynamicTiers();
+		}
+	}
 }
