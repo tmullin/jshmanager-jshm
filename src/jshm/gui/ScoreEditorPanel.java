@@ -45,7 +45,7 @@ import jshm.Score;
 import jshm.Song;
 import jshm.StreakStrategy;
 import jshm.gh.GhScore;
-import jshm.gui.datamodels.GhMyScoresTreeTableModel;
+import jshm.gui.datamodels.ScoresTreeTableModel;
 import jshm.gui.editors.GhMyScoresRatingEditor;
 import jshm.hibernate.HibernateUtil;
 import jshm.rb.RbScore;
@@ -568,7 +568,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 					if (sess.isOpen()) sess.close();
 				}
 				
-				((GhMyScoresTreeTableModel) gui.tree.getTreeTableModel())
+				((ScoresTreeTableModel) gui.tree.getTreeTableModel())
 					.insertScore(score);
 				gui.tree.repaint();
 				
@@ -596,7 +596,7 @@ private void goToSongButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
 	Object selected = songCombo.getSelectedItem();
 	
 	if (selected instanceof Song) {
-		((GhMyScoresTreeTableModel) gui.tree.getTreeTableModel())
+		((ScoresTreeTableModel) gui.tree.getTreeTableModel())
 			.expandAndScrollTo((Song) selected);
 	}
 }//GEN-LAST:event_goToSongButtonActionPerformed

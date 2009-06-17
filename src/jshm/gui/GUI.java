@@ -51,6 +51,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -79,7 +80,7 @@ import jshm.Song.Sorting;
 import jshm.gh.GhGame;
 import jshm.gui.components.SelectSongDialog;
 import jshm.gui.components.StatusBar;
-import jshm.gui.datamodels.GhMyScoresTreeTableModel;
+import jshm.gui.datamodels.ScoresTreeTableModel;
 import jshm.gui.datamodels.GhSongDataTreeTableModel;
 import jshm.gui.datamodels.Parentable;
 import jshm.gui.datamodels.RbSongDataTreeTableModel;
@@ -196,7 +197,7 @@ public class GUI extends javax.swing.JFrame {
 			@Override
 			public String getMessage() {
 //				if (!jXTreeTable1.isEditing()) return null;
-				if (!(tree.getTreeTableModel() instanceof GhMyScoresTreeTableModel)) return null;
+				if (!(tree.getTreeTableModel() instanceof ScoresTreeTableModel)) return null;
 				
 				Point p = tree.getMousePosition(true);
 				
@@ -454,6 +455,11 @@ public class GUI extends javax.swing.JFrame {
         hideEmptySongsMenuItem.setSelected(true);
         hideEmptySongsMenuItem.setText("Hide Empty Songs");
         hideEmptySongsMenuItem.setToolTipText("Don't show songs or tiers with no scores");
+        hideEmptySongsMenuItem.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                hideEmptySongsMenuItemItemStateChanged(evt);
+            }
+        });
         fileMenu.add(hideEmptySongsMenuItem);
         fileMenu.add(jSeparator3);
 
@@ -739,7 +745,7 @@ private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-F
 	
 	actions.addNewScore.setEnabled(
 		goodRowCount &&
-		(isScore || o instanceof GhMyScoresTreeTableModel.SongScores));
+		(isScore || o instanceof ScoresTreeTableModel.SongScores));
 	actions.deleteSelectedScore.setEnabled(
 		goodRowCount &&
 		isScore);
@@ -753,9 +759,9 @@ private void treeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-F
 	
 	scoreEditorPanel1.setScore(score);
 	
-	if (o instanceof GhMyScoresTreeTableModel.SongScores) {
+	if (o instanceof ScoresTreeTableModel.SongScores) {
 		scoreEditorPanel1.setSong(
-			((GhMyScoresTreeTableModel.SongScores) o).song);
+			((ScoresTreeTableModel.SongScores) o).song);
 	}
 }//GEN-LAST:event_treeValueChanged
 
@@ -787,6 +793,7 @@ private void downloadRbSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 				
 				try {
 					jshm.dataupdaters.RbSongUpdater.updateViaXml(progress, curGame.title);
+					jshm.dataupdaters.RbSongUpdater.updateSongInfo(progress);
 					ret = true;
 				} catch (Exception e1) {
 					LOG.log(Level.WARNING, "Failed to download song data via XML", e1);
@@ -796,13 +803,10 @@ private void downloadRbSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 					
 					if (JOptionPane.YES_OPTION == result) {
 						jshm.dataupdaters.RbSongUpdater.updateViaScraping(progress, curGame.title);
+						jshm.dataupdaters.RbSongUpdater.updateSongInfo(progress);
 						ret = true;
 					}
 				}
-				
-				// now get song info
-				jshm.dataupdaters.RbSongUpdater.updateSongInfo(progress);
-				
 			} catch (Exception e) {			
 				ret = false;
 				LOG.log(Level.SEVERE, "Failed to download song data", e);
@@ -859,6 +863,15 @@ private void checkForUpdatesMenuItemActionPerformed(java.awt.event.ActionEvent e
 	this.checkUpdatesDialog1.setLocationRelativeTo(this);
 	this.checkUpdatesDialog1.setVisible(true);
 }//GEN-LAST:event_checkForUpdatesMenuItemActionPerformed
+
+private void hideEmptySongsMenuItemItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_hideEmptySongsMenuItemItemStateChanged
+	if (tree.getTreeTableModel() instanceof ScoresTreeTableModel) {
+		ScoresTreeTableModel tmp = (ScoresTreeTableModel) tree.getTreeTableModel();
+		tmp.removeParent(tree);
+		tmp = tmp.createSortedModel(curSorting);
+		tree.setTreeTableModel(tmp);
+	}
+}//GEN-LAST:event_hideEmptySongsMenuItemItemStateChanged
 
 private void uploadLogsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                     
 	final ProgressDialog prog = new ProgressDialog(this);
@@ -950,9 +963,9 @@ private int checkForNewScores() {
 	int ret = JOptionPane.NO_OPTION;
 	TreeTableModel model = tree.getTreeTableModel();
 	
-	if (model instanceof GhMyScoresTreeTableModel) {
+	if (model instanceof ScoresTreeTableModel) {
 		int scoreCount = 
-			((GhMyScoresTreeTableModel) tree.getTreeTableModel()).getSubmittableScoreCount();
+			((ScoresTreeTableModel) tree.getTreeTableModel()).getSubmittableScoreCount();
 		
 		if (scoreCount != 0) {
 			ret = JOptionPane.showConfirmDialog(this, 
@@ -1344,7 +1357,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 						if (tree.getTreeTableModel() instanceof Parentable)
 							((Parentable) tree.getTreeTableModel()).removeParent(tree);
 						tree.setTreeTableModel(model);
-						model.setParent(tree);
+						model.setParent(GUI.this, tree);
 						tree.repaint();
 					}
 				});
@@ -1422,7 +1435,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 						if (tree.getTreeTableModel() instanceof Parentable)
 							((Parentable) tree.getTreeTableModel()).removeParent(tree);
 						tree.setTreeTableModel(model);
-						model.setParent(tree);
+						model.setParent(GUI.this, tree);
 						tree.repaint();
 					}
 				});
@@ -1497,7 +1510,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 	new SwingWorker<Void, Void>() {
 		List<? extends Song> songs = null;
 		List<? extends Score> scores = null;
-		GhMyScoresTreeTableModel model = null;
+		ScoresTreeTableModel model = null;
 		
 		@Override
 		protected Void doInBackground() throws Exception {			
@@ -1508,7 +1521,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 				songs = game.getSongs(group, difficulty);
 				scores = game.getScores(group, difficulty);
 
-				model = new GhMyScoresTreeTableModel(game, group, difficulty, curSorting, songs, scores);
+				model = new ScoresTreeTableModel(game, group, difficulty, curSorting, songs, scores);
 	
 				orderedSongs =
 					game.getSongsOrderedByTitle(group, difficulty);
@@ -1519,7 +1532,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 							if (tree.getTreeTableModel() instanceof Parentable)
 								((Parentable) tree.getTreeTableModel()).removeParent(tree);
 							tree.setTreeTableModel(model);
-							model.setParent(tree);
+							model.setParent(GUI.this, tree);
 							
 							// TODO this doesn't work
 //							if (null != expandedPaths) {
@@ -1681,19 +1694,26 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 	void setCurSorting(Song.Sorting sorting) {
 		this.curSorting = sorting;
 		
-		if (tree.getTreeTableModel() instanceof GhMyScoresTreeTableModel) {
+		if (tree.getTreeTableModel() instanceof ScoresTreeTableModel) {
 			// I'd prefer not to have to do it this way but it seems to work
-			GhMyScoresTreeTableModel model =
-				(GhMyScoresTreeTableModel) tree.getTreeTableModel();
+			ScoresTreeTableModel model =
+				(ScoresTreeTableModel) tree.getTreeTableModel();
 			model.removeParent(tree);
 			model = model.createSortedModel(sorting);
 			tree.setTreeTableModel(model);
-			model.setParent(tree);
+			model.setParent(GUI.this, tree);
 			tree.packAll();
 //			sorting = sorting;
 		}
 	}
 	
+	public boolean getHideEmptyScores() {
+		return hideEmptySongsMenuItem.isSelected();
+	}
+	
+	public JCheckBoxMenuItem getHideEmptySongsMenuItem() {
+		return hideEmptySongsMenuItem;
+	}
 	
 	public void openImageOrBrowser(String url) {
 		GuiUtil.openImageOrBrowser(this, url);
@@ -1713,9 +1733,9 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 //				System.out.println(song);
 				
 				if (null != song) {
-					assert tree.getTreeTableModel() instanceof GhMyScoresTreeTableModel;
+					assert tree.getTreeTableModel() instanceof ScoresTreeTableModel;
 					
-					((GhMyScoresTreeTableModel) tree.getTreeTableModel())
+					((ScoresTreeTableModel) tree.getTreeTableModel())
 						.expandAndScrollTo(song);
 				}
 			}
@@ -1727,7 +1747,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, 0), 'n'){
 			
 			public void actionPerformed(ActionEvent e) {
-				GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) tree.getTreeTableModel(); 
+				ScoresTreeTableModel model = (ScoresTreeTableModel) tree.getTreeTableModel(); 
 				model.createScoreTemplate(
 					getCurGame(), getCurGroup(), getCurDiff(),
 					tree.getPathForRow(tree.getSelectedRow()));
@@ -1772,7 +1792,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), 'D'){
 
 			public void actionPerformed(ActionEvent e) {
-				GhMyScoresTreeTableModel model = (GhMyScoresTreeTableModel) tree.getTreeTableModel();
+				ScoresTreeTableModel model = (ScoresTreeTableModel) tree.getTreeTableModel();
 				TreePath path = tree.getPathForRow(tree.getSelectedRow());
 				
 				Score score = (Score) path.getLastPathComponent();
@@ -1826,8 +1846,8 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			KeyStroke.getKeyStroke(KeyEvent.VK_U, CTRL_MASK | KeyEvent.ALT_DOWN_MASK), 'U'){
 
 			public void actionPerformed(ActionEvent e) {
-				GhMyScoresTreeTableModel newModel = 
-					((GhMyScoresTreeTableModel) tree.getTreeTableModel()).createNewScoresModel();
+				ScoresTreeTableModel newModel = 
+					((ScoresTreeTableModel) tree.getTreeTableModel()).createNewScoresModel();
 				
 				if (newModel.getScoreCount() == 0) {
 					JOptionPane.showMessageDialog(GUI.this, "There are no new scores to upload", "Error", JOptionPane.WARNING_MESSAGE);

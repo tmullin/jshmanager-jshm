@@ -30,6 +30,7 @@ import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
 import jshm.SongOrder;
 import jshm.rb.*;
+import jshm.gui.GUI;
 import jshm.gui.renderers.TierHighlighter;
 
 /**
@@ -79,7 +80,7 @@ public class RbSongDataTreeTableModel extends AbstractTreeTableModel implements 
 		this.model = new DataModel(game, songs);
 	}
 
-	public void setParent(JXTreeTable parent) {
+	public void setParent(GUI gui, JXTreeTable parent) {
 //		this.parent = parent;
 
 	    parent.setHighlighters(

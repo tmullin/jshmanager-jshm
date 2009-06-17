@@ -28,7 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import jshm.gui.datamodels.GhMyScoresTreeTableModel;
+import jshm.gui.datamodels.ScoresTreeTableModel;
 
 import org.jdesktop.swingx.JXTreeTable;
 import org.netbeans.spi.wizard.WizardPage;
@@ -37,7 +37,7 @@ public class VerifyScoresPage extends WizardPage {
 	JCheckBox cb;
 	JXTreeTable tt;
 	
-	public VerifyScoresPage(GhMyScoresTreeTableModel model) {
+	public VerifyScoresPage(ScoresTreeTableModel model) {
 		super("verifyScores", "Verify scores", true);
 		
 		JPanel northPanel = new JPanel(new BorderLayout());
@@ -51,7 +51,7 @@ public class VerifyScoresPage extends WizardPage {
 			BorderLayout.CENTER);
 		
 		tt = new JXTreeTable(model);
-		model.setParent(tt);
+		model.setParent(null, tt);
 		tt.setEditable(false);
 		tt.expandAll();
 //		tt.setHorizontalScrollEnabled(true);

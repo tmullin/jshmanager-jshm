@@ -44,6 +44,7 @@ import jshm.Song;
 import jshm.Instrument.Group;
 import jshm.Song.Sorting;
 import jshm.gh.GhScore;
+import jshm.gui.GUI;
 import jshm.gui.GuiUtil;
 import jshm.gui.editors.GhMyScoresEditor;
 import jshm.gui.editors.GhMyScoresRatingEditor;
@@ -70,8 +71,8 @@ import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
  * 
  * @author Tim Mullin
  */
-public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements Parentable, SongSortable {
-	static final Logger LOG = Logger.getLogger(GhMyScoresTreeTableModel.class.getName());
+public class ScoresTreeTableModel extends AbstractTreeTableModel implements Parentable, SongSortable {
+	static final Logger LOG = Logger.getLogger(ScoresTreeTableModel.class.getName());
 	
 	/*
 	 * + Tier Name 1 | \- Song Name 1 | + Score 1 | \- Score 2 | \- Song Name 2
@@ -143,14 +144,29 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			
 			return null;
 		}
-
-		public String toString() {
+		
+		public int getScoreCount() {
 			int scores = 0;
-
+			
 			for (SongScores song : songs) {
 				scores += song.scores.size();
 			}
+			
+			return scores;
+		}
+		
+		public boolean hasAnyScores() {
+			for (SongScores ss : songs) {
+				if (ss.hasAnyScores())
+					return true;
+			}
+			
+			return false;
+		}
 
+		public String toString() {
+			int scores = getScoreCount();
+			
 			return String.format("%s (%d %s)", name, scores,
 					scores != 1 ? "scores" : "score")
 //					+ " @" + Integer.toHexString(hashCode())
@@ -172,6 +188,14 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			this.song = song;
 		}
 
+		public int getScoreCount() {
+			return scores.size();
+		}
+		
+		public boolean hasAnyScores() {
+			return scores.size() > 0;
+		}
+		
 		public String toString() {
 			return String.format("%s (%d %s)", song.getTitle(), scores.size(),
 					scores.size() != 1 ? "scores" : "score")
@@ -195,7 +219,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	private final List<? extends Song> songs;
 	private final List<? extends Score> scores;
 
-	public GhMyScoresTreeTableModel(
+	public ScoresTreeTableModel(
 			final Game game, final Group group, final Difficulty diff, final Sorting sorting,
 			final List<? extends Song> songs, final List<? extends Score> scores) {
 
@@ -209,15 +233,17 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		setSorting(sorting);
 	}
 	
+	private boolean displayEmptyScores = true;
+	
 	/* TODO I don't understand why just calling setSorting() after
 	 * instantiation causes issues. I think it has something to do with
 	 * various listeners that get added somewhere along the line that
 	 * cause a default cell renderer to be used instead of
 	 * GhMyScoresCellRenderer
 	 */
-	public GhMyScoresTreeTableModel createSortedModel(final Sorting sorting) {
+	public ScoresTreeTableModel createSortedModel(final Sorting sorting) {
 		Collections.sort(songs, game.getSortingComparator(sorting));
-		return new GhMyScoresTreeTableModel(game, group, diff, sorting, songs, scores);
+		return new ScoresTreeTableModel(game, group, diff, sorting, songs, scores);
 	}
 	
 	public void setSorting(final Sorting sorting) {
@@ -358,11 +384,11 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	
 	/**
 	 * 
-	 * @return A new instance of {@link GhMyScoresTreeTableModel}
+	 * @return A new instance of {@link ScoresTreeTableModel}
 	 * that contains only the new scores that this model contains.
 	 */
 	// TODO rename to indicate new or unknown
-	public GhMyScoresTreeTableModel createNewScoresModel() {
+	public ScoresTreeTableModel createNewScoresModel() {
 		List<Song> songs = new ArrayList<Song>();
 		List<Score> newScores = new ArrayList<Score>();
 		
@@ -379,7 +405,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 			}
 		}
 		
-		return new GhMyScoresTreeTableModel(game, group, diff, sorting, songs, newScores);
+		return new ScoresTreeTableModel(game, group, diff, sorting, songs, newScores);
 	}
 	
 	/**
@@ -513,7 +539,7 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 	
 	// TODO some of the stuff in here might not necessary fit 
 	// as part of the "data model"/mvc stuff...
-	public void setParent(final JXTreeTable parent) {
+	public void setParent(final GUI gui, final JXTreeTable parent) {
 		this.parent = parent;
 		
 		GhMyScoresTreeCellRenderer treeRenderer = new GhMyScoresTreeCellRenderer();
@@ -527,6 +553,9 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		parent.addMouseListener(myParentMouseListener);
 		parent.addMouseMotionListener(myParentMouseMotionListener);
 		parent.addTreeWillExpandListener(myParentTreeWillExpandListener);
+		
+		if (null != gui)
+			displayEmptyScores = !gui.getHideEmptyScores();
 		
 		Highlighter[] highlighters = new Highlighter[] {
 			HighlighterFactory.createSimpleStriping(),
@@ -574,14 +603,14 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		this.parent = null;
 	}
 	
-	// TODO this shouldn't be necessary
-	public void resetParent() {
-		if (null == this.parent) return;
-		
-		JXTreeTable tmp = this.parent;
-		removeParent(tmp);
-		setParent(tmp);
-	}
+//	// TODO this shouldn't be necessary
+//	public void resetParent() {
+//		if (null == this.parent) return;
+//		
+//		JXTreeTable tmp = this.parent;
+//		removeParent(tmp);
+//		setParent(gui, tmp);
+//	}
 
 	@Override
 	public Class<?> getColumnClass(int column) {
@@ -750,16 +779,59 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 		}
     }
 	
+    public boolean isNodeVisible(Object node) {
+    	if (displayEmptyScores || node.equals(root))
+    		return true;
+    	
+    	if (node instanceof Tier) {
+//    		System.out.println("TIER is visible? " + ((Tier) node).hasAnyScores() + " - " + node);
+    		return ((Tier) node).hasAnyScores();
+    	}
+    	
+    	if (node instanceof SongScores) {
+    		return ((SongScores) node).hasAnyScores();
+    	}
+    	
+    	return true;
+    }
+    
 	@Override
 	public Object getChild(Object parent, int index) {
+		int count = 0;
+		
+//		System.out.println("CHILD at " + index + " FOR - " + parent);
+		
 		if (parent.equals(root)) {
-			return model.tiers.get(index);
+			if (displayEmptyScores)
+				return model.tiers.get(index);
+			
+			for (Tier t : model.tiers) {
+				if (!isNodeVisible(t))
+					continue;
+				if (count == index) {
+//					System.out.println("ROOT child at " + index + " is " + t);
+					return t;
+				}
+				
+				count++;
+			}
 		}
 
 		if (parent instanceof Tier) {
-			return ((Tier) parent).songs.get(index);
+			if (displayEmptyScores)
+				return ((Tier) parent).songs.get(index);
+			
+			for (SongScores ss : ((Tier) parent).songs) {
+				if (!isNodeVisible(ss))
+					continue;
+				if (count == index)
+					return ss;
+				
+				count++;
+			}
 		}
 
+		// always shown, no index trickery needed
 		if (parent instanceof SongScores) {
 			return ((SongScores) parent).scores.get(index);
 		}
@@ -769,14 +841,40 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 
 	@Override
 	public int getChildCount(Object parent) {
+		int count = 0;
+		
+//		System.out.println("CHILD COUNT for " + parent);
+		
 		if (parent.equals(root)) {
-			return model.tiers.size();
+			if (displayEmptyScores)
+				return model.tiers.size();
+			
+			for (Tier t : model.tiers) {
+				if (isNodeVisible(t)) {
+					count++;
+				}
+			}
+			
+//			System.out.println("ROOT child count = " + count);
+			return count;
 		}
 
 		if (parent instanceof Tier) {
-			return ((Tier) parent).songs.size();
+			Tier tier = (Tier) parent;
+			
+			if (displayEmptyScores)
+				return tier.songs.size();
+			
+			for (SongScores ss : tier.songs) {
+				if (isNodeVisible(ss)) {
+					count++;
+				}
+			}
+			
+			return count;
 		}
 
+		// always show
 		if (parent instanceof SongScores) {
 			return ((SongScores) parent).scores.size();
 		}
@@ -786,14 +884,37 @@ public class GhMyScoresTreeTableModel extends AbstractTreeTableModel implements 
 
 	@Override
 	public int getIndexOfChild(Object parent, Object child) {
+		int count = 0;
+		
 		if (parent.equals(root)) {
-			return model.tiers.indexOf(child);
+			if (displayEmptyScores)
+				return model.tiers.indexOf(child);
+			
+			for (Tier t : model.tiers) {
+				if (!isNodeVisible(t))
+					continue;
+				if (t == child)
+					return count;
+					
+				count++;
+			}
 		}
 
 		if (parent instanceof Tier) {
-			return ((Tier) parent).songs.indexOf(child);
+			if (displayEmptyScores)
+				return ((Tier) parent).songs.indexOf(child);
+			
+			for (SongScores ss : ((Tier) parent).songs) {
+				if (!isNodeVisible(ss))
+					continue;
+				if (ss == child)
+					return count;
+				
+				count++;
+			}
 		}
 
+		// always shown
 		if (parent instanceof SongScores) {
 			return ((SongScores) parent).scores.indexOf(child);
 		}

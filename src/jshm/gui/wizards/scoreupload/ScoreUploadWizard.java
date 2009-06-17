@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 
 import jshm.Score;
 import jshm.gui.LoginDialog;
-import jshm.gui.datamodels.GhMyScoresTreeTableModel;
+import jshm.gui.datamodels.ScoresTreeTableModel;
 
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
@@ -46,7 +46,7 @@ import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
 public class ScoreUploadWizard {
 	static final Logger LOG = Logger.getLogger(ScoreUploadWizard.class.getName());
 	
-	public static Wizard createWizard(GhMyScoresTreeTableModel model) {
+	public static Wizard createWizard(ScoresTreeTableModel model) {
 		final ScoreUploadWizard me = new ScoreUploadWizard();
 		
 		return WizardPage.createWizard("Upload Scores to ScoreHero",
@@ -96,8 +96,8 @@ public class ScoreUploadWizard {
 					uploadUnknown = (Boolean) settings.get("uploadUnknown");
 				} catch (Exception e) {}
 				
-				GhMyScoresTreeTableModel model =
-					(GhMyScoresTreeTableModel) settings.get("treeTableData");
+				ScoresTreeTableModel model =
+					(ScoresTreeTableModel) settings.get("treeTableData");
 				
 				int uploaded = 0, possiblyUploaded = 0, notUploaded = 0;
 				List<String> resultStrings = new ArrayList<String>();

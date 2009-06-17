@@ -27,7 +27,7 @@ import javax.swing.*;
 
 import jshm.Score;
 import jshm.Song;
-import jshm.gui.datamodels.GhMyScoresTreeTableModel;
+import jshm.gui.datamodels.ScoresTreeTableModel;
 import jshm.sh.URLs;
 import jshm.sh.links.Link;
 import jshm.sh.scraper.WikiSpScraper;
@@ -129,7 +129,7 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 			if (!(e.getComponent() instanceof JXTreeTable)) return;
 			comp = (JXTreeTable) e.getComponent();
 			
-			if (!(comp.getTreeTableModel() instanceof GhMyScoresTreeTableModel)) return;
+			if (!(comp.getTreeTableModel() instanceof ScoresTreeTableModel)) return;
 			
 			int row = comp.rowAtPoint(e.getPoint());
 			comp.getSelectionModel().setSelectionInterval(row, row);
@@ -146,9 +146,9 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 			uploadScoreMenuItem.setVisible(false);
 			deleteScoreMenuItem.setVisible(false);
 			
-			if (hovered instanceof GhMyScoresTreeTableModel.SongScores) {
+			if (hovered instanceof ScoresTreeTableModel.SongScores) {
 				selectedSong = 
-					((GhMyScoresTreeTableModel.SongScores) hovered).song;
+					((ScoresTreeTableModel.SongScores) hovered).song;
 			} else if (hovered instanceof Score) {
 				selectedScore = (Score) hovered;
 				selectedSong = selectedScore.getSong();

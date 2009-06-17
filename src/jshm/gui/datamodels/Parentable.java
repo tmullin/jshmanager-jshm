@@ -20,6 +20,8 @@
 */
 package jshm.gui.datamodels;
 
+import jshm.gui.GUI;
+
 import org.jdesktop.swingx.JXTreeTable;
 
 /**
@@ -29,6 +31,6 @@ import org.jdesktop.swingx.JXTreeTable;
  *
  */
 public interface Parentable {
-	public void setParent(JXTreeTable parent);
+	public void setParent(GUI gui, JXTreeTable parent);
 	public void removeParent(JXTreeTable parent);
 }

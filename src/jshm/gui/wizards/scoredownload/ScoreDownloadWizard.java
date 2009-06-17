@@ -184,6 +184,7 @@ public class ScoreDownloadWizard {
 									
 									try {
 										jshm.dataupdaters.RbSongUpdater.updateViaXml(progress, rgame.title);
+										jshm.dataupdaters.RbSongUpdater.updateSongInfo(progress);
 									} catch (Exception e1) {
 										LOG.log(Level.WARNING, "Failed to download song data via XML", e1);
 										
@@ -192,6 +193,7 @@ public class ScoreDownloadWizard {
 										
 										if (JOptionPane.YES_OPTION == result) {
 											jshm.dataupdaters.RbSongUpdater.updateViaScraping(progress, rgame.title);
+											jshm.dataupdaters.RbSongUpdater.updateSongInfo(progress);
 										}
 									}
 									
