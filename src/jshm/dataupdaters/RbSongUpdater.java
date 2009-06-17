@@ -324,10 +324,11 @@ public class RbSongUpdater {
 					progress.setProgress(
 						String.format("Processing song %s of %s", i + 1, total), i, total);
 				
+				// extra steps taken to try to cope with song title inconsistencies
 				List<RbSong> result =
 					(List<RbSong>) session.createQuery(
-						"FROM RbSong WHERE title=:ttl")
-					.setString("ttl", key)
+						"FROM RbSong WHERE UPPER(title) LIKE :ttl")
+					.setString("ttl", key.toUpperCase().replace("AND", "%").replace("&", "%"))
 					.list();
 				
 				for (RbSong s : result) {

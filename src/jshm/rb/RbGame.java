@@ -58,7 +58,7 @@ public class RbGame extends Game {
 			RB2_NEXTGEN = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Rock Band Imported|AC/DC Live Track Pack|Downloaded Songs".split("\\|"),
 			RB2_WII = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Downloaded Songs".split("\\|"),
 			
-			RB2_DIFFS = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs".split("\\|")
+			RB2_DIFFS = "<UNKNOWN>|Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs".split("\\|")
 			;
 	}
 	
@@ -115,12 +115,13 @@ public class RbGame extends Game {
 	    Collections.sort(list_i);
 	    
 	    tiers.clear();
+	    tiers.add("<UNKNOWN>");
 	    for (Integer i : list_i) {
 	    	if (null == i || 0 == i) {
-	    		tiers.add("UNKNOWN");
-	    	} else {
-	    		tiers.add(String.valueOf(i * 10) + "s");
+	    		continue;
 	    	}
+	    	
+	    	tiers.add(String.valueOf(i * 10) + "s");
 	    }
 	    
 	    System.out.println("RB Decade List");
@@ -129,6 +130,7 @@ public class RbGame extends Game {
 	    mapTiers(Sorting.DECADE, tiers);
 	    
 	    
+	    // TODO use WHERE NOT NULL instead of iterating afterward?
 	    // make genre tier
 	    list_s = (List<String>) session.createQuery(
 	    	"SELECT DISTINCT genre FROM RbSong ORDER BY genre")
@@ -137,12 +139,14 @@ public class RbGame extends Game {
 	    tiers.clear();
 	    for (String s : list_s) {
 	    	if (null == s) {
-	    		tiers.add("UNKNOWN");
-	    	} else {
-	    		tiers.add(s);
+	    		continue;
 	    	}
+	    	
+	    	tiers.add(s);
 	    }
 	    
+	    Collections.sort(tiers, String.CASE_INSENSITIVE_ORDER);
+		tiers.add(0, "<UNKNOWN>");
 	    System.out.println("RB Genre List");
 	    jshm.util.Print.print(tiers, "\t");
 	    
@@ -156,13 +160,15 @@ public class RbGame extends Game {
 	    
 	    tiers.clear();
 	    for (String s : list_s) {
-	    	if (null == s || s.isEmpty()) {
-	    		tiers.add("UNKNOWN");
-	    	} else {
-	    		tiers.add(s);
+	    	if (null == s) {
+	    		continue;
 	    	}
+	    	
+	    	tiers.add(s);
 	    }
 	    
+	    Collections.sort(tiers, String.CASE_INSENSITIVE_ORDER);
+		tiers.add(0, "<UNKNOWN>");
 	    System.out.println("RB Artists List");
 	    jshm.util.Print.print(tiers, "\t");
 	    

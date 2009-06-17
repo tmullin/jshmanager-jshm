@@ -98,17 +98,17 @@ public class RbSongInfoFetcher {
 			trackNum = 0,
 			year = 0,
 			
-			guitar = 0,
-			bass = 0,
-			vocals = 0,
-			drums = 0,
-			band = 0,
+			guitar = -1,
+			bass = -1,
+			vocals = -1,
+			drums = -1,
+			band = -1,
 			
-			guitarRb2 = 0,
-			bassRb2 = 0,
-			vocalsRb2 = 0,
-			drumsRb2 = 0,
-			bandRb2 = 0;
+			guitarRb2 = -1,
+			bassRb2 = -1,
+			vocalsRb2 = -1,
+			drumsRb2 = -1,
+			bandRb2 = -1;
 		
 		public Song.RecordingType recording;
 		

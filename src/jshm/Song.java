@@ -48,20 +48,20 @@ public abstract class Song implements Comparable<Song> {
 	/**
 	 * The ScoreHero id for this song.
 	 */
-	private int		scoreHeroId	= 0;
+	protected int		scoreHeroId	= 0;
 	private Game	game		= null;
-	private String
+	protected String
 		title		= "UNKNOWN",
-		artist		= "UNKNOWN",
-		album		= "UNKNOWN",
-		genre		= "UNKNOWN",
-		songPack	= "UNKNOWN";
+		artist		= null,
+		album		= null,
+		genre		= null,
+		songPack	= null;
 	
-	private int
+	protected int
 		trackNum	= 0,
 		year		= 0;
 	
-	private RecordingType recordingType = null;
+	protected RecordingType recordingType = null;
 	
 	protected SongOrder songOrder = null;
 	
@@ -150,7 +150,7 @@ public abstract class Song implements Comparable<Song> {
 	}
 
 	public void setArtist(String artist) {
-		this.artist = null == artist ? "UNKNOWN" : artist;
+		this.artist = artist;
 	}
 
 	public String getAlbum() {
@@ -158,7 +158,7 @@ public abstract class Song implements Comparable<Song> {
 	}
 
 	public void setAlbum(String album) {
-		this.album = null == album ? "UNKNOWN" : album;
+		this.album = album;
 	}
 
 	public String getGenre() {
@@ -166,7 +166,7 @@ public abstract class Song implements Comparable<Song> {
 	}
 
 	public void setGenre(String genre) {
-		this.genre = null == genre ? "UNKNOWN" : genre;
+		this.genre = genre;
 	}
 
 	public String getSongPack() {
@@ -174,7 +174,7 @@ public abstract class Song implements Comparable<Song> {
 	}
 
 	public void setSongPack(String songPack) {
-		this.songPack = null == songPack ? "UNKNOWN" : songPack;
+		this.songPack = songPack;
 	}
 
 	public int getTrackNum() {
@@ -236,7 +236,9 @@ public abstract class Song implements Comparable<Song> {
 				return 1; // 1 is for 123/Symbol
 				
 			case ARTIST:
-				for (int i = 1; i <= getActiveGame().getTierCount(sorting); i++) {
+				if (null == artist)
+					return 1; // <UNKNOWN>
+				for (int i = 2; i <= getActiveGame().getTierCount(sorting); i++) {
 					if (artist.equals(getActiveGame().getTierName(sorting, i)))
 						return i;
 				}
@@ -244,7 +246,9 @@ public abstract class Song implements Comparable<Song> {
 				throw new IllegalStateException("no tier found for artist");
 				
 			case GENRE:
-				for (int i = 1; i <= getActiveGame().getTierCount(sorting); i++) {
+				if (null == genre)
+					return 1; // <UNKNOWN>
+				for (int i = 2; i <= getActiveGame().getTierCount(sorting); i++) {
 					if (genre.equals(getActiveGame().getTierName(sorting, i)))
 						return i;
 				}
@@ -252,11 +256,11 @@ public abstract class Song implements Comparable<Song> {
 				throw new IllegalStateException("no tier found for genre");
 				
 			case DECADE:
-				if (0 == year) return 1; // "UNKNOWN"
+				if (0 == year) return 1; // <UNKNOWN>
 				
 				String decadeStr = (year / 10 * 10) + "s";
 				
-				for (int i = 1; i <= getActiveGame().getTierCount(sorting); i++) {
+				for (int i = 2; i <= getActiveGame().getTierCount(sorting); i++) {
 					if (decadeStr.equals(getActiveGame().getTierName(sorting, i)))
 						return i;
 				}
@@ -277,25 +281,25 @@ public abstract class Song implements Comparable<Song> {
 		}
 		
 		if ((null == artist && null != other.artist) ||
-			!artist.equals(other.artist)) {
+			(null != artist && !artist.equals(other.artist))) {
 			setArtist(other.artist);
 			updated = true;
 		}
 		
 		if ((null == album && null != other.album) ||
-			!album.equals(other.album)) {
+			(null != album && !album.equals(other.album))) {
 			setAlbum(other.album);
 			updated = true;
 		}
 		
 		if ((null == genre && null != other.genre) ||
-			!genre.equals(other.genre)) {
+			(null != genre && !genre.equals(other.genre))) {
 			setGenre(other.genre);
 			updated = true;
 		}
 		
 		if ((null == songPack && null != other.songPack) ||
-			!songPack.equals(other.songPack)) {
+			(null != songPack && !songPack.equals(other.songPack))) {
 			setSongPack(other.songPack);
 			updated = true;
 		}
@@ -413,7 +417,7 @@ public abstract class Song implements Comparable<Song> {
 		
 		TITLE = new Comparator<Song>() {
 			@Override public int compare(Song o1, Song o2) {
-				return o1.getTitle().compareTo(o2.getTitle());
+				return o1.getTitle().compareToIgnoreCase(o2.getTitle());
 			}
 		},
 		
@@ -425,8 +429,10 @@ public abstract class Song implements Comparable<Song> {
 					ret = -1;
 				} else if (null != o1.artist && null == o2.artist) {
 					ret = 1;
+				} else if (null == o1.artist && null == o2.artist) {
+					ret = 0;
 				} else {
-					ret = o1.artist.compareTo(o2.artist);
+					ret = o1.artist.compareToIgnoreCase(o2.artist);
 					
 					if (0 == ret)
 						ret = TITLE.compare(o1, o2);
@@ -444,8 +450,10 @@ public abstract class Song implements Comparable<Song> {
 					ret = -1;
 				} else if (null != o1.genre && null == o2.genre) {
 					ret = 1;
+				} else if (null == o1.genre && null == o2.genre) {
+					ret = 0;
 				} else {
-					ret = o1.genre.compareTo(o2.genre);
+					ret = o1.genre.compareToIgnoreCase(o2.genre);
 					
 					if (0 == ret)
 						ret = TITLE.compare(o1, o2);

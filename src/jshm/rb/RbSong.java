@@ -192,7 +192,7 @@ public class RbSong extends Song {
 	public int getTierLevel(Sorting sorting) {
 		switch (sorting) {
 			case DIFFICULTY:
-				int ret = 0;
+				int ret = -1;
 				
 				switch (getSongOrder().getGroup()) {
 					case GUITAR: ret = rb2GuitarDiff; break;
@@ -202,7 +202,7 @@ public class RbSong extends Song {
 					default: ret = rb2BandDiff; break;
 				}
 				
-				return ret + 1;
+				return ret + 2; // 1 is <UNKNOWN>
 				
 			default:
 				return super.getTierLevel(sorting);
@@ -225,20 +225,20 @@ public class RbSong extends Song {
 	
 	// fields for http://pksage.com/xml.php
 	private String
-		songSource;
+		songSource = null;
 	
 	private int
-		rawGuitarDiff,
-		rawBassDiff,
-		rawVocalsDiff,
-		rawDrumsDiff,
-		rawBandDiff,
+		rawGuitarDiff = -1,
+		rawBassDiff = -1,
+		rawVocalsDiff = -1,
+		rawDrumsDiff = -1,
+		rawBandDiff = -1,
 		
-		rb2GuitarDiff,
-		rb2BassDiff,
-		rb2VocalsDiff,
-		rb2DrumsDiff,
-		rb2BandDiff;
+		rb2GuitarDiff = -1,
+		rb2BassDiff = -1,
+		rb2VocalsDiff = -1,
+		rb2DrumsDiff = -1,
+		rb2BandDiff = -1;
 	
 	public String getSongSource() {
 		return songSource;
@@ -253,7 +253,7 @@ public class RbSong extends Song {
 	}
 
 	public void setRawGuitarDiff(Integer rawGuitarDiff) {
-		this.rawGuitarDiff = rawGuitarDiff == null ? 0 : rawGuitarDiff;
+		this.rawGuitarDiff = rawGuitarDiff == null ? -1 : rawGuitarDiff;
 	}
 
 	public int getRawBassDiff() {
@@ -261,7 +261,7 @@ public class RbSong extends Song {
 	}
 
 	public void setRawBassDiff(Integer rawBassDiff) {
-		this.rawBassDiff = rawBassDiff == null ? 0 : rawBassDiff;
+		this.rawBassDiff = rawBassDiff == null ? -1 : rawBassDiff;
 	}
 
 	public int getRawVocalsDiff() {
@@ -269,7 +269,7 @@ public class RbSong extends Song {
 	}
 
 	public void setRawVocalsDiff(Integer rawVocalsDiff) {
-		this.rawVocalsDiff = rawVocalsDiff == null ? 0 : rawVocalsDiff;
+		this.rawVocalsDiff = rawVocalsDiff == null ? -1 : rawVocalsDiff;
 	}
 
 	public int getRawDrumsDiff() {
@@ -277,7 +277,7 @@ public class RbSong extends Song {
 	}
 
 	public void setRawDrumsDiff(Integer rawDrumsDiff) {
-		this.rawDrumsDiff = rawDrumsDiff == null ? 0 : rawDrumsDiff;
+		this.rawDrumsDiff = rawDrumsDiff == null ? -1 : rawDrumsDiff;
 	}
 
 	public int getRawBandDiff() {
@@ -285,7 +285,7 @@ public class RbSong extends Song {
 	}
 
 	public void setRawBandDiff(Integer rawBandDiff) {
-		this.rawBandDiff = rawBandDiff == null ? 0 : rawBandDiff;
+		this.rawBandDiff = rawBandDiff == null ? -1 : rawBandDiff;
 	}
 	
 	public int getRb2GuitarDiff() {
@@ -293,7 +293,7 @@ public class RbSong extends Song {
 	}
 
 	public void setRb2GuitarDiff(Integer rb2GuitarDiff) {
-		this.rb2GuitarDiff = rb2GuitarDiff == null ? 0 : rb2GuitarDiff;
+		this.rb2GuitarDiff = rb2GuitarDiff == null ? -1 : rb2GuitarDiff;
 	}
 
 	public int getRb2BassDiff() {
@@ -301,7 +301,7 @@ public class RbSong extends Song {
 	}
 
 	public void setRb2BassDiff(Integer rb2BassDiff) {
-		this.rb2BassDiff = rb2BassDiff == null ? 0 : rb2BassDiff;
+		this.rb2BassDiff = rb2BassDiff == null ? -1 : rb2BassDiff;
 	}
 
 	public int getRb2VocalsDiff() {
@@ -309,7 +309,7 @@ public class RbSong extends Song {
 	}
 
 	public void setRb2VocalsDiff(Integer rb2VocalsDiff) {
-		this.rb2VocalsDiff = rb2VocalsDiff == null ? 0 : rb2VocalsDiff;
+		this.rb2VocalsDiff = rb2VocalsDiff == null ? -1 : rb2VocalsDiff;
 	}
 
 	public int getRb2DrumsDiff() {
@@ -317,7 +317,7 @@ public class RbSong extends Song {
 	}
 
 	public void setRb2DrumsDiff(Integer rb2DrumsDiff) {
-		this.rb2DrumsDiff = rb2DrumsDiff == null ? 0 : rb2DrumsDiff;
+		this.rb2DrumsDiff = rb2DrumsDiff == null ? -1 : rb2DrumsDiff;
 	}
 
 	public int getRb2BandDiff() {
@@ -325,7 +325,7 @@ public class RbSong extends Song {
 	}
 
 	public void setRb2BandDiff(Integer rb2BandDiff) {
-		this.rb2BandDiff = rb2BandDiff == null ? 0 : rb2BandDiff;
+		this.rb2BandDiff = rb2BandDiff == null ? -1 : rb2BandDiff;
 	}
 
 	private SortedSet<Platform> platforms = new TreeSet<Platform>();
@@ -355,37 +355,41 @@ public class RbSong extends Song {
 	public boolean update(final RbSongInfoFetcher.SongInfo info) {
 		boolean updated = false;
 		
-		if (!getArtist().equals(info.artist)) {
+		if ((null == artist && null != info.artist) ||
+			(null != artist && !artist.equals(info.artist))) {
 			setArtist(info.artist);
 			updated = true;
 		}
 		
-		if (!getAlbum().equals(info.album)) {
+		if ((null == album && null != info.album) ||
+			(null != album && !album.equals(info.album))) {
 			setAlbum(info.album);
 			updated = true;
 		}
 		
-		if (!getGenre().equals(info.genre)) {
+		if ((null == genre && null != info.genre) ||
+			(null != genre && !genre.equals(info.genre))) {
 			setGenre(info.genre);
 			updated = true;
 		}
 		
-		if (!getSongPack().equals(info.pack)) {
+		if ((null == songPack && null != info.pack) ||
+			(null != songPack && !songPack.equals(info.pack))) {
 			setSongPack(info.pack);
 			updated = true;
 		}
 		
-		if (getYear() != info.year) {
+		if (year != info.year) {
 			setYear(info.year);
 			updated = true;
 		}
 		
-		if (getTrackNum() != info.trackNum) {
+		if (trackNum != info.trackNum) {
 			setTrackNum(info.trackNum);
 			updated = true;
 		}
 		
-		if (getRecordingType() != info.recording) {
+		if (recordingType != info.recording) {
 			setRecordingType(info.recording);
 			updated = true;
 		}
