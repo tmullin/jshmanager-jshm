@@ -30,6 +30,7 @@ import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
 import jshm.gh.*;
 import jshm.gui.GUI;
+import jshm.gui.renderers.GhMyScoresTreeCellRenderer;
 import jshm.gui.renderers.TierHighlighter;
 
 /**
@@ -81,7 +82,8 @@ public class GhSongDataTreeTableModel extends AbstractTreeTableModel implements 
 
 	public void setParent(GUI gui, JXTreeTable parent) {
 //		this.parent = parent;
-
+		
+		parent.setTreeCellRenderer(new GhMyScoresTreeCellRenderer());
 	    parent.setHighlighters(
 	    	HighlighterFactory.createSimpleStriping(),
 	    	new TierHighlighter());
@@ -126,10 +128,10 @@ public class GhSongDataTreeTableModel extends AbstractTreeTableModel implements 
 		
 		GhSong song = (GhSong) node;
 		
-		String ret = "";
+		Object ret = "";
 		
 		switch (column) {
-			case 0: ret = song.getTitle(); break;
+			case 0: ret = song; break;
 			case 1: ret = NUM_FMT.format(song.getNoteCount()); break; // noteCount
 			case 2: ret = NUM_FMT.format(song.getBaseScore()); break; // baseScore
 			case 3: ret = NUM_FMT.format(song.getFourStarCutoff()); break; // 4*

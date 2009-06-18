@@ -70,8 +70,6 @@ public abstract class GameTitle {
 	public final String		title;
 	public final Platform[] platforms;
 	
-	private transient javax.swing.ImageIcon icon = null;
-	
 	protected GameTitle(final GameSeries series, final String title, final Platform ... platforms) {
 		values.add(this);
 		
@@ -81,14 +79,8 @@ public abstract class GameTitle {
 	}
 	
 	public javax.swing.ImageIcon getIcon() {
-		if (null == icon) {
-			try {
-				icon = new javax.swing.ImageIcon(
-					GameTitle.class.getResource("/jshm/resources/images/gametitles/" + this.toString() + "_32.png"));
-			} catch (Exception e) {}
-		}
-		
-		return icon;
+		return jshm.gui.GuiUtil.getIcon(
+			"gametitles/" + title + "_32.png");
 	}
 	
 	public abstract Difficulty.Strategy getDifficultyStrategy();

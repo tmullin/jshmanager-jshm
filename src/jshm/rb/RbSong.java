@@ -41,6 +41,7 @@ import jshm.Instrument;
 import jshm.Platform;
 import jshm.Song;
 import jshm.SongOrder;
+import jshm.SongSource;
 import jshm.Instrument.Group;
 import jshm.sh.URLs;
 import jshm.xml.RbSongInfoFetcher;
@@ -223,6 +224,14 @@ public class RbSong extends Song {
 		this.gameTitle = gameTitle;
 	}
 	
+	@Transient @Override
+	public javax.swing.ImageIcon getSongSourceIcon() {
+		if (null == songSource)
+			return null;
+		SongSource ss = SongSource.smartValueOf(songSource);
+		return null == ss ? null : ss.getIcon();
+	}
+	
 	// fields for http://pksage.com/xml.php
 	private String
 		songSource = null;
@@ -370,6 +379,12 @@ public class RbSong extends Song {
 		if ((null == genre && null != info.genre) ||
 			(null != genre && !genre.equals(info.genre))) {
 			setGenre(info.genre);
+			updated = true;
+		}
+		
+		if ((null == songSource && null != info.game) ||
+			(null != songSource && !songSource.equals(info.game))) {
+			setSongSource(info.game);
 			updated = true;
 		}
 		

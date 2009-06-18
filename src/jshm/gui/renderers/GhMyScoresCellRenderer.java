@@ -25,11 +25,11 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import jshm.Score;
+import jshm.gui.GuiUtil;
 
 public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
 	private final DecimalFormat NUM_FMT = new DecimalFormat("#,###");
@@ -72,9 +72,7 @@ public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
 						
 						if (!score.getVideoUrl().isEmpty()) {
 							setHorizontalTextPosition(LEFT);
-							setIcon(
-								new ImageIcon(
-									GhMyScoresCellRenderer.class.getResource("/jshm/resources/images/video.gif")));
+							setIcon(GuiUtil.getIcon("video.gif"));
 						}
 					} else {
 						setText("");

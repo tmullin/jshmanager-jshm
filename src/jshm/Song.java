@@ -134,6 +134,15 @@ public abstract class Song implements Comparable<Song> {
 		  : null;
 	}
 	
+	@Transient
+	public javax.swing.ImageIcon getSongSourceIcon() {
+		GameTitle ttl = getGameTitle();
+		if (null == ttl)
+			return null;
+		SongSource ss = SongSource.smartValueOf(ttl.title);
+		return null == ss ? null : ss.getIcon();
+	}
+	
 	@NotEmpty
 	public String getTitle() {
 		return title;
@@ -196,6 +205,17 @@ public abstract class Song implements Comparable<Song> {
 	@Enumerated(EnumType.STRING)
 	public RecordingType getRecordingType() {
 		return recordingType;
+	}
+	
+	/**
+	 * 
+	 * @return <code>true</code> if this song's recording type is not {@link RecordingType#COVER},
+	 * 			even if it's <code>null</code> (since we don't know and probably don't want to say
+	 * 			"as made fameous by" unless we're sure.
+	 */
+	@Transient
+	public boolean isMasterRecording() {
+		return RecordingType.COVER != recordingType;
 	}
 
 	public void setRecordingType(RecordingType recordingType) {

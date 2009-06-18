@@ -27,7 +27,9 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,6 +43,7 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.tree.TreePath;
 
 import jshm.Config;
+import jshm.JSHManager;
 import jshm.Song;
 import jshm.gui.components.SpInfoViewer;
 import jshm.gui.renderers.ScoreEditorSongComboRenderer;
@@ -326,5 +329,28 @@ public class GuiUtil {
 				}
 			}
 		}.execute();
+	}
+
+	private static Map<String, ImageIcon> iconCache =
+		new HashMap<String, ImageIcon>();
+	
+	/**
+	 * Retrieves an image icon for the provided path relative to
+	 * "/jshm/resources/images/". The image is cached
+	 * if found for subsequent retrievals.
+	 * @param path
+	 * @return
+	 */
+	public static ImageIcon getIcon(String path) {
+		path = "/jshm/resources/images/" + path;
+		
+		if (null == iconCache.get(path)) {
+			try {
+				iconCache.put(path,
+					new ImageIcon(JSHManager.class.getResource(path)));
+			} catch (Exception e) {}
+		}
+		
+		return iconCache.get(path);
 	}
 }

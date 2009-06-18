@@ -20,34 +20,61 @@
  */
 package jshm.gui.renderers;
 
-import java.awt.Component;
-
-import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 import jshm.Score;
 import jshm.Song;
+import jshm.gui.datamodels.ScoresTreeTableModel;
 
-public class GhMyScoresTreeCellRenderer extends DefaultTreeCellRenderer {
-    public Component getTreeCellRendererComponent(JTree tree, Object value,
-			  boolean sel,
-			  boolean expanded,
-			  boolean leaf, int row,
-			  boolean hasFocus) {
-    	
-    	if (value instanceof Score) {
-    		Score score = (Score) value;
-    		
-    		if (score.getStatus() == Score.Status.TEMPLATE) {
-    			value = "Double click to edit...";
-    		} else {
-	    		value = score.getComment().isEmpty()
-	    			? "No Comment" : score.getComment();
-    		}
-    	} else if (value instanceof Song) {
-    		value = ((Song) value).getTitle();
-    	}
-    	
-    	return super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-    }
+import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
+import org.jdesktop.swingx.renderer.IconValue;
+import org.jdesktop.swingx.renderer.StringValue;
+
+public class GhMyScoresTreeCellRenderer extends DefaultTreeRenderer {
+	public GhMyScoresTreeCellRenderer() {
+		super(new IconValue() {
+			@Override public Icon getIcon(final Object value) {
+//				System.out.println("ICON " + value.getClass().getName() + ": " + value);
+				Song song = null;
+				
+				if (value instanceof Song) {
+					song = (Song) value;
+				} else if (value instanceof ScoresTreeTableModel.SongScores) {
+					song = ((ScoresTreeTableModel.SongScores) value).song;
+				}
+		    	
+		    	if (null != song) {
+		    		ImageIcon icon = song.getSongSourceIcon();
+		    		
+		    		if (null != icon) {
+		    			return icon;
+		    		}
+		    	}
+		    	
+				return null;
+			}
+		}, new StringValue() {
+			@Override public String getString(Object value) {
+				String ret = "";
+				
+		    	if (value instanceof Score) {
+		    		Score score = (Score) value;
+		    		
+		    		if (score.getStatus() == Score.Status.TEMPLATE) {
+		    			ret = "Double click to edit...";
+		    		} else {
+			    		ret = score.getComment().isEmpty()
+			    			? "No Comment" : score.getComment();
+		    		}
+		    	} else if (value instanceof Song) {
+		    		ret = ((Song) value).getTitle();
+		    	} else {
+		    		ret = value.toString();
+		    	}
+		    	
+				return ret;
+			}
+		});
+	}
 }

@@ -20,6 +20,8 @@ Version 0.2.9
 - There is now an option to hide songs and tiers that don't have any
   scores. You can still insert a score via the editor for a hidden song,
   which will cause it to appear in the list.
+- Songs now have an icon to indicate where they are from (i.e. RB1, RB2,
+  DLC, AC/DC).
 
 Version 0.2.8
 -------------
