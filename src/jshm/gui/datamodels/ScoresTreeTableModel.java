@@ -242,17 +242,84 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 	 * cause a default cell renderer to be used instead of
 	 * GhMyScoresCellRenderer
 	 */
-	public ScoresTreeTableModel createSortedModel(final Sorting sorting) {
-		Collections.sort(songs, game.getSortingComparator(sorting));
-		return new ScoresTreeTableModel(game, group, diff, sorting, songs, scores);
-	}
+//	public ScoresTreeTableModel createSortedModel(final Sorting sorting) {
+//		Collections.sort(songs, game.getSortingComparator(sorting));
+//		return new ScoresTreeTableModel(game, group, diff, sorting, songs, scores);
+//	}
 	
 	public void setSorting(final Sorting sorting) {
-		this.sorting = sorting;
 		Collections.sort(songs, game.getSortingComparator(sorting));
+
+		TreePath tp = new TreePath(root); // ROOT
+		int[] indices = null;
+		Object[] children = null;
+		
+		if (null != this.sorting) {
+			// remove all existing children
+			indices = new int[getChildCount(root)];
+			children = new Object[indices.length];
+			
+			for (int i = 0; i < indices.length; i++) {
+				indices[i] = i;
+				children[i] = getChild(root, i);
+			}
+			
+			modelSupport.fireChildrenRemoved(
+				tp, indices, children);
+		}
+		
+		this.sorting = sorting;
+		myParentTreeWillExpandListener.lastExpanded = null;
 		model = new DataModel(game, songs, scores);
-		modelSupport.fireNewRoot();
-//		if (null != parent) parent.repaint();
+		
+		// add tiers for new sorting
+		indices = new int[getChildCount(root)];
+		children = new Object[indices.length];
+		
+		for (int i = 0; i < indices.length; i++) {
+			indices[i] = i;
+			children[i] = getChild(root, i);
+		}
+		
+		modelSupport.fireChildrenAdded(
+			tp, indices, children);
+	}
+	
+	public void setDisplayEmptyScores(boolean b) {
+		if (displayEmptyScores == b) return;
+		
+		// TODO allow it to toggle in place without removing and re-adding everything
+
+		TreePath tp = new TreePath(root); // ROOT
+		int[] indices = null;
+		Object[] children = null;
+		
+		// remove all existing children
+		indices = new int[getChildCount(root)];
+		children = new Object[indices.length];
+		
+		for (int i = 0; i < indices.length; i++) {
+			indices[i] = i;
+			children[i] = getChild(root, i);
+		}
+		
+		modelSupport.fireChildrenRemoved(
+			tp, indices, children);
+		
+		displayEmptyScores = b;
+		myParentTreeWillExpandListener.lastExpanded = null;
+		
+		// add tiers
+		indices = new int[getChildCount(root)];
+		children = new Object[indices.length];
+		
+		for (int i = 0; i < indices.length; i++) {
+			indices[i] = i;
+			children[i] = getChild(root, i);
+		}
+		
+		modelSupport.fireChildrenAdded(
+			tp, indices, children);
 	}
 	
 	public void createScoreTemplate(Game game, Group group, Difficulty difficulty, TreePath p) {
@@ -557,7 +624,11 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 		}
 	};
 	
-	private TreeWillExpandListener myParentTreeWillExpandListener = new TreeWillExpandListener() {
+	private MyParentTreeWillExpandListener myParentTreeWillExpandListener =
+		new MyParentTreeWillExpandListener();
+	
+	// need to make a non-anonymous class so i can null out lastExpanded
+	private class MyParentTreeWillExpandListener implements TreeWillExpandListener {
 		public void treeWillCollapse(TreeExpansionEvent event)
 				throws ExpandVetoException {} // not interested
 

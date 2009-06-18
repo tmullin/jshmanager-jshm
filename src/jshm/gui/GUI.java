@@ -870,11 +870,12 @@ private void hideEmptySongsMenuItemItemStateChanged(java.awt.event.ItemEvent evt
 		// I'd prefer not to have to do it this way but it seems to work
 		ScoresTreeTableModel model =
 			(ScoresTreeTableModel) tree.getTreeTableModel();
-		model.removeParent(tree);
-		model = model.createSortedModel(curSorting);
-		model.displayEmptyScores = !getHideEmptyScores();
-		tree.setTreeTableModel(model);
-		model.setParent(GUI.this, tree);
+		model.setDisplayEmptyScores(!getHideEmptyScores());
+//		model.removeParent(tree);
+//		model = model.createSortedModel(curSorting);
+//		model.displayEmptyScores = !getHideEmptyScores();
+//		tree.setTreeTableModel(model);
+//		model.setParent(GUI.this, tree);
 		tree.packAll();
 //		sorting = sorting;
 	}
@@ -1707,11 +1708,12 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			// I'd prefer not to have to do it this way but it seems to work
 			ScoresTreeTableModel model =
 				(ScoresTreeTableModel) tree.getTreeTableModel();
-			model.removeParent(tree);
-			model = model.createSortedModel(sorting);
-			model.displayEmptyScores = !getHideEmptyScores();
-			tree.setTreeTableModel(model);
-			model.setParent(GUI.this, tree);
+			model.setSorting(sorting);
+//			model.removeParent(tree);
+//			model = model.createSortedModel(sorting);
+//			model.displayEmptyScores = !getHideEmptyScores();
+//			tree.setTreeTableModel(model);
+//			model.setParent(GUI.this, tree);
 			tree.packAll();
 //			sorting = sorting;
 		}

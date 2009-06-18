@@ -12,6 +12,14 @@ Version 0.2.9
 - Fixed bug that made the go to song feature stop working after opening
   the score upload wizard.
 - Added a toolbar for quicker access to some of the menu commands.
+- Added more song sorting options. Guitar Hero games can only be sorted
+  by ScoreHero's sorting and title due to no apparant song data feed.
+  Rock Band has the same in-game sorting options thanks to pksage's
+  master song list. There are some discrepencies between his list
+  and ScoreHero however. Those songs will show up in an <UNKNOWN> tier.
+- There is now an option to hide songs and tiers that don't have any
+  scores. You can still insert a score via the editor for a hidden song,
+  which will cause it to appear in the list.
 
 Version 0.2.8
 -------------
