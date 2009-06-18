@@ -44,6 +44,7 @@ import javax.swing.text.JTextComponent;
 import jshm.Score;
 import jshm.Song;
 import jshm.StreakStrategy;
+import jshm.exceptions.SongHiddenException;
 import jshm.gh.GhScore;
 import jshm.gui.datamodels.ScoresTreeTableModel;
 import jshm.gui.editors.GhMyScoresRatingEditor;
@@ -596,8 +597,15 @@ private void goToSongButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
 	Object selected = songCombo.getSelectedItem();
 	
 	if (selected instanceof Song) {
-		((ScoresTreeTableModel) gui.tree.getTreeTableModel())
-			.expandAndScrollTo((Song) selected);
+		try {
+			((ScoresTreeTableModel) gui.tree.getTreeTableModel())
+				.expandAndScrollTo((Song) selected);
+		} catch (SongHiddenException e) {
+			JOptionPane.showMessageDialog(gui,
+				"That song is hidden because it doesn't have any scores\n" +
+				"and you're hiding songs without scores.",
+				"Notice", JOptionPane.WARNING_MESSAGE);
+		}
 	}
 }//GEN-LAST:event_goToSongButtonActionPerformed
 

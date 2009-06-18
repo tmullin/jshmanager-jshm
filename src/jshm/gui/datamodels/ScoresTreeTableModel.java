@@ -43,6 +43,7 @@ import jshm.Score;
 import jshm.Song;
 import jshm.Instrument.Group;
 import jshm.Song.Sorting;
+import jshm.exceptions.SongHiddenException;
 import jshm.gh.GhScore;
 import jshm.gui.GUI;
 import jshm.gui.GuiUtil;
@@ -233,7 +234,7 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 		setSorting(sorting);
 	}
 	
-	private boolean displayEmptyScores = true;
+	public boolean displayEmptyScores = true;
 	
 	/* TODO I don't understand why just calling setSorting() after
 	 * instantiation causes issues. I think it has something to do with
@@ -282,37 +283,59 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 				game, group, difficulty, selectedScore.getSong()));
 	}
 	
+	// TODO account for hidden tiers
 	public void insertScore(Score score) {
-		Song song = score.getSong();		
-		SongScores ss = model.tiers.get(song.getTierLevel(sorting) - 1)
-			.addScore(score);
+		Song song = score.getSong();
+		Tier tier = model.tiers.get(song.getTierLevel(sorting) - 1);
+		boolean isFirstScoreInTier = !tier.hasAnyScores();
+		SongScores ss = tier.addScore(score);
 		
 		if (null != ss) {
-			Object[] path = new Object[3];
-			path[0] = getRoot();
-			path[1] = getChild(path[0], song.getTierLevel(sorting) - 1);
-			path[2] = ss;
+			boolean isFirstScoreInSs = ss.getScoreCount() == 1;
 			
-			TreePath tp = new TreePath(path);
-			modelSupport.fireTreeStructureChanged(tp);
-			tp = tp.pathByAddingChild(score);
+			TreePath tp = new TreePath(root); // ROOT
+			int tierIndex = getIndexOfChild(root, tier);
 			
+			if (!displayEmptyScores && isFirstScoreInTier) {
+				System.out.println("FIRST score in tier");
+//				modelSupport.fireTreeStructureChanged(tp);
+				modelSupport.fireChildAdded(tp, tierIndex, tier);
+			}
+			
+			tp = tp.pathByAddingChild(getChild(root, tierIndex)); // ROOT -> Tier
+			int ssIndex = getIndexOfChild(tp.getLastPathComponent(), ss);
+			
+			if (!displayEmptyScores && isFirstScoreInSs) {
+				System.out.println("FIRST score in ss");
+//				modelSupport.fireTreeStructureChanged(tp);
+				modelSupport.fireChildAdded(tp, ssIndex, ss);
+			}
+			
+			tp = tp.pathByAddingChild(ss); // ROOT -> Tier -> Song
+			int scoreIndex = getIndexOfChild(ss, score);
+			modelSupport.fireChildAdded(tp, scoreIndex, score);
+
+			tp = tp.pathByAddingChild(score); // ROOT -> Tier -> Song -> Score
+			
+			parent.packAll();
 			expandAndScrollTo(tp);
 		}
 	}
 	
-	public void expandAndScrollTo(Song song) {
-		SongScores ss = model.tiers.get(song.getTierLevel(sorting) - 1)
-			.getSongScores(song);
+	// TODO account for hidden tiers
+	public void expandAndScrollTo(Song song) throws SongHiddenException {
+		Tier tier = model.tiers.get(song.getTierLevel(sorting) - 1);
+		SongScores ss = tier.getSongScores(song);
 		
 		assert null != ss;
 		
-		Object[] path = new Object[3];
-		path[0] = getRoot();
-		path[1] = getChild(path[0], song.getTierLevel(sorting) - 1);
-		path[2] = ss;
+		if (!isNodeVisible(ss)) {
+			throw new SongHiddenException();
+		}
 		
-		TreePath tp = new TreePath(path);
+		TreePath tp = new TreePath(new Object[] {
+			root, tier, ss
+		});
 		
 //        StringBuilder tempSpot = new StringBuilder("[");
 //
@@ -342,6 +365,8 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 	
 	public void deleteScore(TreePath p, boolean deleteFromScoreHero) {
 		if (!(p.getLastPathComponent() instanceof Score)) return;
+		
+		// p = ROOT -> Tier -> Song -> Score
 		
 		Score score = (Score) p.getLastPathComponent();
 		
@@ -373,12 +398,37 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 				}
 				
 			case TEMPLATE:
-				model.tiers.get(score.getSong().getTierLevel(sorting) - 1)
-					.removeScore(score);
-				modelSupport.fireTreeStructureChanged(p.getParentPath());
-
-				break;
+				Tier tier = model.tiers.get(score.getSong().getTierLevel(sorting) - 1);
+				int tierIndex = getIndexOfChild(root, tier);
+				SongScores ss = tier.getSongScores(score.getSong());
+				int ssIndex = getIndexOfChild(tier, ss);
+				int scoreIndex = getIndexOfChild(ss, score);
+				tier.removeScore(score);
+				boolean wasLastSsScore = !ss.hasAnyScores();
+				boolean wasLastTierScore = !tier.hasAnyScores();
 				
+				assert null != ss;
+				
+				p = p.getParentPath(); // ROOT -> Tier -> Song
+				modelSupport.fireChildRemoved(p, scoreIndex, score);
+
+				p = p.getParentPath(); // ROOT -> Tier
+				
+				if (!displayEmptyScores && wasLastSsScore) {
+					System.out.println("LAST score in ss");
+					modelSupport.fireChildRemoved(p, ssIndex, ss);
+				}
+				
+				p = p.getParentPath(); // ROOT
+				
+				if (!displayEmptyScores && wasLastTierScore) {
+					System.out.println("LAST score in tier");
+					modelSupport.fireChildRemoved(p, tierIndex, tier);
+				}
+				
+				parent.packAll();
+				
+				break;	
 		}
 	}
 	
@@ -416,9 +466,7 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 		int count = 0;
 		
 		for (Tier t : model.tiers) {
-			for (SongScores ss : t.songs) {
-				count += ss.scores.size();
-			}
+			count += t.getScoreCount();
 		}
 		
 		return count;
@@ -439,15 +487,7 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 		return count;
 	}
 	
-	public List<Score> getScores() {
-		List<Score> scores = new ArrayList<Score>();
-		
-		for (Tier t : model.tiers) {
-			for (SongScores ss : t.songs) {
-				scores.addAll(ss.scores);
-			}
-		}
-		
+	public List<? extends Score> getScores() {		
 		return scores;
 	}
 	
@@ -646,6 +686,9 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 
 	@Override
 	public Object getValueAt(Object node, int column) {
+//		if (!isNodeVisible(node))
+//			throw new IllegalArgumentException("node not visible");
+		
 		if (node instanceof Tier) {
 			if (column == 0)
 				return node;
@@ -780,7 +823,7 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
     }
 	
     public boolean isNodeVisible(Object node) {
-    	if (displayEmptyScores || node.equals(root))
+    	if (displayEmptyScores || node == root)
     		return true;
     	
     	if (node instanceof Tier) {
@@ -798,6 +841,9 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 	@Override
 	public Object getChild(Object parent, int index) {
 		int count = 0;
+		
+		if (!isNodeVisible(parent))
+			return null;
 		
 //		System.out.println("CHILD at " + index + " FOR - " + parent);
 		
@@ -885,6 +931,9 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 	@Override
 	public int getIndexOfChild(Object parent, Object child) {
 		int count = 0;
+		
+		if (!(isNodeVisible(parent) && isNodeVisible(child)))
+			return -1;
 		
 		if (parent.equals(root)) {
 			if (displayEmptyScores)

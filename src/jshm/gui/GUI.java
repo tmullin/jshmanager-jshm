@@ -77,6 +77,7 @@ import jshm.SongOrder;
 import jshm.UpdateChecker;
 import jshm.Instrument.Group;
 import jshm.Song.Sorting;
+import jshm.exceptions.SongHiddenException;
 import jshm.gh.GhGame;
 import jshm.gui.components.SelectSongDialog;
 import jshm.gui.components.StatusBar;
@@ -864,12 +865,18 @@ private void checkForUpdatesMenuItemActionPerformed(java.awt.event.ActionEvent e
 	this.checkUpdatesDialog1.setVisible(true);
 }//GEN-LAST:event_checkForUpdatesMenuItemActionPerformed
 
-private void hideEmptySongsMenuItemItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_hideEmptySongsMenuItemItemStateChanged
+private void hideEmptySongsMenuItemItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_hideEmptySongsMenuItemItemStateChanged	
 	if (tree.getTreeTableModel() instanceof ScoresTreeTableModel) {
-		ScoresTreeTableModel tmp = (ScoresTreeTableModel) tree.getTreeTableModel();
-		tmp.removeParent(tree);
-		tmp = tmp.createSortedModel(curSorting);
-		tree.setTreeTableModel(tmp);
+		// I'd prefer not to have to do it this way but it seems to work
+		ScoresTreeTableModel model =
+			(ScoresTreeTableModel) tree.getTreeTableModel();
+		model.removeParent(tree);
+		model = model.createSortedModel(curSorting);
+		model.displayEmptyScores = !getHideEmptyScores();
+		tree.setTreeTableModel(model);
+		model.setParent(GUI.this, tree);
+		tree.packAll();
+//		sorting = sorting;
 	}
 }//GEN-LAST:event_hideEmptySongsMenuItemItemStateChanged
 
@@ -1358,7 +1365,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 							((Parentable) tree.getTreeTableModel()).removeParent(tree);
 						tree.setTreeTableModel(model);
 						model.setParent(GUI.this, tree);
-						tree.repaint();
+						tree.packAll();
 					}
 				});
 			} catch (Exception e) {
@@ -1436,7 +1443,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 							((Parentable) tree.getTreeTableModel()).removeParent(tree);
 						tree.setTreeTableModel(model);
 						model.setParent(GUI.this, tree);
-						tree.repaint();
+						tree.packAll();
 					}
 				});
 			} catch (Exception e) {
@@ -1531,8 +1538,10 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 						if (null != model && null != tree) {
 							if (tree.getTreeTableModel() instanceof Parentable)
 								((Parentable) tree.getTreeTableModel()).removeParent(tree);
+							model.displayEmptyScores = !getHideEmptyScores();
 							tree.setTreeTableModel(model);
 							model.setParent(GUI.this, tree);
+							tree.packAll();
 							
 							// TODO this doesn't work
 //							if (null != expandedPaths) {
@@ -1700,6 +1709,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 				(ScoresTreeTableModel) tree.getTreeTableModel();
 			model.removeParent(tree);
 			model = model.createSortedModel(sorting);
+			model.displayEmptyScores = !getHideEmptyScores();
 			tree.setTreeTableModel(model);
 			model.setParent(GUI.this, tree);
 			tree.packAll();
@@ -1735,8 +1745,15 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 				if (null != song) {
 					assert tree.getTreeTableModel() instanceof ScoresTreeTableModel;
 					
-					((ScoresTreeTableModel) tree.getTreeTableModel())
-						.expandAndScrollTo(song);
+					try {
+						((ScoresTreeTableModel) tree.getTreeTableModel())
+							.expandAndScrollTo(song);
+					} catch (SongHiddenException e1) {
+						JOptionPane.showMessageDialog(GUI.this,
+							"That song is hidden because it doesn't have any scores\n" +
+							"and you're hiding songs without scores.",
+							"Notice", JOptionPane.WARNING_MESSAGE);
+					}
 				}
 			}
 		};
