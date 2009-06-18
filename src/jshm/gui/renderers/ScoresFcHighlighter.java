@@ -30,35 +30,51 @@ import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 
-public class GhMyScoresPercentHighlighter extends AbstractHighlighter {	
-	public GhMyScoresPercentHighlighter() {
+public class ScoresFcHighlighter extends AbstractHighlighter {	
+	public ScoresFcHighlighter() {
 		super(new HighlightPredicate() {
 			@Override
 			public boolean isHighlighted(Component renderer,
 					ComponentAdapter adapter) {	
-				if (adapter.column != 3) return false;
-				if (!(adapter.getValue() instanceof Score)) return false;
 				
-				Score score = (Score) adapter.getValue(); 
-				return score.getHitPercent() < 1f;
+				if (!(adapter.getValueAt(adapter.row, 1) instanceof Score)) return false;
+				
+				Score score = (Score) adapter.getValueAt(adapter.row, 1);
+				
+				return 1f == score.getHitPercent() || score.isFullCombo();
+				
+//				switch (adapter.column) {
+//					case 3:
+//						if (adapter.getValue() instanceof GhScore)
+//							return 1f == ((GhScore) adapter.getValue()).getHitPercent();
+//						
+//					case 4:
+//						if (adapter.getValue() instanceof GhScore)
+//							return ((GhScore) adapter.getValue()).isFullCombo();
+//				}
+				
+//				return false;
 			}
 		});
 	}
 	
-	static final Color ORANGE = new Color(0xF48400);
-	static final Color RED = new Color(0xEE0000);
+	Color fg = new Color(0x009900);
+	Color bg = new Color(0xcff6dd);
 	
 	@Override
 	protected Component doHighlight(Component component,
 			ComponentAdapter adapter) {
 		
-		Score score = (Score) adapter.getValue();
-		Color fg = score.getHitPercent() >= 0.8f
-		? ORANGE : RED;
-			
-		component.setForeground(fg);
-		component.setFont(component.getFont().deriveFont(Font.BOLD));	
+		if (!adapter.isSelected())
+			component.setBackground(bg);
+		
+		if ((adapter.column == 3 && 1f == ((Score) adapter.getValue()).getHitPercent()) ||
+			(adapter.column == 4 && ((Score) adapter.getValue()).isFullCombo())) {
+			component.setForeground(fg);
+			component.setFont(component.getFont().deriveFont(Font.BOLD));	
+		}
 		
 		return component;
 	}
+
 }

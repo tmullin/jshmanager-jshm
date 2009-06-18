@@ -22,7 +22,8 @@ package jshm.gui.renderers;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
+
+import javax.swing.UIManager;
 
 import jshm.Score;
 
@@ -30,50 +31,33 @@ import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 
-public class GhMyScoresFcHighlighter extends AbstractHighlighter {	
-	public GhMyScoresFcHighlighter() {
+public class ScoresNoCommentHighlighter extends AbstractHighlighter {
+	Color color = new Color(0x009900);
+	
+	public ScoresNoCommentHighlighter() {
 		super(new HighlightPredicate() {
 			@Override
 			public boolean isHighlighted(Component renderer,
-					ComponentAdapter adapter) {	
+					ComponentAdapter adapter) {
 				
 				if (!(adapter.getValueAt(adapter.row, 1) instanceof Score)) return false;
 				
-				Score score = (Score) adapter.getValueAt(adapter.row, 1);
+				switch (adapter.column) {
+					case 0:
+						return
+						!adapter.isSelected() &&
+						((Score) adapter.getValueAt(adapter.row, 1)).getComment().isEmpty();
+				}
 				
-				return 1f == score.getHitPercent() || score.isFullCombo();
-				
-//				switch (adapter.column) {
-//					case 3:
-//						if (adapter.getValue() instanceof GhScore)
-//							return 1f == ((GhScore) adapter.getValue()).getHitPercent();
-//						
-//					case 4:
-//						if (adapter.getValue() instanceof GhScore)
-//							return ((GhScore) adapter.getValue()).isFullCombo();
-//				}
-				
-//				return false;
+				return false;
 			}
 		});
 	}
 	
-	Color fg = new Color(0x009900);
-	Color bg = new Color(0xcff6dd);
-	
 	@Override
 	protected Component doHighlight(Component component,
 			ComponentAdapter adapter) {
-		
-		if (!adapter.isSelected())
-			component.setBackground(bg);
-		
-		if ((adapter.column == 3 && 1f == ((Score) adapter.getValue()).getHitPercent()) ||
-			(adapter.column == 4 && ((Score) adapter.getValue()).isFullCombo())) {
-			component.setForeground(fg);
-			component.setFont(component.getFont().deriveFont(Font.BOLD));	
-		}
-		
+		component.setForeground(UIManager.getColor("textInactiveText"));
 		return component;
 	}
 

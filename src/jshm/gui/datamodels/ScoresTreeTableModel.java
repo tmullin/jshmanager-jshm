@@ -49,12 +49,12 @@ import jshm.gui.GUI;
 import jshm.gui.GuiUtil;
 import jshm.gui.editors.GhMyScoresEditor;
 import jshm.gui.editors.GhMyScoresRatingEditor;
-import jshm.gui.renderers.GhMyScoresCellRenderer;
-import jshm.gui.renderers.GhMyScoresFcHighlighter;
-import jshm.gui.renderers.GhMyScoresNewScoreHighlighter;
-import jshm.gui.renderers.GhMyScoresNoCommentHighlighter;
-import jshm.gui.renderers.GhMyScoresPercentHighlighter;
-import jshm.gui.renderers.GhMyScoresTreeCellRenderer;
+import jshm.gui.renderers.ScoresCellRenderer;
+import jshm.gui.renderers.ScoresFcHighlighter;
+import jshm.gui.renderers.ScoresNewScoreHighlighter;
+import jshm.gui.renderers.ScoresNoCommentHighlighter;
+import jshm.gui.renderers.ScoresPercentHighlighter;
+import jshm.gui.renderers.ScoresTreeCellRenderer;
 import jshm.gui.renderers.TierHighlighter;
 import jshm.hibernate.HibernateUtil;
 import jshm.rb.RbScore;
@@ -106,7 +106,7 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 		}
 	}
 
-	public class Tier {
+	public class Tier implements ModelTier {
 		public final String				name;
 		public final List<SongScores>	songs = new ArrayList<SongScores>();
 
@@ -653,10 +653,10 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 	public void setParent(final GUI gui, final JXTreeTable parent) {
 		this.parent = parent;
 		
-		GhMyScoresTreeCellRenderer treeRenderer = new GhMyScoresTreeCellRenderer();
+		ScoresTreeCellRenderer treeRenderer = new ScoresTreeCellRenderer();
 		parent.setTreeCellRenderer(treeRenderer);
 		
-		GhMyScoresCellRenderer renderer = new GhMyScoresCellRenderer();
+		ScoresCellRenderer renderer = new ScoresCellRenderer();
 		
 		for (int i = 0; i < getColumnCount(); i++)
 			parent.getColumn(i).setCellRenderer(renderer);
@@ -670,11 +670,11 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 		
 		Highlighter[] highlighters = new Highlighter[] {
 			HighlighterFactory.createSimpleStriping(),
-			new GhMyScoresPercentHighlighter(),
-			new GhMyScoresFcHighlighter(),
+			new ScoresPercentHighlighter(),
+			new ScoresFcHighlighter(),
 			new TierHighlighter(),
-			new GhMyScoresNoCommentHighlighter(),
-			new GhMyScoresNewScoreHighlighter()
+			new ScoresNoCommentHighlighter(),
+			new ScoresNewScoreHighlighter()
 		};
 		
 		parent.setHighlighters(highlighters);

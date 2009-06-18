@@ -23,9 +23,7 @@ package jshm.gui.renderers;
 import java.awt.Color;
 import java.awt.Component;
 
-import jshm.gui.datamodels.ScoresTreeTableModel;
-import jshm.gui.datamodels.GhSongDataTreeTableModel;
-import jshm.gui.datamodels.RbSongDataTreeTableModel;
+import jshm.gui.datamodels.ModelTier;
 
 import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
@@ -42,9 +40,7 @@ public class TierHighlighter extends AbstractHighlighter {
 				
 				Object o = adapter.getValueAt(adapter.row, 0);
 				
-				if (o instanceof ScoresTreeTableModel.Tier ||
-					o instanceof GhSongDataTreeTableModel.Tier ||
-					o instanceof RbSongDataTreeTableModel.Tier)
+				if (o instanceof ModelTier)
 					return true;
 				
 				return false;

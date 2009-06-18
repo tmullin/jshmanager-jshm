@@ -31,7 +31,7 @@ import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 import jshm.SongOrder;
 import jshm.rb.*;
 import jshm.gui.GUI;
-import jshm.gui.renderers.GhMyScoresTreeCellRenderer;
+import jshm.gui.renderers.ScoresTreeCellRenderer;
 import jshm.gui.renderers.TierHighlighter;
 
 /**
@@ -56,7 +56,7 @@ public class RbSongDataTreeTableModel extends AbstractTreeTableModel implements 
 		}
 	}
 	
-	public class Tier {
+	public class Tier implements ModelTier {
 		public final String name;
 		public final List<RbSong> songs = new ArrayList<RbSong>();
 		
@@ -84,7 +84,7 @@ public class RbSongDataTreeTableModel extends AbstractTreeTableModel implements 
 	public void setParent(GUI gui, JXTreeTable parent) {
 //		this.parent = parent;
 
-		parent.setTreeCellRenderer(new GhMyScoresTreeCellRenderer());
+		parent.setTreeCellRenderer(new ScoresTreeCellRenderer());
 	    parent.setHighlighters(
 	    	HighlighterFactory.createSimpleStriping(),
 	    	new TierHighlighter());

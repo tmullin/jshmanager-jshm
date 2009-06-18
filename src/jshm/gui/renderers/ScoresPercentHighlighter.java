@@ -20,7 +20,9 @@
  */
 package jshm.gui.renderers;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 
 import jshm.Score;
 
@@ -28,30 +30,35 @@ import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 
-// TODO rename since it doesn't only apply to new scores
-public class GhMyScoresNewScoreHighlighter extends AbstractHighlighter {
-	public GhMyScoresNewScoreHighlighter() {
+public class ScoresPercentHighlighter extends AbstractHighlighter {	
+	public ScoresPercentHighlighter() {
 		super(new HighlightPredicate() {
 			@Override
 			public boolean isHighlighted(Component renderer,
-					ComponentAdapter adapter) {
+					ComponentAdapter adapter) {	
+				if (adapter.column != 3) return false;
+				if (!(adapter.getValue() instanceof Score)) return false;
 				
-				if (!(adapter.getValueAt(adapter.row, 1) instanceof Score)) return false;
-				
-				Score.Status status = ((Score) adapter.getValueAt(adapter.row, 1)).getStatus();
-				
-				return !adapter.isSelected() && status.highlightColor != null;
+				Score score = (Score) adapter.getValue(); 
+				return score.getHitPercent() < 1f;
 			}
 		});
 	}
 	
+	static final Color ORANGE = new Color(0xF48400);
+	static final Color RED = new Color(0xEE0000);
+	
 	@Override
 	protected Component doHighlight(Component component,
 			ComponentAdapter adapter) {
-		component.setBackground(
-			((Score) adapter.getValueAt(adapter.row, 1)).getStatus().highlightColor
-		);
+		
+		Score score = (Score) adapter.getValue();
+		Color fg = score.getHitPercent() >= 0.8f
+		? ORANGE : RED;
+			
+		component.setForeground(fg);
+		component.setFont(component.getFont().deriveFont(Font.BOLD));	
+		
 		return component;
 	}
-
 }

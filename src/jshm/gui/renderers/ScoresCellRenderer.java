@@ -31,7 +31,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import jshm.Score;
 import jshm.gui.GuiUtil;
 
-public class GhMyScoresCellRenderer extends DefaultTableCellRenderer {
+public class ScoresCellRenderer extends DefaultTableCellRenderer {
 	private final DecimalFormat NUM_FMT = new DecimalFormat("#,###");
 	private final SimpleDateFormat DATE_FMT = new SimpleDateFormat("MM/dd/yy HH:mm");
 	

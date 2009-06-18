@@ -31,8 +31,8 @@ import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.IconValue;
 import org.jdesktop.swingx.renderer.StringValue;
 
-public class GhMyScoresTreeCellRenderer extends DefaultTreeRenderer {
-	public GhMyScoresTreeCellRenderer() {
+public class ScoresTreeCellRenderer extends DefaultTreeRenderer {
+	public ScoresTreeCellRenderer() {
 		super(new IconValue() {
 			@Override public Icon getIcon(final Object value) {
 //				System.out.println("ICON " + value.getClass().getName() + ": " + value);
