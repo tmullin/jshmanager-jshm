@@ -27,7 +27,6 @@
 package jshm.gui.components;
 
 import java.awt.Frame;
-import java.awt.event.KeyEvent;
 import java.util.List;
 
 import jshm.Song;
@@ -39,8 +38,13 @@ import jshm.gui.GuiUtil;
  */
 public class SelectSongDialog extends javax.swing.JDialog {
 	public static Song show(Frame parent, List<? extends Song> songs) {
-		SelectSongDialog d = new SelectSongDialog(parent, true);
+		final SelectSongDialog d = new SelectSongDialog(parent, true);
+//		System.out.println("pbefore: " + d.songCombo.getPreferredSize());
 		GuiUtil.createSongCombo(d.songCombo, songs);
+		d.pack();
+		
+//		System.out.println("pafter: " + d.songCombo.getPreferredSize());
+//		System.out.println("actual: " + d.songCombo.getSize());
 		d.setLocationRelativeTo(parent);
 		d.setVisible(true);
 		
@@ -100,9 +104,9 @@ public class SelectSongDialog extends javax.swing.JDialog {
         });
         jPanel1.add(cancelButton);
 
-        songCombo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                songComboKeyTyped(evt);
+        songCombo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                songComboActionPerformed(evt);
             }
         });
 
@@ -113,13 +117,13 @@ public class SelectSongDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
-                    .addComponent(songCombo, 0, 279, Short.MAX_VALUE))
+                    .addComponent(songCombo, 0, 370, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -152,27 +156,28 @@ private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:even
 	dispose();
 }//GEN-LAST:event_formWindowClosing
 
-private void songComboKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_songComboKeyTyped
-	if (evt.getKeyCode() == KeyEvent.VK_ENTER)
+private void songComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_songComboActionPerformed
+	if ("comboBoxEdited".equals(evt.getActionCommand())) {
 		selectButtonActionPerformed(null);
-}//GEN-LAST:event_songComboKeyTyped
+	}
+}//GEN-LAST:event_songComboActionPerformed
 
-    /**
-    * @param args the command line arguments
-    */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                SelectSongDialog dialog = new SelectSongDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
+//    /**
+//    * @param args the command line arguments
+//    */
+//    public static void main(String args[]) {
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                SelectSongDialog dialog = new SelectSongDialog(new javax.swing.JFrame(), true);
+//                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+//                    public void windowClosing(java.awt.event.WindowEvent e) {
+//                        System.exit(0);
+//                    }
+//                });
+//                dialog.setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;

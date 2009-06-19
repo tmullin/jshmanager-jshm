@@ -53,6 +53,7 @@ public class AboutDialog extends javax.swing.JDialog {
 			new SimpleDateFormat("EE, dd MMM yyyy HH:mm:ss")
 				.format(JSHManager.Version.DATE));
 		this.revisionLabel.setText(String.valueOf(JSHManager.Version.REVISION));
+		pack();
 	}
 	
     /** Creates new form AboutDialog */
