@@ -41,17 +41,39 @@ public enum SongSource {
 	}
 	
 	public static SongSource smartValueOf(String name) {
+		return smartValueOf(name, false);
+	}
+	
+	/**
+	 * Returns the SongSource for the provided name. Can return a DLC version
+	 * if desired (namely for GH2/3).
+	 * @param name
+	 * @param dlcVersion
+	 * @return
+	 */
+	public static SongSource smartValueOf(String name, boolean dlcVersion) {
 		if (null == name)
 			return null;
-		if ("AC/DC".equals(name))
-			return ACDC;
 		if ("DLC".equals(name))
 			return RBDLC;
+		if ("AC/DC".equals(name))
+			return ACDC;
+		if ("RB1X".equals(name))
+			return RB1;
+		
+		SongSource ret = null;
 		
 		try {
-			return SongSource.valueOf(name);
+			ret = SongSource.valueOf(name);
 		} catch (IllegalArgumentException e) {}
 		
-		return null;
+		if (dlcVersion) {
+			switch (ret) {
+				case GH2: ret = GH2DLC; break;
+				case GH3: ret = GH3DLC; break;
+			}
+		}
+		
+		return ret;
 	}
 }

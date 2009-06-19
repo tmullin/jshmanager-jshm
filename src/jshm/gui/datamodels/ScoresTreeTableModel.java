@@ -82,9 +82,7 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 	private class DataModel {
 		List<Tier>	tiers	= new ArrayList<Tier>();
 
-		public DataModel(final Game game, final List<? extends Song> songs,
-				final List<? extends Score> scores) {
-
+		public DataModel() {
 			for (int i = 1; i <= game.getTierCount(sorting); i++) {
 				tiers.add(new Tier(game.getTierName(sorting, i)));
 			}
@@ -270,7 +268,7 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 		
 		this.sorting = sorting;
 		myParentTreeWillExpandListener.lastExpanded = null;
-		model = new DataModel(game, songs, scores);
+		model = new DataModel();
 		
 		// add tiers for new sorting
 		indices = new int[getChildCount(root)];

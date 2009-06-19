@@ -22,12 +22,16 @@ package jshm.gui.datamodels;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
+import jshm.Song.Sorting;
 import jshm.gh.*;
 import jshm.gui.GUI;
 import jshm.gui.renderers.ScoresTreeCellRenderer;
@@ -37,20 +41,17 @@ import jshm.gui.renderers.TierHighlighter;
  *
  * @author Tim Mullin
  */
-public class GhSongDataTreeTableModel extends AbstractTreeTableModel implements Parentable {
+public class GhSongDataTreeTableModel extends AbstractTreeTableModel implements Parentable, SongSortable {
 	private class DataModel {
 		List<Tier> tiers = new ArrayList<Tier>();
 		
-		public DataModel(
-			final GhGame game,
-			final List<GhSong> songs) {
-	
-			for (int i = 1; i <= game.getTierCount(); i++) {
-				tiers.add(new Tier(game.getTierName(i)));
+		public DataModel() {
+			for (int i = 1; i <= game.getTierCount(sorting); i++) {
+				tiers.add(new Tier(game.getTierName(sorting, i)));
 			}
 			
 			for (GhSong song : songs) {
-				tiers.get(song.getTierLevel() - 1).songs.add(song);
+				tiers.get(song.getTierLevel(sorting) - 1).songs.add(song);
 			}
 		}
 	}
@@ -69,17 +70,59 @@ public class GhSongDataTreeTableModel extends AbstractTreeTableModel implements 
 		}
 	}
 	
-	
-	private final DataModel model;
+	private final GhGame game;
+	private final List<GhSong> songs;
+	private Sorting sorting;
+	private DataModel model;
 	
 	public GhSongDataTreeTableModel(
 		final GhGame game,
+		final Sorting sorting,
 		final List<GhSong> songs) {
 		
 		super("ROOT");
-		this.model = new DataModel(game, songs);
+		this.game = game;
+		this.songs = songs;
+		setSorting(sorting);
 	}
 
+	public void setSorting(Sorting sorting) {
+		Collections.sort(songs, game.getSortingComparator(sorting));
+
+		TreePath tp = new TreePath(root); // ROOT
+		int[] indices = null;
+		Object[] children = null;
+		
+		if (null != this.sorting) {
+			// remove all existing children
+			indices = new int[getChildCount(root)];
+			children = new Object[indices.length];
+			
+			for (int i = 0; i < indices.length; i++) {
+				indices[i] = i;
+				children[i] = getChild(root, i);
+			}
+			
+			modelSupport.fireChildrenRemoved(
+				tp, indices, children);
+		}
+		
+		this.sorting = sorting;
+		this.model = new DataModel();
+		
+		// add tiers for new sorting
+		indices = new int[getChildCount(root)];
+		children = new Object[indices.length];
+		
+		for (int i = 0; i < indices.length; i++) {
+			indices[i] = i;
+			children[i] = getChild(root, i);
+		}
+		
+		modelSupport.fireChildrenAdded(
+			tp, indices, children);
+	}
+	
 	public void setParent(GUI gui, JXTreeTable parent) {
 //		this.parent = parent;
 		

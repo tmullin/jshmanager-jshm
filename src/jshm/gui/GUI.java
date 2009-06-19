@@ -71,7 +71,6 @@ import jshm.Instrument;
 import jshm.JSHManager;
 import jshm.Score;
 import jshm.Song;
-import jshm.SongOrder;
 import jshm.UpdateChecker;
 import jshm.Instrument.Group;
 import jshm.Song.Sorting;
@@ -83,6 +82,7 @@ import jshm.gui.datamodels.ScoresTreeTableModel;
 import jshm.gui.datamodels.GhSongDataTreeTableModel;
 import jshm.gui.datamodels.Parentable;
 import jshm.gui.datamodels.RbSongDataTreeTableModel;
+import jshm.gui.datamodels.SongSortable;
 import jshm.gui.wizards.csvimport.CsvImportWizard;
 import jshm.gui.wizards.scoredownload.ScoreDownloadWizard;
 import jshm.gui.wizards.scoreupload.ScoreUploadWizard;
@@ -994,10 +994,20 @@ private void initSongSortingMenu() {
 	JMenu m = songSortingMenu;
 	m.removeAll();
 	
-	if (null == curGame || 0 == curGame.title.getSupportedSortings().length) {
+	if (null == curGame) {
 		m.setEnabled(false);
 	} else {
+		assert 0 != curGame.title.getSupportedSortings().length;
 		ButtonGroup group = new ButtonGroup();
+		
+		if (!curGame.title.supportsSorting(curSorting)) {
+			// every game should support scorehero's sorting as a fallback
+			// sicne that's where we get the data from in the first place
+			
+			// don't need to call setCurSorting() since this method is only
+			// called before setting a new data model
+			curSorting = Sorting.SCOREHERO;
+		}
 		
 		for (final Song.Sorting s : curGame.title.getSupportedSortings()) {
 			JMenuItem item = new JRadioButtonMenuItem(s.getShortName(), s == curSorting);
@@ -1346,7 +1356,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 			
 			try {
 				songs = jshm.gh.GhSong.getSongs(ggame, difficulty);
-				model = new GhSongDataTreeTableModel(ggame, songs);
+				model = new GhSongDataTreeTableModel(ggame, curSorting, songs);
 	
 				SwingUtilities.invokeAndWait(new Runnable() {
 					public void run() {
@@ -1414,7 +1424,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 	editorCollapsiblePane.setCollapsed(true);
 	
 	new SwingWorker<Void, Void>() {
-		List<SongOrder> songs = null;
+		List<RbSong> songs = null;
 		RbSongDataTreeTableModel model = null;
 		
 		@Override
@@ -1423,8 +1433,8 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 			statusBar1.setTempText("Loading song data from database...", true);
 			
 			try {
-				songs = RbSong.getSongs(game, group);
-				model = new RbSongDataTreeTableModel(game, songs);
+				songs = RbSong.getSongs(true, game, group);
+				model = new RbSongDataTreeTableModel(game, curSorting, songs);
 	
 				SwingUtilities.invokeAndWait(new Runnable() {
 					public void run() {
@@ -1690,20 +1700,14 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 	}
 	
 	void setCurSorting(Song.Sorting sorting) {
+		if (null == curGame || !curGame.title.supportsSorting(sorting))
+			throw new IllegalArgumentException("game doesn't support sorting: " + sorting);
+		
 		this.curSorting = sorting;
 		
-		if (tree.getTreeTableModel() instanceof ScoresTreeTableModel) {
-			// I'd prefer not to have to do it this way but it seems to work
-			ScoresTreeTableModel model =
-				(ScoresTreeTableModel) tree.getTreeTableModel();
-			model.setSorting(sorting);
-//			model.removeParent(tree);
-//			model = model.createSortedModel(sorting);
-//			model.displayEmptyScores = !getHideEmptyScores();
-//			tree.setTreeTableModel(model);
-//			model.setParent(GUI.this, tree);
+		if (tree.getTreeTableModel() instanceof SongSortable) {
+			((SongSortable) tree.getTreeTableModel()).setSorting(sorting);
 			tree.packAll();
-//			sorting = sorting;
 		}
 	}
 	

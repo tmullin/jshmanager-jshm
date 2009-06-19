@@ -137,9 +137,17 @@ public abstract class Song implements Comparable<Song> {
 	@Transient
 	public javax.swing.ImageIcon getSongSourceIcon() {
 		GameTitle ttl = getGameTitle();
-		if (null == ttl)
+		Game game = getGame();
+		if (null == ttl || null == game)
 			return null;
-		SongSource ss = SongSource.smartValueOf(ttl.title);
+		
+		// if the game supports DLC and this song is in the last tier then
+		// it's almost certainly DLC so we can use the DLC icon
+		boolean dlcVersion =
+			game.supportsDLC &&
+			getTierLevel(Sorting.SCOREHERO) == game.getTierCount(Sorting.SCOREHERO);
+			
+		SongSource ss = SongSource.smartValueOf(ttl.title, dlcVersion);
 		return null == ss ? null : ss.getIcon();
 	}
 	
@@ -427,6 +435,7 @@ public abstract class Song implements Comparable<Song> {
 		}
 	}
 	
+	// TODO ensure comparators work the same way as the in-game sorting
 	public static class Comparators {
 		public static final Comparator<Song>
 		SCOREHERO = new Comparator<Song>() {
@@ -476,7 +485,7 @@ public abstract class Song implements Comparable<Song> {
 					ret = o1.genre.compareToIgnoreCase(o2.genre);
 					
 					if (0 == ret)
-						ret = TITLE.compare(o1, o2);
+						ret = ARTIST_TITLE.compare(o1, o2);
 				}
 				
 				return ret;
