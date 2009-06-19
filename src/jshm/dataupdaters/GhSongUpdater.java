@@ -68,7 +68,7 @@ public class GhSongUpdater {
 //			    		.uniqueResult();
 			    
 				// gh songs have a unique scoreHeroId across all
-				// platforms and difficulties, unlike rb, so we can
+				// platforms and difficulties, so we can
 				// use a simpler query
 				GhSong result =
 					(GhSong)

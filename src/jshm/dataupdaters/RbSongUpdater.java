@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Example;
+//import org.hibernate.criterion.Example;
 import org.netbeans.spi.wizard.ResultProgressHandle;
 
 import jshm.*;
@@ -74,14 +74,22 @@ public class RbSongUpdater {
 				if (null != progress)
 					progress.setProgress(
 						String.format("Processing song %s of %s", i + 1, total), i, total);
-						
-			    Example ex = Example.create(song)
-			    	.excludeProperty("gameStrs")
-			    	.excludeProperty("title");
-			    RbSong result =
-			    	(RbSong)
-			    	session.createCriteria(RbSong.class).add(ex)
-			    		.uniqueResult();
+				
+//			    Example ex = Example.create(song)
+//			    	.excludeProperty("gameStrs")
+//			    	.excludeProperty("title");
+//			    RbSong result =
+//			    	(RbSong)
+//			    	session.createCriteria(RbSong.class).add(ex)
+//			    		.uniqueResult();
+				
+				// only care about the sh id and gameTitle
+				RbSong result =
+					(RbSong) session.createQuery(
+						"FROM RbSong WHERE scoreHeroId=:shid AND gameTitle=:gameTtl")
+						.setInteger("shid", song.getScoreHeroId())
+						.setString("gameTtl", song.getGameTitle().title)
+						.uniqueResult();
 			    
 			    if (null == result) {
 			    	// new insert
@@ -204,14 +212,22 @@ public class RbSongUpdater {
 						progress.setProgress(
 							String.format("Processing song %s of %s", i + 1, total), i, total);
 							
-				    Example ex = Example.create(song)
-				    	.excludeProperty("gameStrs")
-				    	.excludeProperty("title");
-				    RbSong result =
-				    	(RbSong)
-				    	session.createCriteria(RbSong.class).add(ex)
-				    		.uniqueResult();
+//				    Example ex = Example.create(song)
+//				    	.excludeProperty("gameStrs")
+//				    	.excludeProperty("title");
+//				    RbSong result =
+//				    	(RbSong)
+//				    	session.createCriteria(RbSong.class).add(ex)
+//				    		.uniqueResult();
 				    
+					// only care about the sh id and gameTitle
+					RbSong result =
+						(RbSong) session.createQuery(
+							"FROM RbSong WHERE scoreHeroId=:shid AND gameTitle=:gameTtl")
+							.setInteger("shid", song.getScoreHeroId())
+							.setString("gameTtl", song.getGameTitle().title)
+							.uniqueResult();
+					
 				    if (null == result) {
 				    	// new insert
 				    	LOG.info("Inserting song: " + song);
