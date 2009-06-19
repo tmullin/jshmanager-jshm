@@ -106,7 +106,7 @@ public class GUI extends javax.swing.JFrame {
 	/**
 	 * The "real" control key accelerator mask via {@link Toolkit#getMenuShortcutKeyMask()}. 
 	 */
-	static final int CTRL_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+	public static final int CTRL_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		
 	private Instrument.Group curGroup = null;
 	private Game curGame = null;
@@ -1030,10 +1030,10 @@ private void initScoresMenu(final JMenu menu) {
 	menu.addSeparator();
 
 	hh.add(menu.add(actions.addNewScore));
-	hh.add(menu.add(actions.addScoreViaEditor));
-	hh.add(menu.add(actions.deleteSelectedScore));
+	hh.add(menu.add(scoreEditorPanel1.actions.new_));
 	hh.add(menu.add(actions.toggleEditor));
-	hh.add(menu.add(actions.saveEditorScore));
+	hh.add(menu.add(scoreEditorPanel1.actions.save));
+	hh.add(menu.add(actions.deleteSelectedScore));
 	menu.addSeparator();
 
 	hh.add(menu.add(actions.downloadScores));
@@ -1048,8 +1048,9 @@ private void initToolbar(final JToolBar toolbar) {
     hh.add(toolbar.add(actions.gotoSong));
     toolbar.addSeparator();
     hh.add(toolbar.add(actions.addNewScore));
-    hh.add(toolbar.add(actions.addScoreViaEditor));
+    hh.add(toolbar.add(scoreEditorPanel1.actions.new_));
     hh.add(toolbar.add(actions.toggleEditor));
+    hh.add(toolbar.add(scoreEditorPanel1.actions.save));
     hh.add(toolbar.add(actions.deleteSelectedScore));
     toolbar.addSeparator();
     hh.add(toolbar.add(actions.downloadScores));
@@ -1387,7 +1388,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 			
 			actions.downloadScores.setEnabled(true);
 			actions.uploadScores.setEnabled(false);
-			actions.addScoreViaEditor.setEnabled(false);
+			scoreEditorPanel1.actions.new_.setEnabled(false);
 			actions.editSelectedScore.setEnabled(false);
 			actions.toggleEditor.setEnabled(false);
 			actions.importScoresFromCsv.setEnabled(false);
@@ -1465,7 +1466,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 			
 			actions.downloadScores.setEnabled(false);
 			actions.uploadScores.setEnabled(false);
-			actions.addScoreViaEditor.setEnabled(false);
+			scoreEditorPanel1.actions.new_.setEnabled(false);
 			actions.editSelectedScore.setEnabled(false);
 			actions.toggleEditor.setEnabled(false);
 			actions.importScoresFromCsv.setEnabled(false);
@@ -1578,7 +1579,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			
 			actions.downloadScores.setEnabled(true);
 			actions.uploadScores.setEnabled(true);
-			actions.addScoreViaEditor.setEnabled(true);
+			scoreEditorPanel1.actions.new_.setEnabled(true);
 			actions.toggleEditor.setEnabled(true);
 			actions.importScoresFromCsv.setEnabled(true);
 			actions.gotoSong.setEnabled(true);
@@ -1765,17 +1766,6 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			}
 		};
 		
-		final MyAction addScoreViaEditor = new MyAction(false,
-			"Add via Editor", GuiUtil.getIcon("toolbar/addedit32.png"),
-			"Add a new score using the editor",
-			KeyStroke.getKeyStroke(KeyEvent.VK_N, CTRL_MASK), 'E'){
-
-			public void actionPerformed(ActionEvent e) {
-				editorCollapsiblePane.setCollapsed(false);
-				scoreEditorPanel1.newButton.doClick();
-			}
-		};
-		
 		final MyAction editSelectedScore = new MyAction(false,
 			"Edit", GuiUtil.getIcon("toolbar/edit32.png"),
 			"Edit the selected score via the score editor",
@@ -1783,17 +1773,6 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 
 			public void actionPerformed(ActionEvent e) {
 				editorCollapsiblePane.setCollapsed(false);
-			}
-		};
-		
-		final MyAction saveEditorScore = new MyAction(false,
-			"Save", GuiUtil.getIcon("toolbar/save32.png"),
-			"Save the score currently being edited in the editor",
-			KeyStroke.getKeyStroke(KeyEvent.VK_S, CTRL_MASK), 'S'){
-
-			public void actionPerformed(ActionEvent e) {
-				// TODO move save button's action to here
-//				scoreEditorPanel1.saveButton.doClick();
 			}
 		};
 		

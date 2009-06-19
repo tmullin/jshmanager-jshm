@@ -26,8 +26,10 @@
 
 package jshm.gui;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
@@ -35,8 +37,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
@@ -46,6 +50,7 @@ import jshm.Song;
 import jshm.StreakStrategy;
 import jshm.exceptions.SongHiddenException;
 import jshm.gh.GhScore;
+import jshm.gui.components.LabeledTextField;
 import jshm.gui.datamodels.ScoresTreeTableModel;
 import jshm.gui.editors.GhMyScoresRatingEditor;
 import jshm.hibernate.HibernateUtil;
@@ -81,22 +86,39 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
     public ScoreEditorPanel(GUI gui) {
     	this.gui = gui;
         initComponents();
-        
-        MySongChangeListener mscl = new MySongChangeListener();
-        
+
         for (JTextComponent c : new JTextComponent[] {
         	scoreField, percentField, streakField, commentField, imageUrlField, videoUrlField}) {
         	EditPopupMenu.add(c);
-        	c.getDocument().addDocumentListener(mscl);
+        	c.getDocument().addDocumentListener(
+        		new MySongChangeListener(c));
         }
         
-        songCombo.addItemListener(mscl);
-        ratingCombo.addItemListener(mscl);
+        songCombo.addItemListener(new MySongChangeListener(songCombo));
+        ratingCombo.addItemListener(new MySongChangeListener(ratingCombo));
     }
 
     private class MySongChangeListener implements DocumentListener, ItemListener {
+    	JComponent c;
+    	LabeledTextField ltf = null;
+    	
+    	public MySongChangeListener(JComponent c) {
+    		this.c = c;
+    		
+    		if (c instanceof LabeledTextField)
+    			ltf = (LabeledTextField) c;
+    	}
+    	
     	private void _() {
-    		hasScoreChanged = true;
+    		if (c.isEnabled()) {
+    			// if it's a LTF it's only changed if we're not using the
+    			// default text
+    			if (null != ltf && !ltf.isUsingDefaultText() && !"".equals(ltf.getText()))
+    				hasScoreChanged = true;
+    			else if (null == ltf)
+    				// otherwise its always changed
+    				hasScoreChanged = true;
+    		}
     	}
     	
 		public void changedUpdate(DocumentEvent e) { _(); }
@@ -115,12 +137,12 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 		commentField.setEditable(b);
 		imageUrlField.setEditable(b);
 		videoUrlField.setEditable(b);
-		saveButton.setEnabled(b);
+		actions.save.setEnabled(b);
 	}
 	
 	public void setSongs(List<? extends Song> songs) {
 		GuiUtil.createSongCombo(songCombo, songs);
-		newButton.setEnabled(true);
+		actions.new_.setEnabled(true);
 	}
 	
 	private Score score = null;
@@ -181,7 +203,7 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 					return;
 				
 				if (JOptionPane.YES_OPTION == ret)
-					saveButtonActionPerformed(null);
+					actions.save.actionPerformed(null);
 			}
 			
 			this.score.removePropertyChangeListener(this);
@@ -206,10 +228,21 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 		}
 		
 		songCombo.setSelectedItem(scoreNotNull && null != score.getSong() ? score.getSong() : GuiUtil.SELECT_A_SONG);
-		scoreField.setText(scoreNotNull && score.getScore() > 0 ? String.valueOf(score.getScore()) : "");
-		ratingCombo.setSelectedItem(scoreNotNull ? score.getRatingIcon(true) : ratingCombo.getItemAt(0));
-		percentField.setText(scoreNotNull && score.getHitPercent() != 0f ? String.valueOf((int) (score.getHitPercent() * 100)) : "");
-		streakField.setText(scoreNotNull && score.getPartStreak(1) > 0 ? String.valueOf(score.getPartStreak(1)) : "");
+		
+		if (scoreNotNull && score.getScore() > 0)
+			scoreField.setText(String.valueOf(score.getScore()));
+		else
+			scoreField.resetDefaultText();
+		if (scoreNotNull && score.getHitPercent() != 0f)
+			percentField.setText(String.valueOf((int) (score.getHitPercent() * 100)));
+		else
+			percentField.resetDefaultText();
+		if (scoreNotNull && score.getPartStreak(1) > 0)
+			streakField.setText(String.valueOf(score.getPartStreak(1)));
+		else
+			streakField.resetDefaultText();
+		
+		ratingCombo.setSelectedItem(scoreNotNull ? score.getRatingIcon(true) : ratingCombo.getItemAt(0));		
 		commentField.setText(scoreNotNull ? score.getComment() : "");
 		imageUrlField.setText(scoreNotNull ? score.getImageUrl() : "");
 		videoUrlField.setText(scoreNotNull ? score.getVideoUrl() : "");
@@ -224,10 +257,10 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 		if (null != score) {
 			if (score.isEditable()) {
 				setEnabled(true);
-				saveButton.setEnabled(true);
+				actions.save.setEnabled(true);
 			} else {
 				setEnabled(false);
-				saveButton.setEnabled(false);
+				actions.save.setEnabled(false);
 			}
 
 			songCombo.setEnabled(isNewScore);
@@ -252,10 +285,7 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        scoreField = new javax.swing.JTextField();
         ratingCombo = new javax.swing.JComboBox();
-        percentField = new javax.swing.JTextField();
-        streakField = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         commentField = new javax.swing.JTextField();
@@ -266,22 +296,12 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
         imageUrlOpenButton = new javax.swing.JButton();
         videoUrlOpenButton = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        saveButton = new javax.swing.JButton();
-        newButton = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        hideButton = new javax.swing.JButton();
         goToSongButton = new javax.swing.JButton();
-
-        scoreField.setEditable(false);
+        scoreField = new jshm.gui.components.LabeledTextField();
+        percentField = new jshm.gui.components.LabeledTextField();
+        streakField = new jshm.gui.components.LabeledTextField();
 
         ratingCombo.setEnabled(false);
-
-        percentField.setEditable(false);
-
-        streakField.setEditable(false);
 
         jLabel1.setLabelFor(commentField);
         jLabel1.setText("Comment:");
@@ -303,6 +323,7 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
         imageUrlOpenButton.setText("Open");
         imageUrlOpenButton.setToolTipText("Opens the image viewer or launches external browser if not an image");
         imageUrlOpenButton.setEnabled(false);
+        imageUrlOpenButton.setFocusable(false);
         imageUrlOpenButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 imageUrlOpenButtonActionPerformed(evt);
@@ -312,6 +333,7 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
         videoUrlOpenButton.setText("Open");
         videoUrlOpenButton.setToolTipText("Open the Video URL in an external browser window");
         videoUrlOpenButton.setEnabled(false);
+        videoUrlOpenButton.setFocusable(false);
         videoUrlOpenButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 videoUrlOpenButtonActionPerformed(evt);
@@ -321,48 +343,20 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
         jLabel4.setLabelFor(songCombo);
         jLabel4.setText("Song:");
 
-        saveButton.setText("Save");
-        saveButton.setEnabled(false);
-        saveButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveButtonActionPerformed(evt);
-            }
-        });
-
-        newButton.setText("New");
-        newButton.setEnabled(false);
-        newButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newButtonActionPerformed(evt);
-            }
-        });
-
-        jLabel5.setLabelFor(scoreField);
-        jLabel5.setText("Score:");
-
-        jLabel6.setLabelFor(percentField);
-        jLabel6.setText("%:");
-
-        jLabel7.setLabelFor(streakField);
-        jLabel7.setText("Streak:");
-
-        jLabel8.setLabelFor(ratingCombo);
-        jLabel8.setText("Rating:");
-
-        hideButton.setText("Hide");
-        hideButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                hideButtonActionPerformed(evt);
-            }
-        });
-
         goToSongButton.setText("Go to Song");
         goToSongButton.setEnabled(false);
+        goToSongButton.setFocusable(false);
         goToSongButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 goToSongButtonActionPerformed(evt);
             }
         });
+
+        scoreField.setDefaultText("Score");
+
+        percentField.setDefaultText("%");
+
+        streakField.setDefaultText("Streak");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -379,69 +373,38 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(imageUrlField, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE)
-                            .addComponent(videoUrlField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE))
+                            .addComponent(imageUrlField, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE)
+                            .addComponent(videoUrlField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(imageUrlOpenButton)
                             .addComponent(videoUrlOpenButton)))
-                    .addComponent(commentField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 792, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(newButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(saveButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(hideButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(goToSongButton))
-                            .addComponent(songCombo, 0, 435, Short.MAX_VALUE))
-                        .addGap(16, 16, 16)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(scoreField, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
+                    .addComponent(commentField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(songCombo, 0, 238, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ratingCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8))
+                        .addComponent(goToSongButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(percentField, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6))
+                        .addComponent(scoreField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addComponent(streakField, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(ratingCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(percentField, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(streakField, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(newButton)
-                            .addComponent(saveButton)
-                            .addComponent(hideButton)
-                            .addComponent(goToSongButton))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(songCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel7))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(streakField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(percentField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ratingCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(scoreField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(streakField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(percentField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ratingCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(scoreField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(goToSongButton)
+                    .addComponent(songCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -456,7 +419,7 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
                     .addComponent(jLabel3)
                     .addComponent(videoUrlOpenButton)
                     .addComponent(videoUrlField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -470,128 +433,6 @@ private void videoUrlOpenButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		jshm.util.Util.openURL(videoUrlField.getText());
 	}
 }//GEN-LAST:event_videoUrlOpenButtonActionPerformed
-
-private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
-//	boolean wasNullScore = null == score;
-	Song lastSong =
-		songCombo.getSelectedItem() instanceof Song
-		? (Song) songCombo.getSelectedItem() : null;
-		
-	setScore(Score.createNewScoreTemplate(
-		gui.getCurGame(), gui.getCurGroup(), gui.getCurDiff(), lastSong));
-	
-	isNewScore = true;
-	
-	if (/*wasNullScore &&*/ null != lastSong) {
-		setSong(lastSong);
-	}
-	
-	songCombo.setEnabled(true);
-	songCombo.getEditor().selectAll();
-	songCombo.requestFocusInWindow();
-}//GEN-LAST:event_newButtonActionPerformed
-
-private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-	try {
-		switch (score.getStatus()) {
-			case NEW:
-			case TEMPLATE:
-				score.setStatus(Score.Status.NEW);
-				
-				if (!(songCombo.getSelectedItem() instanceof Song))
-					throw new IllegalArgumentException("You must select a song");
-				
-				score.setSong((Song) songCombo.getSelectedItem());
-				score.setComment(commentField.getText().trim());
-				score.setImageUrl(imageUrlField.getText().trim());
-				score.setVideoUrl(videoUrlField.getText().trim());
-	
-				try {
-					String s = scoreField.getText();
-					score.setScore(
-						s.isEmpty() ? 0 :
-						Integer.parseInt(s));
-				} catch (Exception e) {
-					throw new NumberFormatException("Invalid score: " + scoreField.getText());
-				}
-	
-				score.setRating(0);
-				
-				if (score instanceof GhScore) {
-					for (int i : new Integer[] {3, 4, 5})
-						if (GhScore.getRatingIcon(i) == ratingCombo.getSelectedItem()) {
-							score.setRating(i);
-							break;
-						}
-				} else if (score instanceof RbScore) {
-					for (int i : new Integer[] {1, 2, 3, 4, 5, 6})
-						if (RbScore.getRatingIcon(i) == ratingCombo.getSelectedItem()) {
-							score.setRating(i);
-							break;
-						}
-				}
-	
-				try {
-					String s = percentField.getText();
-					score.setPartHitPercent(1,
-						s.isEmpty() ? 0f :
-						Integer.parseInt(s) / 100.0f);
-				} catch (Exception e) {
-					throw new NumberFormatException("Invalid percent: " + percentField.getText());
-				}
-	
-				try {
-					String s = streakField.getText();
-					int streak = s.isEmpty() ? 0 : Integer.parseInt(s);
-					
-					if (score.getGameTitle().getStreakStrategy() == StreakStrategy.BY_SCORE) {
-						score.setStreak(streak);
-					}
-					
-					score.setPartStreak(1, streak);
-				} catch (Exception e) {
-					throw new NumberFormatException("Invalid streak: " + streakField.getText());
-				}
-				
-				Session sess = null;
-				Transaction tx = null;
-				
-				try {
-					sess = HibernateUtil.getCurrentSession();
-					tx = sess.beginTransaction();
-					sess.saveOrUpdate(score);
-					sess.getTransaction().commit();
-				} catch (Exception e) {
-					LOG.log(Level.WARNING, "Error saving to database", e);
-					if (null != tx) tx.rollback();
-					throw e;
-				} finally {
-					if (sess.isOpen()) sess.close();
-				}
-				
-				((ScoresTreeTableModel) gui.tree.getTreeTableModel())
-					.insertScore(score);
-				gui.tree.repaint();
-				
-				// update the enabled state of the fields
-				setEnabled(isNewScore ? null : score);
-				hasScoreChanged = false;
-		}
-	} catch (Throwable t) {
-		LOG.log(Level.WARNING, "Failed to save score", t);
-		ErrorInfo ei = new ErrorInfo("Error", "Failed to save score", null, null, t, null, null);
-		JXErrorPane.showDialog(null, ei);
-	}
-}//GEN-LAST:event_saveButtonActionPerformed
-
-private void hideButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hideButtonActionPerformed
-	try {
-		java.awt.Container parent = getParent().getParent().getParent();
-		if (parent instanceof JXCollapsiblePane) {
-			((JXCollapsiblePane) parent).setCollapsed(true);
-		}
-	} catch (NullPointerException e) {}
-}//GEN-LAST:event_hideButtonActionPerformed
 
 private void goToSongButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goToSongButtonActionPerformed
 	Object selected = songCombo.getSelectedItem();
@@ -613,25 +454,160 @@ private void goToSongButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField commentField;
     private javax.swing.JButton goToSongButton;
-    private javax.swing.JButton hideButton;
     private javax.swing.JTextField imageUrlField;
     private javax.swing.JButton imageUrlOpenButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    javax.swing.JButton newButton;
-    private javax.swing.JTextField percentField;
+    private jshm.gui.components.LabeledTextField percentField;
     private javax.swing.JComboBox ratingCombo;
-    private javax.swing.JButton saveButton;
-    private javax.swing.JTextField scoreField;
+    private jshm.gui.components.LabeledTextField scoreField;
     private javax.swing.JComboBox songCombo;
-    private javax.swing.JTextField streakField;
+    private jshm.gui.components.LabeledTextField streakField;
     private javax.swing.JTextField videoUrlField;
     private javax.swing.JButton videoUrlOpenButton;
     // End of variables declaration//GEN-END:variables
+    
+    Actions actions = new Actions();
+    
+    class Actions {
+    	final MyAction new_ = new MyAction(false,
+			"Add via Editor", GuiUtil.getIcon("toolbar/addedit32.png"),
+			"Add a new score using the editor",
+			KeyStroke.getKeyStroke(KeyEvent.VK_N, GUI.CTRL_MASK), 'E'){
+    		
+    		@Override public void actionPerformed(ActionEvent evt) {
+    			try {
+    				java.awt.Container parent = getParent().getParent().getParent();
+    				
+    				if (parent instanceof JXCollapsiblePane) {
+    					((JXCollapsiblePane) parent).setCollapsed(false);
+    				}
+    			} catch (NullPointerException e) {}
+
+    			
+//    			boolean wasNullScore = null == score;
+    			Song lastSong =
+    				songCombo.getSelectedItem() instanceof Song
+    				? (Song) songCombo.getSelectedItem() : null;
+    				
+    			setScore(Score.createNewScoreTemplate(
+    				gui.getCurGame(), gui.getCurGroup(), gui.getCurDiff(), lastSong));
+    			
+    			isNewScore = true;
+    			
+    			if (/*wasNullScore &&*/ null != lastSong) {
+    				setSong(lastSong);
+    			}
+    			
+    			songCombo.setEnabled(true);
+    			songCombo.getEditor().selectAll();
+    			songCombo.requestFocusInWindow();
+    		}
+    	};
+    	
+    	final MyAction save = new MyAction(false,
+			"Save", GuiUtil.getIcon("toolbar/save32.png"),
+			"Save the score currently being edited in the editor",
+			KeyStroke.getKeyStroke(KeyEvent.VK_S, GUI.CTRL_MASK), 'S'){
+    		
+    		@Override public void actionPerformed(ActionEvent evt) {
+    			try {
+    				switch (score.getStatus()) {
+    					case NEW:
+    					case TEMPLATE:
+    						score.setStatus(Score.Status.NEW);
+    						
+    						if (!(songCombo.getSelectedItem() instanceof Song))
+    							throw new IllegalArgumentException("You must select a song");
+    						
+    						score.setSong((Song) songCombo.getSelectedItem());
+    						score.setComment(commentField.getText().trim());
+    						score.setImageUrl(imageUrlField.getText().trim());
+    						score.setVideoUrl(videoUrlField.getText().trim());
+    			
+    						try {
+    							String s = scoreField.isUsingDefaultText()
+    								? "" : scoreField.getText();
+    							score.setScore(
+    								s.isEmpty() ? 0 :
+    								Integer.parseInt(s));
+    						} catch (Exception e) {
+    							throw new NumberFormatException("Invalid score: " + scoreField.getText());
+    						}
+    			
+    						score.setRating(0);
+    						
+    						if (score instanceof GhScore) {
+    							for (int i : new Integer[] {3, 4, 5})
+    								if (GhScore.getRatingIcon(i) == ratingCombo.getSelectedItem()) {
+    									score.setRating(i);
+    									break;
+    								}
+    						} else if (score instanceof RbScore) {
+    							for (int i : new Integer[] {1, 2, 3, 4, 5, 6})
+    								if (RbScore.getRatingIcon(i) == ratingCombo.getSelectedItem()) {
+    									score.setRating(i);
+    									break;
+    								}
+    						}
+    			
+    						try {
+    							String s = percentField.isUsingDefaultText()
+    								? "" : percentField.getText();
+    							score.setPartHitPercent(1,
+    								s.isEmpty() ? 0f :
+    								Integer.parseInt(s) / 100.0f);
+    						} catch (Exception e) {
+    							throw new NumberFormatException("Invalid percent: " + percentField.getText());
+    						}
+    			
+    						try {
+    							String s = streakField.isUsingDefaultText()
+    								? "" : streakField.getText();
+    							int streak = s.isEmpty() ? 0 : Integer.parseInt(s);
+    							
+    							if (score.getGameTitle().getStreakStrategy() == StreakStrategy.BY_SCORE) {
+    								score.setStreak(streak);
+    							}
+    							
+    							score.setPartStreak(1, streak);
+    						} catch (Exception e) {
+    							throw new NumberFormatException("Invalid streak: " + streakField.getText());
+    						}
+    						
+    						Session sess = null;
+    						Transaction tx = null;
+    						
+    						try {
+    							sess = HibernateUtil.getCurrentSession();
+    							tx = sess.beginTransaction();
+    							sess.saveOrUpdate(score);
+    							sess.getTransaction().commit();
+    						} catch (Exception e) {
+    							LOG.log(Level.WARNING, "Error saving to database", e);
+    							if (null != tx) tx.rollback();
+    							throw e;
+    						} finally {
+    							if (sess.isOpen()) sess.close();
+    						}
+    						
+    						((ScoresTreeTableModel) gui.tree.getTreeTableModel())
+    							.insertScore(score);
+    						gui.tree.repaint();
+    						
+    						// update the enabled state of the fields
+    						ScoreEditorPanel.this.setEnabled(isNewScore ? null : score);
+    						hasScoreChanged = false;
+    				}
+    			} catch (Throwable t) {
+    				LOG.log(Level.WARNING, "Failed to save score", t);
+    				ErrorInfo ei = new ErrorInfo("Error", "Failed to save score", null, null, t, null, null);
+    				JXErrorPane.showDialog(null, ei);
+    			}
+    		}
+    	};
+    		
+    }
 }
