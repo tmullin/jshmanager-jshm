@@ -54,6 +54,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
@@ -424,18 +425,7 @@ public class GUI extends javax.swing.JFrame {
         getContentPane().add(innerPanel, java.awt.BorderLayout.CENTER);
 
         toolbar.setRollover(true);
-        toolbar.add(actions.gotoSong);
-        toolbar.addSeparator();
-        toolbar.add(actions.addNewScore);
-        toolbar.add(actions.addScoreViaEditor);
-        toolbar.add(actions.toggleEditor);
-        toolbar.add(actions.deleteSelectedScore);
-        toolbar.addSeparator();
-        toolbar.add(actions.downloadScores);
-        toolbar.add(actions.uploadScores);
-        toolbar.add(actions.uploadSelectedScore);
-        toolbar.addSeparator();
-        toolbar.add(actions.importScoresFromCsv);
+        initToolbar(toolbar);
         getContentPane().add(toolbar, java.awt.BorderLayout.NORTH);
 
         fileMenu.setMnemonic('F');
@@ -862,7 +852,7 @@ private void checkForUpdatesMenuItemActionPerformed(java.awt.event.ActionEvent e
 	this.checkUpdatesDialog1.setVisible(true);
 }//GEN-LAST:event_checkForUpdatesMenuItemActionPerformed
 
-private void hideEmptySongsMenuItemItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_hideEmptySongsMenuItemItemStateChanged	
+private void hideEmptySongsMenuItemItemStateChanged(java.awt.event.ItemEvent evt) {                                                         
 	if (tree.getTreeTableModel() instanceof ScoresTreeTableModel) {
 		// I'd prefer not to have to do it this way but it seems to work
 		ScoresTreeTableModel model =
@@ -876,7 +866,7 @@ private void hideEmptySongsMenuItemItemStateChanged(java.awt.event.ItemEvent evt
 		tree.packAll();
 //		sorting = sorting;
 	}
-}//GEN-LAST:event_hideEmptySongsMenuItemItemStateChanged
+}                                                       
 
 private void uploadLogsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                                     
 	final ProgressDialog prog = new ProgressDialog(this);
@@ -1026,23 +1016,37 @@ private void initSongSortingMenu() {
 }
 
 private void initScoresMenu(final JMenu menu) {
-	// TODO add returned menu items to hover help
-	
-	menu.add(actions.gotoSong);
+	hh.add(menu.add(actions.gotoSong));
 	menu.addSeparator();
 
-	menu.add(actions.addNewScore);
-	menu.add(actions.addScoreViaEditor);
-	menu.add(actions.deleteSelectedScore);
-	menu.add(actions.toggleEditor);
+	hh.add(menu.add(actions.addNewScore));
+	hh.add(menu.add(actions.addScoreViaEditor));
+	hh.add(menu.add(actions.deleteSelectedScore));
+	hh.add(menu.add(actions.toggleEditor));
+	hh.add(menu.add(actions.saveEditorScore));
 	menu.addSeparator();
 
-	menu.add(actions.downloadScores);
-	menu.add(actions.uploadScores);
-	menu.add(actions.uploadSelectedScore);
+	hh.add(menu.add(actions.downloadScores));
+	hh.add(menu.add(actions.uploadScores));
+	hh.add(menu.add(actions.uploadSelectedScore));
 	menu.addSeparator();
 
-	menu.add(actions.importScoresFromCsv);
+	hh.add(menu.add(actions.importScoresFromCsv));
+}
+
+private void initToolbar(final JToolBar toolbar) {
+    hh.add(toolbar.add(actions.gotoSong));
+    toolbar.addSeparator();
+    hh.add(toolbar.add(actions.addNewScore));
+    hh.add(toolbar.add(actions.addScoreViaEditor));
+    hh.add(toolbar.add(actions.toggleEditor));
+    hh.add(toolbar.add(actions.deleteSelectedScore));
+    toolbar.addSeparator();
+    hh.add(toolbar.add(actions.downloadScores));
+    hh.add(toolbar.add(actions.uploadScores));
+    hh.add(toolbar.add(actions.uploadSelectedScore));
+    toolbar.addSeparator();
+    hh.add(toolbar.add(actions.importScoresFromCsv));
 }
 
 /**

@@ -26,6 +26,8 @@ import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.AbstractButton;
+import javax.swing.Action;
 import javax.swing.JComponent;
 
 import jshm.gui.components.StatusBar;
@@ -188,6 +190,14 @@ public class HoverHelp implements MouseListener, MouseMotionListener {
 		}
 		
 		public String getMessage() {
+			if (c instanceof AbstractButton) {
+				AbstractButton ab = (AbstractButton) c;
+				Action a = ab.getAction();
+				
+				if (null != a && null != a.getValue(Action.LONG_DESCRIPTION))
+					return a.getValue(Action.LONG_DESCRIPTION).toString();
+			}
+			
 			return c.getToolTipText();
 		}
 	}

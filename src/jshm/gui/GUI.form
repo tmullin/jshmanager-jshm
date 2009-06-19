@@ -430,7 +430,7 @@
         <Property name="rollover" type="boolean" value="true"/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="toolbar.add(actions.gotoSong);&#xd;&#xa;toolbar.addSeparator();&#xd;&#xa;toolbar.add(actions.addNewScore);&#xd;&#xa;toolbar.add(actions.addScoreViaEditor);&#xd;&#xa;toolbar.add(actions.toggleEditor);&#xd;&#xa;toolbar.add(actions.deleteSelectedScore);&#xd;&#xa;toolbar.addSeparator();&#xd;&#xa;toolbar.add(actions.downloadScores);&#xd;&#xa;toolbar.add(actions.uploadScores);&#xd;&#xa;toolbar.add(actions.uploadSelectedScore);&#xd;&#xa;toolbar.addSeparator();&#xd;&#xa;toolbar.add(actions.importScoresFromCsv);"/>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="initToolbar(toolbar);"/>
       </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
