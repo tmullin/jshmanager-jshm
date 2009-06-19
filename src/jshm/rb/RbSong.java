@@ -23,6 +23,7 @@ package jshm.rb;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -467,16 +468,34 @@ public class RbSong extends Song {
 	}
 	
 	/**
-	 * Updates this song to include the RbGame of the provided song
-	 * if it is not already present for this song.
+	 * Updates this song to have the platforms of the provided song.
+	 * This songs existing platforms are cleared first.
 	 * @param song
 	 * @return
 	 */
 	public boolean updatePlatforms(RbSong song) {
-		if (song.platforms.size() == 0) return false;
-		Platform p = song.platforms.iterator().next();
-		if (platforms.contains(p)) return false;
-		addPlatform(p);
+		assert 0 != song.platforms.size();
+		
+		// see if we have the same ones first
+		if (this.platforms.size() == song.platforms.size()) {
+			Iterator<Platform>
+				i1 = this.platforms.iterator(),
+				i2 = song.platforms.iterator();
+			
+			while (i1.hasNext()) {
+				// we can only do this since we're using a SortedSet
+				if (!i1.next().equals(i2.next())) {
+					// found a different one
+					break;
+				}
+				
+				return false;
+			}
+		}
+		
+		this.platforms.clear();
+		this.platforms.addAll(song.platforms);
+		
 		return true;
 	}
 		
@@ -484,7 +503,7 @@ public class RbSong extends Song {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append('[');
-		sb.append(jshm.util.PhpUtil.implode(platforms.toArray()));
+		sb.append(jshm.util.PhpUtil.implode(platforms));
 		sb.append(']');
 		sb.append(',');
 		sb.append(getScoreHeroId());

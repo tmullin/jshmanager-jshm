@@ -20,7 +20,7 @@
 */
 package jshm.util;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * This class contains Java equivalents of various PHP functions.
@@ -43,7 +43,7 @@ public class PhpUtil {
 		return false;
 	}
 
-	public static String implode(List<?> pieces) {
+	public static String implode(Collection<?> pieces) {
 		return implode(pieces.toArray());
 	}
 	
@@ -51,7 +51,7 @@ public class PhpUtil {
 		return implode(",", pieces);
 	}
 
-	public static String implode(String glue, List<?> pieces) {
+	public static String implode(String glue, Collection<?> pieces) {
 		return implode(glue, pieces.toArray());
 	}
 	

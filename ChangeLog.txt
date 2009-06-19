@@ -22,6 +22,7 @@ Version 0.2.9
   which will cause it to appear in the list.
 - Songs now have an icon to indicate where they are from (i.e. RB1, RB2,
   DLC, AC/DC).
+- Corrected Classic Rock Track Pack tier to show up under RB1 for PS2.
 
 Version 0.2.8
 -------------
