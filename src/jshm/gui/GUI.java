@@ -253,6 +253,21 @@ public class GUI extends javax.swing.JFrame {
         
         // restore last game/group/diff
         if (true) {
+        	Sorting lastSorting = null;
+        	
+        	try {
+        		lastSorting = Sorting.valueOf(Config.get("window.lastsorting"));
+        	} catch (Exception e) {}
+        	
+        	if (null != lastSorting) {
+        		// don't want to call setCurSorting(), just set the value itself,
+        		// all will be taken care of in initSongSortingMenu()
+        		curSorting = lastSorting;
+        	}
+
+    		hideEmptySongsMenuItem.setSelected(
+    			Config.getBool("window.hideemptysongs"));
+        	
 	        Game lastGame = null;
 	        Group lastGroup = null;
 	        Difficulty lastDiff = null;
@@ -261,9 +276,7 @@ public class GUI extends javax.swing.JFrame {
 		        lastGame = Game.valueOf(Config.get("window.lastgame"));
 		        lastGroup = Group.valueOf(Config.get("window.lastgroup"));
 		        lastDiff = Difficulty.valueOf(Config.get("window.lastdiff"));
-	        } catch (Exception e) {
-	        	LOG.log(Level.FINEST, "Didn't find previous game/group/diff", e);
-	        }
+	        } catch (Exception e) {}
 	        
 	        if (lastGame != null && lastGroup != null && lastDiff != null) {
 	            LOG.finer(String.format("Restoring game/group/diff: %s/%s/%s",
@@ -319,6 +332,9 @@ public class GUI extends javax.swing.JFrame {
 		Config.set("window.lastgame", null == curGame ? "" : curGame);
 		Config.set("window.lastgroup", null == curGroup ? "" : curGroup);
 		Config.set("window.lastdiff", null == curDiff ? "" : curDiff);
+		
+		Config.set("window.lastsorting", null == curSorting ? "" : curSorting);
+		Config.set("window.hideemptysongs", hideEmptySongsMenuItem.isSelected());
 		
     	super.dispose();
     }

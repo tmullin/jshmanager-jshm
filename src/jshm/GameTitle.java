@@ -139,8 +139,12 @@ public abstract class GameTitle {
 	public abstract Song.Sorting[] getSupportedSortings();
 	
 	public boolean supportsSorting(final Song.Sorting sorting) {
+		if (null == sorting)
+			return false;
+		
 		for (Song.Sorting s : getSupportedSortings())
 			if (sorting == s) return true;
+		
 		return false;
 	}
 	

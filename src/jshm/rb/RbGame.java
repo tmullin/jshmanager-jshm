@@ -124,8 +124,8 @@ public class RbGame extends Game {
 	    	tiers.add(String.valueOf(i * 10) + "s");
 	    }
 	    
-	    System.out.println("RB Decade List");
-	    jshm.util.Print.print(tiers, "\t");
+//	    System.out.println("RB Decade List");
+//	    jshm.util.Print.print(tiers, "\t");
 	    
 	    mapTiers(Sorting.DECADE, tiers);
 	    
@@ -147,8 +147,8 @@ public class RbGame extends Game {
 	    
 	    Collections.sort(tiers, String.CASE_INSENSITIVE_ORDER);
 		tiers.add(0, "<UNKNOWN>");
-	    System.out.println("RB Genre List");
-	    jshm.util.Print.print(tiers, "\t");
+//	    System.out.println("RB Genre List");
+//	    jshm.util.Print.print(tiers, "\t");
 	    
 	    mapTiers(Sorting.GENRE, tiers);
 	    
@@ -169,8 +169,8 @@ public class RbGame extends Game {
 	    
 	    Collections.sort(tiers, String.CASE_INSENSITIVE_ORDER);
 		tiers.add(0, "<UNKNOWN>");
-	    System.out.println("RB Artists List");
-	    jshm.util.Print.print(tiers, "\t");
+//	    System.out.println("RB Artists List");
+//	    jshm.util.Print.print(tiers, "\t");
 	    
 	    mapTiers(Sorting.ARTIST, tiers);
 	    
