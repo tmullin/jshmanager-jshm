@@ -1720,7 +1720,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 	
 	class Actions {		
 		final MyAction gotoSong = new MyAction(false,
-			"Go to Song...", GuiUtil.getIcon("toolbar/next32.png"),
+			"Go to Song...", GuiUtil.getIcon("toolbar/find32.png"),
 			"Find a song by name",
 			KeyStroke.getKeyStroke(KeyEvent.VK_G, CTRL_MASK), 0){
 
@@ -1758,7 +1758,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		};
 		
 		final MyAction addScoreViaEditor = new MyAction(false,
-			"Add via Editor", GuiUtil.getIcon("toolbar/add32.png"),
+			"Add via Editor", GuiUtil.getIcon("toolbar/addedit32.png"),
 			"Add a new score using the editor",
 			KeyStroke.getKeyStroke(KeyEvent.VK_N, CTRL_MASK), 'E'){
 
@@ -1844,7 +1844,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		};
 		
 		final MyAction uploadScores = new MyAction(false,
-			"Upload All...", GuiUtil.getIcon("toolbar/up32.png"),
+			"Upload All...", GuiUtil.getIcon("toolbar/upmulti32.png"),
 			"Upload your new scores to ScoreHero",
 			KeyStroke.getKeyStroke(KeyEvent.VK_U, CTRL_MASK | KeyEvent.ALT_DOWN_MASK), 'U'){
 
