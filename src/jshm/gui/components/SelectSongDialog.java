@@ -36,7 +36,7 @@ import jshm.gui.GuiUtil;
  *
  * @author  Tim
  */
-public class SelectSongDialog extends javax.swing.JDialog {
+public class SelectSongDialog extends EscapeableDialog {
 	public static Song show(Frame parent, List<? extends Song> songs) {
 		final SelectSongDialog d = new SelectSongDialog(parent, true);
 //		System.out.println("pbefore: " + d.songCombo.getPreferredSize());

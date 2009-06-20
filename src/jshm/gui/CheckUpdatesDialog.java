@@ -32,13 +32,14 @@ import javax.swing.SwingWorker;
 
 import jshm.JSHManager;
 import jshm.UpdateChecker;
+import jshm.gui.components.EscapeableDialog;
 import jshm.util.Util;
 
 /**
  *
  * @author  Tim
  */
-public class CheckUpdatesDialog extends javax.swing.JDialog {
+public class CheckUpdatesDialog extends EscapeableDialog {
 	UpdateChecker.Info info = null;
 	Color defaultLabelFg = null,
 		runningLatestFg = new Color(0x009900),

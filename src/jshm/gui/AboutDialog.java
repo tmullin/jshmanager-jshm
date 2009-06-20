@@ -33,12 +33,13 @@ import java.text.SimpleDateFormat;
 import javax.swing.ImageIcon;
 
 import jshm.JSHManager;
+import jshm.gui.components.EscapeableDialog;
 
 /**
  *
  * @author  Tim
  */
-public class AboutDialog extends javax.swing.JDialog {
+public class AboutDialog extends EscapeableDialog {
 	static final ImageIcon STITCH0 = new ImageIcon(AboutDialog.class.getResource("/jshm/resources/images/stitch/stitch0.jpg"));
 	static final ImageIcon STITCH1 = new ImageIcon(AboutDialog.class.getResource("/jshm/resources/images/stitch/stitch1.jpg"));
 		

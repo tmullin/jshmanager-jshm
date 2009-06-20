@@ -36,6 +36,7 @@ import java.util.logging.Logger;
 
 import javax.swing.SwingWorker;
 
+import jshm.gui.components.EscapeableDialog;
 import jshm.util.Crypto;
 
 import org.jdesktop.swingx.JXErrorPane;
@@ -45,7 +46,7 @@ import org.jdesktop.swingx.error.ErrorInfo;
  * I had to create this since JXLoginDialog wasn't working on Linux... :(
  * @author Tim Mullin
  */
-public class LoginDialog extends javax.swing.JDialog {
+public class LoginDialog extends EscapeableDialog {
 	public static void showDialog() {
 		showDialog(null);
 	}

@@ -30,13 +30,14 @@ import java.io.File;
 import java.io.IOException;
 
 import jshm.Config;
+import jshm.gui.components.EscapeableDialog;
 
 /**
  *
  * @author  Tim
  */
 // TODO rename to TextViewerDialog
-public class TextFileViewerDialog extends javax.swing.JDialog {
+public class TextFileViewerDialog extends EscapeableDialog {
 
 	public TextFileViewerDialog() {
 		this(null, true);
