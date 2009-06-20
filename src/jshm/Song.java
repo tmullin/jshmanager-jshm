@@ -435,7 +435,6 @@ public abstract class Song implements Comparable<Song> {
 		}
 	}
 	
-	// TODO ensure comparators work the same way as the in-game sorting
 	public static class Comparators {
 		public static final Comparator<Song>
 		SCOREHERO = new Comparator<Song>() {
@@ -503,11 +502,10 @@ public abstract class Song implements Comparable<Song> {
 					ret = 1;
 				} else {
 					// multiplying by 10 probably isn't necessary
-					Integer decade1 = o1.year / 10 * 10;
-					Integer decade2 = o2.year / 10 * 10;
+					int decade1 = o1.year / 10 * 10;
+					int decade2 = o2.year / 10 * 10;
 					
-					// TODO inline int comparison
-					ret = decade1.compareTo(decade2);
+					ret = decade1 < decade2 ? -1 : decade1 == decade2 ? 0 : 1;
 					
 					if (0 == ret)
 						ret = ARTIST_TITLE.compare(o1, o2);
@@ -528,11 +526,10 @@ public abstract class Song implements Comparable<Song> {
 					ret = 1;
 				} else {
 					// multiplying by 10 probably isn't necessary
-					Integer decade1 = o1.year / 10 * 10;
-					Integer decade2 = o2.year / 10 * 10;
+					int decade1 = o1.year / 10 * 10;
+					int decade2 = o2.year / 10 * 10;
 					
-					// TODO inline int comparison
-					ret = decade2.compareTo(decade1);
+					ret = decade2 < decade1 ? -1 : decade2 == decade1 ? 0 : 1;
 					
 					if (0 == ret)
 						ret = ARTIST_TITLE.compare(o1, o2);

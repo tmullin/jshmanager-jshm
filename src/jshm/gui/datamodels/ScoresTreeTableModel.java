@@ -234,17 +234,6 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 	
 	public boolean displayEmptyScores = true;
 	
-	/* TODO I don't understand why just calling setSorting() after
-	 * instantiation causes issues. I think it has something to do with
-	 * various listeners that get added somewhere along the line that
-	 * cause a default cell renderer to be used instead of
-	 * GhMyScoresCellRenderer
-	 */
-//	public ScoresTreeTableModel createSortedModel(final Sorting sorting) {
-//		Collections.sort(songs, game.getSortingComparator(sorting));
-//		return new ScoresTreeTableModel(game, group, diff, sorting, songs, scores);
-//	}
-	
 	public void setSorting(final Sorting sorting) {
 		Collections.sort(songs, game.getSortingComparator(sorting));
 
@@ -348,7 +337,6 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 				game, group, difficulty, selectedScore.getSong()));
 	}
 	
-	// TODO account for hidden tiers
 	public void insertScore(Score score) {
 		Song song = score.getSong();
 		Tier tier = model.tiers.get(song.getTierLevel(sorting) - 1);
@@ -362,8 +350,7 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 			int tierIndex = getIndexOfChild(root, tier);
 			
 			if (!displayEmptyScores && isFirstScoreInTier) {
-				System.out.println("FIRST score in tier");
-//				modelSupport.fireTreeStructureChanged(tp);
+//				System.out.println("FIRST score in tier");
 				modelSupport.fireChildAdded(tp, tierIndex, tier);
 			}
 			
@@ -371,8 +358,7 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 			int ssIndex = getIndexOfChild(tp.getLastPathComponent(), ss);
 			
 			if (!displayEmptyScores && isFirstScoreInSs) {
-				System.out.println("FIRST score in ss");
-//				modelSupport.fireTreeStructureChanged(tp);
+//				System.out.println("FIRST score in ss");
 				modelSupport.fireChildAdded(tp, ssIndex, ss);
 			}
 			
@@ -387,7 +373,6 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 		}
 	}
 	
-	// TODO account for hidden tiers
 	public void expandAndScrollTo(Song song) throws SongHiddenException {
 		Tier tier = model.tiers.get(song.getTierLevel(sorting) - 1);
 		SongScores ss = tier.getSongScores(song);

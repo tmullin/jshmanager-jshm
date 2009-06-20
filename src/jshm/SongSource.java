@@ -54,7 +54,7 @@ public enum SongSource {
 	 * @return
 	 */
 	public static SongSource smartValueOf(String name, boolean dlcVersion) {
-		if (null == name)
+		if (null == name || name.isEmpty())
 			return null;
 		if ("DLC".equals(name))
 			return RBDLC;

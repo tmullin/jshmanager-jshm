@@ -569,11 +569,10 @@ public class RbSong extends Song {
 						break;
 				}
 				
-				// TODO inline the comparison instead of making the object
-				int ret = new Integer(tier1).compareTo(tier2);
+				int ret = tier1 < tier2 ? -1 : tier1 == tier2 ? 0 : 1;
 				
 				if (0 == ret)
-					ret = new Integer(raw1).compareTo(raw2);
+					ret = raw1 < raw2 ? -1 : raw1 == raw2 ? 0 : 1;
 				
 				if (0 == ret)
 					ret = Song.Comparators.TITLE.compare(o1, o2);
