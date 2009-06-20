@@ -84,7 +84,7 @@ public class OptionsPage extends WizardPage {
 		DefaultComboBoxModel model = new DefaultComboBoxModel();
 		
 		for (Difficulty d : Difficulty.values()) {
-			if (Difficulty.CO_OP == d) continue;
+			if (Difficulty.CO_OP == d) break;
 			model.addElement(d);
 		}
 		

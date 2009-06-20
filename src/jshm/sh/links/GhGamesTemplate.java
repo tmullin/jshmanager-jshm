@@ -53,6 +53,7 @@ class GhGamesTemplate extends Link {
 				
 				for (Difficulty d : Difficulty.values()) {
 					if (Difficulty.CO_OP == d && !tt.supportsCoOp) continue;
+					if (Difficulty.EXPERT_PLUS == d) break;
 					
 					Link diffLink = new Link(
 						d.getLongName(),
@@ -72,6 +73,7 @@ class GhGamesTemplate extends Link {
 				
 				for (Difficulty d : Difficulty.values()) {
 					if (Difficulty.CO_OP == d && !tt.supportsCoOp) continue;
+					if (Difficulty.EXPERT_PLUS == d) break;
 					
 					Link diffLink = new Link(
 						d.getLongName(),

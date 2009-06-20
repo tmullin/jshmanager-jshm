@@ -18,6 +18,17 @@ import jshm.*;
 import jshm.Instrument.Group;
 
 public class WtSong extends Song {
+	private boolean expertPlusSupported = false;
+
+	public boolean isExpertPlusSupported() {
+		return expertPlusSupported;
+	}
+
+	public void setExpertPlusSupported(boolean expertPlusSupported) {
+		this.expertPlusSupported = expertPlusSupported;
+	}
+
+
 	private GameTitle gameTitle;
 	
 	@Type(type="jshm.hibernate.GameTitleUserType")

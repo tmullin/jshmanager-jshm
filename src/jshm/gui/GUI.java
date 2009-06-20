@@ -1134,7 +1134,7 @@ private void initDynamicGameMenu(final JMenu menu) {
 			
 //			System.out.println("  Creating " + game.platform);
 			for (final jshm.Difficulty diff : jshm.Difficulty.values()) {
-				if (diff == jshm.Difficulty.CO_OP) continue;
+				if (diff == jshm.Difficulty.CO_OP) break;
 				
 //				System.out.println("    Creating " + diff);
 				
@@ -1196,7 +1196,7 @@ private void initRbGameMenu(final JMenu menu) {
 						groupMenu.setIcon(group.getIcon());
 						
 						for (final Difficulty d : Difficulty.values()) {
-							if (Difficulty.CO_OP == d) continue;
+							if (Difficulty.CO_OP == d) break;
 							
 							JMenuItem diffMenuItem = new JMenuItem(d.getLongName());
 							diffMenuItem.setIcon(d.getIcon());
@@ -1259,7 +1259,7 @@ private void initRbGameMenu(final JMenu menu) {
 //					groupMenu.setIcon(group.getIcon());
 //					
 //					for (Difficulty d : Difficulty.values()) {
-//						if (Difficulty.CO_OP == d) continue;
+//						if (Difficulty.CO_OP == d) break;
 //						
 //						JMenuItem diffMenuItem = new JMenuItem(d.toString());
 //						diffMenuItem.setIcon(d.getIcon());

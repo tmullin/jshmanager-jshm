@@ -33,7 +33,8 @@ public enum Difficulty {
 	MEDIUM(2, "M"),
 	HARD(3, "H"),
 	EXPERT(4, "X"),
-	CO_OP(5, "C");
+	CO_OP(5, "C"),
+	EXPERT_PLUS(6, "XP");
 	
 	public  final int	 scoreHeroId;
 	private final String shortName;

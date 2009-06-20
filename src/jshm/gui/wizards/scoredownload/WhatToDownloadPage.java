@@ -110,7 +110,7 @@ public class WhatToDownloadPage extends WizardPage {
 		DefaultListModel model = new DefaultListModel();
 
 		for (Difficulty d : Difficulty.values()) {
-			if (Difficulty.CO_OP == d) continue;
+			if (Difficulty.CO_OP == d) break;
 			model.addElement(d);
 		}
 		
