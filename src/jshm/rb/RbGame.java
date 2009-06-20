@@ -21,19 +21,21 @@
 package jshm.rb;
 
 //import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import jshm.*;
+import jshm.Difficulty;
+import jshm.Game;
+import jshm.Instrument;
+import jshm.Platform;
+import jshm.Score;
+import jshm.Song;
+import jshm.Tiers;
 import jshm.Instrument.Group;
-import jshm.Song.Sorting;
-import jshm.rb.RbSong.Comparators;
 
 public class RbGame extends Game {
-	private static class RbTiers {
+	static class RbTiers {
 		// TODO make these Tiers instead of String[] for less allocation?
-		public static final String[]
+		public static final Tiers
 //			TierGrabber - 4/3/09:
 //			Mem: 0.500/4.938 (used/total) mb
 //			RB1_PS2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|European Exclusives|Track Pack Volume 1|AC/DC Live Track Pack|Track Pack Volume 2",
@@ -42,9 +44,9 @@ public class RbGame extends Game {
 //			RB1_WII = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|European Exclusives|Track Pack Volume 1|AC/DC Live Track Pack|Track Pack Volume 2",
 //			Time: 5.093 seconds
 //			Mem: 9.784/11.754 (used/total) mb
-		    RB1_PS2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|European Exclusives|Track Pack Volume 1|AC/DC Live Track Pack|Track Pack Volume 2|Classic Rock Track Pack".split("\\|"),
-			RB1_NEXTGEN = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|AC/DC Live Track Pack|Downloaded Songs".split("\\|"),
-			RB1_WII = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|European Exclusives|Track Pack Volume 1|AC/DC Live Track Pack|Track Pack Volume 2".split("\\|"),
+		    RB1_PS2 = new Tiers("Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|European Exclusives|Track Pack Volume 1|AC/DC Live Track Pack|Track Pack Volume 2|Classic Rock Track Pack"),
+			RB1_NEXTGEN = new Tiers("Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|AC/DC Live Track Pack|Downloaded Songs"),
+			RB1_WII = new Tiers("Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|European Exclusives|Track Pack Volume 1|AC/DC Live Track Pack|Track Pack Volume 2"),
 		
 //			TierGrabber - 4/3/09:
 //			Mem: 0.500/4.938 (used/total) mb
@@ -54,11 +56,11 @@ public class RbGame extends Game {
 //			RB2_WII = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Downloaded Songs",
 //			Time: 5.527 seconds
 //			Mem: 6.740/15.379 (used/total) mb
-			RB2_PS2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs".split("\\|"),
-			RB2_NEXTGEN = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Rock Band Imported|AC/DC Live Track Pack|Downloaded Songs".split("\\|"),
-			RB2_WII = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Downloaded Songs".split("\\|"),
+			RB2_PS2 = new Tiers("Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs"),
+			RB2_NEXTGEN = new Tiers("Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Rock Band Imported|AC/DC Live Track Pack|Downloaded Songs"),
+			RB2_WII = new Tiers("Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Downloaded Songs"),
 			
-			RB2_DIFFS = "<UNKNOWN>|Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs".split("\\|")
+			RB2_DIFFS = new Tiers("<UNKNOWN>|Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs")
 			;
 	}
 	
@@ -71,125 +73,30 @@ public class RbGame extends Game {
 		RB2_PS2 = new RbGame(RbGameTitle.RB2, RbTiers.RB2_PS2, Platform.PS2, false),
 		RB2_XBOX360 = new RbGame(RbGameTitle.RB2, RbTiers.RB2_NEXTGEN, Platform.XBOX360, true),
 		RB2_PS3 = new RbGame(RbGameTitle.RB2, RbTiers.RB2_NEXTGEN, Platform.PS3, true),
-		RB2_WII = new RbGame(RbGameTitle.RB2, RbTiers.RB2_WII, Platform.WII, false)
+		RB2_WII = new RbGame(RbGameTitle.RB2, RbTiers.RB2_WII, Platform.WII, true)
 		;
 	
 	public static void init() {}
 	
-	protected RbGame(RbGameTitle title, String[] tiers, Platform platform,
+	protected RbGame(RbGameTitle title, Tiers tiers, Platform platform,
 			boolean supportsDLC) {
 		super(title.scoreHeroId, title, platform, supportsDLC);
 		
 		// rb tiers are the same for everything, unlike some gh games
-		Tiers t = new Tiers(tiers);
 		for (Instrument.Group g : title.getSupportedInstrumentGroups()) {
-			mapTiers(g, t);
+			mapTiers(g, tiers);
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * implemented Sortings:
-	 *   DECADE, GENRE, ARTIST
-	 * @see jshm.Game#initDynamicTiersInternal()
-	 */
-	@SuppressWarnings("unchecked")
-	@Override protected void initDynamicTiersInternal() {
-		// make difficulty tier
-		// not necessarily dynamic but whatever
-		mapTiers(Sorting.DIFFICULTY, RbTiers.RB2_DIFFS);
-		
-		
-		List<String> tiers = new ArrayList<String>();
-		List<String> list_s = null;
-		List<Integer> list_i = null;
-		
-		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
-	    session.beginTransaction();
-	    
-	    // make the decades tier
-	    list_i = (List<Integer>) session.createQuery(
-	    	"SELECT DISTINCT (year / 10) FROM RbSong")
-	    	.list();
-
-	    Collections.sort(list_i);
-	    
-	    tiers.clear();
-	    tiers.add("<UNKNOWN>");
-	    for (Integer i : list_i) {
-	    	if (null == i || 0 == i) {
-	    		continue;
-	    	}
-	    	
-	    	tiers.add(String.valueOf(i * 10) + "s");
-	    }
-	    
-//	    System.out.println("RB Decade List");
-//	    jshm.util.Print.print(tiers, "\t");
-	    
-	    mapTiers(Sorting.DECADE, tiers);
-	    
-	    
-	    // TODO use WHERE NOT NULL instead of iterating afterward?
-	    // make genre tier
-	    list_s = (List<String>) session.createQuery(
-	    	"SELECT DISTINCT genre FROM RbSong ORDER BY genre")
-	    	.list();
-	    
-	    tiers.clear();
-	    for (String s : list_s) {
-	    	if (null == s) {
-	    		continue;
-	    	}
-	    	
-	    	tiers.add(s);
-	    }
-	    
-	    Collections.sort(tiers, String.CASE_INSENSITIVE_ORDER);
-		tiers.add(0, "<UNKNOWN>");
-//	    System.out.println("RB Genre List");
-//	    jshm.util.Print.print(tiers, "\t");
-	    
-	    mapTiers(Sorting.GENRE, tiers);
-	    
-	    
-	    // make artist tier
-	    list_s = (List<String>) session.createQuery(
-	    	"SELECT DISTINCT artist FROM RbSong ORDER BY artist")
-	    	.list();
-	    
-	    tiers.clear();
-	    for (String s : list_s) {
-	    	if (null == s) {
-	    		continue;
-	    	}
-	    	
-	    	tiers.add(s);
-	    }
-	    
-	    Collections.sort(tiers, String.CASE_INSENSITIVE_ORDER);
-		tiers.add(0, "<UNKNOWN>");
-//	    System.out.println("RB Artists List");
-//	    jshm.util.Print.print(tiers, "\t");
-	    
-	    mapTiers(Sorting.ARTIST, tiers);
-	    
-	    session.getTransaction().commit();
-	}
-	
-	protected void initSortingComparatorsInternal() {
-		mapSortingComparator(Sorting.DIFFICULTY, Comparators.DIFFICULTY);
-	}
-	
-	public String getTierName(int tierLevel) {
+	@Override public String getTierName(int tierLevel) {
 		return getTierName(Instrument.Group.GUITAR, tierLevel);
 	}
 	
-	public int getTierLevel(final String tierName) {
+	@Override public int getTierLevel(final String tierName) {
 		return getTierLevel(Instrument.Group.GUITAR, tierName);
 	}
 	
-	public int getTierCount() {
+	@Override public int getTierCount() {
 		return getTierCount(Instrument.Group.GUITAR);
 	}
 

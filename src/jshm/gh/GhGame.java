@@ -34,15 +34,15 @@ import jshm.Instrument.Group;
  */
 public class GhGame extends jshm.Game {
 	private static class SPTiers {
-		public static final String[]
-			GH1 = "Opening Licks|Axe-Grinders|Thrash and Burn|Return of the Shred|Fret-Burners|Face-Melters|Bonus Tracks|Secret Songs".split("\\|"),
-			GH2_DLC = "Opening Licks|Amp-Warmers|String-Snappers|Thrash and Burn|Return of the Shred|Relentless Riffs|Furious Fretwork|Face-Melters|Bonus Tracks|Downloaded Tracks".split("\\|"),
-			GH2 = Arrays.copyOf(GH2_DLC, GH2_DLC.length - 1),
-			GH80 = "Opening Licks|Amp-Warmers|String Snappers|Return of the Shred|Relentless Riffs|Furious Fretwork".split("\\|"),
-			GH3_DLC = "Starting Out Small|Your First Real Gig|Making the Video|European Invasion|Bighouse Blues|The Hottest Band on Earth|Live in Japan|Battle for Your Soul|Quickplay Exclusives|Bonus Tracks|Downloaded Songs".split("\\|"),
-			GH3 = Arrays.copyOf(GH3_DLC, GH3_DLC.length - 1),
-			GHOT = "Subway|Rooftop|Parade|Greek Arena|Battleship|Bonus".split("\\|"),
-			GHA = "Getting The Band Together|First Taste Of Success|The Triumphant Return|International Superstars|The Great American Band|Rock 'N Roll Legends|The Vault".split("\\|")
+		public static final Tiers
+			GH1 = new Tiers("Opening Licks|Axe-Grinders|Thrash and Burn|Return of the Shred|Fret-Burners|Face-Melters|Bonus Tracks|Secret Songs"),
+			GH2_DLC = new Tiers("Opening Licks|Amp-Warmers|String-Snappers|Thrash and Burn|Return of the Shred|Relentless Riffs|Furious Fretwork|Face-Melters|Bonus Tracks|Downloaded Tracks"),
+			GH2 = new Tiers(Arrays.copyOf(GH2_DLC.tiers, GH2_DLC.tiers.length - 1)),
+			GH80 = new Tiers("Opening Licks|Amp-Warmers|String Snappers|Return of the Shred|Relentless Riffs|Furious Fretwork"),
+			GH3_DLC = new Tiers("Starting Out Small|Your First Real Gig|Making the Video|European Invasion|Bighouse Blues|The Hottest Band on Earth|Live in Japan|Battle for Your Soul|Quickplay Exclusives|Bonus Tracks|Downloaded Songs"),
+			GH3 = new Tiers(Arrays.copyOf(GH3_DLC.tiers, GH3_DLC.tiers.length - 1)),
+			GHOT = new Tiers("Subway|Rooftop|Parade|Greek Arena|Battleship|Bonus"),
+			GHA = new Tiers("Getting The Band Together|First Taste Of Success|The Triumphant Return|International Superstars|The Great American Band|Rock 'N Roll Legends|The Vault")
 		;
 	}
 	
@@ -91,25 +91,25 @@ public class GhGame extends jshm.Game {
 	protected GhGame(
 		final int scoreHeroId,
 		final GhGameTitle title,
-		final String[] singlePlayerTiers,
+		final Tiers singlePlayerTiers,
 		final Platform platform,
 		final boolean supportsDLC) {
 		
 		super(scoreHeroId, title, platform, supportsDLC);
 		
-		if (null != singlePlayerTiers)
-			mapTiers(GhGameTitle.SINGLE_PLAYER_GROUP, singlePlayerTiers);
+		assert null != singlePlayerTiers;
+		mapTiers(GhGameTitle.SINGLE_PLAYER_GROUP, singlePlayerTiers);
 	}
 	
-	public String getTierName(int tierLevel) {
+	@Override public String getTierName(int tierLevel) {
 		return getTierName(GhGameTitle.SINGLE_PLAYER_GROUP, tierLevel);
 	}
 	
-	public int getTierLevel(final String tierName) {
+	@Override public int getTierLevel(final String tierName) {
 		return getTierLevel(GhGameTitle.SINGLE_PLAYER_GROUP, tierName);
 	}
 	
-	public int getTierCount() {
+	@Override public int getTierCount() {
 		return getTierCount(GhGameTitle.SINGLE_PLAYER_GROUP);
 	}
 

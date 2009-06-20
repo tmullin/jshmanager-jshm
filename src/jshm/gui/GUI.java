@@ -1110,7 +1110,7 @@ private void initDynamicGameMenu(final JMenu menu) {
 	}
 	
 	java.util.List<jshm.GameTitle> titles =
-		jshm.GameTitle.getTitlesBySeries(jshm.GameSeries.GUITAR_HERO);
+		jshm.GameTitle.getBySeries(jshm.GameSeries.GUITAR_HERO);
 	
 	for (jshm.GameTitle ttl : titles) {		
 //		System.out.println("Creating " + ttl);
@@ -1176,7 +1176,7 @@ private void initDynamicGameMenu(final JMenu menu) {
 
 private void initRbGameMenu(final JMenu menu) {
 	java.util.List<GameTitle> titles =
-		GameTitle.getTitlesBySeries(GameSeries.ROCKBAND);
+		GameTitle.getBySeries(GameSeries.ROCKBAND);
 	
 	
 	if (menu == rbScoresMenu) {

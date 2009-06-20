@@ -42,7 +42,7 @@ public class Tiers {
 		ALPHA_NUM_TIERS = new Tiers(strs);
 	}
 	
-	private final String[] tiers;
+	public final String[] tiers;
 	
 	public Tiers(final String tiers) {
 		this(tiers.split("\\|"));

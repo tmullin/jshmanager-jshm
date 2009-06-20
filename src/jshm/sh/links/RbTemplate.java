@@ -33,7 +33,7 @@ public class RbTemplate extends Link {
 	RbTemplate(final String name, final String urlFmt) {
 		super(name);
 
-		for (GameTitle t : GameTitle.getTitlesBySeries(GameSeries.ROCKBAND)) {
+		for (GameTitle t : GameTitle.getBySeries(GameSeries.ROCKBAND)) {
 			RbGameTitle tt = (RbGameTitle) t;
 			
 			Link ttlLink = new Link(t.getLongName());

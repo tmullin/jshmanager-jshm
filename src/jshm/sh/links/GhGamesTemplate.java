@@ -33,7 +33,7 @@ class GhGamesTemplate extends Link {
 	GhGamesTemplate(final String name, final String urlFmt) {
 		super(name);
 		
-		for (GameTitle t : GameTitle.getTitlesBySeries(GameSeries.GUITAR_HERO)) {
+		for (GameTitle t : GameTitle.getBySeries(GameSeries.GUITAR_HERO)) {
 			GhGameTitle tt = (GhGameTitle) t;
 			
 			Link ttlLink = new Link(t.getLongName());

@@ -84,6 +84,8 @@ public abstract class Game {
 	static {
 		// needed to ensure the GhGames get put into values
 		GhGame.init();
+		// TODO uncomment upon WT support
+//		WtGame.init();
 		RbGame.init();
 	}
 	
@@ -94,10 +96,6 @@ public abstract class Game {
 	
 	private final Map<Instrument.Group, Tiers> tiersMap =
 		new HashMap<Instrument.Group, Tiers>();
-	private final Map<Sorting, Tiers> sortingTiersMap =
-		new HashMap<Sorting, Tiers>();
-	private final Map<Sorting, Comparator<Song>> sortingComparatorMap =
-		new HashMap<Sorting, Comparator<Song>>();
 	
 	protected Game(
 		final int scoreHeroId,
@@ -111,29 +109,7 @@ public abstract class Game {
 		this.supportsDLC = supportsDLC;
 		
 		values.add(this);
-		initDynamicTiers();
-		initSortingComparators();
 	}
-
-	/**
-	 * This method takes care of refreshing the sorting tier map
-	 * when tiers may change, i.e. a new artist exists after updating
-	 * song data. Sub-classes should override {@link #initDynamicTiersInternal()}
-	 * to handle class-specific sorting options. 
-	 */
-	public final void initDynamicTiers() {
-		mapTiers(Song.Sorting.TITLE, Tiers.ALPHA_NUM_TIERS);
-
-		initDynamicTiersInternal();
-	}
-	
-	protected void initDynamicTiersInternal() {}
-	
-	private final void initSortingComparators() {
-		initSortingComparatorsInternal();
-	}
-	
-	protected void initSortingComparatorsInternal() {}
 	
 	protected void mapTiers(final Group group, final String[] tiers) {
 		mapTiers(group, new Tiers(tiers));
@@ -142,23 +118,7 @@ public abstract class Game {
 	protected void mapTiers(final Group group, final Tiers tiers) {
 		tiersMap.put(group, tiers);
 	}
-	
-	protected void mapTiers(final Sorting sorting, final String[] tiers) {
-		mapTiers(sorting, new Tiers(tiers));
-	}
-	
-	protected void mapTiers(final Sorting sorting, final Collection<String> tiers) {
-		mapTiers(sorting, new Tiers(tiers));
-	}
-	
-	protected void mapTiers(final Sorting sorting, final Tiers tiers) {
-		sortingTiersMap.put(sorting, tiers);
-	}
-	
-	protected void mapSortingComparator(final Sorting sorting, final Comparator<Song> comp) {
-		sortingComparatorMap.put(sorting, comp);
-	}
-	
+
 	/**
 	 * 
 	 * @param tierLevel
@@ -172,8 +132,8 @@ public abstract class Game {
 		if (Sorting.SCOREHERO == sorting)
 			return getTierName(tierLevel);
 		
-		if (null != sortingTiersMap.get(sorting))
-			return sortingTiersMap.get(sorting).getName(tierLevel);
+		if (null != title.sortingTiersMap.get(sorting))
+			return title.sortingTiersMap.get(sorting).getName(tierLevel);
 		
 		throw new UnsupportedOperationException("sorting not implemented: " + sorting);
 	}
@@ -200,8 +160,8 @@ public abstract class Game {
 		if (Sorting.SCOREHERO == sorting)
 			return getTierCount();
 		
-		if (null != sortingTiersMap.get(sorting))
-			return sortingTiersMap.get(sorting).getCount();
+		if (null != title.sortingTiersMap.get(sorting))
+			return title.sortingTiersMap.get(sorting).getCount();
 		
 		throw new UnsupportedOperationException("sorting not implemented: " + sorting);
 	}
@@ -212,13 +172,13 @@ public abstract class Game {
 	}
 	
 	public Comparator<Song> getSortingComparator(final Sorting sorting) {
-		if (null == sortingComparatorMap.get(sorting)) {
+		if (null == title.sortingComparatorMap.get(sorting)) {
 			if (null == sorting.comparator)
 				throw new UnsupportedOperationException("sorting not implemented: " + sorting);
 			return sorting.comparator;
 		}
 		
-		return sortingComparatorMap.get(sorting);
+		return title.sortingComparatorMap.get(sorting);
 	}
 	
 	public List<? extends Song> getSongs(Group group, Difficulty diff) {

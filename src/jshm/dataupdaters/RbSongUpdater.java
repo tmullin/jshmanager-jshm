@@ -369,7 +369,7 @@ public class RbSongUpdater {
 				session.close();
 		}
 		
-		for (Game g : Game.getBySeries(GameSeries.ROCKBAND)) {
+		for (GameTitle g : GameTitle.getBySeries(GameSeries.ROCKBAND)) {
 			g.initDynamicTiers();
 		}
 	}

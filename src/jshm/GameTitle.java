@@ -22,6 +22,7 @@ package jshm;
 
 import java.util.*;
 
+import jshm.Song.Sorting;
 import jshm.util.Text;
 
 
@@ -48,7 +49,7 @@ public abstract class GameTitle {
 		return null;
 	}
 	
-	public static List<GameTitle> getTitlesBySeries(final GameSeries series) {
+	public static List<GameTitle> getBySeries(final GameSeries series) {
 		List<GameTitle> ret = new ArrayList<GameTitle>();
 		
 		for (GameTitle g : values) {
@@ -62,6 +63,8 @@ public abstract class GameTitle {
 	
 	static {
 		jshm.gh.GhGameTitle.init();
+		// TODO uncomment upon WT support
+//		jshm.wt.WtGameTitle.init();
 		jshm.rb.RbGameTitle.init();
 	}
 	
@@ -76,7 +79,52 @@ public abstract class GameTitle {
 		this.series = series;
 		this.title = title;
 		this.platforms = platforms;
+
+		initDynamicTiers();
+		initSortingComparators();
 	}
+	
+	final Map<Sorting, Tiers> sortingTiersMap =
+		new HashMap<Sorting, Tiers>();
+	final Map<Sorting, Comparator<Song>> sortingComparatorMap =
+		new HashMap<Sorting, Comparator<Song>>();
+	
+	/**
+	 * This method takes care of refreshing the sorting tier map
+	 * when tiers may change, i.e. a new artist exists after updating
+	 * song data. Sub-classes should override {@link #initDynamicTiersInternal()}
+	 * to handle class-specific sorting options. 
+	 */
+	public final void initDynamicTiers() {
+		mapTiers(Song.Sorting.TITLE, Tiers.ALPHA_NUM_TIERS);
+
+		initDynamicTiersInternal();
+	}
+	
+	protected void initDynamicTiersInternal() {}
+	
+	private final void initSortingComparators() {
+		initSortingComparatorsInternal();
+	}
+	
+	protected void initSortingComparatorsInternal() {}
+	
+	protected void mapTiers(final Sorting sorting, final String[] tiers) {
+		mapTiers(sorting, new Tiers(tiers));
+	}
+	
+	protected void mapTiers(final Sorting sorting, final Collection<String> tiers) {
+		mapTiers(sorting, new Tiers(tiers));
+	}
+	
+	protected void mapTiers(final Sorting sorting, final Tiers tiers) {
+		sortingTiersMap.put(sorting, tiers);
+	}
+	
+	protected void mapSortingComparator(final Sorting sorting, final Comparator<Song> comp) {
+		sortingComparatorMap.put(sorting, comp);
+	}
+	
 	
 	public javax.swing.ImageIcon getIcon() {
 		return jshm.gui.GuiUtil.getIcon(
