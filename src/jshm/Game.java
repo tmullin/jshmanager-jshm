@@ -27,6 +27,7 @@ import jshm.Song.Sorting;
 import jshm.gh.GhGame;
 import jshm.rb.RbGame;
 import jshm.util.Text;
+import jshm.wt.WtGame;
 
 /**
  * This represents a specific {@link GameTitle} and
@@ -84,8 +85,7 @@ public abstract class Game {
 	static {
 		// needed to ensure the GhGames get put into values
 		GhGame.init();
-		// TODO uncomment upon WT support
-//		WtGame.init();
+		WtGame.init();
 		RbGame.init();
 	}
 	

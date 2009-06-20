@@ -63,8 +63,7 @@ public abstract class GameTitle {
 	
 	static {
 		jshm.gh.GhGameTitle.init();
-		// TODO uncomment upon WT support
-//		jshm.wt.WtGameTitle.init();
+		jshm.wt.WtGameTitle.init();
 		jshm.rb.RbGameTitle.init();
 	}
 	

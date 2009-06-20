@@ -24,7 +24,8 @@ import jshm.util.Text;
 
 public enum GameSeries {
 	GUITAR_HERO,
-	ROCKBAND
+	ROCKBAND,
+	WORLD_TOUR
 	;
 	
 	public String getLongName() {

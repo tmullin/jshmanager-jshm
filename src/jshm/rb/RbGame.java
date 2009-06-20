@@ -34,7 +34,6 @@ import jshm.Instrument.Group;
 
 public class RbGame extends Game {
 	static class RbTiers {
-		// TODO make these Tiers instead of String[] for less allocation?
 		public static final Tiers
 //			TierGrabber - 4/3/09:
 //			Mem: 0.500/4.938 (used/total) mb

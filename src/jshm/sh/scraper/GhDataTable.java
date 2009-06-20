@@ -30,8 +30,8 @@ import org.htmlparser.filters.TagNameFilter;
 
 public class GhDataTable extends DataTable {
 	public static final GhDataTable
-	TOP_SCORES = new GhDataTable(3, 2, 8,
-		"-|text~link=songid|text=int|img=rating~text=float|text=int|text=int|text|span"
+	TOP_SCORES = new GhDataTable(2, 2, 9,
+		"-|-|text~link=songid|text=int|img=rating~text=float|text=int|text=int|text|span"
 	),
 	MANAGE_SCORES = new GhDataTable(3, 4, 11,
 		"-|text=int|link=songid~text|-|-|text=int~link=picvid,picvid|img=rating~text=float|text=int|text=int|text|span"
@@ -76,7 +76,12 @@ public class GhDataTable extends DataTable {
 			
 			return filters;
 		}
-	} //,
+	} ,
+	
+	
+	WT_TOP_SCORES = new GhDataTable(2, 4, 9,
+		"-|-|text~link=songid|text=int|img=rating~text=float|text=int|text=int|text|span"
+	) //,
 	
 //	GH_FORUM_INDEX = new DataTable(2, 2, 5,
 //		"-|text=,~link=forumid,-,-,subforums|-|-|-")

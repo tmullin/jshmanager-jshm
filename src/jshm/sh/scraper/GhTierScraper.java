@@ -26,28 +26,41 @@ import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
 import jshm.Difficulty;
+import jshm.Instrument.Group;
 import jshm.exceptions.*;
 import jshm.gh.GhGame;
 import jshm.scraper.DataTable;
 import jshm.scraper.TieredTabularDataAdapter;
 import jshm.scraper.TieredTabularDataExtractor;
 import jshm.sh.*;
+import jshm.wt.WtGame;
 
 public class GhTierScraper {
+	static final Difficulty difficulty = Difficulty.EXPERT;
+	
 	public static List<String> scrape(GhGame game)
 	throws ScraperException, ParserException {
-		final Difficulty difficulty = Difficulty.EXPERT;
-		
+		return scrape(
+			URLs.gh.getTopScoresUrl(game, difficulty),
+			GhDataTable.TOP_SCORES);
+	}
+	
+	public static List<String> scrape(WtGame game, Group group)
+	throws ScraperException, ParserException {
+		return scrape(
+			URLs.wt.getTopScoresUrl(game, group, difficulty),
+			GhDataTable.WT_TOP_SCORES);
+	}
+	
+	private static List<String> scrape(String url, DataTable dataTable) throws ParserException, ScraperException {		
         List<String> tiers = new ArrayList<String>();
         
-		NodeList nodes = GhScraper.scrape(
-			URLs.gh.getTopScoresUrl(
-				game,
-				difficulty));
-        
+		NodeList nodes = GhScraper.scrape(url);
+//        System.out.println(url);
+//        System.out.println(nodes);
 		TieredTabularDataExtractor.extract(
 			nodes,
-			new TierHandler(tiers)
+			new TierHandler(tiers, dataTable)
 		);
         
         return tiers;
@@ -55,13 +68,16 @@ public class GhTierScraper {
 	
 	private static class TierHandler extends TieredTabularDataAdapter {
 		final List<String> tiers;
+		final DataTable dataTable;
 		
-		public TierHandler(final List<String> tiers) {
+		public TierHandler(final List<String> tiers, DataTable dataTable) {
 			this.tiers = tiers;
+			this.dataTable = dataTable;
+//			this.invalidChildCountStrategy = TieredTabularDataExtractor.InvalidChildCountStrategy.HANDLE;
 		}
 		
 		public DataTable getDataTable() {
-			return GhDataTable.TOP_SCORES;
+			return dataTable;
 		}
 		
 		public void handleTierRow(String tierName) {

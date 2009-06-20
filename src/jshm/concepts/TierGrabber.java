@@ -25,9 +25,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jshm.*;
+import jshm.gh.GhGame;
 import jshm.rb.RbGame;
 import jshm.rb.RbGameTitle;
 import jshm.sh.scraper.*;
+import jshm.wt.WtGame;
+import jshm.wt.WtGameTitle;
 
 /**
  * This is an internal program to provide an easily
@@ -35,13 +38,38 @@ import jshm.sh.scraper.*;
  * @author Tim Mullin
  *
  */
+@SuppressWarnings("unused")
 public class TierGrabber {
 	public static void main(String[] args) throws Exception {
-		Logger.getLogger("").setLevel(Level.ALL);
-		
-		List<Game> games = Game.getByTitle(RbGameTitle.RB1); // .getBySeries(GameSeries.ROCKBAND);
-		
+//		jshm.logging.Log.configTestLogging();
+
 		jshm.util.TestTimer.start();
+		doWt();
+//		doRb();
+		jshm.util.TestTimer.stop();
+	}
+	
+	static void doWt() throws Exception {
+		List<Game> games = Game.getByTitle(WtGameTitle.GHSH); // .getBySeries(GameSeries.ROCKBAND);
+//		
+		for (Game game : games) {
+//		Game game = GhGame.GH3_XBOX360;
+//		Game game = WtGame.GHWT_XBOX360;
+//			List<String> tiers = GhTierScraper.scrape((GhGame) game);
+			List<String> tiers = GhTierScraper.scrape(
+				(WtGame) game, Instrument.Group.GUITAR);
+			
+			System.out.print(game + " = \"");
+			for (int i = 0; i < tiers.size(); i++) {
+				if (i > 0) System.out.print('|');
+				System.out.print(tiers.get(i));
+			}
+			System.out.println("\",");
+		}
+	}
+	
+	static void doRb() throws Exception {
+		List<Game> games = Game.getByTitle(RbGameTitle.RB1); // .getBySeries(GameSeries.ROCKBAND);
 		
 		for (Game game : games) {
 			List<String> tiers = RbTierScraper.scrape((RbGame) game, Instrument.Group.GUITAR);
@@ -53,7 +81,5 @@ public class TierGrabber {
 			}
 			System.out.println("\",");
 		}
-		
-		jshm.util.TestTimer.stop();
 	}
 }

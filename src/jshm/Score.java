@@ -216,7 +216,7 @@ public abstract class Score {
 	
 	@Transient
 	public GameTitle getGameTitle() {
-		return getSong() != null ? getSong().getGameTitle() : null;
+		return null != song ? song.getGameTitle() : null;
 	}
 	
 	@NotNull

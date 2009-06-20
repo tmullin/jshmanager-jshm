@@ -28,6 +28,10 @@ import jshm.Instrument.Group;
 import jshm.gh.*;
 import jshm.rb.*;
 import jshm.sh.Forum.PostMode;
+import jshm.wt.WtGame;
+import jshm.wt.WtGameTitle;
+import jshm.wt.WtScore;
+import jshm.wt.WtSong;
 
 public class URLs {
 	public static final URLCodec urlCodec = new URLCodec();
@@ -122,6 +126,38 @@ public class URLs {
 			return String.format(fmt, game.scoreHeroId, RbPlatform.getId(game.platform), group.instruments.length, group.id, difficulty.scoreHeroId);
 		}
 	}
+	
+	public static class wt {
+		public static final String
+		ARGS_FMT = "group=%s&game=%s&platform=%s&size=1&inst=%s&diff=%s&team=0",
+		MANAGE_SCORES = BASE + "/manage_scores.php?" + ARGS_FMT,
+		TOP_SCORES = BASE + "/top_scores.php?" + ARGS_FMT,
+		INSERT_SCORE = BASE + "/insert_score.php?" + ARGS_FMT
+		;
+		
+		public static String getManageScoresUrl(WtGame game, Group group, Difficulty diff) {
+			return String.format(MANAGE_SCORES,
+				((WtGameTitle) game.title).scoreHeroGroupId,
+				game.scoreHeroId, RbPlatform.getId(game.platform), group.id, diff.scoreHeroId);
+		}
+		
+		public static String getTopScoresUrl(WtGame game, Group group, Difficulty diff) {
+			return String.format(TOP_SCORES,
+				((WtGameTitle) game.title).scoreHeroGroupId,
+				game.scoreHeroId, RbPlatform.getId(game.platform), group.id, diff.scoreHeroId);
+		}
+		
+		public static String getInsertScoreUrl(WtScore score) {
+			return getInsertScoreUrl((WtGame) score.getGame(), score.getGroup(), score.getDifficulty(), (WtSong) score.getSong());
+		}
+		
+		public static String getInsertScoreUrl(WtGame game, Group group, Difficulty diff, WtSong song) {
+			return String.format(INSERT_SCORE,
+				((WtGameTitle) game.title).scoreHeroGroupId,
+				game.scoreHeroId, RbPlatform.getId(game.platform), group.id, diff.scoreHeroId, song.getScoreHeroId());
+		}
+	}
+	
 	
 	public static class wiki {
 		public static final String
