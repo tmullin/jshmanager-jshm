@@ -30,8 +30,6 @@ public enum Instrument {
 	DRUMS("drums"),
 	VOCALS("vocals");
 	
-	private transient javax.swing.ImageIcon icon = null;
-	
 	// needed for submitting rb scores
 	private final String shortString; 
 	
@@ -40,14 +38,8 @@ public enum Instrument {
 	}
 	
 	public javax.swing.ImageIcon getIcon() {
-		if (null == icon) {
-			try {
-				icon = new javax.swing.ImageIcon(
-					Instrument.class.getResource("/jshm/resources/images/instruments/" + this.toString() + "_32.png"));
-			} catch (Exception e) {}
-		}
-		
-		return icon;
+		return jshm.gui.GuiUtil.getIcon(
+			"instruments/" + name() + "_32.png");
 	}
 	
 	public String toShortString() {

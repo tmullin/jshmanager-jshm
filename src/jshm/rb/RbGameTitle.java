@@ -149,9 +149,13 @@ public class RbGameTitle extends GameTitle {
 		return StreakStrategy.BY_PART;
 	}
 
+	private static final Group[] SUPPORTED_GROUPS = {
+		Group.GUITAR, Group.BASS, Group.DRUMS, Group.VOCALS
+	};
+	
 	@Override
 	public Group[] getSupportedInstrumentGroups() {
-		return Group.getBySize(1).toArray(new Group[0]);
+		return SUPPORTED_GROUPS;
 	}
 	
 	private static final Sorting[] SUPPORTED_SORTINGS = {

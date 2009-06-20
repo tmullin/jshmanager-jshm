@@ -38,8 +38,6 @@ public enum Difficulty {
 	public  final int	 scoreHeroId;
 	private final String shortName;
 	
-	private transient javax.swing.ImageIcon icon = null;
-	
 	private Difficulty(final int scoreHeroId, final String shortName) {
 		this.scoreHeroId = scoreHeroId;
 		this.shortName = shortName;
@@ -50,14 +48,8 @@ public enum Difficulty {
 	}
 	
 	public javax.swing.ImageIcon getIcon() {
-		if (null == icon) {
-			try {
-				icon = new javax.swing.ImageIcon(
-					Difficulty.class.getResource("/jshm/resources/images/difficulties/" + this + "_32.png"));
-			} catch (Exception e) {}
-		}
-		
-		return icon;
+		return jshm.gui.GuiUtil.getIcon(
+			"difficulties/" + name() + "_32.png");
 	}
 	
 	
