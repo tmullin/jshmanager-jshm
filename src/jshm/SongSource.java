@@ -33,7 +33,9 @@ public enum SongSource {
 	
 	public ImageIcon getIcon(int size) {
 		switch (size) {
-			case 16: case 32: case 64: break;
+//			case 16:
+//			case 64:
+			case 32: break;
 			default: throw new IllegalArgumentException("invalid size: " + size);
 		}
 		
