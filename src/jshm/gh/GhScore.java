@@ -179,9 +179,6 @@ public class GhScore extends jshm.Score {
 		return getRatingIcon(rating);
 	}
 	
-	
-	private static final ImageIcon[] RATING_ICONS = new ImageIcon[7];
-	
 	public static ImageIcon getRatingIcon(int rating) {
 //		if (rating != 0 && (rating < 3 || 8 < rating))
 //			throw new IllegalArgumentException("rating must be between 3 and 8 inclusive or 0");
@@ -191,18 +188,8 @@ public class GhScore extends jshm.Score {
 		else if (rating > 8)
 			rating = 8;
 		
-		int index = rating;
-		
-		if (rating != 0)
-			index = rating - 2;
-		
-		if (null == RATING_ICONS[index]) {
-			RATING_ICONS[index] = new javax.swing.ImageIcon(
-				GhScore.class.getResource(
-					"/jshm/resources/images/ratings/gh/" + rating + ".gif"));
-		}
-		
-		return RATING_ICONS[index];
+		return jshm.gui.GuiUtil.getIcon(
+			"ratings/gh/" + rating + ".gif");
 	}
 	
 	
