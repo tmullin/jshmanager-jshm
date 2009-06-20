@@ -1,6 +1,6 @@
 JSHManager ChangeLog
 
-Version 0.2.9
+Version 0.3.0
 -------------
 - May possibly have fixed NullPointerException related to
   jshm.Score.equals(Score.java:590). Hard to test this though.

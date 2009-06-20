@@ -42,8 +42,8 @@ public class JSHManager {
 	public static class Version {
 		public static final String NAME = "JSHManager";
 		public static final int MAJOR = 0;
-		public static final int MINOR = 2;
-		public static final int POINT = 9;
+		public static final int MINOR = 3;
+		public static final int POINT = 0;
 		public static final boolean IS_BETA = true;
 		
 		public static final String
