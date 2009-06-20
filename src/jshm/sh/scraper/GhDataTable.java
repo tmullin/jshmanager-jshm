@@ -76,12 +76,7 @@ public class GhDataTable extends DataTable {
 			
 			return filters;
 		}
-	} ,
-	
-	
-	WT_TOP_SCORES = new GhDataTable(2, 4, 9,
-		"-|-|text~link=songid|text=int|img=rating~text=float|text=int|text=int|text|span"
-	) //,
+	} //,
 	
 //	GH_FORUM_INDEX = new DataTable(2, 2, 5,
 //		"-|text=,~link=forumid,-,-,subforums|-|-|-")

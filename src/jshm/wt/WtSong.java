@@ -1,9 +1,14 @@
 package jshm.wt;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -12,12 +17,139 @@ import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Type;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.validator.NotNull;
 
 import jshm.*;
 import jshm.Instrument.Group;
 
+@Entity
 public class WtSong extends Song {
+	static final Logger LOG = Logger.getLogger(WtSong.class.getName());
+	
+	public static WtSong getByScoreHeroId(final int id) {
+		LOG.finest("Querying database for WtSong with scoreHeroId=" + id);
+		
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    WtSong result = getByScoreHeroId(session, id);
+	    session.getTransaction().commit();
+		
+		return result;
+	}
+	
+	public static WtSong getByScoreHeroId(org.hibernate.Session session, final int id) {
+		return (WtSong)
+			session.createQuery(
+				"from WtSong where scoreHeroId=:shid")
+				.setInteger("shid", id)
+				.uniqueResult();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<WtSong> getAllByTitle(WtGame game, String title) {
+		LOG.finest("Querying database for WtSong for " + game + " with title=" + title);
+		
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    List<WtSong> result =
+			(List<WtSong>)
+			session.createCriteria(WtSong.class)
+				.add(Restrictions.eq("gameTitle", game.title))
+				.add(Restrictions.ilike("title", title, MatchMode.ANYWHERE))
+				.addOrder(Order.asc("title"))
+			.list();
+	    session.getTransaction().commit();
+		
+		return result;
+	}
+	
+	public static WtSong getByTitle(WtGame game, String title) {
+		List<WtSong> list = getAllByTitle(game, title);
+		return list.size() == 1 ? list.get(0) : null;
+	}
+	
+	public static List<WtSong> getOrderedByTitles(final WtGame game, final Instrument.Group group) {
+		List<WtSong> result = getSongs(true, game, group);
+		Collections.sort(result);
+	    return result;
+	}
+	
+	public static List<WtSong> getSongs(final boolean asSongList, final WtGame game, Instrument.Group group) {
+		return getSongs(asSongList, game, group, null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<WtSong> getSongs(final boolean asSongList, final WtGame game, Instrument.Group group, final Song.Sorting sorting) {
+		if (null == sorting) {
+			List<SongOrder> orders = getSongs(game, group);
+			List<WtSong> ret = new ArrayList<WtSong>(orders.size());
+			
+			for (SongOrder o : orders)
+				ret.add((WtSong) o.getSong());
+			
+			return ret;
+		}
+		
+		
+		// TODO change GUITAR_BASS to a constant in RbGameTitle
+		if (group.size > 1)
+			group = Instrument.Group.GUITAR_BASS;
+		else if (Instrument.Group.WTDRUMS == group)
+			group = Instrument.Group.DRUMS;
+		
+		String orderClause = "title";
+		
+		switch (sorting) {
+			case ARTIST: orderClause = "artist"; break;
+			case DECADE: orderClause = "year"; break;
+			case GENRE: orderClause = "genre"; break;
+		}
+		
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    List<WtSong> result =
+			(List<WtSong>)
+			session.createQuery(
+				"from WtSong where gameTitle=:ttl and " +
+				":plat in elements(platforms) " +
+				"order by " + orderClause)
+			.setString("ttl", game.title.toString())
+			.setString("plat", game.platform.toString())
+			.list();
+	    session.getTransaction().commit();
+		
+		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<SongOrder> getSongs(final WtGame game, Instrument.Group group) {
+		LOG.finest("Querying database for all song orders for " + game + " with group " + group);
+		
+		// TODO change GUITAR_BASS to a constant in WtGameTitle
+		if (group.size > 1)
+			group = Instrument.Group.GUITAR_BASS;
+		else if (Instrument.Group.WTDRUMS == group)
+			group = Instrument.Group.DRUMS;
+		
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    List<SongOrder> result =
+			(List<SongOrder>)
+			session.createQuery(
+				"from SongOrder where gameTitle=:ttl and platform=:plat and instrumentgroup=:group order by tier, ordering")
+			.setString("ttl", game.title.toString())
+			.setString("plat", game.platform.toString())
+			.setString("group", group.toString())
+			.list();
+	    session.getTransaction().commit();
+		
+		return result;
+	}
+	
+	
 	private boolean expertPlusSupported = false;
 
 	public boolean isExpertPlusSupported() {
@@ -62,9 +194,9 @@ public class WtSong extends Song {
 		platforms.add(platform);
 	}
 	
-	public boolean update(WtSong song) {
+	public boolean update(WtSong song, boolean replacePlatforms) {
 		boolean updated = super.update(song);
-		updated = updatePlatforms(song) || updated;
+		updated = updatePlatforms(song, replacePlatforms) || updated;
 		return updated;
 	}
 	
@@ -74,7 +206,7 @@ public class WtSong extends Song {
 	 * @param song
 	 * @return
 	 */
-	public boolean updatePlatforms(WtSong song) {
+	public boolean updatePlatforms(WtSong song, boolean replacePlatforms) {
 		assert 0 != song.platforms.size();
 		
 		// see if we have the same ones first
@@ -94,7 +226,8 @@ public class WtSong extends Song {
 			}
 		}
 		
-		this.platforms.clear();
+		if (replacePlatforms)
+			this.platforms.clear();
 		this.platforms.addAll(song.platforms);
 		
 		return true;

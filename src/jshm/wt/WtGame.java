@@ -6,6 +6,7 @@ import java.util.List;
 import jshm.Difficulty;
 import jshm.Game;
 import jshm.GameTitle;
+import jshm.Instrument;
 import jshm.Platform;
 import jshm.Score;
 import jshm.Song;
@@ -52,51 +53,64 @@ public class WtGame extends Game {
 		}
 	}
 
+	@Override public String getTierName(int tierLevel) {
+		return getTierName(Instrument.Group.GUITAR, tierLevel);
+	}
+	
+	@Override public int getTierLevel(final String tierName) {
+		return getTierLevel(Instrument.Group.GUITAR, tierName);
+	}
+	
+	@Override public int getTierCount() {
+		return getTierCount(Instrument.Group.GUITAR);
+	}
+
+	
+	// song related overrides
+	
+	@Override
+	public List<WtSong> getAllSongsByTitle(String title, Difficulty diff) {
+		return WtSong.getAllByTitle(this, title);
+	}
+
+	@Override
+	public Song getSongByScoreHeroId(int scoreHeroId, Difficulty diff) {
+		return WtSong.getByScoreHeroId(scoreHeroId);
+	}
+
+	@Override
+	public Song getSongByTitle(String title, Difficulty diff) {
+		return WtSong.getByTitle(this, title);
+	}
+
+	@Override
+	public List<WtSong> getSongs(Group group, Difficulty diff,
+			Sorting sorting) {
+		return WtSong.getSongs(true, this, group, sorting);
+	}
+
+	@Override
+	public List<WtSong> getSongsOrderedByTitle(Group group,
+			Difficulty diff) {
+		return WtSong.getOrderedByTitles(this, group);
+	}
+
+	
+	// score related overrides
+	
 	@Override
 	public Score createNewScore(Song song, Group group, Difficulty diff,
 			int score, int rating, float percent, int streak, String comment) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public List<? extends Song> getAllSongsByTitle(String title, Difficulty diff) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	public List<? extends Score> getScores(Group group, Difficulty diff) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public Song getSongByScoreHeroId(int scoreHeroId, Difficulty diff) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Song getSongByTitle(String title, Difficulty diff) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<? extends Song> getSongs(Group group, Difficulty diff,
-			Sorting sorting) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<? extends Song> getSongsOrderedByTitle(Group group,
-			Difficulty diff) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	public List<? extends Score> getSubmittableScores(Group group,
 			Difficulty diff) {

@@ -1,77 +1,52 @@
-/*
- * -----LICENSE START-----
- * JSHManager - A Java-based tool for managing one's ScoreHero account.
- * Copyright (C) 2008 Tim Mullin
- * 
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- * -----LICENSE END-----
-*/
 package jshm.sh.scraper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import jshm.Difficulty;
-import jshm.Instrument;
-import jshm.SongOrder;
-import jshm.exceptions.ScraperException;
-import jshm.rb.RbGame;
-import jshm.rb.RbSong;
-import jshm.scraper.DataTable;
-import jshm.scraper.Scraper;
-import jshm.scraper.TieredTabularDataAdapter;
-import jshm.scraper.TieredTabularDataExtractor;
-import jshm.scraper.TieredTabularDataExtractor.InvalidChildCountStrategy;
-import jshm.sh.URLs;
-
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 import org.netbeans.spi.wizard.ResultProgressHandle;
 
-public class RbSongScraper {
+import jshm.Difficulty;
+import jshm.Instrument;
+import jshm.SongOrder;
+import jshm.Instrument.Group;
+import jshm.exceptions.ScraperException;
+import jshm.scraper.DataTable;
+import jshm.scraper.Scraper;
+import jshm.scraper.TieredTabularDataAdapter;
+import jshm.scraper.TieredTabularDataExtractor;
+import jshm.sh.URLs;
+import jshm.wt.*;
+
+public class WtSongScraper {
 	static {
 		Formats.init();
 	}
 	
-	public static List<RbSong> scrape(
-		final RbGame game) 
+	public static List<WtSong> scrape(final WtGame game)
 	throws ScraperException, ParserException {
 		
-		List<RbSong> songs = new ArrayList<RbSong>();
-		TieredTabularDataAdapter handler = new SongHandler(game, songs);
-		
+		List<WtSong> songs = new ArrayList<WtSong>();
+		SongHandler handler = new SongHandler(game, songs);
 		NodeList nodes = Scraper.scrape(
-			URLs.rb.getTopScoresUrl(
-				game,
-				Instrument.Group.GUITAR,
-				Difficulty.EXPERT),
+			URLs.wt.getTopScoresUrl(
+				game, Instrument.Group.GUITAR, Difficulty.EXPERT),
 			handler);
 		
 		TieredTabularDataExtractor.extract(nodes, handler);
 		
 		return songs;
 	}
-
-	public static List<SongOrder> scrapeOrders(final RbGame game) 
+	
+	public static List<SongOrder> scrapeOrders(final WtGame game) 
 	throws ScraperException, ParserException {
 		return scrapeOrders(null, game, null);
 	}
 	
 	public static List<SongOrder> scrapeOrders(
-		ResultProgressHandle progress, final RbGame game)
+		ResultProgressHandle progress, final WtGame game)
 	throws ParserException, ScraperException {
 		return scrapeOrders(progress, game, null);
 	}
@@ -86,30 +61,30 @@ public class RbSongScraper {
 	 * @throws ScraperException
 	 */
 	public static List<SongOrder> scrapeOrders(
-		final RbGame game, final Map<Integer, RbSong> songMap)
+		final WtGame game, final Map<Integer, WtSong> songMap)
 	throws ParserException, ScraperException {
 		return scrapeOrders(null, game, songMap);
 	}
 	
 	public static List<SongOrder> scrapeOrders(
-		final ResultProgressHandle progress, final RbGame game, final Map<Integer, RbSong> songMap) 
+		final ResultProgressHandle progress, final WtGame game, final Map<Integer, WtSong> songMap)
 	throws ScraperException, ParserException {
 		
 		List<SongOrder> orders = new ArrayList<SongOrder>();
+
+		// WT drum order is same as RB so we're not going to get them both
+		List<Group> groups = Instrument.Group.getBySize(1, false);
+		groups.add(Group.GUITAR_BASS);
 		
-		List<Instrument.Group> groups = Instrument.Group.getBySize(1);
-		groups.add(Instrument.Group.GUITAR_BASS);
-		
-		for (Instrument.Group g : groups) {
+		for (Group g : groups) {
 			if (null != progress)
 				progress.setBusy("Downloading list for " + game + " " + g);
 			
-//			List<SongOrder> curOrders = new ArrayList<SongOrder>();
 			TieredTabularDataAdapter handler =
 				new SongOrderHandler(game, g, orders, songMap);
 		
 			NodeList nodes = Scraper.scrape(
-				URLs.rb.getTopScoresUrl(
+				URLs.wt.getTopScoresUrl(
 					game,
 					g,
 					Difficulty.EXPERT),
@@ -124,23 +99,36 @@ public class RbSongScraper {
 	}
 	
 	private static class SongHandler extends TieredTabularDataAdapter {
-		final RbGame game;
-		final List<RbSong> songs;
+		final WtGame game;
+		final List<WtSong> songs;
+		int curTierLevel = 0;
 		
-		public SongHandler(final RbGame game, final List<RbSong> songs) {
-			this.invalidChildCountStrategy = InvalidChildCountStrategy.HANDLE;
+		public SongHandler(WtGame game, List<WtSong> songs) {
 			this.game = game;
 			this.songs = songs;
+//			this.invalidChildCountStrategy = TieredTabularDataExtractor.InvalidChildCountStrategy.HANDLE;
 		}
 		
 		@Override
 		public DataTable getDataTable() {
-			return RbDataTable.TOP_SCORES;
+			return WtDataTable.TOP_SCORES;
+		}
+		
+		@Override
+		public void handleTierRow(String tierName) throws ScraperException {
+			// this will prevent retrieval of the ghsh demo tier
+			// on the ghwt page, for example
+			if (curTierLevel >= game.getTierCount()) {
+				ignoreNewData = true;
+				return;
+			}
+			
+			curTierLevel++;
 		}
 		
 		@Override
 		public void handleDataRow(String[][] data) throws ScraperException {
-			RbSong curSong = new RbSong();
+			WtSong curSong = new WtSong();
 			curSong.setGameTitle(game.title);
 			curSong.addPlatform(game.platform);
 			
@@ -151,20 +139,19 @@ public class RbSongScraper {
     		}
     		
     		curSong.setTitle(data[1][0]);
-    		
-    		songs.add(curSong);
+			
+			songs.add(curSong);
 		}
 	}
 	
 	private static class SongOrderHandler extends TieredTabularDataAdapter {
-		final RbGame game;
-		final Instrument.Group group;
+		final WtGame game;
+		final Group group;
 		final List<SongOrder> orders;
-		final Map<Integer, RbSong> songMap;
+		final Map<Integer, WtSong> songMap;
 		int curTierLevel = 0, curOrder = 0;
 		
-		public SongOrderHandler(RbGame game, Instrument.Group group, List<SongOrder> orders, Map<Integer, RbSong> songMap) {
-			this.invalidChildCountStrategy = InvalidChildCountStrategy.HANDLE;
+		public SongOrderHandler(WtGame game, Group group, List<SongOrder> orders, Map<Integer, WtSong> songMap) {
 			this.game = game;
 			this.group = group;
 			this.orders = orders;
@@ -173,7 +160,7 @@ public class RbSongScraper {
 
 		@Override
 		public DataTable getDataTable() {
-			return RbDataTable.TOP_SCORES;
+			return WtDataTable.TOP_SCORES;
 		}
 		
 		@Override
@@ -198,26 +185,19 @@ public class RbSongScraper {
 			order.setTier(curTierLevel);
 			
 			try {
-				// for testing
-//				RbSong s = new RbSong();
-//				s.setTitle(data[1][0]);
-//				s.setScoreHeroId(Integer.parseInt(data[1][1]));
-//				s.addPlatform(game.platform);
-//				order.setSong(s);
-				RbSong s = songMap != null
+				WtSong s = songMap != null
 					? songMap.get(Integer.parseInt(data[1][1]))
-					: RbSong.getByScoreHeroId(Integer.parseInt(data[1][1]));
+					: WtSong.getByScoreHeroId(Integer.parseInt(data[1][1]));
+				
 				if (null == s)
 					throw new ScraperException("Song not found with scoreHeroId=" + data[1][1]);
-    			order.setSong(s);
-    		} catch (NumberFormatException e) {
-    			throw new ScraperException("Error parsing song id", e);
-    		}
+				order.setSong(s);
+			} catch (NumberFormatException e) {
+				throw new ScraperException("Error parsing song id", e);
+			}
 			
-    		orders.add(order);
+			orders.add(order);
 			curOrder++;
-			
-//			System.out.println(orders.size() + ": " + order);
 		}
 	}
 }

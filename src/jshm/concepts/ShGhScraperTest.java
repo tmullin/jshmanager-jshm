@@ -29,20 +29,23 @@ import jshm.gh.*;
 import jshm.gui.LoginDialog;
 import jshm.rb.*;
 import jshm.sh.scraper.*;
+import jshm.wt.WtGame;
+import jshm.wt.WtSong;
 
 @SuppressWarnings("unused")
 public class ShGhScraperTest {
 //	static final GhGame game 			= GhGame.GH3_XBOX360;
 	static final RbGame game 			= RbGame.RB1_XBOX360;
-	static final Instrument.Group group = Instrument.Group.VOCALS;
+	static final WtGame wtgame			= WtGame.GHWT_XBOX360;
+	static final Instrument.Group group = Instrument.Group.GUITAR;
 	static final Difficulty difficulty 	= Difficulty.EXPERT;
 	
 	public static void main(String[] args) throws Exception {
 		jshm.logging.Log.configTestLogging();
 		jshm.util.TestTimer.start(true);
 		
-//		doSongs();
-		doScores();
+		doSongs();
+//		doScores();
 		
 		jshm.util.TestTimer.stop(true);
 	}
@@ -59,19 +62,19 @@ public class ShGhScraperTest {
 	}
 	
 	static void doSongs() throws Exception {
-//		List<RbSong> songs = 
-//			RbSongScraper.scrape(game);
-//	
-//		for (Song s : songs) {
-//			System.out.println(s);
-//		}
-		
-		List<SongOrder> orders = 
-			RbSongScraper.scrapeOrders(game);
-		
-		for (SongOrder o : orders) {
-			if (o.getTier() == 10) continue;
-			System.out.println(o);
+		List<WtSong> songs = 
+			WtSongScraper.scrape(wtgame);
+	
+		for (Song s : songs) {
+			System.out.println(s);
 		}
+		
+//		List<SongOrder> orders = 
+//			RbSongScraper.scrapeOrders(game);
+//		
+//		for (SongOrder o : orders) {
+//			if (o.getTier() == 10) continue;
+//			System.out.println(o);
+//		}
 	}
 }

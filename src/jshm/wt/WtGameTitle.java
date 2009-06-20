@@ -42,9 +42,8 @@ public class WtGameTitle extends GameTitle {
 		return StreakStrategy.BY_PART;
 	}
 
-	// TODO add ghwt drums
 	private static final Group[] SUPPORTED_GROUPS = {
-		Group.GUITAR, Group.BASS, Group.DRUMS, Group.VOCALS
+		Group.GUITAR, Group.BASS, Group.WTDRUMS, Group.DRUMS, Group.VOCALS
 	};
 	
 	@Override

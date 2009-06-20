@@ -145,7 +145,7 @@ public class RbSong extends Song {
 		return result;
 	}
 
-	public static List<RbSong> getSongsOrderedByTitles(final RbGame game, final Instrument.Group group) {
+	public static List<RbSong> getOrderedByTitles(final RbGame game, final Instrument.Group group) {
 		List<RbSong> result = getSongs(true, game, group);
 		Collections.sort(result);
 	    return result;
@@ -156,15 +156,18 @@ public class RbSong extends Song {
 		
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
-	    RbSong result =
-			(RbSong)
+	    RbSong result =	getByScoreHeroId(session, id);
+	    session.getTransaction().commit();
+		
+		return result;
+	}
+	
+	public static RbSong getByScoreHeroId(org.hibernate.Session session, final int id) {
+		return (RbSong)
 			session.createQuery(
 				"from RbSong where scoreHeroId=:shid")
 				.setInteger("shid", id)
 				.uniqueResult();
-	    session.getTransaction().commit();
-		
-		return result;
 	}
 	
 	public static RbSong getByTitle(RbGame game, String title) {
@@ -357,8 +360,18 @@ public class RbSong extends Song {
 	}
 	
 	public boolean update(RbSong song) {
+		return update(song, false);
+	}
+	
+	/**
+	 * 
+	 * @param song
+	 * @param replacePlatforms true to clear platforms before adding or false to keep existing platforms and only add new ones
+	 * @return
+	 */
+	public boolean update(RbSong song, boolean replacePlatforms) {
 		boolean updated = super.update(song);
-		updated = updatePlatforms(song) || updated;
+		updated = updatePlatforms(song, replacePlatforms) || updated;
 		return updated;
 	}
 	
@@ -469,11 +482,12 @@ public class RbSong extends Song {
 	
 	/**
 	 * Updates this song to have the platforms of the provided song.
-	 * This songs existing platforms are cleared first.
+	 * This songs existing platforms are cleared first if replacePlatforms is true.
 	 * @param song
+	 * @param replacePlatforms
 	 * @return
 	 */
-	public boolean updatePlatforms(RbSong song) {
+	public boolean updatePlatforms(RbSong song, boolean replacePlatforms) {
 		assert 0 != song.platforms.size();
 		
 		// see if we have the same ones first
@@ -493,7 +507,8 @@ public class RbSong extends Song {
 			}
 		}
 		
-		this.platforms.clear();
+		if (replacePlatforms)
+			this.platforms.clear();
 		this.platforms.addAll(song.platforms);
 		
 		return true;

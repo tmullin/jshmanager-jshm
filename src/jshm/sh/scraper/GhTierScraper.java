@@ -49,7 +49,7 @@ public class GhTierScraper {
 	throws ScraperException, ParserException {
 		return scrape(
 			URLs.wt.getTopScoresUrl(game, group, difficulty),
-			GhDataTable.WT_TOP_SCORES);
+			WtDataTable.TOP_SCORES);
 	}
 	
 	private static List<String> scrape(String url, DataTable dataTable) throws ParserException, ScraperException {		

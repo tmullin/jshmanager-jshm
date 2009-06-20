@@ -60,6 +60,7 @@
 		<mapping class="jshm.Song"/>
 		<mapping class="jshm.gh.GhSong"/>
 		<mapping class="jshm.rb.RbSong"/>
+		<mapping class="jshm.wt.WtSong"/>
 		
 		<mapping class="jshm.Score"/>
 		<mapping class="jshm.gh.GhScore"/>

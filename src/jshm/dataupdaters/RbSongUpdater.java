@@ -98,7 +98,7 @@ public class RbSongUpdater {
 			    } else {
 			    	LOG.finest("found song: " + result);
 			    	// update existing
-			    	if (result.update(song)) {
+			    	if (result.update(song, true)) {
 				    	LOG.info("Updating song to: " + result);
 				    	session.update(result);
 			    	} else {
@@ -151,7 +151,7 @@ public class RbSongUpdater {
 					// we need to get an instance of the RbSong that's in the db,
 					// not the detached one we used before from the xml
 					order.setSong(
-						RbSong.getByScoreHeroId(
+						RbSong.getByScoreHeroId(session,
 							order.getSong().getScoreHeroId()));
 					
 			    	// new insert
@@ -235,7 +235,7 @@ public class RbSongUpdater {
 				    } else {
 				    	LOG.finest("found song: " + result);
 				    	// update existing
-				    	if (result.update(song)) {
+				    	if (result.update(song, false)) {
 					    	LOG.info("Updating song to: " + result);
 					    	session.update(result);
 				    	} else {
