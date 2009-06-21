@@ -177,7 +177,7 @@ public class WtSongScraper {
 			curTierLevel++;
 			curOrder = 0;
 			
-			System.out.println("new tier " + tierName + " = " + curTierLevel);
+//			System.out.println("new tier " + tierName + " = " + curTierLevel);
 		}
 		
 		@Override
@@ -200,7 +200,7 @@ public class WtSongScraper {
 				throw new ScraperException("Error parsing song id", e);
 			}
 			
-			System.out.println("adding order: " + order);
+//			System.out.println("adding order: " + order);
 			orders.add(order);
 			curOrder++;
 		}
