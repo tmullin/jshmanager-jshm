@@ -39,17 +39,9 @@ public enum Platform {
 		PS2, XBOX360, PS3, WII
 	};
 	
-	private transient javax.swing.ImageIcon icon = null;
-	
 	public javax.swing.ImageIcon getIcon() {
-		if (null == icon) {
-			try {
-				icon = new javax.swing.ImageIcon(
-					GameTitle.class.getResource("/jshm/resources/images/platforms/" + this.toString() + "_32.png"));
-			} catch (Exception e) {}
-		}
-		
-		return icon;
+		return jshm.gui.GuiUtil.getIcon(
+			"platforms/" + this.name() + "_32.png");
 	}
 	
 	public String getShortName() {

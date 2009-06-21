@@ -140,7 +140,7 @@ public enum Instrument {
 		
 		public javax.swing.ImageIcon getIcon() {
 			if (size != 1) return null;
-			return Instrument.valueOf(this.name()).getIcon();
+			return instruments[0].getIcon();
 		}
 		
 		public String getLongName() {

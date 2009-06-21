@@ -65,7 +65,7 @@ public class ScoreDatabaseLink {
 	}
 	
 	
-	private static class Type {		
+	static class Type {		
 		public static List<Type> createGhValues() {
 			List<Type> values = new ArrayList<Type>();
 			

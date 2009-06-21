@@ -1392,6 +1392,8 @@ private void initForumsMenu(final JMenu menu) {
 		initForumsMenu(menu, jshm.sh.links.Link.RB_ROOT);
 	} else if (menu == wikiMenu) {
 		initForumsMenu(menu, jshm.sh.links.Link.WIKI_ROOT);
+	} else {
+		assert false: "unimplemented forums JMenu";
 	}
 }
 
