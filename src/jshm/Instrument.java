@@ -55,7 +55,8 @@ public enum Instrument {
 	public String getLongName(boolean getWtVersion) {
 		if (getWtVersion) {
 			try {
-				return getText("longNameWt");
+				return getText("wt.longName");
+			} catch (MissingResourceException e) {
 			} catch (NullPointerException e) {}
 		}
 		
@@ -139,7 +140,8 @@ public enum Instrument {
 		public String getLongName(boolean getWtVersion) {
 			if (getWtVersion) {
 				try {
-					return getText("longNameWt");
+					return getText("wt.longName");
+				} catch (MissingResourceException e) {
 				} catch (NullPointerException e) {}
 			}
 			
@@ -153,7 +155,8 @@ public enum Instrument {
 		public String getWikiUrl(boolean getWtVersion) {
 			if (getWtVersion) {
 				try {
-					return getText("wikiUrlWt");
+					return getText("wt.wikiUrl");
+				} catch (MissingResourceException e) {
 				} catch (NullPointerException e) {}
 			}
 			

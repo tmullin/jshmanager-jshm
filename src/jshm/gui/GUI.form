@@ -89,7 +89,7 @@
                 <Property name="text" type="java.lang.String" value="Scores"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initDynamicGameMenu(ghScoresMenu);"/>
+                <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initGhGameMenu(ghScoresMenu);"/>
               </AuxValues>
             </Menu>
             <Menu class="javax.swing.JMenu" name="ghSongDataMenu">
@@ -98,7 +98,7 @@
                 <Property name="text" type="java.lang.String" value="Song Data"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initDynamicGameMenu(ghSongDataMenu);"/>
+                <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initGhGameMenu(ghSongDataMenu);"/>
               </AuxValues>
               <SubComponents>
                 <MenuItem class="javax.swing.JMenuItem" name="downloadGhSongDataMenuItem">
@@ -272,7 +272,7 @@
                 <Property name="text" type="java.lang.String" value="View Log"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initDynamicGameMenu(viewLogMenu);"/>
+                <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="initViewLogMenu(viewLogMenu);"/>
               </AuxValues>
               <SubComponents>
                 <MenuItem class="javax.swing.JMenuItem" name="uploadLogsMenuItem">

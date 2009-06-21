@@ -83,6 +83,7 @@ import jshm.gui.datamodels.GhSongDataTreeTableModel;
 import jshm.gui.datamodels.Parentable;
 import jshm.gui.datamodels.RbSongDataTreeTableModel;
 import jshm.gui.datamodels.SongSortable;
+import jshm.gui.datamodels.WtSongDataTreeTableModel;
 import jshm.gui.wizards.csvimport.CsvImportWizard;
 import jshm.gui.wizards.scoredownload.ScoreDownloadWizard;
 import jshm.gui.wizards.scoreupload.ScoreUploadWizard;
@@ -90,6 +91,9 @@ import jshm.rb.RbGame;
 import jshm.rb.RbSong;
 import jshm.sh.URLs;
 import jshm.util.PasteBin;
+import jshm.wt.WtGame;
+import jshm.wt.WtGameTitle;
+import jshm.wt.WtSong;
 
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
@@ -493,7 +497,7 @@ public class GUI extends javax.swing.JFrame {
         ghScoresMenu.setMnemonic('S');
         ghScoresMenu.setText("Scores");
 
-        initDynamicGameMenu(ghScoresMenu);
+        initGhGameMenu(ghScoresMenu);
 
         ghMenu.add(ghScoresMenu);
 
@@ -513,7 +517,7 @@ public class GUI extends javax.swing.JFrame {
         ghSongDataMenu.add(downloadGhSongDataMenuItem);
         ghSongDataMenu.add(jSeparator2);
 
-        initDynamicGameMenu(ghSongDataMenu);
+        initGhGameMenu(ghSongDataMenu);
 
         ghMenu.add(ghSongDataMenu);
 
@@ -638,7 +642,7 @@ public class GUI extends javax.swing.JFrame {
         viewLogMenu.add(uploadLogsMenuItem);
         viewLogMenu.add(jSeparator1);
 
-        initDynamicGameMenu(viewLogMenu);
+        initViewLogMenu(viewLogMenu);
 
         helpMenu.add(viewLogMenu);
         helpMenu.add(jSeparator4);
@@ -695,15 +699,24 @@ private void downloadGhSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 		protected Boolean doInBackground() throws Exception {
 			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			statusBar1.setTempText("Downloading song data from ScoreHero...", true);
+			ProgressDialog progress = null;
 			
 			try {
-				jshm.dataupdaters.GhSongUpdater.update((GhGame) curGame, curDiff);
+				if (curGame instanceof GhGame) {
+					jshm.dataupdaters.GhSongUpdater.update((GhGame) curGame, curDiff);
+				} else if (curGame instanceof WtGame) {
+					progress = new ProgressDialog(GUI.this);
+					jshm.dataupdaters.WtSongUpdater.updateViaScraping(progress, (WtGameTitle) curGame.title);
+				}
 				return true;
 			} catch (Exception e) {
 				LOG.log(Level.SEVERE, "Failed to download song data ", e);
 				ErrorInfo ei = new ErrorInfo("Error", "Failed to download song data", null, null, e, null, null);
 				JXErrorPane.showDialog(GUI.this, ei);
 			} finally {
+				if (null != progress)
+					progress.dispose();
+				
 				statusBar1.revertText();
 				getContentPane().setCursor(Cursor.getDefaultCursor());
 			}
@@ -715,7 +728,13 @@ private void downloadGhSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 		public void done() {
 			try {
 				if (get()) {
-					songDataMenuItemActionPerformed(null, curGame, curDiff);
+					if (curGame instanceof GhGame) {
+						songDataMenuItemActionPerformed(null, curGame, curDiff);
+					} else if (curGame instanceof WtGame) {
+						wtSongDataMenuItemActionPerformed(null, (WtGame) curGame, curGroup);
+					} else {
+						assert false;
+					}
 				}
 			} catch (Exception e) {
 				LOG.log(Level.SEVERE, "Unknown error", e);
@@ -1076,65 +1095,62 @@ private void initToolbar(final JToolBar toolbar) {
     hh.add(toolbar.add(actions.importScoresFromCsv));
 }
 
+private void initViewLogMenu(final JMenu menu) {
+	try {
+		final File logDir = new File("data/logs");
+		String[] files = logDir.list(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".txt");
+			}
+		});
+		
+		for (final String s : files) {
+			JMenuItem item = new JMenuItem(s);
+			item.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					showTextFileViewer(logDir.getPath() + "/" + s);
+				}
+			});
+			
+			viewLogMenu.add(item);
+		}
+	} catch (Exception e) {
+		LOG.log(Level.WARNING, "Error initializing View Log menu", e);
+	}
+}
+
 /**
  * Load the menu with all avaialable GH games.
  * @param menu
  */
-private void initDynamicGameMenu(final JMenu menu) {
-	if (menu == viewLogMenu) {
-		try {
-			final File logDir = new File("data/logs");
-			String[] files = logDir.list(new FilenameFilter() {
-				@Override
-				public boolean accept(File dir, String name) {
-					return name.endsWith(".txt");
-				}
-			});
-			
-			for (final String s : files) {
-				JMenuItem item = new JMenuItem(s);
-				item.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						showTextFileViewer(logDir.getPath() + "/" + s);
-					}
-				});
-				
-				viewLogMenu.add(item);
-			}
-		} catch (Exception e) {
-			LOG.log(Level.WARNING, "Error initializing View Log menu", e);
-		}
-		
-		return;
-	}
+private void initGhGameMenu(final JMenu menu) {
+	List<jshm.GameTitle> titles =
+		GameTitle.getBySeries(GameSeries.GUITAR_HERO);
 	
-	java.util.List<jshm.GameTitle> titles =
-		jshm.GameTitle.getBySeries(jshm.GameSeries.GUITAR_HERO);
-	
-	for (jshm.GameTitle ttl : titles) {		
+	for (GameTitle ttl : titles) {
 //		System.out.println("Creating " + ttl);
 		
-		javax.swing.JMenu ttlMenu = new javax.swing.JMenu(ttl.getLongName());
+		JMenu ttlMenu = new JMenu(ttl.getLongName());
 		ttlMenu.setIcon(ttl.getIcon());
 		
-		java.util.List<jshm.Game> games =
-			jshm.Game.getByTitle(ttl);
+		List<Game> games = Game.getByTitle(ttl);
 		
-		for (final jshm.Game game : games) {
+		for (final Game game : games) {
 			// no need for an extra menu if there's only one platform
-			javax.swing.JMenu gameMenu = null;
+			JMenu gameMenu = null;
 				
 			if (games.size() > 1) {
-				gameMenu = new javax.swing.JMenu(game.platform.getShortName());
+				gameMenu = new JMenu(game.platform.getShortName());
 				gameMenu.setIcon(game.platform.getIcon());
 			} else {
 				gameMenu = ttlMenu;
 			}
 			
 //			System.out.println("  Creating " + game.platform);
-			for (final jshm.Difficulty diff : jshm.Difficulty.values()) {
-				if (diff == jshm.Difficulty.CO_OP) break;
+			for (final Difficulty diff : Difficulty.values()) {
+				if (diff == Difficulty.CO_OP) break;
 				
 //				System.out.println("    Creating " + diff);
 				
@@ -1172,10 +1188,108 @@ private void initDynamicGameMenu(final JMenu menu) {
 		
 		menu.add(ttlMenu);
 	}
+	
+	
+	titles = GameTitle.getBySeries(GameSeries.WORLD_TOUR);
+	
+	for (GameTitle ttl : titles) {
+		WtGameTitle wtTtl = (WtGameTitle) ttl;
+		
+//		System.out.println("Creating " + ttl);
+		
+		JMenu ttlMenu = new JMenu(ttl.getLongName());
+		ttlMenu.setIcon(ttl.getIcon());
+		
+		List<Game> games = Game.getByTitle(ttl);
+		
+		for (final Game game : games) {
+			// no need for an extra menu if there's only one platform
+			JMenu platformMenu = null;
+				
+			if (games.size() > 1) {
+				platformMenu = new JMenu(game.platform.getShortName());
+				platformMenu.setIcon(game.platform.getIcon());
+			} else {
+				platformMenu = ttlMenu;
+			}
+			
+			final int maxGroupSize =
+				menu == ghSongDataMenu
+				? 4
+				: menu == ghScoresMenu
+				  ? 1 : 0;
+			
+			for (int groupSize = 1; groupSize <= maxGroupSize; groupSize++) {
+				
+				JMenu groupSizeMenu = menu == ghSongDataMenu
+				? new JMenu(groupSize + "-part") : platformMenu; // new JMenu(groupSize + "-part");
+				
+				for (final Group group : Group.getBySize(groupSize, true)) {
+
+					if (menu == ghScoresMenu) {
+						JMenu groupMenu = new JMenu(group.getLongName(true));
+						groupMenu.setIcon(group.getIcon());
+DiffLoop:
+						for (final Difficulty diff : Difficulty.values()) {
+							if (diff == Difficulty.CO_OP) continue;
+							if (diff == Difficulty.EXPERT_PLUS) {
+								if (!wtTtl.supportsExpertPlus) break;
+								
+								switch (group) {
+									case WTDRUMS:
+									case DRUMS: break;
+									
+									default: break DiffLoop;
+								};
+							}
+							
+			//				System.out.println("    Creating " + diff);
+							
+							JMenuItem diffItem = new JMenuItem(diff.getLongName());
+							diffItem.setIcon(diff.getIcon());
+							
+							diffItem.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+//									myScoresMenuItemActionPerformed(e, game, Instrument.Group.GUITAR, diff);
+								}
+							});
+							
+							groupMenu.add(diffItem);
+						}
+
+						groupSizeMenu.add(groupMenu);
+					} else if (menu == ghSongDataMenu) {
+						JMenuItem groupMenuItem = new JMenuItem(group.getLongName(true));
+						groupMenuItem.setIcon(group.getIcon());
+						
+						groupMenuItem.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								wtSongDataMenuItemActionPerformed(e, (WtGame) game, group);
+							}
+						});
+						
+						groupSizeMenu.add(groupMenuItem);
+					} else {
+						assert false;
+					}
+					
+				}
+				
+				if (platformMenu != groupSizeMenu)
+					platformMenu.add(groupSizeMenu);
+			}
+			
+			ttlMenu.add(platformMenu);
+		}
+		
+		menu.add(ttlMenu);
+	}
 }
 
 private void initRbGameMenu(final JMenu menu) {
-	java.util.List<GameTitle> titles =
+	List<GameTitle> titles =
 		GameTitle.getBySeries(GameSeries.ROCKBAND);
 	
 	
@@ -1191,8 +1305,7 @@ private void initRbGameMenu(final JMenu menu) {
 				for (int groupSize = 1; groupSize <= 1; groupSize++) {
 					JMenu groupSizeMenu = platformMenu; // new JMenu(groupSize + "-part");
 					
-					for (final Instrument.Group group : Instrument.Group.getBySize(groupSize)) {
-						JMenu groupMenu = new JMenu(group.getLongName());
+					for (final Group group : Group.getBySize(groupSize)) {						JMenu groupMenu = new JMenu(group.getLongName());
 						groupMenu.setIcon(group.getIcon());
 						
 						for (final Difficulty d : Difficulty.values()) {
@@ -1241,7 +1354,7 @@ private void initRbGameMenu(final JMenu menu) {
 			for (int groupSize = 1; groupSize <= 4; groupSize++) {
 				JMenu groupSizeMenu = new JMenu(groupSize + "-part");
 				
-				for (final Instrument.Group group : Instrument.Group.getBySize(groupSize)) {
+				for (final Group group : Group.getBySize(groupSize)) {
 					JMenuItem groupMenuItem = new JMenuItem(group.getLongName());
 					groupMenuItem.setIcon(group.getIcon());
 					
@@ -1502,6 +1615,84 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
 					
 					downloadRbSongDataMenuItemActionPerformed(null);
+				}
+
+				return;
+			}
+		}
+	}.execute();
+}
+
+private void wtSongDataMenuItemActionPerformed(final ActionEvent evt, final WtGame game, final Group group) {
+	setCurGame(game);
+	curGroup = group;
+	setCurDiff(null);
+	
+	scoreEditorPanel1.setScore(null);
+	editorCollapsiblePane.setCollapsed(true);
+	
+	new SwingWorker<Void, Void>() {
+		List<WtSong> songs = null;
+		WtSongDataTreeTableModel model = null;
+		
+		@Override
+		protected Void doInBackground() throws Exception {
+			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			statusBar1.setTempText("Loading song data from database...", true);
+			
+			try {
+				songs = WtSong.getSongs(true, game, group);
+				model = new WtSongDataTreeTableModel(game, curSorting, songs);
+	
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run() {
+						if (tree.getTreeTableModel() instanceof Parentable)
+							((Parentable) tree.getTreeTableModel()).removeParent(tree);
+						tree.setTreeTableModel(model);
+						model.setParent(GUI.this, tree);
+						tree.packAll();
+					}
+				});
+			} catch (Exception e) {
+				LOG.log(Level.SEVERE, "Failed to load song data from database", e);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to load song data from database", null, null, e, null, null);
+				JXErrorPane.showDialog(GUI.this, ei);
+			} finally {
+				getContentPane().setCursor(Cursor.getDefaultCursor());
+				statusBar1.revertText();
+			}
+			
+			return null;
+		}
+		
+		@Override
+		public void done() {
+			if (null == songs) return;
+			
+			statusBar1.setText("Viewing song data for " + game);
+			
+			actions.downloadScores.setEnabled(false);
+			actions.uploadScores.setEnabled(false);
+			scoreEditorPanel1.actions.new_.setEnabled(false);
+			actions.editSelectedScore.setEnabled(false);
+			actions.toggleEditor.setEnabled(false);
+			actions.importScoresFromCsv.setEnabled(false);
+			actions.gotoSong.setEnabled(false);
+			
+			downloadGhSongDataMenuItem.setEnabled(true);
+			downloadRbSongDataMenuItem.setEnabled(false);
+			editorCollapsiblePane.setCollapsed(true);
+			
+			GUI.this.setIconImage(game.title.getIcon().getImage());
+			GUI.this.setTitle(game + " " + group + " - Song Data");
+			
+			if (songs.size() == 0 && null != evt) { // if evt == null we're recursing
+				if (JOptionPane.YES_OPTION ==
+					JOptionPane.showConfirmDialog(
+						GUI.this, "No songs are present.\nDownload from ScoreHero?\n(This may take a long time)", "",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+					
+					downloadGhSongDataMenuItemActionPerformed(null);
 				}
 
 				return;

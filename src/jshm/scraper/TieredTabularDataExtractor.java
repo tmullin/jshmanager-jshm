@@ -71,6 +71,12 @@ public class TieredTabularDataExtractor {
         	}
   	
         	TableRow tr = (TableRow) node;
+        	
+        	if (0 == tr.getChildCount()) {
+        		LOG.finest("skipping row with no children");
+        		continue;
+        	}
+        	
         	String cssClass = tr.getAttribute("class");
         	
         	if (dataTable.headerCssClass.equals(cssClass) ||
@@ -80,11 +86,15 @@ public class TieredTabularDataExtractor {
         		continue;
         	}
         	
-        	if (dataTable.tierChildNodeCount == tr.getChildCount() &&
-        		// check the colspan to try to make sure
-        		tierColspanStr.equals(
-        			((TableColumn) tr.getChild(0)).getAttribute("colspan"))
-        		) {        		
+        	TableColumn firstTd = (TableColumn) tr.getChild(0);
+        	cssClass = firstTd.getAttribute("class");
+        	
+        	if (dataTable.tierCssClass.equals(cssClass) ||
+        		(dataTable.tierChildNodeCount == tr.getChildCount() &&
+        		 // check the colspan to try to make sure
+        		 tierColspanStr.equals(
+        			((TableColumn) tr.getChild(0)).getAttribute("colspan")))
+        		) {
         		
         		// should be the tier row
         		String[][] tierData = DataTable.TIER_ROW_FORMAT.getData(tr);
@@ -99,9 +109,11 @@ public class TieredTabularDataExtractor {
         		switch (handler.getInvalidChildCountStrategy()) {
         			case IGNORE:
         				LOG.finest("skipping invalid row");
+        				LOG.finest("row: " + tr.toHtml());
         				continue;
         			case EXCEPTION:
         				ScraperException t = new ScraperException("invalid data row child node count, expecting " + dataTable.rowChildNodeCount + ", got " + tr.getChildCount());
+        				LOG.finest("row: " + tr.toHtml());
         				LOG.throwing("TieredTabularDataExtractor", "extract", t);
         				throw t;
         			default:

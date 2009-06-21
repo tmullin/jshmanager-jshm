@@ -91,8 +91,6 @@ public class WtSongScraper {
 				handler);
 		
 			TieredTabularDataExtractor.extract(nodes, handler);
-
-//			orders.addAll(curOrders);
 		}
 		
 		return orders;
@@ -106,7 +104,7 @@ public class WtSongScraper {
 		public SongHandler(WtGame game, List<WtSong> songs) {
 			this.game = game;
 			this.songs = songs;
-//			this.invalidChildCountStrategy = TieredTabularDataExtractor.InvalidChildCountStrategy.HANDLE;
+			this.invalidChildCountStrategy = TieredTabularDataExtractor.InvalidChildCountStrategy.HANDLE;
 		}
 		
 		@Override
@@ -156,6 +154,7 @@ public class WtSongScraper {
 			this.group = group;
 			this.orders = orders;
 			this.songMap = songMap;
+			this.invalidChildCountStrategy = TieredTabularDataExtractor.InvalidChildCountStrategy.HANDLE;
 		}
 
 		@Override
@@ -173,7 +172,7 @@ public class WtSongScraper {
 			curTierLevel++;
 			curOrder = 0;
 			
-//			System.out.println("new tier " + tierName + " = " + curTierLevel);
+			System.out.println("new tier " + tierName + " = " + curTierLevel);
 		}
 		
 		@Override
@@ -196,6 +195,7 @@ public class WtSongScraper {
 				throw new ScraperException("Error parsing song id", e);
 			}
 			
+			System.out.println("adding order: " + order);
 			orders.add(order);
 			curOrder++;
 		}

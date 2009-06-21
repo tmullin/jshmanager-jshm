@@ -30,11 +30,14 @@ import jshm.scraper.format.*;
  */
 public abstract class DataTable {		
 	public static final String DEFAULT_HEADER_CSS_CLASS = "headrow";
+	public static final String DEFAULT_TIER_CSS_CLASS = "tier1";
 	public static final TableRowFormat TIER_ROW_FORMAT =
 		TableRowFormat.factory("text|-");
 	
 	public final String headerCssClass;
+	public final String tierCssClass;
 	public final int tierColspan;
+	public final int tierColspanMax;
 	public final int tierChildNodeCount;
 	public final int rowChildNodeCount;
 	public final TableRowFormat rowFormat;
@@ -45,18 +48,32 @@ public abstract class DataTable {
 		final int rowChildNodeCount,
 		final String rowFormat) {
 		
-		this(null, tierColspan, tierChildNodeCount, rowChildNodeCount, rowFormat);
+		this(tierColspan, tierColspan, tierChildNodeCount, rowChildNodeCount, rowFormat);
+	}
+	
+	public DataTable(
+		final int tierColspan,
+		final int tierColspanMax,
+		final int tierChildNodeCount,
+		final int rowChildNodeCount,
+		final String rowFormat) {
+		
+		this(null, null, tierColspan, tierColspanMax, tierChildNodeCount, rowChildNodeCount, rowFormat);
 	}
 	
 	public DataTable(
 		final String headerCssClass,
+		final String tierCssClass,
 		final int tierColspan,
+		final int tierColspanMax,
 		final int tierChildNodeCount,
 		final int rowChildNodeCount,
 		final String rowFormat) {
 		
 		this.headerCssClass = null != headerCssClass ? headerCssClass : DEFAULT_HEADER_CSS_CLASS;
+		this.tierCssClass = null != tierCssClass ? tierCssClass : DEFAULT_TIER_CSS_CLASS;
 		this.tierColspan = tierColspan;
+		this.tierColspanMax = tierColspanMax;
 		this.tierChildNodeCount = tierChildNodeCount;
 		this.rowChildNodeCount = rowChildNodeCount;
 		this.rowFormat = TableRowFormat.factory(rowFormat);

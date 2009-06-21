@@ -123,12 +123,21 @@ public class GhDataTable extends DataTable {
 	}
 	
 	public GhDataTable(
+			final int tierColspan,
+			final int tierChildNodeCount,
+			final int rowChildNodeCount,
+			final String rowFormat) {
+		this(tierColspan, tierColspan, tierChildNodeCount, rowChildNodeCount, rowFormat);
+	}
+	
+	public GhDataTable(
 		final int tierColspan,
+		final int tierColspanMax,
 		final int tierChildNodeCount,
 		final int rowChildNodeCount,
 		final String rowFormat) {
 		
-		super(tierColspan, tierChildNodeCount, rowChildNodeCount, rowFormat);
+		super(tierColspan, tierColspanMax, tierChildNodeCount, rowChildNodeCount, rowFormat);
 	}
 	
 	public NodeFilter[] getFilters() {
