@@ -191,8 +191,9 @@ public abstract class Game {
 	public abstract Song getSongByScoreHeroId(int scoreHeroId, Difficulty diff);
 	public abstract List<? extends Song> getSongsOrderedByTitle(Group group, Difficulty diff);
 
-	public abstract List<? extends Score> getScores(Group group, Difficulty diff);
-	public abstract List<? extends Score> getSubmittableScores(Group group, Difficulty diff);
+	public abstract Score createNewScoreTemplate(Group group, Difficulty diff, Song song);
+	public abstract List<Score> getScores(Group group, Difficulty diff);
+	public abstract List<Score> getSubmittableScores(Group group, Difficulty diff);
 	
 	// override Object methods
 	

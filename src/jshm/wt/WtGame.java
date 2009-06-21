@@ -100,21 +100,33 @@ public class WtGame extends Game {
 	
 	@Override
 	public Score createNewScore(Song song, Group group, Difficulty diff,
-			int score, int rating, float percent, int streak, String comment) {
-		// TODO Auto-generated method stub
-		return null;
+		int score, int rating, float percent, int streak, String comment) {
+		
+		WtScore ret = WtScore.createNewScoreTemplate(this, group, diff, (WtSong) song);
+		ret.setScore(score);
+		ret.setRating(rating);
+		ret.setPartHitPercent(1, percent);
+		ret.setPartStreak(1, streak);
+		ret.setComment(comment);
+		
+		return ret;
+	}
+	
+
+	@Override
+	public WtScore createNewScoreTemplate(Group group, Difficulty diff, Song song) {
+		return WtScore.createNewScoreTemplate(this, group, diff, (WtSong) song);
 	}
 	
 	@Override
-	public List<? extends Score> getScores(Group group, Difficulty diff) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Score> getScores(Group group, Difficulty diff) {
+		return WtScore.getScores(this, group, diff);
 	}
 	
 	@Override
-	public List<? extends Score> getSubmittableScores(Group group,
-			Difficulty diff) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Score> getSubmittableScores(Group group,
+		Difficulty diff) {
+		
+		return WtScore.getSubmittableScores(this, group, diff);
 	}
 }

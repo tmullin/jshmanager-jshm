@@ -27,6 +27,8 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JComboBox.KeySelectionManager;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 import jshm.Game;
 import jshm.GameTitle;
@@ -35,6 +37,7 @@ import jshm.gh.GhGameTitle;
 import jshm.gh.GhScore;
 import jshm.rb.RbGameTitle;
 import jshm.rb.RbScore;
+import jshm.wt.WtGameTitle;
 
 public class GhMyScoresRatingEditor extends DefaultCellEditor {
 	public static JComboBox createRatingComboBox(Game game) {
@@ -42,10 +45,14 @@ public class GhMyScoresRatingEditor extends DefaultCellEditor {
 	}
 	
 	public static JComboBox createRatingComboBox(GameTitle game) {
+		return createRatingComboBox(game, false);
+	}
+	
+	public static JComboBox createRatingComboBox(GameTitle game, boolean addAncestorListener) {
 		Object[] values = null;
 		KeySelectionManager ksm = null;
 		
-		if (game instanceof GhGameTitle) {
+		if (game instanceof GhGameTitle || game instanceof WtGameTitle) {
 			values = new Object[] {
 				GhScore.getRatingIcon(0),
 				GhScore.getRatingIcon(5),
@@ -92,16 +99,29 @@ public class GhMyScoresRatingEditor extends DefaultCellEditor {
 				}
 			};
 		} else {
-			assert false: "game not a GhGameTitle or RbGameTitle";
+			assert false: "unimplemented game subclass";
 		}
 		
-		JComboBox ret = new JComboBox(values);
+		final JComboBox ret = new JComboBox(values);
 		ret.setKeySelectionManager(ksm);
+		
+		if (addAncestorListener) {
+			ret.addAncestorListener(new AncestorListener() {
+				public void ancestorAdded(AncestorEvent event) {
+					//make sure combobox handles key events
+					ret.requestFocusInWindow();
+				}
+
+				public void ancestorMoved(AncestorEvent event) {}
+				public void ancestorRemoved(AncestorEvent event) {}
+			});
+		}
+		
 		return ret;
 	}
 	
 	public GhMyScoresRatingEditor(Game game) {
-		super(createRatingComboBox(game));
+		super(createRatingComboBox(game.title, true));
 	}
 	
     public Component getTableCellEditorComponent(JTable table, Object value,

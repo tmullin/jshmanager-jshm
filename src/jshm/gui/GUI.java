@@ -1130,8 +1130,6 @@ private void initGhGameMenu(final JMenu menu) {
 		GameTitle.getBySeries(GameSeries.GUITAR_HERO);
 	
 	for (GameTitle ttl : titles) {
-//		System.out.println("Creating " + ttl);
-		
 		JMenu ttlMenu = new JMenu(ttl.getLongName());
 		ttlMenu.setIcon(ttl.getIcon());
 		
@@ -1148,12 +1146,9 @@ private void initGhGameMenu(final JMenu menu) {
 				gameMenu = ttlMenu;
 			}
 			
-//			System.out.println("  Creating " + game.platform);
 			for (final Difficulty diff : Difficulty.values()) {
 				if (diff == Difficulty.CO_OP) break;
-				
-//				System.out.println("    Creating " + diff);
-				
+							
 				JMenuItem diffItem = new JMenuItem(diff.getLongName());
 				diffItem.setIcon(diff.getIcon());
 				
@@ -1194,9 +1189,7 @@ private void initGhGameMenu(final JMenu menu) {
 	
 	for (GameTitle ttl : titles) {
 		WtGameTitle wtTtl = (WtGameTitle) ttl;
-		
-//		System.out.println("Creating " + ttl);
-		
+
 		JMenu ttlMenu = new JMenu(ttl.getLongName());
 		ttlMenu.setIcon(ttl.getIcon());
 		
@@ -1229,7 +1222,8 @@ private void initGhGameMenu(final JMenu menu) {
 					if (menu == ghScoresMenu) {
 						JMenu groupMenu = new JMenu(group.getLongName(true));
 						groupMenu.setIcon(group.getIcon());
-DiffLoop:
+
+						DiffLoop:
 						for (final Difficulty diff : Difficulty.values()) {
 							if (diff == Difficulty.CO_OP) continue;
 							if (diff == Difficulty.EXPERT_PLUS) {
@@ -1242,16 +1236,14 @@ DiffLoop:
 									default: break DiffLoop;
 								};
 							}
-							
-			//				System.out.println("    Creating " + diff);
-							
+									
 							JMenuItem diffItem = new JMenuItem(diff.getLongName());
 							diffItem.setIcon(diff.getIcon());
 							
 							diffItem.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
-//									myScoresMenuItemActionPerformed(e, game, Instrument.Group.GUITAR, diff);
+									myScoresMenuItemActionPerformed(e, game, group, diff);
 								}
 							});
 							
@@ -1723,7 +1715,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 	
 	new SwingWorker<Void, Void>() {
 		List<? extends Song> songs = null;
-		List<? extends Score> scores = null;
+		List<Score> scores = null;
 		ScoresTreeTableModel model = null;
 		
 		@Override

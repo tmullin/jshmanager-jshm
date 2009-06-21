@@ -57,11 +57,11 @@ public class RbScore extends Score {
 	
 	
 	@SuppressWarnings("unchecked")
-	public static List<RbScore> getScores(final RbGame game, final Instrument.Group group, final Difficulty difficulty) {
+	public static List<Score> getScores(final RbGame game, final Instrument.Group group, final Difficulty difficulty) {
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
-	    List<RbScore> result =
-			(List<RbScore>)
+	    List<Score> result =
+			(List<Score>)
 			session.createQuery(
 				"FROM RbScore WHERE game=:game AND instrumentgroup=:group AND difficulty=:diff ORDER BY score DESC")
 				.setString("game", game.toString())
@@ -70,7 +70,7 @@ public class RbScore extends Score {
 				.list();
 		
 	    // set the SongOrder for each
-	    for (RbScore s : result) {
+	    for (Score s : result) {
 	    	s.getSong().setSongOrder(
 	    		(SongOrder)
 	    		session.createCriteria(SongOrder.class)
@@ -88,11 +88,11 @@ public class RbScore extends Score {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static List<RbScore> getSubmittableScores(final RbGame game, final Instrument.Group group, final Difficulty difficulty) {
+	public static List<Score> getSubmittableScores(final RbGame game, final Instrument.Group group, final Difficulty difficulty) {
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
-	    List<RbScore> result =
-			(List<RbScore>)
+	    List<Score> result =
+			(List<Score>)
 			session.createQuery(
 				"FROM RbScore WHERE status IN ('NEW', 'UNKNOWN') AND score > 0 AND game=:game AND instrumentgroup=:group AND difficulty=:diff ORDER BY score DESC")
 				.setString("game", game.toString())
@@ -100,7 +100,7 @@ public class RbScore extends Score {
 				.setString("diff", difficulty.toString())
 				.list();
 		
-	    Iterator<RbScore> it = result.iterator();
+	    Iterator<Score> it = result.iterator();
 	    
 	    while (it.hasNext()) {
 	    	if (!it.next().isSubmittable())
@@ -108,7 +108,7 @@ public class RbScore extends Score {
 	    }
 	    
 	    // set the SongOrder for each
-	    for (RbScore s : result) {
+	    for (Score s : result) {
 	    	s.getSong().setSongOrder(
 	    		(SongOrder)
 	    		session.createCriteria(SongOrder.class)

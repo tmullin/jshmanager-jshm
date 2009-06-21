@@ -44,6 +44,15 @@ public enum Instrument {
 			"instruments/" + s + "_32.png");
 	}
 	
+	public boolean isDrums() {
+		switch (this) {
+			case WTDRUMS:
+			case DRUMS: return true;
+		}
+		
+		return false;
+	}
+	
 	public String toShortString() {
 		return shortString;
 	}

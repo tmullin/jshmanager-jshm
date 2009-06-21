@@ -55,6 +55,7 @@ import jshm.gui.datamodels.ScoresTreeTableModel;
 import jshm.gui.editors.GhMyScoresRatingEditor;
 import jshm.hibernate.HibernateUtil;
 import jshm.rb.RbScore;
+import jshm.wt.WtScore;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -491,9 +492,9 @@ private void goToSongButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
     			Song lastSong =
     				songCombo.getSelectedItem() instanceof Song
     				? (Song) songCombo.getSelectedItem() : null;
-    				
-    			setScore(Score.createNewScoreTemplate(
-    				gui.getCurGame(), gui.getCurGroup(), gui.getCurDiff(), lastSong));
+    			
+    			setScore(gui.getCurGame().createNewScoreTemplate(
+    				gui.getCurGroup(), gui.getCurDiff(), lastSong));
     			
     			isNewScore = true;
     			
@@ -539,18 +540,20 @@ private void goToSongButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
     			
     						score.setRating(0);
     						
-    						if (score instanceof GhScore) {
-    							for (int i : new Integer[] {3, 4, 5})
+    						if (score instanceof GhScore || score instanceof WtScore) {
+    							for (int i : new int[] {3, 4, 5})
     								if (GhScore.getRatingIcon(i) == ratingCombo.getSelectedItem()) {
     									score.setRating(i);
     									break;
     								}
     						} else if (score instanceof RbScore) {
-    							for (int i : new Integer[] {1, 2, 3, 4, 5, 6})
+    							for (int i : new int[] {1, 2, 3, 4, 5, 6})
     								if (RbScore.getRatingIcon(i) == ratingCombo.getSelectedItem()) {
     									score.setRating(i);
     									break;
     								}
+    						} else {
+    							assert false: "unimplemented score subclass";
     						}
     			
     						try {

@@ -58,6 +58,7 @@ import jshm.gui.renderers.ScoresTreeCellRenderer;
 import jshm.gui.renderers.TierHighlighter;
 import jshm.hibernate.HibernateUtil;
 import jshm.rb.RbScore;
+import jshm.wt.WtScore;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -122,6 +123,12 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 			return null;
 		}
 		
+		/**
+		 * 
+		 * @param score
+		 * @return <code>null</code> if the score was null or already in the list
+		 * 			otherwise the {@link SongScores} it was inserted into is returned.
+		 */
 		public SongScores addScore(Score score) {
 			SongScores ss = getSongScores(score.getSong());
 			
@@ -216,11 +223,11 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 	private final Difficulty diff;
 	private Sorting sorting = null;
 	private final List<? extends Song> songs;
-	private final List<? extends Score> scores;
+	private final List<Score> scores;
 
 	public ScoresTreeTableModel(
 			final Game game, final Group group, final Difficulty diff, final Sorting sorting,
-			final List<? extends Song> songs, final List<? extends Score> scores) {
+			final List<? extends Song> songs, final List<Score> scores) {
 
 		super("ROOT");
 		this.game = game;
@@ -327,14 +334,14 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 	
 	private void createScoreTemplate(Game game, Group group, Difficulty difficulty, SongScores selectedSongScores) {
 		insertScore(
-			Score.createNewScoreTemplate(
-				game, group, difficulty, selectedSongScores.song));
+			game.createNewScoreTemplate(
+				group, difficulty, selectedSongScores.song));
 	}
 	
 	private void createScoreTemplate(Game game, Group group, Difficulty difficulty, Score selectedScore) {
 		insertScore(
-			Score.createNewScoreTemplate(
-				game, group, difficulty, selectedScore.getSong()));
+			game.createNewScoreTemplate(
+				group, difficulty, selectedScore.getSong()));
 	}
 	
 	public void insertScore(Score score) {
@@ -344,13 +351,16 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 		SongScores ss = tier.addScore(score);
 		
 		if (null != ss) {
+			// inserting a new score
+			scores.add(score);
+			
 			boolean isFirstScoreInSs = ss.getScoreCount() == 1;
 			
 			TreePath tp = new TreePath(root); // ROOT
 			int tierIndex = getIndexOfChild(root, tier);
 			
 			if (!displayEmptyScores && isFirstScoreInTier) {
-//				System.out.println("FIRST score in tier");
+	//				System.out.println("FIRST score in tier");
 				modelSupport.fireChildAdded(tp, tierIndex, tier);
 			}
 			
@@ -358,19 +368,20 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 			int ssIndex = getIndexOfChild(tp.getLastPathComponent(), ss);
 			
 			if (!displayEmptyScores && isFirstScoreInSs) {
-//				System.out.println("FIRST score in ss");
+	//				System.out.println("FIRST score in ss");
 				modelSupport.fireChildAdded(tp, ssIndex, ss);
 			}
 			
 			tp = tp.pathByAddingChild(ss); // ROOT -> Tier -> Song
 			int scoreIndex = getIndexOfChild(ss, score);
 			modelSupport.fireChildAdded(tp, scoreIndex, score);
-
+	
 			tp = tp.pathByAddingChild(score); // ROOT -> Tier -> Song -> Score
 			
 			parent.packAll();
 			expandAndScrollTo(tp);
 		}
+		// else we're actually updating an existing score
 	}
 	
 	public void expandAndScrollTo(Song song) throws SongHiddenException {
@@ -457,6 +468,8 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 				boolean wasLastSsScore = !ss.hasAnyScores();
 				boolean wasLastTierScore = !tier.hasAnyScores();
 				
+				scores.remove(score);
+				
 				assert null != ss;
 				
 				p = p.getParentPath(); // ROOT -> Tier -> Song
@@ -465,14 +478,14 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 				p = p.getParentPath(); // ROOT -> Tier
 				
 				if (!displayEmptyScores && wasLastSsScore) {
-					System.out.println("LAST score in ss");
+//					System.out.println("LAST score in ss");
 					modelSupport.fireChildRemoved(p, ssIndex, ss);
 				}
 				
 				p = p.getParentPath(); // ROOT
 				
 				if (!displayEmptyScores && wasLastTierScore) {
-					System.out.println("LAST score in tier");
+//					System.out.println("LAST score in tier");
 					modelSupport.fireChildRemoved(p, tierIndex, tier);
 				}
 				
@@ -822,18 +835,20 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 				case 2:
 					score.setRating(0);
 					
-					if (score instanceof GhScore) {
-						for (int i : new Integer[] {3, 4, 5})
+					if (score instanceof GhScore || score instanceof WtScore) {
+						for (int i : new int[] {3, 4, 5})
 							if (GhScore.getRatingIcon(i) == value) {
 								score.setRating(i);
 								break;
 							}
 					} else if (score instanceof RbScore) {
-						for (int i : new Integer[] {1, 2, 3, 4, 5, 6})
+						for (int i : new int[] {1, 2, 3, 4, 5, 6})
 							if (RbScore.getRatingIcon(i) == value) {
 								score.setRating(i);
 								break;
 							}
+					} else {
+						assert false: "unimplemented score subclass";
 					}
 					break;
 					

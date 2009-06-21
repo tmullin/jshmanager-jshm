@@ -140,13 +140,19 @@ public class RbGame extends Game {
 		return RbSong.getSongs(true, this, group, sorting);
 	}
 
+	
 	@Override
-	public List<? extends Score> getScores(Group group, Difficulty diff) {
+	public RbScore createNewScoreTemplate(Group group, Difficulty diff, Song song) {
+		return RbScore.createNewScoreTemplate(this, group, diff, (RbSong) song);
+	}
+	
+	@Override
+	public List<Score> getScores(Group group, Difficulty diff) {
 		return RbScore.getScores(this, group, diff);
 	}
 	
 	@Override
-	public List<? extends Score> getSubmittableScores(Group group, Difficulty diff) {
+	public List<Score> getSubmittableScores(Group group, Difficulty diff) {
 		return RbScore.getSubmittableScores(this, group, diff);
 	}
 }

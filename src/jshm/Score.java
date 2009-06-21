@@ -46,9 +46,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import jshm.gh.*;
-import jshm.rb.*;
-
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
@@ -90,19 +87,6 @@ public abstract class Score {
 		private Status(Color highlightColor) {
 			this.highlightColor = highlightColor;
 		}
-	}
-	
-	// TODO make abstract method in Game class
-	public static Score createNewScoreTemplate(final Game game, final Instrument.Group group, final Difficulty difficulty, final Song song) {
-		if (game instanceof GhGame && (null == song || song instanceof GhSong)) {
-			return GhScore.createNewScoreTemplate((GhGame) game, group, difficulty, (GhSong) song);
-		} else if (game instanceof RbGame && (null == song || song instanceof RbSong)) {
-			return RbScore.createNewScoreTemplate((RbGame) game, group, difficulty, (RbSong) song);
-		} else {
-			assert false: "invalid game or song type";
-		}
-		
-		return null;
 	}
 	
 	
