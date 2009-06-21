@@ -136,10 +136,10 @@ public abstract class Song implements Comparable<Song> {
 	
 	@Transient
 	public javax.swing.ImageIcon getSongSourceIcon() {
-		GameTitle ttl = getGameTitle();
-		Game game = getGame();
-		if (null == ttl || null == game)
+		Game game = getActiveGame();
+		if (null == game)
 			return null;
+		GameTitle ttl = game.title;
 		
 		// if the game supports DLC and this song is in the last tier then
 		// it's almost certainly DLC so we can use the DLC icon

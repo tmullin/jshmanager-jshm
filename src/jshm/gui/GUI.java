@@ -256,11 +256,8 @@ public class GUI extends javax.swing.JFrame {
         
         // restore last game/group/diff
         if (true) {
-        	Sorting lastSorting = null;
-        	
-        	try {
-        		lastSorting = Sorting.valueOf(Config.get("window.lastsorting"));
-        	} catch (Exception e) {}
+        	Sorting lastSorting =
+        		Sorting.valueOf(Config.get("window.lastsorting"));
         	
         	if (null != lastSorting) {
         		// don't want to call setCurSorting(), just set the value itself,
@@ -1064,6 +1061,7 @@ private void initSongSortingMenu() {
 
 private void initScoresMenu(final JMenu menu) {
 	hh.add(menu.add(actions.gotoSong));
+	hh.add(menu.add(scoreEditorPanel1.actions.gotoSong));
 	menu.addSeparator();
 
 	hh.add(menu.add(actions.addNewScore));
