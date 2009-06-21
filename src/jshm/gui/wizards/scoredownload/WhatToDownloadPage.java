@@ -35,6 +35,7 @@ import jshm.GameTitle;
 import jshm.Instrument;
 import jshm.Platform;
 import jshm.gh.GhGameTitle;
+import jshm.wt.WtGameTitle;
 
 import org.netbeans.spi.wizard.WizardController;
 import org.netbeans.spi.wizard.WizardPage;
@@ -110,7 +111,16 @@ public class WhatToDownloadPage extends WizardPage {
 		DefaultListModel model = new DefaultListModel();
 
 		for (Difficulty d : Difficulty.values()) {
-			if (Difficulty.CO_OP == d) break;
+			if (Difficulty.CO_OP == d) continue;
+			if (Difficulty.EXPERT_PLUS == d) {
+				if (gameTitle instanceof WtGameTitle) {
+					if (!((WtGameTitle) gameTitle).supportsExpertPlus)
+						break;
+				} else {
+					break;
+				}
+			}
+			
 			model.addElement(d);
 		}
 		

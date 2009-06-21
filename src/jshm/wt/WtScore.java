@@ -103,23 +103,23 @@ public class WtScore extends Score {
 	
 	
 	
-	/**
-	 * Adds a {@link Part}, checking for Expert+/drum constraints.
-	 */
-	@Override
-	public void addPart(Part part) {
-		if (Difficulty.EXPERT_PLUS == part.getDifficulty()) {
-			if (!((WtGameTitle) getGameTitle()).supportsExpertPlus) {
-				throw new IllegalArgumentException("trying to add expert+ score for a game that doesn't support it");
-			}
-			
-			if (!part.getInstrument().isDrums()) {
-				throw new IllegalArgumentException("trying to add expert+ part for non drum instrument");
-			}
-		}
-		
-		super.addPart(part);
-	}
+//	/**
+//	 * Adds a {@link Part}, checking for Expert+/drum constraints.
+//	 */
+//	@Override
+//	public void addPart(Part part) {
+//		if (Difficulty.EXPERT_PLUS == part.getDifficulty()) {
+//			if (!((WtGameTitle) getGameTitle()).supportsExpertPlus) {
+//				throw new IllegalArgumentException("trying to add expert+ score for a game that doesn't support it");
+//			}
+//			
+//			if (!part.getInstrument().isDrums()) {
+//				throw new IllegalArgumentException("trying to add expert+ part for non drum instrument");
+//			}
+//		}
+//		
+//		super.addPart(part);
+//	}
 	
 	@Transient @Override
 	public ImageIcon getRatingIcon() {

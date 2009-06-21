@@ -103,7 +103,7 @@ public class Api {
 					LOG.throwing("Api", "submitGhScore", e);
 					throw e;
 				} finally {
-					if (sess.isOpen()) sess.close();
+					if (null != sess && sess.isOpen()) sess.close();
 				}
 			}
 		}.submit();
@@ -183,7 +183,7 @@ public class Api {
 					LOG.throwing("Api", "submitRbScore", e);
 					throw e;
 				} finally {
-					if (sess.isOpen()) sess.close();
+					if (null != sess && sess.isOpen()) sess.close();
 				}
 			}
 		}.submit();
@@ -264,7 +264,7 @@ public class Api {
 					LOG.throwing("Api", "submitWtScore", e);
 					throw e;
 				} finally {
-					if (sess.isOpen()) sess.close();
+					if (null != sess && sess.isOpen()) sess.close();
 				}
 			}
 		}.submit();

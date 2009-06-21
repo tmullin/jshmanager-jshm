@@ -36,7 +36,7 @@ import jshm.wt.WtSong;
 public class ShGhScraperTest {
 //	static final GhGame game 			= GhGame.GH3_XBOX360;
 	static final RbGame game 			= RbGame.RB1_XBOX360;
-	static final WtGame wtgame			= WtGame.GHWT_XBOX360;
+	static final WtGame wtgame			= WtGame.GHSH_XBOX360;
 	static final Instrument.Group group = Instrument.Group.GUITAR;
 	static final Difficulty difficulty 	= Difficulty.EXPERT;
 	
@@ -44,8 +44,8 @@ public class ShGhScraperTest {
 		jshm.logging.Log.configTestLogging();
 		jshm.util.TestTimer.start(true);
 		
-		doSongs();
-//		doScores();
+//		doSongs();
+		doScores();
 		
 		jshm.util.TestTimer.stop(true);
 	}
@@ -54,8 +54,10 @@ public class ShGhScraperTest {
 		LoginDialog.showDialog();
 		
 		List<? extends Score> scores = 
-			RbScoreScraper.scrapeLatest(
-				game, group, difficulty);
+			WtScoreScraper.scrapeLatest(
+				wtgame, group, difficulty);
+//			RbScoreScraper.scrapeLatest(
+//				game, group, difficulty);
 
 		for (Score s : scores)
 			System.out.println(s);

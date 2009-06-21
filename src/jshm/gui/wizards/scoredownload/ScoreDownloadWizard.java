@@ -30,12 +30,15 @@ import javax.swing.JOptionPane;
 import jshm.*;
 import jshm.dataupdaters.GhScoreUpdater;
 import jshm.dataupdaters.RbScoreUpdater;
+import jshm.dataupdaters.WtScoreUpdater;
 import jshm.gh.GhGame;
 import jshm.gui.GUI;
 import jshm.gui.LoginDialog;
 //import jshm.gui.ProgressDialog;
 import jshm.rb.RbGame;
 import jshm.rb.RbSong;
+import jshm.wt.WtGame;
+import jshm.wt.WtSong;
 
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
@@ -161,7 +164,7 @@ public class ScoreDownloadWizard {
 						}
 					}
 						
-					gui.myScoresMenuItemActionPerformed(null, (GhGame) game, Instrument.Group.GUITAR, difficulty);
+					gui.myScoresMenuItemActionPerformed(null, game, Instrument.Group.GUITAR, difficulty);
 				} else if (game instanceof RbGame) {
 					for (Object platformObj : platforms) {
 						Platform p = (Platform) platformObj;
@@ -205,9 +208,53 @@ public class ScoreDownloadWizard {
 						}
 					}
 					
-					gui.myScoresMenuItemActionPerformed(null, (RbGame) game, group, difficulty);
+					gui.myScoresMenuItemActionPerformed(null, game, group, difficulty);
+				} else if (game instanceof WtGame) {
+					for (Object platformObj : platforms) {
+						Platform p = (Platform) platformObj;
+						WtGame wgame = (WtGame) Game.getByTitleAndPlatform(game.title, p);
+						
+						for (Object diffObj : diffs) {
+							Difficulty d = (Difficulty) diffObj;
+					
+							for (Object instrumentObj : instruments) {
+								Instrument.Group g = (Instrument.Group) instrumentObj;
+							
+								// TODO change to a select count(*) for efficiency
+								List<?> songs = WtSong.getSongs(wgame, g);
+								
+								if (songs.size() == 0) {
+									// need to load song data as well
+									LOG.fine("Downloading song data first");
+									progress.setBusy("Downloading song data");
+			//						ProgressDialog progDialog = new ProgressDialog();
+									
+//									try {
+//										jshm.dataupdaters.WtSongUpdater.updateViaXml(progress, rgame.title);
+//										jshm.dataupdaters.WtSongUpdater.updateSongInfo(progress);
+//									} catch (Exception e1) {
+//										LOG.log(Level.WARNING, "Failed to download song data via XML", e1);
+//										
+//										int result = JOptionPane.showConfirmDialog(null,
+//											"Failed to download song data via the quicker way.\nDo you want to download it the old, slow way?", "Download Song Data", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+//										
+//										if (JOptionPane.YES_OPTION == result) {
+											jshm.dataupdaters.WtSongUpdater.updateViaScraping(progress, wgame.title);
+//											jshm.dataupdaters.WtSongUpdater.updateSongInfo(progress);
+//										}
+//									}
+									
+			//						progDialog.dispose();
+								}
+							
+								WtScoreUpdater.update(progress, scrapeAll, wgame, g, d);
+							}
+						}
+					}
+					
+					gui.myScoresMenuItemActionPerformed(null, game, group, difficulty);
 				} else {
-					assert false: "game is not a GhGame or RbGame";
+					assert false: "unimplemented game subclass";
 				}
 				
 				progress.finished(null);
