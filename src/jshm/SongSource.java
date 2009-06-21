@@ -69,7 +69,7 @@ public enum SongSource {
 			ret = SongSource.valueOf(name);
 		} catch (IllegalArgumentException e) {}
 		
-		if (dlcVersion) {
+		if (dlcVersion && null != ret) {
 			switch (ret) {
 				case GH2: ret = GH2DLC; break;
 				case GH3: ret = GH3DLC; break;

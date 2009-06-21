@@ -54,7 +54,7 @@ public class Log {
 	public static void reloadConfig() throws Exception {
 		// all logging
 		Handler consoleHandler = new ConsoleHandler();
-		consoleHandler.setLevel(Level.ALL);
+		consoleHandler.setLevel(DEBUG ? Level.ALL : Level.WARNING);
 		consoleHandler.setFormatter(new OneLineFormatter());
 		
 		Logger cur = Logger.getLogger("");

@@ -129,22 +129,25 @@ public class URLs {
 	
 	public static class wt {
 		public static final String
-		ARGS_FMT = "group=%s&game=%s&platform=%s&size=1&inst=%s&diff=%s&team=0",
+		ARGS_FMT = "group=%s&game=%s&platform=%s&size=%s&inst=%s&diff=%s&team=0",
 		MANAGE_SCORES = BASE + "/manage_scores.php?" + ARGS_FMT,
 		TOP_SCORES = BASE + "/top_scores.php?" + ARGS_FMT,
-		INSERT_SCORE = BASE + "/insert_score.php?" + ARGS_FMT
+		INSERT_SCORE = BASE + "/insert_score.php?" + ARGS_FMT + "&song=%s",
+		RANKINGS = BASE + "/rankings.php?" + ARGS_FMT + "&song=%s"
 		;
 		
 		public static String getManageScoresUrl(WtGame game, Group group, Difficulty diff) {
 			return String.format(MANAGE_SCORES,
 				((WtGameTitle) game.title).scoreHeroGroupId,
-				game.scoreHeroId, RbPlatform.getId(game.platform), group.worldTourId, diff.scoreHeroId);
+				game.scoreHeroId, RbPlatform.getId(game.platform),
+				group.size, group.worldTourId, diff.scoreHeroId);
 		}
 		
 		public static String getTopScoresUrl(WtGame game, Group group, Difficulty diff) {
 			return String.format(TOP_SCORES,
 				((WtGameTitle) game.title).scoreHeroGroupId,
-				game.scoreHeroId, RbPlatform.getId(game.platform), group.worldTourId, diff.scoreHeroId);
+				game.scoreHeroId, RbPlatform.getId(game.platform),
+				group.size, group.worldTourId, diff.scoreHeroId);
 		}
 		
 		public static String getInsertScoreUrl(WtScore score) {
@@ -154,7 +157,15 @@ public class URLs {
 		public static String getInsertScoreUrl(WtGame game, Group group, Difficulty diff, WtSong song) {
 			return String.format(INSERT_SCORE,
 				((WtGameTitle) game.title).scoreHeroGroupId,
-				game.scoreHeroId, RbPlatform.getId(game.platform), group.worldTourId, diff.scoreHeroId, song.getScoreHeroId());
+				game.scoreHeroId, RbPlatform.getId(game.platform),
+				group.size, group.worldTourId, diff.scoreHeroId, song.getScoreHeroId());
+		}
+		
+		public static String getRankingsUrl(final WtGame game, final Group group, final Difficulty diff, final WtSong song) {
+			return String.format(RANKINGS,
+				((WtGameTitle) game.title).scoreHeroGroupId,
+				game.scoreHeroId, RbPlatform.getId(game.platform),
+				group.size, group.worldTourId, diff.scoreHeroId, song.getScoreHeroId());
 		}
 	}
 	

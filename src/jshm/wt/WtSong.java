@@ -25,6 +25,7 @@ import org.hibernate.validator.NotNull;
 
 import jshm.*;
 import jshm.Instrument.Group;
+import jshm.sh.URLs;
 
 @Entity
 public class WtSong extends Song {
@@ -275,7 +276,6 @@ public class WtSong extends Song {
 	
 	@Override
 	public String getRankingsUrl(Game game, Group group, Difficulty diff) {
-		// TODO Auto-generated method stub
-		return null;
+		return URLs.wt.getRankingsUrl((WtGame) game, group, diff, this);
 	}
 }
