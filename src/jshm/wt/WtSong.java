@@ -13,6 +13,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 
+import org.hibernate.Criteria;
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
@@ -30,61 +31,77 @@ public class WtSong extends Song {
 	static final Logger LOG = Logger.getLogger(WtSong.class.getName());
 	
 	public static WtSong getByScoreHeroId(final int id) {
+		return getByScoreHeroId(id, Difficulty.EXPERT);
+	}
+	
+	public static WtSong getByScoreHeroId(final int id, Difficulty diff) {
 		LOG.finest("Querying database for WtSong with scoreHeroId=" + id);
 		
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
-	    WtSong result = getByScoreHeroId(session, id);
+	    WtSong result = getByScoreHeroId(session, id, diff);
 	    session.getTransaction().commit();
 		
 		return result;
 	}
 	
-	public static WtSong getByScoreHeroId(org.hibernate.Session session, final int id) {
-		return (WtSong)
+	public static WtSong getByScoreHeroId(org.hibernate.Session session, final int id, Difficulty diff) {
+		WtSong ret = (WtSong)
 			session.createQuery(
 				"from WtSong where scoreHeroId=:shid")
 				.setInteger("shid", id)
 				.uniqueResult();
+		
+		if (Difficulty.EXPERT_PLUS == diff &&
+			!((WtGameTitle) ret.gameTitle).supportsExpertPlus)
+			return null;
+			
+		return ret;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static List<WtSong> getAllByTitle(WtGame game, String title) {
+	public static List<WtSong> getAllByTitle(WtGame game, String title, Difficulty diff) {
 		LOG.finest("Querying database for WtSong for " + game + " with title=" + title);
 		
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
-	    List<WtSong> result =
-			(List<WtSong>)
-			session.createCriteria(WtSong.class)
-				.add(Restrictions.eq("gameTitle", game.title))
-				.add(Restrictions.ilike("title", title, MatchMode.ANYWHERE))
-				.addOrder(Order.asc("title"))
-			.list();
+		Criteria c = session.createCriteria(WtSong.class)
+			.add(Restrictions.eq("gameTitle", game.title))
+			.add(Restrictions.ilike("title", title, MatchMode.ANYWHERE))
+			.addOrder(Order.asc("title"));
+		
+		if (Difficulty.EXPERT_PLUS == diff)
+			c.add(Restrictions.eq("expertPlusSupported", true));
+		
+	    List<WtSong> result = (List<WtSong>) c.list();
 	    session.getTransaction().commit();
 		
 		return result;
 	}
 	
-	public static WtSong getByTitle(WtGame game, String title) {
-		List<WtSong> list = getAllByTitle(game, title);
+	public static WtSong getByTitle(WtGame game, String title, Difficulty diff) {
+		List<WtSong> list = getAllByTitle(game, title, diff);
 		return list.size() == 1 ? list.get(0) : null;
 	}
 	
-	public static List<WtSong> getOrderedByTitles(final WtGame game, final Instrument.Group group) {
-		List<WtSong> result = getSongs(true, game, group);
+	public static List<WtSong> getOrderedByTitles(final WtGame game, final Instrument.Group group, final Difficulty diff) {
+		List<WtSong> result = getSongs(true, game, group, diff);
 		Collections.sort(result);
 	    return result;
 	}
 	
 	public static List<WtSong> getSongs(final boolean asSongList, final WtGame game, Instrument.Group group) {
-		return getSongs(asSongList, game, group, null);
+		return getSongs(asSongList, game, group, Difficulty.EXPERT);
+	}
+	
+	public static List<WtSong> getSongs(final boolean asSongList, final WtGame game, Instrument.Group group, Difficulty diff) {
+		return getSongs(asSongList, game, group, diff, null);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static List<WtSong> getSongs(final boolean asSongList, final WtGame game, Instrument.Group group, final Song.Sorting sorting) {
+	public static List<WtSong> getSongs(final boolean asSongList, final WtGame game, Instrument.Group group, final Difficulty diff, final Song.Sorting sorting) {
 		if (null == sorting) {
-			List<SongOrder> orders = getSongs(game, group);
+			List<SongOrder> orders = getSongs(game, group, diff);
 			List<WtSong> ret = new ArrayList<WtSong>(orders.size());
 			
 			for (SongOrder o : orders)
@@ -125,8 +142,8 @@ public class WtSong extends Song {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static List<SongOrder> getSongs(final WtGame game, Instrument.Group group) {
-		LOG.finest("Querying database for all song orders for " + game + " with group " + group);
+	public static List<SongOrder> getSongs(final WtGame game, Instrument.Group group, Difficulty diff) {
+		LOG.finest("Querying database for all song orders for " + game + " with group " + group + " and diff " + diff);
 		
 		// TODO change GUITAR_BASS to a constant in WtGameTitle
 		if (group.size > 1)
@@ -146,6 +163,14 @@ public class WtSong extends Song {
 			.list();
 	    session.getTransaction().commit();
 		
+	    // FIXME this is inefficient since most songs do not support expert+
+	    if (Difficulty.EXPERT_PLUS == diff) {
+	    	for (Iterator<SongOrder> it = result.iterator(); it.hasNext(); ) {
+	    		if (!((WtSong) it.next().getSong()).isExpertPlusSupported())
+	    			it.remove();
+	    	}
+	    }
+	    
 		return result;
 	}
 	

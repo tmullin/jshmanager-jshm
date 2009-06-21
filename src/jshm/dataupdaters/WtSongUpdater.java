@@ -5,8 +5,10 @@ import static jshm.hibernate.HibernateUtil.openSession;
 import java.util.List;
 import java.util.logging.Logger;
 
+import jshm.Difficulty;
 import jshm.Game;
 import jshm.GameTitle;
+import jshm.Instrument;
 import jshm.SongOrder;
 import jshm.wt.*;
 import jshm.sh.scraper.WtSongScraper;
@@ -73,6 +75,44 @@ public class WtSongUpdater {
 				    }
 				    
 				    i++;
+				}
+				
+				
+				if (((WtGameTitle) g.title).supportsExpertPlus) {
+					if (null != progress)
+						progress.setBusy("Checking Expert+ song status for " + g);
+					
+					songs = WtSongScraper.scrape((WtGame) g, Instrument.Group.DRUMS, Difficulty.EXPERT_PLUS);
+					
+					LOG.finer("scraped " + songs.size() + " songs for expert+ check for " + g);
+					
+					i = 0; total = songs.size(); 
+					for (WtSong song : songs) {
+						if (null != progress)
+							progress.setProgress(
+								String.format("Processing song %s of %s", i + 1, total), i, total);
+					    
+						// only care about the sh id and gameTitle
+						WtSong result =
+							(WtSong) session.createQuery(
+								"FROM WtSong WHERE scoreHeroId=:shid AND gameTitle=:gameTtl")
+								.setInteger("shid", song.getScoreHeroId())
+								.setString("gameTtl", song.getGameTitle().title)
+								.uniqueResult();
+						
+					    if (null == result) {
+					    	// new insert
+					    	LOG.warning("Didn't find song in DB during Expert+ check: " + song);
+					    } else {
+					    	LOG.finest("found song: " + result);
+					    	// update existing
+					    	result.setExpertPlusSupported(true);
+					    	LOG.info("Updating song to supprot Expert+: " + result);
+					    	session.update(result);
+					    }
+					    
+					    i++;
+					}
 				}
 			}
 			

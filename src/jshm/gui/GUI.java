@@ -59,7 +59,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.UIManager;
 import javax.swing.tree.TreePath;
 
 import jshm.Config;
@@ -78,10 +77,10 @@ import jshm.exceptions.SongHiddenException;
 import jshm.gh.GhGame;
 import jshm.gui.components.SelectSongDialog;
 import jshm.gui.components.StatusBar;
-import jshm.gui.datamodels.ScoresTreeTableModel;
 import jshm.gui.datamodels.GhSongDataTreeTableModel;
 import jshm.gui.datamodels.Parentable;
 import jshm.gui.datamodels.RbSongDataTreeTableModel;
+import jshm.gui.datamodels.ScoresTreeTableModel;
 import jshm.gui.datamodels.SongSortable;
 import jshm.gui.datamodels.WtSongDataTreeTableModel;
 import jshm.gui.wizards.csvimport.CsvImportWizard;
@@ -1783,7 +1782,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			actions.importScoresFromCsv.setEnabled(true);
 			actions.gotoSong.setEnabled(true);
 			
-			downloadGhSongDataMenuItem.setEnabled(game instanceof GhGame);
+			downloadGhSongDataMenuItem.setEnabled(game instanceof GhGame || game instanceof WtGame);
 			downloadRbSongDataMenuItem.setEnabled(game instanceof RbGame);
 			
 			if (scores.size() == 0 && null != evt) { // if evt == null we're recursing
@@ -1801,24 +1800,24 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 	}.execute();
 }
 
-    /**
-    * @param args the command line arguments
-    */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-				try {
-					// Set the Look & Feel to match the current system
-					UIManager.setLookAndFeel(
-						UIManager.getSystemLookAndFeelClassName());
-				} catch (Exception e) {
-					System.out.println("Couldn't set system look & feel (not fatal)");
-				}
-				
-                new GUI().setVisible(true);
-            }
-        });
-    }
+//    /**
+//    * @param args the command line arguments
+//    */
+//    public static void main(String args[]) {
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//				try {
+//					// Set the Look & Feel to match the current system
+//					UIManager.setLookAndFeel(
+//						UIManager.getSystemLookAndFeelClassName());
+//				} catch (Exception e) {
+//					System.out.println("Couldn't set system look & feel (not fatal)");
+//				}
+//				
+//                new GUI().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private jshm.gui.AboutDialog aboutDialog1;

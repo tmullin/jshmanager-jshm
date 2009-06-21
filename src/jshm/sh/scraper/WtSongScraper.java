@@ -27,12 +27,17 @@ public class WtSongScraper {
 	
 	public static List<WtSong> scrape(final WtGame game)
 	throws ScraperException, ParserException {
+		return scrape(game, Instrument.Group.GUITAR, Difficulty.EXPERT);
+	}
+	
+	public static List<WtSong> scrape(final WtGame game, Instrument.Group group, Difficulty diff)
+	throws ScraperException, ParserException {
 		
 		List<WtSong> songs = new ArrayList<WtSong>();
 		SongHandler handler = new SongHandler(game, songs);
 		NodeList nodes = Scraper.scrape(
 			URLs.wt.getTopScoresUrl(
-				game, Instrument.Group.GUITAR, Difficulty.EXPERT),
+				game, group, diff),
 			handler);
 		
 		TieredTabularDataExtractor.extract(nodes, handler);

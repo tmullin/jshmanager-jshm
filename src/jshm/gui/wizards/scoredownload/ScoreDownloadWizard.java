@@ -221,7 +221,7 @@ public class ScoreDownloadWizard {
 								Instrument.Group g = (Instrument.Group) instrumentObj;
 							
 								// TODO change to a select count(*) for efficiency
-								List<?> songs = WtSong.getSongs(wgame, g);
+								List<?> songs = WtSong.getSongs(wgame, g, d);
 								
 								if (songs.size() == 0) {
 									// need to load song data as well

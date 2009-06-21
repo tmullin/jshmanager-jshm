@@ -70,29 +70,29 @@ public class WtGame extends Game {
 	
 	@Override
 	public List<WtSong> getAllSongsByTitle(String title, Difficulty diff) {
-		return WtSong.getAllByTitle(this, title);
+		return WtSong.getAllByTitle(this, title, diff);
 	}
 
 	@Override
 	public Song getSongByScoreHeroId(int scoreHeroId, Difficulty diff) {
-		return WtSong.getByScoreHeroId(scoreHeroId);
+		return WtSong.getByScoreHeroId(scoreHeroId, diff);
 	}
 
 	@Override
 	public Song getSongByTitle(String title, Difficulty diff) {
-		return WtSong.getByTitle(this, title);
+		return WtSong.getByTitle(this, title, diff);
 	}
 
 	@Override
 	public List<WtSong> getSongs(Group group, Difficulty diff,
 			Sorting sorting) {
-		return WtSong.getSongs(true, this, group, sorting);
+		return WtSong.getSongs(true, this, group, diff, sorting);
 	}
 
 	@Override
 	public List<WtSong> getSongsOrderedByTitle(Group group,
 			Difficulty diff) {
-		return WtSong.getOrderedByTitles(this, group);
+		return WtSong.getOrderedByTitles(this, group, diff);
 	}
 
 	
