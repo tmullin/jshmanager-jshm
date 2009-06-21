@@ -123,7 +123,7 @@ public class URLs {
 		}
 		
 		private static String format(final String fmt, final RbGame game, final Group group, final Difficulty difficulty) {
-			return String.format(fmt, game.scoreHeroId, RbPlatform.getId(game.platform), group.instruments.length, group.id, difficulty.scoreHeroId);
+			return String.format(fmt, game.scoreHeroId, RbPlatform.getId(game.platform), group.instruments.length, group.rockbandId, difficulty.scoreHeroId);
 		}
 	}
 	
@@ -138,13 +138,13 @@ public class URLs {
 		public static String getManageScoresUrl(WtGame game, Group group, Difficulty diff) {
 			return String.format(MANAGE_SCORES,
 				((WtGameTitle) game.title).scoreHeroGroupId,
-				game.scoreHeroId, RbPlatform.getId(game.platform), group.wtId, diff.scoreHeroId);
+				game.scoreHeroId, RbPlatform.getId(game.platform), group.worldTourId, diff.scoreHeroId);
 		}
 		
 		public static String getTopScoresUrl(WtGame game, Group group, Difficulty diff) {
 			return String.format(TOP_SCORES,
 				((WtGameTitle) game.title).scoreHeroGroupId,
-				game.scoreHeroId, RbPlatform.getId(game.platform), group.wtId, diff.scoreHeroId);
+				game.scoreHeroId, RbPlatform.getId(game.platform), group.worldTourId, diff.scoreHeroId);
 		}
 		
 		public static String getInsertScoreUrl(WtScore score) {
@@ -154,7 +154,7 @@ public class URLs {
 		public static String getInsertScoreUrl(WtGame game, Group group, Difficulty diff, WtSong song) {
 			return String.format(INSERT_SCORE,
 				((WtGameTitle) game.title).scoreHeroGroupId,
-				game.scoreHeroId, RbPlatform.getId(game.platform), group.wtId, diff.scoreHeroId, song.getScoreHeroId());
+				game.scoreHeroId, RbPlatform.getId(game.platform), group.worldTourId, diff.scoreHeroId, song.getScoreHeroId());
 		}
 	}
 	

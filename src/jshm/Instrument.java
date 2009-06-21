@@ -126,14 +126,14 @@ public enum Instrument {
 		
 		;
 		
-		public final int id;
-		public final int wtId;
+		public final int rockbandId;
+		public final int worldTourId;
 		public final int size;
 		public final Instrument[] instruments;
 		
-		private Group(final int id, final int wtId, final Instrument ... instruments) {
-			this.id = id;
-			this.wtId = wtId;
+		private Group(final int rockbandId, final int worldTourId, final Instrument ... instruments) {
+			this.rockbandId = rockbandId;
+			this.worldTourId = worldTourId;
 			this.size = instruments.length;
 			this.instruments = instruments;
 		}
@@ -213,7 +213,7 @@ public enum Instrument {
 			
 			for (Group g : Group.values()) {
 				if (g.size == size) {
-					if (0 == g.id && !includeWtDrums) continue; // backward compat
+					if (0 == g.rockbandId && !includeWtDrums) continue; // backward compat
 					ret.add(g);
 				}
 			}

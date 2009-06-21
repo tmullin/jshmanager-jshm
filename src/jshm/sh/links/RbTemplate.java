@@ -58,7 +58,7 @@ public class RbTemplate extends Link {
 							if (Difficulty.CO_OP == d) break;
 							
 							Link diffLink = new Link(d.getLongName(),
-								String.format(URLs.rb.BASE + "/" + urlFmt + "game=%s&platform=%s&size=%s&group=%s&diff=%s", tt.scoreHeroId, RbPlatform.getId(p), groupSize, g.id, d.scoreHeroId),
+								String.format(URLs.rb.BASE + "/" + urlFmt + "game=%s&platform=%s&size=%s&group=%s&diff=%s", tt.scoreHeroId, RbPlatform.getId(p), groupSize, g.rockbandId, d.scoreHeroId),
 								d.getIcon());
 							groupLink.add(diffLink);
 						}
