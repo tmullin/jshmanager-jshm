@@ -72,17 +72,20 @@ public class RbGameTitle extends GameTitle {
 	    list_i = (List<Integer>) session.createQuery(
 	    	"SELECT DISTINCT (year / 10) FROM RbSong")
 	    	.list();
-
-	    Collections.sort(list_i);
 	    
 	    tiers.clear();
 	    tiers.add("<UNKNOWN>");
-	    for (Integer i : list_i) {
-	    	if (null == i || 0 == i) {
-	    		continue;
-	    	}
-	    	
-	    	tiers.add(String.valueOf(i * 10) + "s");
+	    
+	    if (null != list_i) {
+	    	Collections.sort(list_i);
+	    
+		    for (Integer i : list_i) {
+		    	if (null == i || 0 == i) {
+		    		continue;
+		    	}
+		    	
+		    	tiers.add(String.valueOf(i * 10) + "s");
+		    }
 	    }
 	    
 //	    System.out.println("RB Decade List");

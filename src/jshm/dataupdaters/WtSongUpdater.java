@@ -111,6 +111,11 @@ public class WtSongUpdater {
 					    	session.update(result);
 					    }
 					    
+					    if (i % 64 == 0) {
+					    	session.flush();
+					    	session.clear();
+					    }
+					    
 					    i++;
 					}
 				}
@@ -140,14 +145,19 @@ public class WtSongUpdater {
 				
 				int i = 0, total = orders.size();
 				for (SongOrder order : orders) {
-					if (null != progress && i % 64 == 0)
-						progress.setProgress(
-							"Processing song order lists...", i, total);
-					
 			    	// always a new insert
 			    	LOG.info("Inserting song order: " + order);
 				    session.save(order);
-				    
+
+					if (i % 64 == 0) {
+						session.flush();
+						session.clear();
+						
+						if (null != progress)
+							progress.setProgress(
+								"Processing song order lists...", i, total);
+					}
+					
 				    i++;
 				}
 			}

@@ -162,7 +162,7 @@
 		<copy todir="${bin_dir}/jshm/resources">
 			<fileset
 				dir="${src_dir}/jshm/resources" 
-				excludes="**/*_64.png,**/*.pdn,**/*.psd,**/psd/*,**/16/*,**/64/*"/>
+				excludes="**/*_64.png,**/*.svg,**/*.pdn,**/*.psd,**/psd/**,**/64/**"/>
 		</copy>
 		<copy todir="${bin_dir}/jshm/properties">
 			<fileset

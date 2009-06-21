@@ -52,21 +52,6 @@ public class GhSongUpdater {
 		    tx = session.beginTransaction();
 		    
 			for (GhSong song : scrapedSongs) {
-//			    Example ex = Example.create(song)
-//			    	.excludeProperty("noteCount")
-//			    	.excludeProperty("baseScore")
-//			    	.excludeProperty("fourStarCutoff")
-//			    	.excludeProperty("fiveStarCutoff")
-//			    	.excludeProperty("sixStarCutoff")
-//			    	.excludeProperty("sevenStarCutoff")
-//			    	.excludeProperty("eightStarCutoff")
-//			    	.excludeProperty("nineStarCutoff")
-//			    	;
-//			    GhSong result =
-//			    	(GhSong)
-//			    	session.createCriteria(GhSong.class).add(ex)
-//			    		.uniqueResult();
-			    
 				// gh songs have a unique scoreHeroId across all
 				// platforms and difficulties, so we can
 				// use a simpler query

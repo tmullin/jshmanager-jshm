@@ -75,14 +75,6 @@ public class RbSongUpdater {
 					progress.setProgress(
 						String.format("Processing song %s of %s", i + 1, total), i, total);
 				
-//			    Example ex = Example.create(song)
-//			    	.excludeProperty("gameStrs")
-//			    	.excludeProperty("title");
-//			    RbSong result =
-//			    	(RbSong)
-//			    	session.createCriteria(RbSong.class).add(ex)
-//			    		.uniqueResult();
-				
 				// only care about the sh id and gameTitle
 				RbSong result =
 					(RbSong) session.createQuery(
@@ -106,6 +98,11 @@ public class RbSongUpdater {
 			    	}
 			    }
 			    
+				if (i % 64 == 0) {
+					session.flush();
+					session.clear();
+				}
+			    
 			    i++;
 			}
 			
@@ -127,47 +124,25 @@ public class RbSongUpdater {
 			
 			i = 0; total = orders.size();
 			for (SongOrder order : orders) {
-				if (null != progress && i % 64 == 0)
+				// we need to get an instance of the RbSong that's in the db,
+				// not the detached one we used before from the xml
+				order.setSong(
+					RbSong.getByScoreHeroId(session,
+						order.getSong().getScoreHeroId()));
+				
+		    	// new insert
+		    	LOG.info("Inserting song order: " + order);
+			    session.save(order);
+			    
+				if (i % 64 == 0) {
+					session.flush();
+					session.clear();
+					
+					if (null != progress)
 					progress.setProgress(
 						"Processing song order lists...", i, total);
-				
-//			    Example ex = Example.create(order)
-//			    	.excludeProperty("tier")
-//			    	.excludeProperty("order");
-//			    SongOrder result =
-//			    	(SongOrder)
-//			    	session.createCriteria(SongOrder.class)
-//			    	.add(ex)
-//			    		.createCriteria("song")
-//			    			.add(Example.create(order.getSong()))
-//			    	.uniqueResult();
-			    
-//			    SongOrder result = (SongOrder) session.createQuery(String.format(
-//			    	"from SongOrder as so where so.group='%s' and so.gameTitle='%s' and so.platform='%s' and so.song.scoreHeroId=%s",
-//			    	order.getGroup(), order.getGameTitle(), order.getPlatform(), order.getSong().getScoreHeroId()
-//			    )).uniqueResult();
-			    
-//			    if (null == result) {
-					// we need to get an instance of the RbSong that's in the db,
-					// not the detached one we used before from the xml
-					order.setSong(
-						RbSong.getByScoreHeroId(session,
-							order.getSong().getScoreHeroId()));
-					
-			    	// new insert
-			    	LOG.info("Inserting song order: " + order);
-				    session.save(order);
-//			    } else {
-//			    	LOG.finest("Found song order: " + result);
-//			    	// update existing
-//			    	if (result.update(order)) {
-//				    	LOG.info("Updating song order to: " + result);
-//				    	session.update(result);
-//			    	} else {
-//			    		LOG.finest("No changes to song order: " + result);
-//			    	}
-//			    }
-			    
+				}
+				    
 			    i++;
 			}
 			
@@ -211,14 +186,6 @@ public class RbSongUpdater {
 					if (null != progress)
 						progress.setProgress(
 							String.format("Processing song %s of %s", i + 1, total), i, total);
-							
-//				    Example ex = Example.create(song)
-//				    	.excludeProperty("gameStrs")
-//				    	.excludeProperty("title");
-//				    RbSong result =
-//				    	(RbSong)
-//				    	session.createCriteria(RbSong.class).add(ex)
-//				    		.uniqueResult();
 				    
 					// only care about the sh id and gameTitle
 					RbSong result =
@@ -242,6 +209,11 @@ public class RbSongUpdater {
 				    		LOG.finest("No changes to song: " + result);
 				    	}
 				    }
+				    
+					if (i % 64 == 0) {
+						session.flush();
+						session.clear();
+					}
 				    
 				    i++;
 				}
@@ -271,36 +243,18 @@ public class RbSongUpdater {
 				
 				int i = 0, total = orders.size();
 				for (SongOrder order : orders) {
-					if (null != progress && i % 64 == 0)
-						progress.setProgress(
-							"Processing song order lists...", i, total);
-					
-//				    Example ex = Example.create(order)
-//				    	.excludeProperty("tier")
-//				    	.excludeProperty("order");
-//				    SongOrder result =
-//				    	(SongOrder)
-//				    	session.createCriteria(SongOrder.class)
-//				    	.add(ex)
-//				    		.createCriteria("song")
-//				    			.add(Example.create(order.getSong()))
-//				    	.uniqueResult();
-//				    
-//				    if (null == result) {
-				    	// new insert
-				    	LOG.info("Inserting song order: " + order);
-					    session.save(order);
-//				    } else {
-//				    	LOG.finest("Found song order: " + result);
-//				    	// update existing
-//				    	if (result.update(order)) {
-//					    	LOG.info("Updating song order to: " + result);
-//					    	session.update(result);
-//				    	} else {
-//				    		LOG.finest("No changes to song order: " + result);
-//				    	}
-//				    }
+			    	LOG.info("Inserting song order: " + order);
+				    session.save(order);
 				    
+					if (i % 64 == 0) {
+						session.flush();
+						session.clear();
+						
+						if (null != progress) 
+							progress.setProgress(
+								"Processing song order lists...", i, total);
+					}
+					    
 				    i++;
 				}
 			}
@@ -354,6 +308,11 @@ public class RbSongUpdater {
 					} else {
 						LOG.finer("No changes to song: " + s);
 					}
+				}
+				
+				if (i % 64 == 0) {
+					session.flush();
+					session.clear();
 				}
 				
 				i++;
