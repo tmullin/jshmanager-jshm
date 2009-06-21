@@ -128,7 +128,6 @@ public class WtScore extends Score {
 
 	@Override
 	public void submit() throws Exception {
-		// TODO Auto-generated method stub
-		
+		jshm.sh.Api.submitWtScore(this);
 	}
 }

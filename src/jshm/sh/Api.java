@@ -37,6 +37,8 @@ import jshm.gh.GhScore;
 import jshm.hibernate.HibernateUtil;
 import jshm.rb.RbScore;
 import jshm.sh.client.HttpForm;
+import jshm.wt.WtGameTitle;
+import jshm.wt.WtScore;
 
 public class Api {
 	static final Logger LOG = Logger.getLogger(Api.class.getName());
@@ -178,7 +180,88 @@ public class Api {
 					tx.commit();
 				} catch (Exception e) {
 					if (null != tx) tx.rollback();
-					LOG.throwing("Api", "submitGhScore", e);
+					LOG.throwing("Api", "submitRbScore", e);
+					throw e;
+				} finally {
+					if (sess.isOpen()) sess.close();
+				}
+			}
+		}.submit();
+	}
+	
+	public static void submitWtScore(final WtScore score) throws Exception {
+		Client.getAuthCookies();
+		
+		String[] staticData = {
+			"song", String.valueOf(score.getSong().getScoreHeroId()),
+			"game", String.valueOf(score.getGame().scoreHeroId),
+			"platform", String.valueOf(RbPlatform.getId(score.getGame().platform)),
+			"group", String.valueOf(((WtGameTitle) score.getGameTitle()).scoreHeroGroupId),
+			"inst", String.valueOf(score.getGroup().wtId),
+			"score", String.valueOf(score.getScore()),
+			"rating", score.getRating() != 0 ? String.valueOf(score.getRating()) : "",
+			"comment", score.getComment(),
+			"link", score.getImageUrl(),
+			"videolink", score.getVideoUrl()	
+		};
+		
+		List<String> data = new ArrayList<String>(Arrays.asList(staticData));
+		
+		// TODO check on xxxUser being required or not
+		for (Part p : score.getParts()) {
+			final String istr = p.getInstrument().toShortString();
+			data.add(istr + "Diff");
+			data.add(String.valueOf(p.getDifficulty().scoreHeroId));
+			data.add(istr + "Name");
+			data.add(p.getPerformer());
+			data.add(istr + "Percent");
+			data.add(p.getHitPercent() != 0.0f ? String.valueOf((int) (p.getHitPercent() * 100)) : "");
+			data.add(istr + "Streak");
+			data.add(p.getStreak() != 0 ? String.valueOf(p.getStreak()) : "");
+		}
+		
+		new HttpForm((Object) URLs.wt.getInsertScoreUrl(score), data) {
+			@Override
+			public void afterSubmit(final int response, final HttpClient client, final HttpMethod method) throws Exception {
+				// TODO more vigorous error handing?
+				
+				String body = method.getResponseBodyAsString();
+				
+//				LOG.finest("submitRbScore() result body:");
+//				LOG.finest("\n" + body);
+				method.releaseConnection();
+				
+				Matcher m = ERROR_PATTERN.matcher(body);
+				
+				if (m.matches()) {
+					Exception e = new ClientException(m.group(1));
+					LOG.throwing("Api", "submitRbScore", e);
+					throw e;
+				}
+				
+				// can't be completely sure about this		
+				if (body.contains("window.close()")) {
+					score.setStatus(Score.Status.SUBMITTED);
+				} else {
+					score.setStatus(Score.Status.UNKNOWN);
+					
+					LOG.warning("Score may not have been accepted, response body follows:");
+					LOG.warning(body);
+				}
+				
+				score.setSubmissionDate(new java.util.Date());
+				
+				Session sess = null;
+				Transaction tx = null;
+				
+				try {
+					sess = HibernateUtil.getCurrentSession();
+					tx = sess.beginTransaction();
+					sess.update(score);
+					tx.commit();
+				} catch (Exception e) {
+					if (null != tx) tx.rollback();
+					LOG.throwing("Api", "submitWtScore", e);
 					throw e;
 				} finally {
 					if (sess.isOpen()) sess.close();

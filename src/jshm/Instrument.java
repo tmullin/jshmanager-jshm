@@ -27,11 +27,12 @@ import jshm.util.Text;
 public enum Instrument {
 	GUITAR("gtr"),
 	BASS("bass"), // will also mean rhythm for GH
-	WTDRUMS(""),
+	WTDRUMS("drums"),
 	DRUMS("drums"),
 	VOCALS("vocals");
 	
 	// needed for submitting rb scores
+	// TODO move into Text
 	private final String shortString; 
 	
 	private Instrument(final String shortString) {
