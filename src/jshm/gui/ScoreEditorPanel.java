@@ -52,7 +52,7 @@ import jshm.exceptions.SongHiddenException;
 import jshm.gh.GhScore;
 import jshm.gui.components.LabeledTextField;
 import jshm.gui.datamodels.ScoresTreeTableModel;
-import jshm.gui.editors.GhMyScoresRatingEditor;
+import jshm.gui.editors.ScoresRatingEditor;
 import jshm.hibernate.HibernateUtil;
 import jshm.rb.RbScore;
 import jshm.wt.WtScore;
@@ -212,7 +212,7 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 		
 		if (null != score &&
 			(null == this.score || this.score.getClass() != score.getClass())) {
-			JComboBox newRatingCombo = GhMyScoresRatingEditor.createRatingComboBox(gui.getCurGame());
+			JComboBox newRatingCombo = ScoresRatingEditor.createRatingComboBox(gui.getCurGame());
 			ratingCombo.setModel(newRatingCombo.getModel());
 			ratingCombo.setKeySelectionManager(newRatingCombo.getKeySelectionManager());
 			ratingCombo.validate();

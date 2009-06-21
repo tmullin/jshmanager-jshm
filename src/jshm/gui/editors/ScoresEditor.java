@@ -32,7 +32,7 @@ import javax.swing.JTextField;
 import jshm.Score;
 import jshm.gui.EditPopupMenu;
 
-public class GhMyScoresEditor extends DefaultCellEditor {
+public class ScoresEditor extends DefaultCellEditor {
 //	private static final InputVerifier
 //		SCORE_VERIFIER = new InputVerifier() {
 //			@Override
@@ -96,7 +96,7 @@ public class GhMyScoresEditor extends DefaultCellEditor {
 //			}
 //		};
 		
-	public GhMyScoresEditor() {
+	public ScoresEditor() {
 		super(new JTextField());
 	}
 	

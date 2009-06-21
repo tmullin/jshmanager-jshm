@@ -39,7 +39,7 @@ import jshm.rb.RbGameTitle;
 import jshm.rb.RbScore;
 import jshm.wt.WtGameTitle;
 
-public class GhMyScoresRatingEditor extends DefaultCellEditor {
+public class ScoresRatingEditor extends DefaultCellEditor {
 	public static JComboBox createRatingComboBox(Game game) {
 		return createRatingComboBox(game.title);
 	}
@@ -120,7 +120,7 @@ public class GhMyScoresRatingEditor extends DefaultCellEditor {
 		return ret;
 	}
 	
-	public GhMyScoresRatingEditor(Game game) {
+	public ScoresRatingEditor(Game game) {
 		super(createRatingComboBox(game.title, true));
 	}
 	

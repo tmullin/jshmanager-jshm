@@ -30,9 +30,9 @@ import jshm.gh.GhScore;
 
 import org.jdesktop.swingx.treetable.TreeTableCellEditor;
 
-public class GhMyScoresCommentEditor extends TreeTableCellEditor {
+public class ScoresCommentEditor extends TreeTableCellEditor {
 
-    public GhMyScoresCommentEditor(JTree tree) {
+    public ScoresCommentEditor(JTree tree) {
 		super(tree);
 	}
 

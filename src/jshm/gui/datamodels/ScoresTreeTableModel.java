@@ -47,8 +47,8 @@ import jshm.exceptions.SongHiddenException;
 import jshm.gh.GhScore;
 import jshm.gui.GUI;
 import jshm.gui.GuiUtil;
-import jshm.gui.editors.GhMyScoresEditor;
-import jshm.gui.editors.GhMyScoresRatingEditor;
+import jshm.gui.editors.ScoresEditor;
+import jshm.gui.editors.ScoresRatingEditor;
 import jshm.gui.renderers.ScoresCellRenderer;
 import jshm.gui.renderers.ScoresFcHighlighter;
 import jshm.gui.renderers.ScoresNewScoreHighlighter;
@@ -690,11 +690,11 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 		
 //		parent.setHierarchicalEditor(
 //			new GhMyScoresCommentEditor(   ));
-		GhMyScoresEditor editor = new GhMyScoresEditor();
+		ScoresEditor editor = new ScoresEditor();
 		parent.setDefaultEditor(Score.class, editor);
 //		parent.getColumn(0).setCellEditor(editor); // has no effect....
 //		parent.getColumn(1).setCellEditor(editor);
-		parent.getColumn(2).setCellEditor(new GhMyScoresRatingEditor(game));
+		parent.getColumn(2).setCellEditor(new ScoresRatingEditor(game));
 //		parent.getColumn(3).setCellEditor(editor);
 //		parent.getColumn(4).setCellEditor(editor);
 		
