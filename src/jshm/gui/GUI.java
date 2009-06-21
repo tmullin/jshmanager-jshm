@@ -906,8 +906,11 @@ private void uploadLogsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
 	final ProgressDialog prog = new ProgressDialog(this);
 	
 	final StringBuilder sb = new StringBuilder(
-		"Please copy and paste the following when replying in the JSHManager thread:\n\n"	
+		"Please copy and paste the following links when replying in the JSHManager thread.\n\n"
 	);
+	
+	sb.append("Please also provide a detailed description of what you were doing when the error occured. ");
+	sb.append("If you just paste the links, I will be less inclined to look into your issue.\n\n");
 	
 	new SwingWorker<Boolean, Void>() {
 		public Boolean doInBackground() throws Exception {
