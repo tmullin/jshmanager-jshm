@@ -294,12 +294,29 @@ public class RbSongUpdater {
 					progress.setProgress(
 						String.format("Processing song %s of %s", i + 1, total), i, total);
 				
+				String upperTtl = key.toUpperCase();
+				String ttlReplacement = upperTtl
+					.replace("AND", "%")
+					.replace(" '", "%")
+					.replace('&', '%')
+					.replace('/', '%')
+					.replace('\'', '%')
+					.replace('!', '%')
+					.replace('?', '%')
+					.replace('\u00E8', '%') // e`
+					.replace('\u00DC', '%') // U umlat
+					;
+				
 				// extra steps taken to try to cope with song title inconsistencies
 				List<RbSong> result =
 					(List<RbSong>) session.createQuery(
 						"FROM RbSong WHERE UPPER(title) LIKE :ttl")
-					.setString("ttl", key.toUpperCase().replace("AND", "%").replace("&", "%"))
+					.setString("ttl", ttlReplacement)
 					.list();
+				
+				if (!upperTtl.equals(ttlReplacement)) {
+					LOG.fine("Looking for {" + ttlReplacement + "}, given {" + upperTtl + "}, found " + result.size());
+				}
 				
 				for (RbSong s : result) {
 					if (s.update(fetcher.songMap.get(key))) {
