@@ -46,6 +46,10 @@ public class WtSong extends Song {
 		return result;
 	}
 	
+	public static WtSong getByScoreHeroId(org.hibernate.Session session, final int id) {
+		return getByScoreHeroId(session, id, Difficulty.EXPERT);
+	}
+	
 	public static WtSong getByScoreHeroId(org.hibernate.Session session, final int id, Difficulty diff) {
 		WtSong ret = (WtSong)
 			session.createQuery(

@@ -149,7 +149,7 @@ public class RbSongUpdater {
 		    tx.commit();
 		} catch (HibernateException e) {
 			if (null != tx && tx.isActive()) tx.rollback();
-			LOG.throwing("RbSongUpdater", "update", e);
+			LOG.throwing("RbSongUpdater", "updateViaXml", e);
 			throw e;
 		} finally {
 			if (null != session && session.isOpen())
@@ -262,7 +262,7 @@ public class RbSongUpdater {
 		    tx.commit();
 		} catch (HibernateException e) {
 			if (null != tx && tx.isActive()) tx.rollback();
-			LOG.throwing("RbSongUpdater", "update", e);
+			LOG.throwing("RbSongUpdater", "updateViaScraping", e);
 			throw e;
 		} finally {
 			if (null != session && session.isOpen())

@@ -38,6 +38,7 @@ import jshm.gui.LoginDialog;
 import jshm.rb.RbGame;
 import jshm.rb.RbSong;
 import jshm.wt.WtGame;
+import jshm.wt.WtGameTitle;
 import jshm.wt.WtSong;
 
 import org.jdesktop.swingx.JXErrorPane;
@@ -216,10 +217,19 @@ public class ScoreDownloadWizard {
 						
 						for (Object diffObj : diffs) {
 							Difficulty d = (Difficulty) diffObj;
-					
+							
 							for (Object instrumentObj : instruments) {
 								Instrument.Group g = (Instrument.Group) instrumentObj;
-							
+
+								assert g.size == 1: "group size should only be 1 here";
+								
+								if (Difficulty.EXPERT_PLUS == d) {
+									if (!((WtGameTitle) wgame.title).supportsExpertPlus)
+										continue;
+									if (!g.instruments[0].isDrums())
+										continue;
+								}
+								
 								// TODO change to a select count(*) for efficiency
 								List<?> songs = WtSong.getSongs(wgame, g, d);
 								
@@ -229,20 +239,20 @@ public class ScoreDownloadWizard {
 									progress.setBusy("Downloading song data");
 			//						ProgressDialog progDialog = new ProgressDialog();
 									
-//									try {
-//										jshm.dataupdaters.WtSongUpdater.updateViaXml(progress, rgame.title);
+									try {
+										jshm.dataupdaters.WtSongUpdater.updateViaXml(progress, wgame.title);
 //										jshm.dataupdaters.WtSongUpdater.updateSongInfo(progress);
-//									} catch (Exception e1) {
-//										LOG.log(Level.WARNING, "Failed to download song data via XML", e1);
+									} catch (Exception e1) {
+										LOG.log(Level.WARNING, "Failed to download song data via XML", e1);
 //										
-//										int result = JOptionPane.showConfirmDialog(null,
-//											"Failed to download song data via the quicker way.\nDo you want to download it the old, slow way?", "Download Song Data", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-//										
-//										if (JOptionPane.YES_OPTION == result) {
+										int result = JOptionPane.showConfirmDialog(null,
+											"Failed to download song data via the quicker way.\nDo you want to download it the old way?", "Download Song Data", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+										
+										if (JOptionPane.YES_OPTION == result) {
 											jshm.dataupdaters.WtSongUpdater.updateViaScraping(progress, wgame.title);
 //											jshm.dataupdaters.WtSongUpdater.updateSongInfo(progress);
-//										}
-//									}
+										}
+									}
 									
 			//						progDialog.dispose();
 								}

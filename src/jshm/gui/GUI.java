@@ -702,8 +702,23 @@ private void downloadGhSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 					jshm.dataupdaters.GhSongUpdater.update((GhGame) curGame, curDiff);
 				} else if (curGame instanceof WtGame) {
 					progress = new ProgressDialog(GUI.this);
-					jshm.dataupdaters.WtSongUpdater.updateViaScraping(progress, (WtGameTitle) curGame.title);
+					
+					try {
+						jshm.dataupdaters.WtSongUpdater.updateViaXml(progress, curGame.title);
+					} catch (Exception e1) {
+						LOG.log(Level.WARNING, "Failed to download song data via XML", e1);
+						
+						int result = JOptionPane.showConfirmDialog(GUI.this,
+							"Failed to download song data via the quicker way.\nDo you want to download it the old way?", "Download Song Data", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+						
+						if (JOptionPane.YES_OPTION == result) {
+							jshm.dataupdaters.WtSongUpdater.updateViaScraping(progress, curGame.title);
+						} else {
+							return false;
+						}
+					}
 				}
+				
 				return true;
 			} catch (Exception e) {
 				LOG.log(Level.SEVERE, "Failed to download song data ", e);
@@ -729,7 +744,7 @@ private void downloadGhSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 					} else if (curGame instanceof WtGame) {
 						wtSongDataMenuItemActionPerformed(null, (WtGame) curGame, curGroup);
 					} else {
-						assert false;
+						assert false: "unimplemented game subclass";
 					}
 				}
 			} catch (Exception e) {
