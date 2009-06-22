@@ -2,6 +2,7 @@ JSHManager ChangeLog
 
 Version 0.3.0
 -------------
+- GHWT, GHM, and GHSH are at long last supported.
 - May possibly have fixed NullPointerException related to
   jshm.Score.equals(Score.java:590). Hard to test this though.
 - The last game/instrument/difficulty you viewed is now saved and
@@ -17,9 +18,11 @@ Version 0.3.0
   Rock Band has the same in-game sorting options thanks to pksage's
   master song list. There are some discrepencies between his list
   and ScoreHero however. Those songs will show up in an <UNKNOWN> tier.
+  The sorting can be selected from File -> Sort Songs by.
 - There is now an option to hide songs and tiers that don't have any
   scores. You can still insert a score via the editor for a hidden song,
-  which will cause it to appear in the list.
+  which will cause it to appear in the list. This can be toggled in the
+  File menu.
 - Songs now have an icon to indicate where they are from (i.e. RB1, RB2,
   DLC, AC/DC).
 - Corrected Classic Rock Track Pack tier to show up under RB1 for PS2.
