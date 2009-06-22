@@ -1522,7 +1522,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 		public void done() {
 			if (null == songs) return;
 			
-			statusBar1.setText("Viewing song data for " + game + " on " + difficulty);
+			statusBar1.setText("Viewing song data for " + game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " on " + difficulty);
 			
 			actions.downloadScores.setEnabled(true);
 			actions.uploadScores.setEnabled(false);
@@ -1537,7 +1537,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 			editorCollapsiblePane.setCollapsed(true);
 			
 			GUI.this.setIconImage(game.title.getIcon().getImage());
-			GUI.this.setTitle(game + " on " + difficulty + " - Song Data");
+			GUI.this.setTitle(game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " on " + difficulty.toShortString() + " - Song Data");
 			
 			if (songs.size() == 0 && null != evt) { // if evt == null we're recursing
 				if (JOptionPane.YES_OPTION ==
@@ -1600,7 +1600,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 		public void done() {
 			if (null == songs) return;
 			
-			statusBar1.setText("Viewing song data for " + game);
+			statusBar1.setText("Viewing song data for " + game.title.getWikiAbbr() + ":" + game.platform.getShortName());
 			
 			actions.downloadScores.setEnabled(false);
 			actions.uploadScores.setEnabled(false);
@@ -1615,7 +1615,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 			editorCollapsiblePane.setCollapsed(true);
 			
 			GUI.this.setIconImage(game.title.getIcon().getImage());
-			GUI.this.setTitle(game + " " + group + " - Song Data");
+			GUI.this.setTitle(game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " " + group + " - Song Data");
 			
 			if (songs.size() == 0 && null != evt) { // if evt == null we're recursing
 				if (JOptionPane.YES_OPTION ==
@@ -1678,7 +1678,7 @@ private void wtSongDataMenuItemActionPerformed(final ActionEvent evt, final WtGa
 		public void done() {
 			if (null == songs) return;
 			
-			statusBar1.setText("Viewing song data for " + game);
+			statusBar1.setText("Viewing song data for " + game.title.getWikiAbbr() + ":" + game.platform.getShortName());
 			
 			actions.downloadScores.setEnabled(false);
 			actions.uploadScores.setEnabled(false);
@@ -1693,7 +1693,7 @@ private void wtSongDataMenuItemActionPerformed(final ActionEvent evt, final WtGa
 			editorCollapsiblePane.setCollapsed(true);
 			
 			GUI.this.setIconImage(game.title.getIcon().getImage());
-			GUI.this.setTitle(game + " " + group + " - Song Data");
+			GUI.this.setTitle(game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " " + group.getLongName(game instanceof WtGame) + " - Song Data");
 			
 			if (songs.size() == 0 && null != evt) { // if evt == null we're recursing
 				if (JOptionPane.YES_OPTION ==
@@ -1789,9 +1789,9 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			if (null == scores) return;
 			
 			GUI.this.setIconImage(game.title.getIcon().getImage());
-			GUI.this.setTitle(game + " on " + difficulty + " " + group + " - Scores");
+			GUI.this.setTitle(game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " on " + difficulty.toShortString() + " " + group.getLongName(game instanceof WtGame) + " - Scores");
 			
-			statusBar1.setText("Viewing scores for " + game + " on " + difficulty);
+			statusBar1.setText("Viewing scores for " + game.title.getWikiAbbr() + " " + game.platform.getShortName() + " on " + difficulty.toShortString());
 			
 			actions.downloadScores.setEnabled(true);
 			actions.uploadScores.setEnabled(true);

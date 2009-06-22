@@ -71,8 +71,12 @@ public class WhatToDownloadPage extends WizardPage {
         initComponents();
         
         gameField.setText(String.valueOf(gameTitle));
+        MyListCellRenderer renderer = new MyListCellRenderer(gameTitle instanceof WtGameTitle);
+        platformList.setCellRenderer(renderer);
         setPlatformListModel();
+        difficultyList.setCellRenderer(renderer);
         setDifficultyListModel();
+        instrumentList.setCellRenderer(renderer);
         setInstrumentListModel();
     }
 
