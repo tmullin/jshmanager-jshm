@@ -3,3 +3,8 @@ Bump for $version
 [url=http://jshm.sourceforge.net]Home Page[/url]
 [url=$downloadUrl]Download[/url]
 
+
+This is a really huge update. Lots of bug fixes and feature additions.
+
+Though I think I've worked everything out, it might not be a bad idea to make a backup of your data folder for safe keeping in case of some bug. Keep in mind the only thing you lose if the database gets corrupted are locally saved scores that ScoreHero deleted because you entered higher ones.
+

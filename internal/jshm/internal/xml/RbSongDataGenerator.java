@@ -20,7 +20,6 @@
 */
 package jshm.internal.xml;
 
-import java.awt.Container;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -47,6 +46,7 @@ import jshm.Game;
 import jshm.GameTitle;
 import jshm.Platform;
 import jshm.SongOrder;
+import jshm.internal.ConsoleProgressHandle;
 import jshm.rb.RbGame;
 import jshm.rb.RbGameTitle;
 import jshm.rb.RbSong;
@@ -60,6 +60,8 @@ public class RbSongDataGenerator {
 		System.out.println("Usage: java " + RbSongDataGenerator.class.getName() + " <RB1|RB2>");
 		System.exit(-1);
 	}
+	
+	static ResultProgressHandle progress = ConsoleProgressHandle.getInstance();
 	
 	public static void main(String[] args) throws Exception {
 		if (args.length != 1) usage();
@@ -77,10 +79,10 @@ public class RbSongDataGenerator {
 		for (Game g : Game.getByTitle(ttl)) {
 //			if (g.platform != Platform.XBOX360) continue;
 			
-			consoleProgHandle.setBusy("Downloading song list for " + g);
+			progress.setBusy("Downloading song list for " + g);
 			List<RbSong> songs = RbSongScraper.scrape((RbGame) g);
 			
-			consoleProgHandle.setBusy(String.format("Processing %s songs", songs.size()));
+			progress.setBusy(String.format("Processing %s songs", songs.size()));
 			for (RbSong s : songs) {
 				if (songMap.containsKey(s.getScoreHeroId())) {
 					songMap.get(s.getScoreHeroId()).addPlatform(g.platform);
@@ -89,19 +91,19 @@ public class RbSongDataGenerator {
 				}
 			}
 			
-			consoleProgHandle.setBusy("Downloading song order lists for " + g);
-			List<SongOrder> orders = RbSongScraper.scrapeOrders(consoleProgHandle, (RbGame) g, songMap);
+			progress.setBusy("Downloading song order lists for " + g);
+			List<SongOrder> orders = RbSongScraper.scrapeOrders(progress, (RbGame) g, songMap);
 			
-			consoleProgHandle.setBusy(String.format("Processing %s song orders", orders.size()));
+			progress.setBusy(String.format("Processing %s song orders", orders.size()));
 			allOrders.addAll(orders);
 		}
 		
 		
-		consoleProgHandle.setBusy("Creating XML file");
+		progress.setBusy("Creating XML file");
 		createXml(ttl, songMap, allOrders);
 		
 		jshm.util.TestTimer.stop();
-		consoleProgHandle.setBusy("All done");
+		progress.setBusy("All done");
 	}
 	
 	private static void createXml(GameTitle ttl, Map<Integer, RbSong> songMap, List<SongOrder> orders) {
@@ -167,7 +169,7 @@ public class RbSongDataGenerator {
 			xml.setXmlStandalone(true);
 			xml.getDocumentElement().normalize();
 			
-			FileOutputStream out = new FileOutputStream(new File(ttl.toString() + ".xml"));
+			FileOutputStream out = new FileOutputStream(new File(ttl.title + ".xml"));
 			DOMSource domSource = new DOMSource(xml);
 			StreamResult streamResult = new StreamResult(out);
 			TransformerFactory tf = TransformerFactory.newInstance();
@@ -219,40 +221,5 @@ public class RbSongDataGenerator {
 	 */
 	private static void AC(Node parent, Node child) {
 		parent.appendChild(child);
-	}	
-	
-	static ResultProgressHandle consoleProgHandle = new ResultProgressHandle() {
-		private boolean isRunning = true;
-		
-		@Override public void addProgressComponents(Container panel) {}
-		
-		@Override
-		public void failed(String message, boolean canNavigateBack) {
-			isRunning = false;
-			System.out.println(message);
-		}
-		
-		@Override
-		public void finished(Object result) {
-			isRunning = false;
-		}
-		
-		@Override
-		public boolean isRunning() {
-			return isRunning;
-		}
-
-		@Override
-		public void setBusy(String description) {
-			System.out.println(description);
-		}
-
-		@Override public void setProgress(int currentStep, int totalSteps) {}
-
-		@Override
-		public void setProgress(String description, int currentStep,
-				int totalSteps) {
-			System.out.println(description);
-		}
-	};
+	}
 }

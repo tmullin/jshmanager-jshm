@@ -42,16 +42,16 @@ import jshm.util.Util;
 @SuppressWarnings("unused")
 public class JshmThreadManager {
 	static final boolean
-		CREATE_NEW_VERSION_POST = false,
+		CREATE_NEW_VERSION_POST = true,
 		APPEND_NEW_VERSION_CHANGELOG = true;
 	
 	static final String
-		VERSION = "0.2.8", //JSHManager.Version.VERSION,
+		VERSION = JSHManager.Version.VERSION,
 		DOWNLOAD_URL =
-			"http://sourceforge.net/project/showfiles.php?group_id=240590&package_id=292656&release_id=688081",
+			"http://sourceforge.net/project/showfiles.php?group_id=240590&package_id=292656&release_id=691575",
 		SUBJECT =
 			"JSHManager " + VERSION +
-			" - Now Faster - Manage Scores Locally and Upload to SH";
+			" - GHWT/M/SH Support! - Manage Scores Locally and Upload to SH";
 	
 	static final int
 		GH_THREAD_ID = 74670,
