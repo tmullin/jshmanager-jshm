@@ -385,8 +385,8 @@ public abstract class Song implements Comparable<Song> {
 		}
 		
 		public static RecordingType smartValueOf(String str) {
-			if (str.length() < 1)
-				throw new IllegalArgumentException("str must have length >= 1");
+			if (null == str || str.isEmpty())
+				return null;
 			
 			char c = Character.toUpperCase(str.charAt(0));
 			

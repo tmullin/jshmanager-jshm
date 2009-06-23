@@ -20,7 +20,12 @@
  */
 package jshm.gh;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import jshm.*;
+import jshm.Song.Sorting;
 
 public class GhGameTitle extends jshm.GameTitle {
 	public static void init() {}
@@ -52,6 +57,78 @@ public class GhGameTitle extends jshm.GameTitle {
 		this.supportsCoOp = supportsCoOp;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * implemented Sortings:
+	 *   DECADE, GENRE, ARTIST
+	 * @see jshm.Game#initDynamicTiersInternal()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override protected void initDynamicTiersInternal() {		
+		List<String> tiers = new ArrayList<String>();
+		List<String> list_s = null;
+		List<Integer> list_i = null;
+		
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
+	    session.beginTransaction();
+	    
+	    // make the decades tier
+	    list_i = (List<Integer>) session.createQuery(
+	    	"SELECT DISTINCT (year / 10) FROM GhSong WHERE game LIKE :game AND year IS NOT NULL AND year <> 0")
+	    	.setString("game", this.title + "_%")
+	    	.list();
+	    
+	    tiers.clear();
+	    tiers.add("<UNKNOWN>");
+	    
+    	Collections.sort(list_i);
+    
+	    for (Integer i : list_i) {
+	    	tiers.add(String.valueOf(i * 10) + "s");
+	    }
+	    
+//	    System.out.println("GH Decade List");
+//	    jshm.util.Print.print(tiers, "\t");
+	    
+	    mapTiers(Sorting.DECADE, tiers);
+	    
+	    
+	    // make genre tier
+	    list_s = (List<String>) session.createQuery(
+	    	"SELECT DISTINCT genre FROM GhSong WHERE game LIKE :game AND genre IS NOT NULL ORDER BY genre")
+	    	.setString("game", this.title + "_%")
+	    	.list();
+	    
+	    tiers.clear();
+	    tiers.addAll(list_s);
+	    
+	    Collections.sort(tiers, String.CASE_INSENSITIVE_ORDER);
+		tiers.add(0, "<UNKNOWN>");
+//	    System.out.println("GH Genre List");
+//	    jshm.util.Print.print(tiers, "\t");
+	    
+	    mapTiers(Sorting.GENRE, tiers);
+	    
+	    
+	    // make artist tier
+	    list_s = (List<String>) session.createQuery(
+	    	"SELECT DISTINCT artist FROM GhSong WHERE game LIKE :game AND artist IS NOT NULL ORDER BY artist")
+	    	.setString("game", this.title + "_%")
+	    	.list();
+	    
+	    tiers.clear();
+	    tiers.addAll(list_s);
+	    
+	    Collections.sort(tiers, String.CASE_INSENSITIVE_ORDER);
+		tiers.add(0, "<UNKNOWN>");
+//	    System.out.println("GH Artists List");
+//	    jshm.util.Print.print(tiers, "\t");
+	    
+	    mapTiers(Sorting.ARTIST, tiers);
+	    
+	    session.getTransaction().commit();
+	}
+	
 	public static final Instrument.Group SINGLE_PLAYER_GROUP = Instrument.Group.GUITAR;
 	public static final Instrument.Group CO_OP_PLAYER_GROUP = Instrument.Group.GUITAR_BASS;
 	
@@ -62,7 +139,8 @@ public class GhGameTitle extends jshm.GameTitle {
 	};
 	
 	private static final Song.Sorting[] SUPPORTED_SORTINGS = {
-		Song.Sorting.SCOREHERO, Song.Sorting.TITLE
+		Song.Sorting.SCOREHERO, Song.Sorting.TITLE,
+		Sorting.ARTIST, Sorting.GENRE, Sorting.DECADE
 	};
 	
 	private static final int

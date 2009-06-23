@@ -23,13 +23,16 @@ package jshm.dataupdaters;
 import java.util.*;
 import java.util.logging.Logger;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.netbeans.spi.wizard.ResultProgressHandle;
 //import org.hibernate.criterion.Example;
 
 import jshm.*;
 import static jshm.hibernate.HibernateUtil.openSession;
 import jshm.gh.*;
+import jshm.xml.GhSongInfoFetcher;
 
 /**
  * This class scrapes song data and then inserts or updates
@@ -86,5 +89,70 @@ public class GhSongUpdater {
 			if (null != session && session.isOpen())
 				session.close();
 		}
+	}
+	
+	public static void updateSongInfo(GhGameTitle ttl) throws Exception {
+		updateSongInfo(null, ttl);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void updateSongInfo(final ResultProgressHandle progress, GhGameTitle ttl) throws Exception {
+		if (null != progress)
+			progress.setBusy("Downloading song meta data...");
+		GhSongInfoFetcher fetcher = new GhSongInfoFetcher();
+		fetcher.fetch(ttl);
+		Session session = null;
+		Transaction tx = null;
+		
+		try {
+			session = openSession();
+		    tx = session.beginTransaction();
+		    
+			int i = 0, total = fetcher.songMap.size(); 
+						
+			for (String key : fetcher.songMap.keySet()) {
+				if (null != progress)
+					progress.setProgress(
+						String.format("Processing song %s of %s", i + 1, total), i, total);
+				
+				String upperTtl = key.toUpperCase();
+				
+				List<GhSong> result =
+					(List<GhSong>) session.createQuery(
+						"FROM GhSong WHERE game LIKE :gameTtl AND UPPER(title) LIKE :ttl")
+					.setString("gameTtl", ttl.title + "_%")
+					.setString("ttl", upperTtl)
+					.list();
+				
+				LOG.finer("result.size() == " + result.size());
+				
+				for (GhSong s : result) {
+					if (s.update(fetcher.songMap.get(key))) {
+						LOG.info("Updating song to: " + s);
+						session.update(s);
+					} else {
+						LOG.finer("No changes to song: " + s);
+					}
+				}
+				
+				if (i % 64 == 0) {
+					session.flush();
+					session.clear();
+				}
+				
+				i++;
+			}
+			
+		    tx.commit();
+		} catch (HibernateException e) {
+			if (null != tx && tx.isActive()) tx.rollback();
+			LOG.throwing("GhSongUpdater", "updateSongInfo", e);
+			throw e;
+		} finally {
+			if (null != session && session.isOpen())
+				session.close();
+		}
+		
+		ttl.initDynamicTiers();
 	}
 }

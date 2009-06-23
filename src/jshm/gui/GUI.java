@@ -75,6 +75,7 @@ import jshm.Instrument.Group;
 import jshm.Song.Sorting;
 import jshm.exceptions.SongHiddenException;
 import jshm.gh.GhGame;
+import jshm.gh.GhGameTitle;
 import jshm.gui.components.SelectSongDialog;
 import jshm.gui.components.StatusBar;
 import jshm.gui.datamodels.GhSongDataTreeTableModel;
@@ -369,6 +370,7 @@ public class GUI extends javax.swing.JFrame {
         ghScoresMenu = new javax.swing.JMenu();
         ghSongDataMenu = new javax.swing.JMenu();
         downloadGhSongDataMenuItem = new javax.swing.JMenuItem();
+        downloadGhSongMetaDataMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
         ghLinksMenu = new javax.swing.JMenu();
         rbMenu = new javax.swing.JMenu();
@@ -512,6 +514,17 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         ghSongDataMenu.add(downloadGhSongDataMenuItem);
+
+        downloadGhSongMetaDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jshm/resources/images/toolbar/down32.png"))); // NOI18N
+        downloadGhSongMetaDataMenuItem.setText("Download Meta Data...");
+        downloadGhSongMetaDataMenuItem.setToolTipText("Download only song meta data (artist, genre, etc.)");
+        downloadGhSongMetaDataMenuItem.setEnabled(false);
+        downloadGhSongMetaDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                downloadGhSongMetaDataMenuItemActionPerformed(evt);
+            }
+        });
+        ghSongDataMenu.add(downloadGhSongMetaDataMenuItem);
         ghSongDataMenu.add(jSeparator2);
 
         initGhGameMenu(ghSongDataMenu);
@@ -954,6 +967,51 @@ private void downloadRbSongMetaDataMenuItemActionPerformed(java.awt.event.Action
 		}	
 	}.execute();
 }//GEN-LAST:event_downloadRbSongMetaDataMenuItemActionPerformed
+
+private void downloadGhSongMetaDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadGhSongMetaDataMenuItemActionPerformed
+	new SwingWorker<Boolean, Void>() {		
+		@Override
+		protected Boolean doInBackground() throws Exception {
+			getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			statusBar1.setTempText("Downloading song meta data...", true);
+			
+			boolean ret = false;
+			ProgressDialog progress = null;
+			
+			try {
+				progress = new ProgressDialog(GUI.this);
+				jshm.dataupdaters.GhSongUpdater.updateSongInfo(progress, (GhGameTitle) curGame.title);
+				ret = true;
+			} catch (Exception e) {			
+				ret = false;
+				LOG.log(Level.SEVERE, "Failed to download song meta data", e);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to download song meta data", null, null, e, null, null);
+				JXErrorPane.showDialog(GUI.this, ei);
+			} finally {
+				if (null != progress)
+					progress.dispose();
+				
+				statusBar1.revertText();
+				getContentPane().setCursor(Cursor.getDefaultCursor());
+			}
+			
+			return ret;
+		}
+		
+		@Override
+		public void done() {
+			try {
+				if (get()) {
+					songDataMenuItemActionPerformed(null, curGame, curDiff);
+				}
+			} catch (Exception e) {
+				LOG.log(Level.SEVERE, "Unknown error", e);
+				ErrorInfo ei = new ErrorInfo("Error", "Unknown error", null, null, e, null, null);
+				JXErrorPane.showDialog(GUI.this, ei);
+			}
+		}	
+	}.execute();
+}//GEN-LAST:event_downloadGhSongMetaDataMenuItemActionPerformed
 
 private void hideEmptySongsMenuItemItemStateChanged(java.awt.event.ItemEvent evt) {                                                         
 	if (tree.getTreeTableModel() instanceof ScoresTreeTableModel) {
@@ -1590,6 +1648,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 			actions.gotoSong.setEnabled(false);
 			
 			downloadGhSongDataMenuItem.setEnabled(true);
+			downloadGhSongMetaDataMenuItem.setEnabled(true);
 			downloadRbSongDataMenuItem.setEnabled(false);
 			downloadRbSongMetaDataMenuItem.setEnabled(false);
 			editorCollapsiblePane.setCollapsed(true);
@@ -1669,6 +1728,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 			actions.gotoSong.setEnabled(false);
 			
 			downloadGhSongDataMenuItem.setEnabled(false);
+			downloadGhSongMetaDataMenuItem.setEnabled(false);
 			downloadRbSongDataMenuItem.setEnabled(true);
 			downloadRbSongMetaDataMenuItem.setEnabled(true);
 			editorCollapsiblePane.setCollapsed(true);
@@ -1748,6 +1808,7 @@ private void wtSongDataMenuItemActionPerformed(final ActionEvent evt, final WtGa
 			actions.gotoSong.setEnabled(false);
 			
 			downloadGhSongDataMenuItem.setEnabled(true);
+			downloadGhSongMetaDataMenuItem.setEnabled(true);
 			downloadRbSongDataMenuItem.setEnabled(false);
 			downloadRbSongMetaDataMenuItem.setEnabled(false);
 			editorCollapsiblePane.setCollapsed(true);
@@ -1861,6 +1922,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			actions.gotoSong.setEnabled(true);
 			
 			downloadGhSongDataMenuItem.setEnabled(game instanceof GhGame || game instanceof WtGame);
+			downloadGhSongMetaDataMenuItem.setEnabled(game instanceof GhGame);
 			downloadRbSongDataMenuItem.setEnabled(game instanceof RbGame);
 			downloadRbSongMetaDataMenuItem.setEnabled(game instanceof RbGame);
 			
@@ -1905,6 +1967,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JMenuItem checkForUpdatesMenuItem;
     private jshm.gui.CheckUpdatesDialog checkUpdatesDialog1;
     private javax.swing.JMenuItem downloadGhSongDataMenuItem;
+    private javax.swing.JMenuItem downloadGhSongMetaDataMenuItem;
     private javax.swing.JMenuItem downloadRbSongDataMenuItem;
     private javax.swing.JMenuItem downloadRbSongMetaDataMenuItem;
     org.jdesktop.swingx.JXCollapsiblePane editorCollapsiblePane;
