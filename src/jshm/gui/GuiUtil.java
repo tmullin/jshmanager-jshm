@@ -324,7 +324,7 @@ public class GuiUtil {
 					SpInfoViewer viewer = new SpInfoViewer();
 					viewer.setTitle(url.toExternalForm());
 					viewer.setImage(image, true);
-					viewer.setLocationRelativeTo(null);
+					viewer.setLocationRelativeTo(owner);
 					viewer.setVisible(true);
 				}
 			}

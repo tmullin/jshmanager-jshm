@@ -48,6 +48,8 @@ public class SpPathScraper {
 				PathInfo pi = new PathInfo();
 				
 				pi.label = a.get("label");
+				try { pi.score = Integer.parseInt(a.get("score")); }
+				catch (NumberFormatException e) {}
 				pi.shortDescription = a.get("short");
 				pi.notes = a.get("notes");
 				pi.image = a.get("image");
@@ -69,6 +71,7 @@ public class SpPathScraper {
 	public static class PathInfo {
 		// yes i see the irony of calling short description "shortDescription"
 		public String label, shortDescription, notes, credit, image, video;
+		public int score = 0;
 		
 		private PathInfo() {}
 		
@@ -77,8 +80,17 @@ public class SpPathScraper {
 			
 			if (null != label) {
 				sb.append(label);
-				sb.append('\n');
 			}
+			
+			if (0 != score) {
+				if (null != label)
+					sb.append(" - ");
+				sb.append("Est. Score: ");
+				sb.append(String.valueOf(score));
+			}
+			
+			if (null != label || 0 != score)
+				sb.append('\n');
 			
 			sb.append(shortDescription);
 			

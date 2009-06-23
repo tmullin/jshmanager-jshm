@@ -38,7 +38,7 @@ import java.util.TimeZone;
  * to make things simple (FVH).
  * 
  * @version $Revision: 1.3 $
- * @author Benoît Mahé (bmahe@w3.org)
+ * @author Benot Mah (bmahe@w3.org)
  */
 public class IsoDateParser {
 

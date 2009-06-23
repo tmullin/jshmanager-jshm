@@ -24,6 +24,7 @@ import java.awt.event.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.swing.*;
 
@@ -39,6 +40,7 @@ import jshm.util.Util;
 import jshm.wt.WtSong;
 
 import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * This is a JPopupMenu for use with GUI.tree.
@@ -208,29 +210,13 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 							selectedSong, gui.getCurGroup(), gui.getCurDiff()));
 			} else if (src == userPathsMenuItem) {
 				new SwingWorker<Void, Void>() {
-					StringBuilder content = null;
+					List<PathInfo> paths = null;
 					Throwable t = null;
 					
 					protected Void doInBackground() throws Exception {
 						try {
-							content = new StringBuilder("Song: ")
-							.append(selectedSong.getTitle())
-							.append("\nInstrument: ")
-							.append(gui.getCurGroup().getLongName(selectedSong instanceof WtSong))
-							.append("\nDifficulty: ")
-							.append(gui.getCurDiff().getLongName());
-							
-							List<PathInfo> paths = SpPathScraper.scrape(
+							paths = SpPathScraper.scrape(
 								selectedSong, gui.getCurGroup(), gui.getCurDiff());
-							
-							if (paths.isEmpty()) {
-								content.append("\n\nNo paths were found on the wiki.");
-							} else {
-								for (PathInfo pi : paths) {
-									content.append("\n\n");
-									content.append(pi);
-								}
-							}
 						} catch (Exception e) {
 							t = e;
 						}
@@ -240,14 +226,23 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 					
 					public void done() {
 						if (null != t) {
-							StringWriter w = new StringWriter();
-							t.printStackTrace(new PrintWriter(w));
-							
-							content = new StringBuilder("There was a problem retrieving the paths:\n\n");
-							content.append(w.toString());
+//							LOG.log(Level.SEVERE, "Failed to load score data from database", e);
+							ErrorInfo ei = new ErrorInfo("Error", "Failed to retrieve paths from wiki.", null, null, t, null, null);
+							org.jdesktop.swingx.JXErrorPane.showDialog(gui, ei);
+						} else if (null == paths || paths.size() == 0) {
+							JOptionPane.showMessageDialog(gui,
+								"The wiki didn't have any paths for that song.",
+								"",
+								JOptionPane.INFORMATION_MESSAGE);
+						} else {
+							WikiSpPathsFrame frame = new WikiSpPathsFrame();
+							frame.setSong(selectedSong, gui.getCurGroup(), gui.getCurDiff());
+							frame.addPaths(paths);
+							frame.pack();
+							frame.setLocationRelativeTo(gui);
+							frame.setIconImage(gui.getIconImage());
+							frame.setVisible(true);
 						}
-						
-						gui.showTextFileViewer("SP Paths from Wiki", content.toString());
 					}
 				}.execute();
 			} else if (src == cancelMenuItem) {

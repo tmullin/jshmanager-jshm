@@ -23,6 +23,7 @@ package jshm.gui.components;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import jshm.gui.GuiUtil;
 import jshm.gui.plaf.MyHyperlinkUI;
 import jshm.util.Util;
 
@@ -44,14 +45,38 @@ public class Hyperlink extends JXHyperlink {
 		setText(title);
 		setUI(new MyHyperlinkUI());
 
+		setUrl(url);
+	}
+	
+	ActionListener urlListener = null;
+	
+	public void setUrl(final String url) {
+		setUrl(url, false);
+	}
+	
+	public void setUrl(final String url, final boolean checkForImage) {
 		if (null != url) {
 			setToolTipText(url);
 			
-			addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Util.openURL(url);
-				}
-			});
+			if (null != urlListener) {
+				removeActionListener(urlListener);
+			}
+			
+			if (checkForImage) {
+				urlListener = new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						GuiUtil.openImageOrBrowser(null, url);
+					}
+				};
+			} else {
+				urlListener = new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Util.openURL(url);
+					}
+				};
+			}
+			
+			addActionListener(urlListener);
 		}
 	}
 }
