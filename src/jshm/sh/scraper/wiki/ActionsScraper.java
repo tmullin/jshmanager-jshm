@@ -3,7 +3,9 @@ package jshm.sh.scraper.wiki;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,11 +28,11 @@ public class ActionsScraper {
 		LOG.setLevel(Level.INFO);
 	}
 	
-	public static Map<String, Action> scrape(String wikiUrl) throws IOException, ScraperException {
-		return scrape(wikiUrl, new HashMap<String, Action>());
+	public static Map<String, List<Action>> scrape(String wikiUrl) throws IOException, ScraperException {
+		return scrape(wikiUrl, new HashMap<String, List<Action>>());
 	}
 	
-	public static Map<String, Action> scrape(String wikiUrl, Map<String, Action> ret) throws IOException, ScraperException {
+	public static Map<String, List<Action>> scrape(String wikiUrl, Map<String, List<Action>> ret) throws IOException, ScraperException {
 		if (null == ret)
 			throw new NullPointerException("ret");
 		
@@ -80,7 +82,9 @@ public class ActionsScraper {
 						// no key/value pairs
 						rightBraceCount++;
 						action.name = sb.toString();
-						ret.put(action.name, action);
+						if (null == ret.get(action.name))
+							ret.put(action.name, new ArrayList<Action>());
+						ret.get(action.name).add(action);
 						expect = Expect.RIGHT_BRACE;
 
 						LOG.finer("got right brace after name (" + action.name + "), action has no args");
@@ -89,7 +93,9 @@ public class ActionsScraper {
 						// we've read some characters for the name
 						if (0 != sb.length()) {
 							action.name = sb.toString();
-							ret.put(action.name, action);
+							if (null == ret.get(action.name))
+								ret.put(action.name, new ArrayList<Action>());
+							ret.get(action.name).add(action);
 							expect = Expect.KEY;
 							sb = new StringBuilder();
 							isQuotedString = false;							

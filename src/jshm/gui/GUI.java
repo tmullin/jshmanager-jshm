@@ -1086,13 +1086,21 @@ private void uploadLogsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
 }                                                  
 
 public void showTextFileViewer(final String file) {
+	showTextFileViewer(new File(file));
+}
+
+public void showTextFileViewer(final File file) {
 	try {
-		textFileViewerDialog1.setVisible(new File(file));
+		textFileViewerDialog1.setVisible(file);
 	} catch (Exception e) {
 		LOG.log(Level.WARNING, "Unknown error displaying TextFileViewer", e);
 		ErrorInfo ei = new ErrorInfo("Error", "Unknown error displaying TextFileViewer", null, null, e, null, null);
 		JXErrorPane.showDialog(GUI.this, ei);
 	}
+}
+
+public void showTextFileViewer(String title, String content) {
+	textFileViewerDialog1.setVisible(title, content);
 }
 
 private void formWindowClosing(java.awt.event.WindowEvent evt) {                                    

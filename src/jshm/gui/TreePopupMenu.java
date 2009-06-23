@@ -21,6 +21,8 @@
 package jshm.gui;
 
 import java.awt.event.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 
 import javax.swing.*;
@@ -30,8 +32,11 @@ import jshm.Song;
 import jshm.gui.datamodels.ScoresTreeTableModel;
 import jshm.sh.URLs;
 import jshm.sh.links.Link;
-import jshm.sh.scraper.WikiSpScraper;
+import jshm.sh.scraper.wiki.SpChartScraper;
+import jshm.sh.scraper.wiki.SpPathScraper;
+import jshm.sh.scraper.wiki.SpPathScraper.PathInfo;
 import jshm.util.Util;
+import jshm.wt.WtSong;
 
 import org.jdesktop.swingx.JXTreeTable;
 
@@ -74,6 +79,9 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 			noChartsMenuItem = new JMenuItem("None available");
 			noChartsMenuItem.setEnabled(false);
 			
+		userPathsMenuItem = new JMenuItem("View paths from wiki");
+		userPathsMenuItem.addActionListener(this);
+			
 		cancelMenuItem = new JMenuItem("Cancel", 'C');
 		cancelMenuItem.addActionListener(this);
 		
@@ -89,6 +97,7 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 		add(spChartsMenu);
 		spChartsMenuMouseListener = new SpChartsMenuMouseListener();
 			spChartsMenu.add(loadingChartsMenuItem);
+		add(userPathsMenuItem);
 		addSeparator();
 		add(cancelMenuItem);
 		
@@ -197,6 +206,50 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 					Util.openURL(
 						URLs.wiki.getSongSpUrl(
 							selectedSong, gui.getCurGroup(), gui.getCurDiff()));
+			} else if (src == userPathsMenuItem) {
+				new SwingWorker<Void, Void>() {
+					StringBuilder content = null;
+					Throwable t = null;
+					
+					protected Void doInBackground() throws Exception {
+						try {
+							content = new StringBuilder("Song: ")
+							.append(selectedSong.getTitle())
+							.append("\nInstrument: ")
+							.append(gui.getCurGroup().getLongName(selectedSong instanceof WtSong))
+							.append("\nDifficulty: ")
+							.append(gui.getCurDiff().getLongName());
+							
+							List<PathInfo> paths = SpPathScraper.scrape(
+								selectedSong, gui.getCurGroup(), gui.getCurDiff());
+							
+							if (paths.isEmpty()) {
+								content.append("\n\nNo paths were found on the wiki.");
+							} else {
+								for (PathInfo pi : paths) {
+									content.append("\n\n");
+									content.append(pi);
+								}
+							}
+						} catch (Exception e) {
+							t = e;
+						}
+						
+						return null;
+					}
+					
+					public void done() {
+						if (null != t) {
+							StringWriter w = new StringWriter();
+							t.printStackTrace(new PrintWriter(w));
+							
+							content = new StringBuilder("There was a problem retrieving the paths:\n\n");
+							content.append(w.toString());
+						}
+						
+						gui.showTextFileViewer("SP Paths from Wiki", content.toString());
+					}
+				}.execute();
 			} else if (src == cancelMenuItem) {
 				setVisible(false);
 			}
@@ -220,6 +273,8 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 		
 		loadingChartsMenuItem,
 		noChartsMenuItem,
+		
+		userPathsMenuItem,
 		cancelMenuItem;
 	
 	private JMenu
@@ -238,7 +293,7 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 				
 				protected Void doInBackground() {
 					try {
-						links = WikiSpScraper.scrape(selectedSong, gui.getCurGroup(), gui.getCurDiff());
+						links = SpChartScraper.scrape(selectedSong, gui.getCurGroup(), gui.getCurDiff());
 					} catch (Exception x) {
 						x.printStackTrace();
 					}

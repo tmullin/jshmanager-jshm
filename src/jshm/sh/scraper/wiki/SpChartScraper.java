@@ -18,7 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * -----LICENSE END-----
 */
-package jshm.sh.scraper;
+package jshm.sh.scraper.wiki;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,8 +46,13 @@ import jshm.scraper.Scraper;
 import jshm.sh.URLs;
 import jshm.sh.links.Link;
 
-public class WikiSpScraper {
-	static final Logger LOG = Logger.getLogger(WikiSpScraper.class.getName());
+/**
+ * This gets urls to chart images of sp paths.
+ * @author Tim Mullin
+ *
+ */
+public class SpChartScraper {
+	static final Logger LOG = Logger.getLogger(SpChartScraper.class.getName());
 	
 	static final NodeFilter[] FILTERS;
 	
@@ -91,7 +96,7 @@ public class WikiSpScraper {
 		});
 	}
 
-	static Map<String, List<Link>> cache = new HashMap<String, List<Link>>();
+	private static Map<String, List<Link>> cache = null;
 	
 	public static List<Link> scrape(Song song, Group group, Difficulty diff) throws ScraperException, ParserException {
 		return scrape(true, song, group, diff);
@@ -103,7 +108,7 @@ public class WikiSpScraper {
 		
 		LOG.finer("scraping sp images for " + cacheKey);
 		
-		if (useCache && null != cache.get(cacheKey)) {
+		if (useCache && null != cache && null != cache.get(cacheKey)) {
 			LOG.finest("returning cached data");
 			return cache.get(cacheKey);
 		}
@@ -159,6 +164,9 @@ public class WikiSpScraper {
 //		System.out.println(linkNodes.toHtml());
 		
 		LOG.finest("found " + ret.size() + " images in total");
+		
+		if (null == cache)
+			cache = new HashMap<String, List<Link>>();
 		cache.put(cacheKey, ret);
 		
 		return ret;

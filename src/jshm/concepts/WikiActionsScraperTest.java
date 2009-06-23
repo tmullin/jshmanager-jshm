@@ -1,5 +1,6 @@
 package jshm.concepts;
 
+import java.util.List;
 import java.util.Map;
 
 import jshm.logging.Log;
@@ -19,10 +20,10 @@ public class WikiActionsScraperTest {
 	public static void main(String[] args) throws Exception {
 		Log.configTestLogging();
 		
-		Map<String, Action> actions = ActionsScraper.scrape(url);
+		Map<String, List<Action>> actions = ActionsScraper.scrape(url);
 		
 		for (String key : actions.keySet()) {
-			System.out.println(actions.get(key));
+			System.out.println(actions.get(key).get(0));
 		}
 	}
 }

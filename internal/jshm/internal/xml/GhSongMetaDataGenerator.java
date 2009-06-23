@@ -106,7 +106,7 @@ public class GhSongMetaDataGenerator {
 		
 		// then scrape the genre/album/year/artist from the wiki and set the values
 		
-		Map<String, Action> actionMap = new HashMap<String, Action>();
+		Map<String, List<Action>> actionMap = new HashMap<String, List<Action>>();
 		
 		for (String key : songMap.keySet()) {
 			Song song = songMap.get(key);
@@ -117,7 +117,9 @@ public class GhSongMetaDataGenerator {
 			ActionsScraper.scrape(
 				URLs.wiki.getSongUrl(song), actionMap);
 			
-			Action songInfo = actionMap.get("songinfo");
+			Action songInfo = null != actionMap.get("songinfo")
+			? actionMap.get("songinfo").get(0)
+			: null;
 			
 			if (null != songInfo) {
 				String s = songInfo.get("genre");
