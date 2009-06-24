@@ -590,7 +590,7 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 			boolean isVideo = !score.getVideoUrl().isEmpty();
 			
 			if (null != url) {
-				if (isVideo)
+				if (isVideo || GUI.CTRL_MASK == (GUI.CTRL_MASK & e.getModifiers()))
 					jshm.util.Util.openURL(url);
 				else
 					GuiUtil.openImageOrBrowser(null, url);

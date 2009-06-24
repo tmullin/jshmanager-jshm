@@ -23,6 +23,7 @@ package jshm.gui.components;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import jshm.gui.GUI;
 import jshm.gui.GuiUtil;
 import jshm.gui.plaf.MyHyperlinkUI;
 import jshm.util.Util;
@@ -65,7 +66,11 @@ public class Hyperlink extends JXHyperlink {
 			if (checkForImage) {
 				urlListener = new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						GuiUtil.openImageOrBrowser(null, url);
+						if (GUI.CTRL_MASK == (GUI.CTRL_MASK & e.getModifiers())) {
+							Util.openURL(url);
+						} else {
+							GuiUtil.openImageOrBrowser(null, url);
+						}
 					}
 				};
 			} else {

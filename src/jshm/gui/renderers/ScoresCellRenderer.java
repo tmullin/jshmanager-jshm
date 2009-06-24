@@ -32,8 +32,8 @@ import jshm.Score;
 import jshm.gui.GuiUtil;
 
 public class ScoresCellRenderer extends DefaultTableCellRenderer {
-	private final DecimalFormat NUM_FMT = new DecimalFormat("#,###");
-	private final SimpleDateFormat DATE_FMT = new SimpleDateFormat("MM/dd/yy HH:mm");
+	public static final DecimalFormat NUM_FMT = new DecimalFormat("#,###");
+	public static final SimpleDateFormat DATE_FMT = new SimpleDateFormat("MM/dd/yy HH:mm");
 	
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,

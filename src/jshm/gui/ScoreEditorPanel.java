@@ -55,6 +55,7 @@ import jshm.gui.datamodels.ScoresTreeTableModel;
 import jshm.gui.editors.ScoresRatingEditor;
 import jshm.hibernate.HibernateUtil;
 import jshm.rb.RbScore;
+import jshm.util.Util;
 import jshm.wt.WtScore;
 
 import org.hibernate.Session;
@@ -428,13 +429,18 @@ public class ScoreEditorPanel extends javax.swing.JPanel implements PropertyChan
 
 private void imageUrlOpenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageUrlOpenButtonActionPerformed
 	if (imageUrlField.getText().isEmpty()) return;
-	gui.openImageOrBrowser(imageUrlField.getText());
+	
+	if (GUI.CTRL_MASK == (GUI.CTRL_MASK & evt.getModifiers())) {
+		Util.openURL(imageUrlField.getText());
+	} else {
+		gui.openImageOrBrowser(imageUrlField.getText());
+	}
 }//GEN-LAST:event_imageUrlOpenButtonActionPerformed
 
 private void videoUrlOpenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_videoUrlOpenButtonActionPerformed
-	if (!videoUrlField.getText().isEmpty()) {
-		jshm.util.Util.openURL(videoUrlField.getText());
-	}
+	if (videoUrlField.getText().isEmpty()) return;
+	
+	jshm.util.Util.openURL(videoUrlField.getText());
 }//GEN-LAST:event_videoUrlOpenButtonActionPerformed
 
 

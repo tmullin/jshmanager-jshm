@@ -20,13 +20,17 @@
 */
 package jshm.gui;
 
-import java.awt.event.*;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
-import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingWorker;
 
 import jshm.Score;
 import jshm.Song;
@@ -37,7 +41,6 @@ import jshm.sh.scraper.wiki.SpChartScraper;
 import jshm.sh.scraper.wiki.SpPathScraper;
 import jshm.sh.scraper.wiki.SpPathScraper.PathInfo;
 import jshm.util.Util;
-import jshm.wt.WtSong;
 
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.error.ErrorInfo;
@@ -232,13 +235,12 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 						} else if (null == paths || paths.size() == 0) {
 							JOptionPane.showMessageDialog(gui,
 								"The wiki didn't have any paths for that song.",
-								"",
+								"No paths found",
 								JOptionPane.INFORMATION_MESSAGE);
 						} else {
 							WikiSpPathsFrame frame = new WikiSpPathsFrame();
 							frame.setSong(selectedSong, gui.getCurGroup(), gui.getCurDiff());
 							frame.addPaths(paths);
-							frame.pack();
 							frame.setLocationRelativeTo(gui);
 							frame.setIconImage(gui.getIconImage());
 							frame.setVisible(true);

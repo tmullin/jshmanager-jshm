@@ -43,8 +43,8 @@ public class JSHManager {
 		public static final String NAME = "JSHManager";
 		public static final int MAJOR = 0;
 		public static final int MINOR = 3;
-		public static final int POINT = 0;
-		public static final boolean IS_BETA = false;
+		public static final int POINT = 1;
+		public static final boolean IS_BETA = true;
 		
 		public static final String
 		VERSION =
@@ -52,8 +52,8 @@ public class JSHManager {
 		STRING =
 			String.format("%s%s", VERSION, IS_BETA ? " beta" : "");
 		
-		public static final String LAST = "0.2.8";
-		public static final int LAST_REVISION = 304;
+		public static final String LAST = "0.3.0";
+		public static final int LAST_REVISION = 369;
 		
 		public static final java.util.Date DATE = initDate("$Date$");
 		public static final int REVISION = initRevision("$Revision$");
