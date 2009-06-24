@@ -6,6 +6,8 @@
 
 package jshm.gui;
 
+//import java.awt.Dimension;
+
 import jshm.gui.renderers.ScoresCellRenderer;
 import jshm.sh.scraper.wiki.SpPathScraper.PathInfo;
 
@@ -25,6 +27,17 @@ public class WikiSpPathPanel extends javax.swing.JPanel {
 	
     public void removeEditPopupMenu() {
     	EditPopupMenu.remove(notesTextPane);
+    }
+    
+//    public Dimension getPreferredSize() {
+//    	Dimension d = super.getPreferredSize();
+//    	int dx = getWidth() - notesTextPane.getWidth();
+//    	d.width = getMaxTextWidth() + dx;
+//    	return d;
+//    }
+    
+    public int getMaxTextWidth() {
+    	return notesTextPane.getPreferredSize().width + getWidth() - notesTextPane.getWidth();
     }
     
 	public void setPathInfo(PathInfo pi) {

@@ -33,20 +33,51 @@ public class WikiSpPathsFrame extends javax.swing.JFrame {
         jsp.getHorizontalScrollBar().setUnitIncrement(50);
     }
 
+    public int getMaxTextWidth() {
+    	int ret = 0;
+    	
+    	for (int i = pathsPanel.getComponentCount() - 1; i >= 0; i--) {
+    		Component c = pathsPanel.getComponent(i);
+    		if (c instanceof WikiSpPathPanel) {
+    			WikiSpPathPanel cc = (WikiSpPathPanel) c;
+    			
+    			if (cc.getMaxTextWidth() > ret)
+    				ret = cc.getMaxTextWidth();
+    		}
+    	}
+    	
+    	return Math.max(ret, pathsPanel.getWidth());
+    }
+    
     public void setLocationRelativeTo(Component c) {
+    	// here i'm trying to resize the frame to be at most
+    	// 75% the size of the main window. i want to make it as
+    	// wide as possible to not have to wrap lines that aren't
+    	// too long and i want to make it as short as necessary
+
     	Dimension size = pathsPanel.getPreferredSize();
 //    	System.out.println("panel pref size = " + size);
     	Container cp = getContentPane();
 //    	System.out.println("cp size = " + cp.getSize());
 //    	System.out.println("frame size = " + this.getSize());
+//    	System.out.println("max text width = " + getMaxTextWidth());
+    	
+    	size.width = getMaxTextWidth();
+    	pathsPanel.setSize(size);
     	
     	Insets jspInsets = jsp.getInsets();
-    	size.width = cp.getWidth() +
-	    	jsp.getVerticalScrollBar().getPreferredSize().width +
-			jspInsets.left + jspInsets.right;
+    	int vsbWidth =
+    		jsp.getVerticalScrollBar().getPreferredSize().width +
+    		jspInsets.left + jspInsets.right;
+    	
+    	size.width = Math.min(
+    		null != c ? (int) (0.75f * c.getWidth()) : 800,
+			size.width + vsbWidth
+		);
     	size.height = Math.min(
     		size.height + jspInsets.top + jspInsets.bottom,
-    		null != c ? (int) (0.75f * c.getHeight()) : 1000);
+    		null != c ? (int) (0.75f * c.getHeight()) : 600
+    	);
     	
 //    	System.out.println("new cp pref size = " + size);
     	
