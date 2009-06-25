@@ -2091,7 +2091,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 					
 					try {
 						((ScoresTreeTableModel) tree.getTreeTableModel())
-							.expandAndScrollTo(song);
+							.expandAndScrollTo(song, true);
 					} catch (SongHiddenException e1) {
 						JOptionPane.showMessageDialog(GUI.this,
 							"That song is hidden because it doesn't have any scores\n" +

@@ -379,12 +379,12 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 			tp = tp.pathByAddingChild(score); // ROOT -> Tier -> Song -> Score
 			
 			parent.packAll();
-			expandAndScrollTo(tp);
+			expandAndScrollTo(tp, true);
 		}
 		// else we're actually updating an existing score
 	}
 	
-	public void expandAndScrollTo(Song song) throws SongHiddenException {
+	public void expandAndScrollTo(final Song song, final boolean selectRow) throws SongHiddenException {
 		Tier tier = model.tiers.get(song.getTierLevel(sorting) - 1);
 		SongScores ss = tier.getSongScores(song);
 		
@@ -412,12 +412,45 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 //		
 //        System.out.println("ex+scroll to: " + tempSpot.toString());
         
-		expandAndScrollTo(tp);
+		expandAndScrollTo(tp, selectRow);
 	}
 	
-	public void expandAndScrollTo(TreePath tp) {
-		parent.expandPath(tp);
-		parent.scrollPathToVisible(tp);
+	private void expandAndScrollTo(final TreePath tp, final boolean selectRow) {
+		int row, rowToSelect;
+		int visibleRowCount = parent.getVisibleRowCount();
+		
+		if (tp.getLastPathComponent() instanceof Score) {
+			TreePath parentPath = tp.getParentPath();
+			parent.expandPath(parentPath);
+			int scoreCount = ((SongScores) parentPath.getLastPathComponent()).getScoreCount();
+
+			rowToSelect = parent.getRowForPath(tp);
+			// if there's enough space make the song title visible
+			if (scoreCount < visibleRowCount) {
+				row = parent.getRowForPath(parentPath);
+			} else {
+				row = rowToSelect;
+			}
+		} else {
+			parent.expandPath(tp);
+			row = parent.getRowForPath(tp);
+			rowToSelect = row;
+		}
+		
+		
+		// make it so tp appears near the top
+		
+		parent.scrollRowToVisible(
+			Math.min(
+				parent.getRowCount() - 1,
+				row + visibleRowCount
+		));
+		
+		parent.scrollRowToVisible(row);
+		
+		if (selectRow)
+			parent.getSelectionModel()
+			.setSelectionInterval(rowToSelect, rowToSelect);
 	}
 
 	public void deleteScore(TreePath p) {

@@ -36,7 +36,7 @@ public class GhGameTitle extends jshm.GameTitle {
 		GH80 = new GhGameTitle("GH80", 3, Platform.PS2),
 		GH3  = new GhGameTitle("GH3", 4, Platform.PS2, Platform.XBOX360, Platform.PS3, Platform.WII, Platform.PC),
 		GHOT = new GhGameTitle("GHOT", 5, false, Platform.DS),
-		GHA  = new GhGameTitle("GHA", 6, Platform.PS2, Platform.XBOX360, Platform.PS3, Platform.WII)
+		GHA  = new GhGameTitle("GHA", 6, Platform.PS2, Platform.XBOX360, Platform.PS3, Platform.WII, Platform.PC)
 	;
 	
 	public final int scoreHeroGroupId;

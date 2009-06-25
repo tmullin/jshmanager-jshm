@@ -615,7 +615,7 @@ private void videoUrlOpenButtonActionPerformed(java.awt.event.ActionEvent evt) {
 				if (selected instanceof Song) {
 					try {
 						((ScoresTreeTableModel) gui.tree.getTreeTableModel())
-							.expandAndScrollTo((Song) selected);
+							.expandAndScrollTo((Song) selected, false);
 					} catch (SongHiddenException e) {
 						JOptionPane.showMessageDialog(gui,
 							"That song is hidden because it doesn't have any scores\n" +

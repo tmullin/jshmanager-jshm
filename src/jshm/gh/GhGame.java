@@ -70,7 +70,8 @@ public class GhGame extends jshm.Game {
 		GHA_PS2 = new GhGame(11, GhGameTitle.GHA, SPTiers.GHA, Platform.PS2, false),
 		GHA_XBOX360 = new GhGame(12, GhGameTitle.GHA, SPTiers.GHA, Platform.XBOX360, false),
 		GHA_PS3 = new GhGame(13, GhGameTitle.GHA, SPTiers.GHA, Platform.PS3, false),
-		GHA_WII = new GhGame(14, GhGameTitle.GHA, SPTiers.GHA, Platform.WII, false)
+		GHA_WII = new GhGame(14, GhGameTitle.GHA, SPTiers.GHA, Platform.WII, false),
+		GHA_PC = new GhGame(15, GhGameTitle.GHA, SPTiers.GHA, Platform.PC, false)
 	;
 	
 	public static void init() {}

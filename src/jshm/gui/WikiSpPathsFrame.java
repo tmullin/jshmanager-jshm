@@ -66,6 +66,7 @@ public class WikiSpPathsFrame extends javax.swing.JFrame {
     	pathsPanel.setSize(size);
     	
     	Insets jspInsets = jsp.getInsets();
+    	Insets pathsPanelInsets = pathsPanel.getInsets();
     	int vsbWidth =
     		jsp.getVerticalScrollBar().getPreferredSize().width +
     		jspInsets.left + jspInsets.right;
@@ -75,7 +76,8 @@ public class WikiSpPathsFrame extends javax.swing.JFrame {
 			size.width + vsbWidth
 		);
     	size.height = Math.min(
-    		size.height + jspInsets.top + jspInsets.bottom,
+    		size.height + jspInsets.top + jspInsets.bottom +
+    		pathsPanelInsets.top + pathsPanelInsets.bottom,
     		null != c ? (int) (0.75f * c.getHeight()) : 600
     	);
     	

@@ -2,6 +2,7 @@ package jshm.sh.scraper.wiki;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,14 +29,11 @@ public class ActionsScraper {
 		LOG.setLevel(Level.INFO);
 	}
 	
-	public static Map<String, List<Action>> scrape(String wikiUrl) throws IOException, ScraperException {
+	public static Map<String, List<Action>> scrape(final String wikiUrl) throws IOException, ScraperException {
 		return scrape(wikiUrl, new HashMap<String, List<Action>>());
 	}
 	
-	public static Map<String, List<Action>> scrape(String wikiUrl, Map<String, List<Action>> ret) throws IOException, ScraperException {
-		if (null == ret)
-			throw new NullPointerException("ret");
-		
+	public static Map<String, List<Action>> scrape(String wikiUrl, final Map<String, List<Action>> ret) throws IOException, ScraperException {
 		if (!wikiUrl.endsWith("/raw"))
 			wikiUrl = wikiUrl + "/raw";
 		
@@ -43,9 +41,19 @@ public class ActionsScraper {
 		GetMethod method = new GetMethod(wikiUrl);
 		client.executeMethod(method);
 		
+		return scrape(method.getResponseBodyAsStream(), ret);
+	}
+	
+	public static Map<String, List<Action>> scrape(final InputStream istream) throws IOException, ScraperException {
+		return scrape(istream, new HashMap<String, List<Action>>());
+	}
+	
+	public static Map<String, List<Action>> scrape(final InputStream istream, final Map<String, List<Action>> ret) throws IOException, ScraperException {
+		if (null == ret)
+			throw new NullPointerException("ret");
+		
 		BufferedReader in = new BufferedReader(
-			new InputStreamReader(
-				method.getResponseBodyAsStream()));
+			new InputStreamReader(istream));
 		StringBuilder sb = null;
 		String lastKey = null;
 		Action action = null;
