@@ -81,16 +81,16 @@ public class WhatToDownloadPage extends WizardPage {
     }
 
     protected String validateContents(final Component component, Object event) {
-    	if (component == platformList) {
+//    	if (component == platformList) {
     		if (platformList.getSelectedValues().length < 1)
     			return "You must select at least one platform.";
-    	} else if (component == difficultyList) {
+//    	} else if (component == difficultyList) {
     		if (difficultyList.getSelectedValues().length < 1)
     			return "You must select at least one difficulty.";
-    	} else if (component == instrumentList) {
+//    	} else if (component == instrumentList) {
     		if (instrumentList.getSelectedValues().length < 1)
     			return "You must select at least one instrument.";
-    	}
+//    	}
     	
     	setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE_OR_FINISH);
     	return null;

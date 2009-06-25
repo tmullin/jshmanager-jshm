@@ -32,6 +32,7 @@ import jshm.dataupdaters.GhScoreUpdater;
 import jshm.dataupdaters.RbScoreUpdater;
 import jshm.dataupdaters.WtScoreUpdater;
 import jshm.gh.GhGame;
+import jshm.gh.GhGameTitle;
 import jshm.gui.GUI;
 import jshm.gui.LoginDialog;
 //import jshm.gui.ProgressDialog;
@@ -144,6 +145,8 @@ public class ScoreDownloadWizard {
 				
 				
 				if (game instanceof GhGame) {
+					boolean downloadedSongData = false;
+					
 					for (Object platformObj : platforms) {
 						Platform p = (Platform) platformObj;
 						GhGame ggame = (GhGame) Game.getByTitleAndPlatform(game.title, p);
@@ -156,6 +159,7 @@ public class ScoreDownloadWizard {
 							
 							if (songs.size() == 0) {
 								// need to load song data as well
+								downloadedSongData = true;
 								LOG.fine("Downloading song data first");
 								progress.setBusy("Downloading song data");
 								jshm.dataupdaters.GhSongUpdater.update(ggame, d);
@@ -164,7 +168,11 @@ public class ScoreDownloadWizard {
 							GhScoreUpdater.update(progress, scrapeAll, ggame, d);
 						}
 					}
-						
+
+					if (downloadedSongData) {
+						jshm.dataupdaters.GhSongUpdater.updateSongInfo(progress, (GhGameTitle) game.title);
+					}
+					
 					gui.myScoresMenuItemActionPerformed(null, game, Instrument.Group.GUITAR, difficulty);
 				} else if (game instanceof RbGame) {
 					for (Object platformObj : platforms) {
@@ -241,7 +249,7 @@ public class ScoreDownloadWizard {
 									
 									try {
 										jshm.dataupdaters.WtSongUpdater.updateViaXml(progress, wgame.title);
-//										jshm.dataupdaters.WtSongUpdater.updateSongInfo(progress);
+										jshm.dataupdaters.WtSongUpdater.updateSongInfo(progress, (WtGameTitle) wgame.title);
 									} catch (Exception e1) {
 										LOG.log(Level.WARNING, "Failed to download song data via XML", e1);
 //										
@@ -250,7 +258,7 @@ public class ScoreDownloadWizard {
 										
 										if (JOptionPane.YES_OPTION == result) {
 											jshm.dataupdaters.WtSongUpdater.updateViaScraping(progress, wgame.title);
-//											jshm.dataupdaters.WtSongUpdater.updateSongInfo(progress);
+											jshm.dataupdaters.WtSongUpdater.updateSongInfo(progress, (WtGameTitle) wgame.title);
 										}
 									}
 									

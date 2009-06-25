@@ -271,7 +271,7 @@ public abstract class Song implements Comparable<Song> {
 						return i;
 				}
 				
-				throw new IllegalStateException("no tier found for artist");
+				throw new IllegalStateException("no tier found for artist: " + artist);
 				
 			case GENRE:
 				if (null == genre)
@@ -281,7 +281,7 @@ public abstract class Song implements Comparable<Song> {
 						return i;
 				}
 				
-				throw new IllegalStateException("no tier found for genre");
+				throw new IllegalStateException("no tier found for genre: " + genre);
 				
 			case DECADE:
 				if (0 == year) return 1; // <UNKNOWN>
@@ -293,7 +293,7 @@ public abstract class Song implements Comparable<Song> {
 						return i;
 				}
 				
-				throw new IllegalStateException("no tier found for decade");
+				throw new IllegalStateException("no tier found for decade: " + decadeStr);
 		}
 		
 		throw new UnsupportedOperationException("sorting not implemented: " + sorting);

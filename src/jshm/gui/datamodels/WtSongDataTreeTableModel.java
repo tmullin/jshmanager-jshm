@@ -65,7 +65,7 @@ public class WtSongDataTreeTableModel extends AbstractTreeTableModel implements 
 		
 		@Override
 		public String toString() {
-			return String.format("%s (%s songs)", name, songs.size());
+			return String.format("%s (%s song%s)", name, songs.size(), songs.size() == 1 ? "" : "s");
 		}
 	}
 	

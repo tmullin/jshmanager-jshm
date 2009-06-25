@@ -26,6 +26,7 @@ import org.hibernate.validator.NotNull;
 import jshm.*;
 import jshm.Instrument.Group;
 import jshm.sh.URLs;
+import jshm.xml.GhSongInfoFetcher.SongInfo;
 
 @Entity
 public class WtSong extends Song {
@@ -262,7 +263,52 @@ public class WtSong extends Song {
 		
 		return true;
 	}
+	
+	public boolean update(SongInfo info) {
+		boolean updated = false;
 		
+		if ((null == artist && null != info.artist) ||
+			(null != artist && !artist.equals(info.artist))) {
+			setArtist(info.artist);
+			updated = true;
+		}
+		
+		if ((null == album && null != info.album) ||
+			(null != album && !album.equals(info.album))) {
+			setAlbum(info.album);
+			updated = true;
+		}
+		
+		if ((null == genre && null != info.genre) ||
+			(null != genre && !genre.equals(info.genre))) {
+			setGenre(info.genre);
+			updated = true;
+		}
+		
+		if ((null == songPack && null != info.songPack) ||
+			(null != songPack && !songPack.equals(info.songPack))) {
+			setSongPack(info.songPack);
+			updated = true;
+		}
+		
+		if (year != info.year) {
+			setYear(info.year);
+			updated = true;
+		}
+		
+		if (trackNum != info.trackNum) {
+			setTrackNum(info.trackNum);
+			updated = true;
+		}
+		
+		if (recordingType != info.recording) {
+			setRecordingType(info.recording);
+			updated = true;
+		}
+		
+		return updated;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

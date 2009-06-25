@@ -725,11 +725,15 @@ private void downloadGhSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 			try {
 				if (curGame instanceof GhGame) {
 					jshm.dataupdaters.GhSongUpdater.update((GhGame) curGame, curDiff);
+					
+					progress = new ProgressDialog(GUI.this);
+					jshm.dataupdaters.GhSongUpdater.updateSongInfo(progress, (GhGameTitle) curGame.title);
 				} else if (curGame instanceof WtGame) {
 					progress = new ProgressDialog(GUI.this);
 					
 					try {
 						jshm.dataupdaters.WtSongUpdater.updateViaXml(progress, curGame.title);
+						jshm.dataupdaters.WtSongUpdater.updateSongInfo(progress, (WtGameTitle) curGame.title);
 					} catch (Exception e1) {
 						LOG.log(Level.WARNING, "Failed to download song data via XML", e1);
 						
@@ -738,6 +742,7 @@ private void downloadGhSongDataMenuItemActionPerformed(java.awt.event.ActionEven
 						
 						if (JOptionPane.YES_OPTION == result) {
 							jshm.dataupdaters.WtSongUpdater.updateViaScraping(progress, curGame.title);
+							jshm.dataupdaters.WtSongUpdater.updateSongInfo(progress, (WtGameTitle) curGame.title);
 						} else {
 							return false;
 						}
@@ -980,7 +985,13 @@ private void downloadGhSongMetaDataMenuItemActionPerformed(java.awt.event.Action
 			
 			try {
 				progress = new ProgressDialog(GUI.this);
-				jshm.dataupdaters.GhSongUpdater.updateSongInfo(progress, (GhGameTitle) curGame.title);
+				if (curGame.title instanceof GhGameTitle)
+					jshm.dataupdaters.GhSongUpdater.updateSongInfo(progress, (GhGameTitle) curGame.title);
+				else if (curGame.title instanceof WtGameTitle)
+					jshm.dataupdaters.WtSongUpdater.updateSongInfo(progress, (WtGameTitle) curGame.title);
+				else
+					assert false: "unimplemented GameTitle subclass";
+				
 				ret = true;
 			} catch (Exception e) {			
 				ret = false;
