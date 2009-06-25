@@ -26,15 +26,13 @@ public class SpPathScraper {
 	}
 	
 	public static List<PathInfo> scrape(boolean useCache, Song song, Group group, Difficulty diff) throws IOException, ScraperException {
-		final String cacheKey = String.format("%s_%s_%s",
-			song.getScoreHeroId(), group, diff); 
+		final String url = URLs.wiki.getSongSpUrl(song, group, diff); 
 		
-		if (useCache && null != cache && null != cache.get(cacheKey))
-			return cache.get(cacheKey);
+		if (useCache && null != cache && null != cache.get(url))
+			return cache.get(url);
 		
 		Map<String, List<Action>> actionMap =
-			ActionsScraper.scrape(
-				URLs.wiki.getSongSpUrl(song, group, diff));
+			ActionsScraper.scrape(url);
 		
 		List<PathInfo> ret = null;
 		
@@ -62,7 +60,7 @@ public class SpPathScraper {
 			if (null == cache)
 				cache = new HashMap<String, List<PathInfo>>();
 			
-			cache.put(cacheKey, ret);
+			cache.put(url, ret);
 		}
 		
 		return ret;

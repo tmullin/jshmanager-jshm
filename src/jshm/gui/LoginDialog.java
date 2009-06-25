@@ -28,6 +28,7 @@ package jshm.gui;
 
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
@@ -47,6 +48,8 @@ import org.jdesktop.swingx.error.ErrorInfo;
  * @author Tim Mullin
  */
 public class LoginDialog extends EscapeableDialog {
+	private final File passwordsFile = new File("data/passwords.properties");
+	
 	public static void showDialog() {
 		showDialog(null);
 	}
@@ -75,12 +78,13 @@ public class LoginDialog extends EscapeableDialog {
     private void loadPassword() {
     	try {
 	    	Properties p = new Properties();
-	    	p.load(new FileInputStream("data/passwords.properties"));
+	    	p.load(new FileInputStream(passwordsFile));
 	    	
 	    	for (Object o : p.keySet()) {
 	    		usernameField.setText(o.toString());
 	    		passwordField.setText(
 	    			Crypto.decrypt(p.getProperty(o.toString())));
+	    		rememberPasswordCheckBox.setSelected(true);
 	    		break;
 	    	}
     	} catch (Exception e) {
@@ -94,10 +98,14 @@ public class LoginDialog extends EscapeableDialog {
 			p.setProperty(usernameField.getText(),
 				Crypto.encrypt(new String(passwordField.getPassword())));
 
-			p.store(new FileOutputStream("data/passwords.properties", false), "");
+			p.store(new FileOutputStream(passwordsFile, false), "");
 		} catch (Exception e) {
 			LOG.log(Level.WARNING, "Unable to save password", e);
 		}
+    }
+    
+    private boolean clearPassword() {
+    	return passwordsFile.delete();
     }
     
     public void setEnabled(boolean b) {
@@ -130,6 +138,8 @@ public class LoginDialog extends EscapeableDialog {
 			protected Void doInBackground() throws Exception {
 				if (rememberPasswordCheckBox.isSelected())
 					savePassword();
+				else
+					clearPassword();
 				
 				try {
 					jshm.sh.Client.getAuthCookies(usernameField.getText(), new String(passwordField.getPassword()));
@@ -310,22 +320,22 @@ private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 	}
 }//GEN-LAST:event_cancelButtonActionPerformed
 
-    /**
-    * @param args the command line arguments
-    */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                LoginDialog dialog = new LoginDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
+//    /**
+//    * @param args the command line arguments
+//    */
+//    public static void main(String args[]) {
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                LoginDialog dialog = new LoginDialog(new javax.swing.JFrame(), true);
+//                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+//                    public void windowClosing(java.awt.event.WindowEvent e) {
+//                        System.exit(0);
+//                    }
+//                });
+//                dialog.setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;

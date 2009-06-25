@@ -103,21 +103,18 @@ public class SpChartScraper {
 	}
 	
 	public static List<Link> scrape(boolean useCache, Song song, Group group, Difficulty diff) throws ScraperException, ParserException {
-		final String cacheKey = String.format("%s_%s_%s",
-			song.getScoreHeroId(), group, diff); 
+		final String url = URLs.wiki.getSongSpUrl(song, group, diff); 
 		
-		LOG.finer("scraping sp images for " + cacheKey);
+		LOG.finer("scraping sp images for " + url);
 		
-		if (useCache && null != cache && null != cache.get(cacheKey)) {
+		if (useCache && null != cache && null != cache.get(url)) {
 			LOG.finest("returning cached data");
-			return cache.get(cacheKey);
+			return cache.get(url);
 		}
 		
 		List<Link> ret = new ArrayList<Link>();
 		
-		NodeList nodes = Scraper.scrape(
-			URLs.wiki.getSongSpUrl(song, group, diff),
-			FILTERS);
+		NodeList nodes = Scraper.scrape(url, FILTERS);
 		
 		if (nodes.size() != 1)
 			throw new ScraperException("expected 1 node, got " + nodes.size());
@@ -167,7 +164,7 @@ public class SpChartScraper {
 		
 		if (null == cache)
 			cache = new HashMap<String, List<Link>>();
-		cache.put(cacheKey, ret);
+		cache.put(url, ret);
 		
 		return ret;
 	}

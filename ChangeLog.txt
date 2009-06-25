@@ -12,6 +12,8 @@ Version 0.3.1
 - Added additional sorting options (artist, genre, decade) for Guitar Hero
   games. This data is gathered from the ScoreHero Wiki page for that song.
   If data is missing, you can update the song's wiki page to correct it.
+- The checkbox to remember your password is now correctly checked if it was
+  previously stored and unchecking the box will remove the stored password.
 
 Version 0.3.0
 -------------
