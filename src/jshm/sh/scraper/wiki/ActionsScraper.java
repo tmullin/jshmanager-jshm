@@ -162,7 +162,10 @@ public class ActionsScraper {
 						if (isQuotedString) {
 							LOG.finest("got opening quote for value of key (" + lastKey + ")");
 						} else {
-							String value = sb.toString().trim();
+							String value =
+								org.htmlparser.util.Translate.decode(
+									sb.toString().trim());
+							
 							LOG.finer("got closing quote for value (" + value + ")");
 							
 							action.args.put(lastKey, value);

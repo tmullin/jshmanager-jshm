@@ -218,4 +218,44 @@ public class ActionsScraperTest {
 		assertNotNull(value);
 		assertEquals("value2", value);
 	}
+	
+	@Test public void htmlEntity() throws IOException, ScraperException {
+		ByteArrayInputStream istream = new ByteArrayInputStream(
+			"{{test arg=\"Pronounced 'L&#277;h-'Nérd 'Skin-'Nérd\"}}".getBytes()
+		);
+		
+		Map<String, List<Action>> ret = ActionsScraper.scrape(istream);
+		
+		assertNotNull(ret);
+		List<Action> list = ret.get("test");
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		Action action = list.get(0);
+		assertNotNull(action);
+		assertNotNull(action.args);
+		assertEquals(1, action.args.size());
+		String value = action.get("arg");
+		assertNotNull(value);
+		assertEquals("Pronounced 'L\u0115h-'Nérd 'Skin-'Nérd", value);
+	}
+	
+	@Test public void ampersand() throws IOException, ScraperException {
+		ByteArrayInputStream istream = new ByteArrayInputStream(
+			"{{test arg=\"value & &amp; value\"}}".getBytes()
+		);
+		
+		Map<String, List<Action>> ret = ActionsScraper.scrape(istream);
+		
+		assertNotNull(ret);
+		List<Action> list = ret.get("test");
+		assertNotNull(list);
+		assertEquals(1, list.size());
+		Action action = list.get(0);
+		assertNotNull(action);
+		assertNotNull(action.args);
+		assertEquals(1, action.args.size());
+		String value = action.get("arg");
+		assertNotNull(value);
+		assertEquals("value & & value", value);
+	}
 }
