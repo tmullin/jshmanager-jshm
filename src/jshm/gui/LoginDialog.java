@@ -72,7 +72,15 @@ public class LoginDialog extends EscapeableDialog {
     public LoginDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+        EditPopupMenu.add(usernameField);
+        
         loadPassword();
+    }
+    
+    public void dispose() {
+    	EditPopupMenu.remove(usernameField);
+    	super.dispose();
     }
     
     private void loadPassword() {
