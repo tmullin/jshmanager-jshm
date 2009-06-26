@@ -62,12 +62,12 @@ public class GhSongMetaDataGenerator {
 	}
 	
 	public static void main(String[] args) throws Exception {
-//		if (args.length < 1)
-//			usage();
+		if (args.length < 1)
+			usage();
 		
 		GameTitle ttl = GameTitle.valueOf(
-//			args[0]
-			"GH3"
+			args[0]
+//			"GH3"
 		);
 		
 		if (!validTitles.contains(ttl))

@@ -87,6 +87,18 @@ public class JSHManager {
 	 * Launches this application
 	 */
 	public static void main(String[] args) {
+		if (args.length > 0) {
+			if ("-v".equals(args[0]) || "--version".equals(args[0])) {
+				System.out.printf("%s version %s\n", Version.NAME, Version.STRING);
+				System.exit(0);
+			} else {
+				System.out.println("Usage: java -jar JSHManager.jar [-v|--version]");
+				System.out.println("  -v, --version    display version information");
+				System.out.println("  no arguments runs the program as usual");
+				System.exit(0);
+			}
+		}
+		
 		try {
 			checkJREVersion();
 			
