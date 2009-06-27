@@ -1941,7 +1941,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			actions.gotoSong.setEnabled(true);
 			
 			downloadGhSongDataMenuItem.setEnabled(game instanceof GhGame || game instanceof WtGame);
-			downloadGhSongMetaDataMenuItem.setEnabled(game instanceof GhGame);
+			downloadGhSongMetaDataMenuItem.setEnabled(game instanceof GhGame || game instanceof WtGame);
 			downloadRbSongDataMenuItem.setEnabled(game instanceof RbGame);
 			downloadRbSongMetaDataMenuItem.setEnabled(game instanceof RbGame);
 			
