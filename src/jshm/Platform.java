@@ -39,18 +39,18 @@ public enum Platform {
 		PS2, XBOX360, PS3, WII
 	};
 	
-	public javax.swing.ImageIcon getIcon() {
+	public final javax.swing.ImageIcon getIcon() {
 		return jshm.gui.GuiUtil.getIcon(
-			"platforms/" + this.name() + "_32.png");
+			"platforms/" + name() + "_32.png");
 	}
 	
-	public String getShortName() {
+	public final String getShortName() {
 		return getText("shortName");
 	}
 	
 	private static Text t = null;
 	
-	public final String getText(String key) {
+	public final String getText(final String key) {
 		if (null == t)
 			t = new Text(Platform.class);
 		

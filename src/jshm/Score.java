@@ -147,7 +147,7 @@ public abstract class Score {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(final Status status) {
 		if (null == status)
 			throw new IllegalArgumentException("status cannot be null");
 		this.status = status;
@@ -159,7 +159,7 @@ public abstract class Score {
 	 * @return
 	 */
 	@Transient
-	public boolean isEditable() {
+	public final boolean isEditable() {
 		switch (status) {
 			case NEW:
 			case TEMPLATE:
@@ -272,11 +272,11 @@ public abstract class Score {
 	}
 	
 	@Transient
-	public int getPartStreak(int index) {
+	public final int getPartStreak(final int index) {
 		return getPart(index).getStreak();
 	}
 	
-	public void setPartHitPercent(int index, float percent) {
+	public final void setPartHitPercent(final int index, final float percent) {
 		Part p = getPart(index);
 		
 		float old = p.getHitPercent();
@@ -285,17 +285,17 @@ public abstract class Score {
 	}
 	
 	@Transient
-	public float getPartHitPercent(int index) {
+	public final float getPartHitPercent(final int index) {
 		return getPart(index).getHitPercent();
 	}
 	
 	@Transient
-	public Instrument getPartInstrument(int index) {
+	public final Instrument getPartInstrument(final int index) {
 		return getPart(index).getInstrument();
 	}
 	
 	@Transient
-	public String getPartPerformer(int index) {
+	public final String getPartPerformer(final int index) {
 		return getPart(index).getPerformer();
 	}
 	
@@ -305,7 +305,7 @@ public abstract class Score {
 	 * @return The Part at the specified index
 	 */
 	@Transient
-	public Part getPart(int index) {		
+	public final Part getPart(final int index) {		
 		if (index < 1 || parts.size() < index)
 			throw new ArrayIndexOutOfBoundsException("index must be between 1 and " + parts.size() + ", got: " + index);
 		
@@ -320,7 +320,7 @@ public abstract class Score {
 	}
 	
 	@Transient
-	public Part getPart(Instrument instrument) {
+	public final Part getPart(final Instrument instrument) {
 		Iterator<Part> it = getPartsIterator();
 		
 		while (it.hasNext()) {
@@ -375,7 +375,7 @@ public abstract class Score {
 	 * @return The highest streak among all of the Parts.
 	 */
 	@Transient
-	public int getMaxStreak() {
+	public final int getMaxStreak() {
 		int highest = 0;
 		
 		for (Part p : parts)
@@ -508,7 +508,7 @@ public abstract class Score {
 	 * @return Whether this object is ok to submit to scorehero
 	 */
 	@Transient
-	public boolean isSubmittable() {
+	public final boolean isSubmittable() {
 		boolean ok =
 			(getStatus() == Status.NEW ||
 			 getStatus() == Status.UNKNOWN) &&

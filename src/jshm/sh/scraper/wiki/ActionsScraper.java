@@ -2,8 +2,8 @@ package jshm.sh.scraper.wiki;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +26,7 @@ public class ActionsScraper {
 	static final Logger LOG = Logger.getLogger(ActionsScraper.class.getName());
 	
 	static {
-		LOG.setLevel(Level.INFO);
+		LOG.setLevel(Level.FINE);
 	}
 	
 	public static Map<String, List<Action>> scrape(final String wikiUrl) throws IOException, ScraperException {
@@ -41,19 +41,28 @@ public class ActionsScraper {
 		GetMethod method = new GetMethod(wikiUrl);
 		client.executeMethod(method);
 		
-		return scrape(method.getResponseBodyAsStream(), ret);
+		String charset = method.getResponseCharSet();
+		LOG.fine("Charset for HTTP response is: " + charset);
+		if (null == charset || charset.isEmpty())
+			charset = "ISO-8859-1";
+		
+		return scrape(
+			new InputStreamReader(method.getResponseBodyAsStream(), charset),
+			ret);
 	}
 	
-	public static Map<String, List<Action>> scrape(final InputStream istream) throws IOException, ScraperException {
-		return scrape(istream, new HashMap<String, List<Action>>());
+	public static Map<String, List<Action>> scrape(final Reader reader) throws IOException, ScraperException {
+		return scrape(reader, new HashMap<String, List<Action>>());
 	}
 	
-	public static Map<String, List<Action>> scrape(final InputStream istream, final Map<String, List<Action>> ret) throws IOException, ScraperException {
+	public static Map<String, List<Action>> scrape(final Reader reader, final Map<String, List<Action>> ret) throws IOException, ScraperException {
 		if (null == ret)
 			throw new NullPointerException("ret");
 		
-		BufferedReader in = new BufferedReader(
-			new InputStreamReader(istream));
+		BufferedReader in = reader instanceof BufferedReader
+		? (BufferedReader) reader
+		: new BufferedReader(reader);
+		
 		StringBuilder sb = null;
 		String lastKey = null;
 		Action action = null;

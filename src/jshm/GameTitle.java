@@ -41,7 +41,7 @@ public abstract class GameTitle {
 		return values;
 	}
 	
-	public static GameTitle valueOf(String value) {
+	public static GameTitle valueOf(final String value) {
 		for (GameTitle g : values)
 			if (g.title.equals(value))
 				return g;
@@ -125,7 +125,7 @@ public abstract class GameTitle {
 	}
 	
 	
-	public javax.swing.ImageIcon getIcon() {
+	public final javax.swing.ImageIcon getIcon() {
 		return jshm.gui.GuiUtil.getIcon(
 			"gametitles/" + title + "_32.png");
 	}
@@ -143,7 +143,7 @@ public abstract class GameTitle {
 	 */
 	public abstract int getMaxRating();
 	
-	public boolean isValidRating(int rating) {
+	public final boolean isValidRating(final int rating) {
 		return rating == 0 ||
 		(getMinRating() <= rating && rating <= getMaxRating());
 	}
@@ -185,7 +185,7 @@ public abstract class GameTitle {
 	
 	public abstract Song.Sorting[] getSupportedSortings();
 	
-	public boolean supportsSorting(final Song.Sorting sorting) {
+	public final boolean supportsSorting(final Song.Sorting sorting) {
 		if (null == sorting)
 			return false;
 		
@@ -215,17 +215,17 @@ public abstract class GameTitle {
 			Arrays.equals(this.platforms, g.platforms);
 	}
 	
-	public String getLongName() {
+	public final String getLongName() {
 		return getText("longName");
 	}
 	
-	public String getWikiAbbr() {
+	public final String getWikiAbbr() {
 		return getText("wikiAbbr");
 	}
 	
 	private static Text t = null;
 	
-	public final String getText(String key) {
+	public final String getText(final String key) {
 		if (null == t)
 			t = new Text(GameTitle.class);
 		

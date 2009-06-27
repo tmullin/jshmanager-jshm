@@ -111,11 +111,11 @@ public abstract class Game {
 		values.add(this);
 	}
 	
-	protected void mapTiers(final Group group, final String[] tiers) {
+	protected final void mapTiers(final Group group, final String[] tiers) {
 		mapTiers(group, new Tiers(tiers));
 	}
 	
-	protected void mapTiers(final Group group, final Tiers tiers) {
+	protected final void mapTiers(final Group group, final Tiers tiers) {
 		tiersMap.put(group, tiers);
 	}
 

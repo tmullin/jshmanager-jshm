@@ -115,7 +115,7 @@ public abstract class Song implements Comparable<Song> {
 	 * currently dealing with.
 	 */
 	@Transient
-	public Game getActiveGame() {
+	public final Game getActiveGame() {
 		return
 		game != null
 		? game
@@ -222,7 +222,7 @@ public abstract class Song implements Comparable<Song> {
 	 * 			"as made fameous by" unless we're sure.
 	 */
 	@Transient
-	public boolean isMasterRecording() {
+	public final boolean isMasterRecording() {
 		return RecordingType.COVER != recordingType;
 	}
 
@@ -417,17 +417,17 @@ public abstract class Song implements Comparable<Song> {
 			this.comparator = comp;
 		}
 		
-		public String getShortName() {
+		public final String getShortName() {
 			return getText("shortName");
 		}
 		
-		public String getShortDescription() {
+		public final String getShortDescription() {
 			return getText("shortDescription");
 		}
 		
 		private static Text t = null;
 		
-		public final String getText(String key) {
+		public final String getText(final String key) {
 			if (null == t)
 				t = new Text(Sorting.class);
 			

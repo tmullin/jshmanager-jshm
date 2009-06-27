@@ -109,7 +109,7 @@ public class Part implements Comparable<Part> {
 	}
 	
 	@Transient
-	public boolean isSubmittable() {
+	public final boolean isSubmittable() {
 		return instrument != null && difficulty != null;
 	}
 	

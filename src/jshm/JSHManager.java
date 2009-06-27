@@ -36,7 +36,7 @@ import jshm.hibernate.HibernateUtil;
 /**
  * A Java-based program to manage one's ScoreHero.com account.
  * @author Tim Mullin
- * 
+ *
  */
 public class JSHManager {
 	public static class Version {
@@ -89,7 +89,7 @@ public class JSHManager {
 	public static void main(String[] args) {
 		if (args.length > 0) {
 			if ("-v".equals(args[0]) || "--version".equals(args[0])) {
-				System.out.printf("%s version %s r%s on %d\n", Version.NAME, Version.STRING, Version.REVISION, Version.DATE);
+				System.out.printf("%s version %s r%s on %s\n", Version.NAME, Version.STRING, Version.REVISION, Version.DATE);
 				System.exit(0);
 			} else {
 				System.out.println("Usage: java -jar JSHManager.jar [-v|--version]");

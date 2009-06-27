@@ -1013,7 +1013,12 @@ private void downloadGhSongMetaDataMenuItemActionPerformed(java.awt.event.Action
 		public void done() {
 			try {
 				if (get()) {
-					songDataMenuItemActionPerformed(null, curGame, curDiff);
+					if (curGame.title instanceof GhGameTitle)
+						songDataMenuItemActionPerformed(null, curGame, curDiff);
+					else if (curGame.title instanceof WtGameTitle)
+						wtSongDataMenuItemActionPerformed(null, (WtGame) curGame, curGroup);
+					else
+						assert false: "unimplemented GameTitle subclass";
 				}
 			} catch (Exception e) {
 				LOG.log(Level.SEVERE, "Unknown error", e);

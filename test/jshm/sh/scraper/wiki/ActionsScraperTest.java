@@ -2,6 +2,10 @@ package jshm.sh.scraper.wiki;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
@@ -11,35 +15,42 @@ import org.junit.*;
 
 import static org.junit.Assert.*;
 
-public class ActionsScraperTest {	
+@SuppressWarnings("unused")
+public class ActionsScraperTest {
+	private static Reader getReader(final String s) {
+//		try {
+			return
+			new StringReader(s);
+//			new InputStreamReader(
+//				new ByteArrayInputStream(
+//					s.getBytes("ISO-8859-1")), "ISO-8859-1");
+//		} catch (UnsupportedEncodingException e) {
+//			throw new RuntimeException(e);
+//		}
+	}
+	
 	@Test public void empty() throws IOException, ScraperException {
-		ByteArrayInputStream istream = new ByteArrayInputStream(
-			"".getBytes()
-		);
+		Reader reader = getReader("");
 		
-		Map<String, List<Action>> ret = ActionsScraper.scrape(istream);
+		Map<String, List<Action>> ret = ActionsScraper.scrape(reader);
 		
 		assertNotNull(ret);
 		assertEquals(0, ret.size());
 	}
 	
 	@Test public void noActions() throws IOException, ScraperException {
-		ByteArrayInputStream istream = new ByteArrayInputStream(
-			"random test 1234 1234 abcd stuff...!!@#$".getBytes()
-		);
+		Reader reader = getReader("random test 1234 1234 abcd stuff...!!@#$");
 		
-		Map<String, List<Action>> ret = ActionsScraper.scrape(istream);
+		Map<String, List<Action>> ret = ActionsScraper.scrape(reader);
 		
 		assertNotNull(ret);
 		assertEquals(0, ret.size());
 	}
 	
 	@Test public void justName() throws IOException, ScraperException {
-		ByteArrayInputStream istream = new ByteArrayInputStream(
-			"{{test}}".getBytes()
-		);
+		Reader reader = getReader("{{test}}");
 		
-		Map<String, List<Action>> ret = ActionsScraper.scrape(istream);
+		Map<String, List<Action>> ret = ActionsScraper.scrape(reader);
 		
 		assertNotNull(ret);
 		List<Action> list = ret.get("test");
@@ -52,11 +63,9 @@ public class ActionsScraperTest {
 	}
 	
 	@Test public void justNameAndSpace() throws IOException, ScraperException {
-		ByteArrayInputStream istream = new ByteArrayInputStream(
-			"{{test  }}".getBytes()
-		);
+		Reader reader = getReader("{{test  }}");
 		
-		Map<String, List<Action>> ret = ActionsScraper.scrape(istream);
+		Map<String, List<Action>> ret = ActionsScraper.scrape(reader);
 		
 		assertNotNull(ret);
 		List<Action> list = ret.get("test");
@@ -82,20 +91,16 @@ public class ActionsScraperTest {
 	
 	@Test(expected=ScraperException.class)
 	public void noEquals() throws IOException, ScraperException {
-		ByteArrayInputStream istream = new ByteArrayInputStream(
-			"{{test arg\"value\"}}".getBytes()
-		);
+		Reader reader = getReader("{{test arg\"value\"}}");
 		
-		ActionsScraper.scrape(istream);
+		ActionsScraper.scrape(reader);
 	}
 	
 	@Test(expected=ScraperException.class)
 	public void argNoValue() throws IOException, ScraperException {
-		ByteArrayInputStream istream = new ByteArrayInputStream(
-			"{{test  arg  }}".getBytes()
-		);
+		Reader reader = getReader("{{test  arg  }}");
 		
-		ActionsScraper.scrape(istream);
+		ActionsScraper.scrape(reader);
 	}
 	
 //	@Test(expected=ScraperException.class)
@@ -108,11 +113,9 @@ public class ActionsScraperTest {
 //	}
 	
 	@Test public void oneArg() throws IOException, ScraperException {
-		ByteArrayInputStream istream = new ByteArrayInputStream(
-			"{{test arg=\"value\"}}".getBytes()
-		);
+		Reader reader = getReader("{{test arg=\"value\"}}");
 		
-		Map<String, List<Action>> ret = ActionsScraper.scrape(istream);
+		Map<String, List<Action>> ret = ActionsScraper.scrape(reader);
 		
 		assertNotNull(ret);
 		List<Action> list = ret.get("test");
@@ -128,11 +131,9 @@ public class ActionsScraperTest {
 	}
 	
 	@Test public void twoArg() throws IOException, ScraperException {
-		ByteArrayInputStream istream = new ByteArrayInputStream(
-			"{{test \n  argOne=\"value1\"  \n argTwo=\"value2\"}}".getBytes()
-		);
+		Reader reader = getReader("{{test \n  argOne=\"value1\"  \n argTwo=\"value2\"}}");
 		
-		Map<String, List<Action>> ret = ActionsScraper.scrape(istream);
+		Map<String, List<Action>> ret = ActionsScraper.scrape(reader);
 		
 		assertNotNull(ret);
 		List<Action> list = ret.get("test");
@@ -151,11 +152,9 @@ public class ActionsScraperTest {
 	}
 	
 	@Test public void twoArgNoSpace() throws IOException, ScraperException {
-		ByteArrayInputStream istream = new ByteArrayInputStream(
-			"{{test argOne=\"value1\"argTwo=\"value2\"  }}".getBytes()
-		);
+		Reader reader = getReader("{{test argOne=\"value1\"argTwo=\"value2\"  }}");
 		
-		Map<String, List<Action>> ret = ActionsScraper.scrape(istream);
+		Map<String, List<Action>> ret = ActionsScraper.scrape(reader);
 		
 		assertNotNull(ret);
 		List<Action> list = ret.get("test");
@@ -174,11 +173,9 @@ public class ActionsScraperTest {
 	}
 	
 	@Test public void twoArgNoCloseQuote() throws IOException, ScraperException {
-		ByteArrayInputStream istream = new ByteArrayInputStream(
-			"{{test argOne=\"value1\" argTwo=\"value2}}".getBytes()
-		);
+		Reader reader = getReader("{{test argOne=\"value1\" argTwo=\"value2}}");
 		
-		Map<String, List<Action>> ret = ActionsScraper.scrape(istream);
+		Map<String, List<Action>> ret = ActionsScraper.scrape(reader);
 		
 		assertNotNull(ret);
 		List<Action> list = ret.get("test");
@@ -197,11 +194,9 @@ public class ActionsScraperTest {
 	}
 	
 	@Test public void twoArgNoCloseQuoteWithSpace() throws IOException, ScraperException {
-		ByteArrayInputStream istream = new ByteArrayInputStream(
-			"{{test argOne=\"value1\" argTwo=\"value2   }}".getBytes()
-		);
+		Reader reader = getReader("{{test argOne=\"value1\" argTwo=\"value2   }}");
 		
-		Map<String, List<Action>> ret = ActionsScraper.scrape(istream);
+		Map<String, List<Action>> ret = ActionsScraper.scrape(reader);
 		
 		assertNotNull(ret);
 		List<Action> list = ret.get("test");
@@ -220,11 +215,9 @@ public class ActionsScraperTest {
 	}
 	
 	@Test public void htmlEntity() throws IOException, ScraperException {
-		ByteArrayInputStream istream = new ByteArrayInputStream(
-			"{{test arg=\"Pronounced 'L&#277;h-'Nérd 'Skin-'Nérd\"}}".getBytes()
-		);
+		Reader reader = getReader("{{test arg=\"Pronounced 'L&#277;h-'Nérd 'Skin-'Nérd\"}}");
 		
-		Map<String, List<Action>> ret = ActionsScraper.scrape(istream);
+		Map<String, List<Action>> ret = ActionsScraper.scrape(reader);
 		
 		assertNotNull(ret);
 		List<Action> list = ret.get("test");
@@ -240,11 +233,9 @@ public class ActionsScraperTest {
 	}
 	
 	@Test public void ampersand() throws IOException, ScraperException {
-		ByteArrayInputStream istream = new ByteArrayInputStream(
-			"{{test arg=\"value & &amp; value\"}}".getBytes()
-		);
+		Reader reader = getReader("{{test arg=\"value & &amp; value\"}}");
 		
-		Map<String, List<Action>> ret = ActionsScraper.scrape(istream);
+		Map<String, List<Action>> ret = ActionsScraper.scrape(reader);
 		
 		assertNotNull(ret);
 		List<Action> list = ret.get("test");
