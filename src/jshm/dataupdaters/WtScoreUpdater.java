@@ -25,7 +25,8 @@ import java.util.logging.*;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Example;
+//import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Expression;
 import org.netbeans.spi.wizard.ResultProgressHandle;
 
 import static jshm.hibernate.HibernateUtil.getCurrentSession;
@@ -62,17 +63,19 @@ public class WtScoreUpdater {
 			for (WtScore score : scrapedScores) {			    
 			    // TODO fix submission date comparison to prevent
 			    // getting more than 1 result back
-			    Example ex = Example.create(score)
-			    	.excludeProperty("comment")
-			    	.excludeProperty("rating")
-			    	.excludeProperty("creationDate")
-			    	.excludeProperty("submissionDate")
-			    	.excludeProperty("imageUrl")
-			    	.excludeProperty("videoUrl");
+//			    Example ex = Example.create(score)
+//			    	.excludeProperty("comment")
+//			    	.excludeProperty("rating")
+//			    	.excludeProperty("creationDate")
+//			    	.excludeProperty("submissionDate")
+//			    	.excludeProperty("imageUrl")
+//			    	.excludeProperty("videoUrl");
 			    
 			    List<WtScore> result =
 			    	(List<WtScore>)
-			    	session.createCriteria(WtScore.class).add(ex)
+			    	session.createCriteria(WtScore.class)//.add(ex)
+			    	.add(Expression.eq("score", score.getScore()))
+			    	.add(Expression.eq("song", score.getSong()))
 			    		.list();
 			    
 			    switch (result.size()) {

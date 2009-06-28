@@ -465,66 +465,58 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 		Score score = (Score) p.getLastPathComponent();
 		
 		LOG.finer("Going to delete score: " + score);
+				
+		Tier tier = model.tiers.get(score.getSong().getTierLevel(sorting) - 1);
+		int tierIndex = getIndexOfChild(root, tier);
+		SongScores ss = tier.getSongScores(score.getSong());
+		int ssIndex = getIndexOfChild(tier, ss);
+		int scoreIndex = getIndexOfChild(ss, score);
+		tier.removeScore(score);
+		boolean wasLastSsScore = !ss.hasAnyScores();
+		boolean wasLastTierScore = !tier.hasAnyScores();
 		
-		switch (score.getStatus()) {
-			default:
-//			case NEW:
-//			case SUBMITTED:
-//			case DELETED:
-//			case UNKNOWN:
-				Session sess = null;
-				Transaction tx = null;
-				
-				try {
-					sess = HibernateUtil.getCurrentSession();
-					tx = sess.beginTransaction();
-					sess.delete(score);
-					tx.commit();
-					LOG.finer("Score deleted from DB");
-				} catch (Exception e) {
-					if (null != tx) tx.rollback();
-					LOG.log(Level.SEVERE, "Failed to delete score from database", e);
-					ErrorInfo ei = new ErrorInfo("Error", "Failed to delete score from database", null, null, e, null, null);
-					JXErrorPane.showDialog(null, ei);
-					return;
-				} finally {
-					if (sess.isOpen()) sess.close();
-				}
-				
-			case TEMPLATE:
-				Tier tier = model.tiers.get(score.getSong().getTierLevel(sorting) - 1);
-				int tierIndex = getIndexOfChild(root, tier);
-				SongScores ss = tier.getSongScores(score.getSong());
-				int ssIndex = getIndexOfChild(tier, ss);
-				int scoreIndex = getIndexOfChild(ss, score);
-				tier.removeScore(score);
-				boolean wasLastSsScore = !ss.hasAnyScores();
-				boolean wasLastTierScore = !tier.hasAnyScores();
-				
-				scores.remove(score);
-				
-				assert null != ss;
-				
-				p = p.getParentPath(); // ROOT -> Tier -> Song
-				modelSupport.fireChildRemoved(p, scoreIndex, score);
+		scores.remove(score);
+		
+		assert null != ss;
+		
+		p = p.getParentPath(); // ROOT -> Tier -> Song
+		modelSupport.fireChildRemoved(p, scoreIndex, score);
 
-				p = p.getParentPath(); // ROOT -> Tier
-				
-				if (!displayEmptyScores && wasLastSsScore) {
+		p = p.getParentPath(); // ROOT -> Tier
+		
+		if (!displayEmptyScores && wasLastSsScore) {
 //					System.out.println("LAST score in ss");
-					modelSupport.fireChildRemoved(p, ssIndex, ss);
-				}
-				
-				p = p.getParentPath(); // ROOT
-				
-				if (!displayEmptyScores && wasLastTierScore) {
+			modelSupport.fireChildRemoved(p, ssIndex, ss);
+		}
+		
+		p = p.getParentPath(); // ROOT
+		
+		if (!displayEmptyScores && wasLastTierScore) {
 //					System.out.println("LAST score in tier");
-					modelSupport.fireChildRemoved(p, tierIndex, tier);
-				}
-				
-				parent.packAll();
-				
-				break;	
+			modelSupport.fireChildRemoved(p, tierIndex, tier);
+		}
+		
+		parent.packAll();
+		
+		if (Score.Status.TEMPLATE != score.getStatus()) {
+			Session sess = null;
+			Transaction tx = null;
+			
+			try {
+				sess = HibernateUtil.getCurrentSession();
+				tx = sess.beginTransaction();
+				sess.delete(score);
+				tx.commit();
+				LOG.finer("Score deleted from DB");
+			} catch (Exception e) {
+				if (null != tx) tx.rollback();
+				LOG.log(Level.SEVERE, "Failed to delete score from database", e);
+				ErrorInfo ei = new ErrorInfo("Error", "Failed to delete score from database", null, null, e, null, null);
+				JXErrorPane.showDialog(null, ei);
+				return;
+			} finally {
+				if (sess.isOpen()) sess.close();
+			}
 		}
 	}
 	

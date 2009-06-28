@@ -126,10 +126,6 @@ public class RbSong extends Song {
 	public static List<SongOrder> getSongs(final RbGame game, Instrument.Group group) {
 		LOG.finest("Querying database for all song orders for " + game + " with group " + group);
 		
-		// TODO change GUITAR_BASS to a constant in RbGameTitle
-		if (group.size > 1)
-			group = Instrument.Group.GUITAR_BASS;
-		
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
 	    List<SongOrder> result =
@@ -138,7 +134,7 @@ public class RbSong extends Song {
 				"from SongOrder where gameTitle=:ttl and platform=:plat and instrumentgroup=:group order by tier, ordering")
 			.setString("ttl", game.title.toString())
 			.setString("plat", game.platform.toString())
-			.setString("group", group.toString())
+			.setString("group", group.getEffectiveSongOrderGroup().toString())
 			.list();
 	    session.getTransaction().commit();
 		

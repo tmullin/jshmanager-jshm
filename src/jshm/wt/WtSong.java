@@ -151,12 +151,6 @@ public class WtSong extends Song {
 	public static List<SongOrder> getSongs(final WtGame game, Instrument.Group group, Difficulty diff) {
 		LOG.finest("Querying database for all song orders for " + game + " with group " + group + " and diff " + diff);
 		
-		// TODO change GUITAR_BASS to a constant in WtGameTitle
-		if (group.size > 1)
-			group = Instrument.Group.GUITAR_BASS;
-		else if (Instrument.Group.WTDRUMS == group)
-			group = Instrument.Group.DRUMS;
-		
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
 	    List<SongOrder> result =
@@ -165,7 +159,7 @@ public class WtSong extends Song {
 				"from SongOrder where gameTitle=:ttl and platform=:plat and instrumentgroup=:group order by tier, ordering")
 			.setString("ttl", game.title.toString())
 			.setString("plat", game.platform.toString())
-			.setString("group", group.toString())
+			.setString("group", group.getEffectiveSongOrderGroup().toString())
 			.list();
 	    session.getTransaction().commit();
 		

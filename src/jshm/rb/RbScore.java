@@ -76,7 +76,7 @@ public class RbScore extends Score {
 	    		session.createCriteria(SongOrder.class)
 	    			.add(Restrictions.eq("gameTitle", s.getGame().title))
 	    			.add(Restrictions.eq("platform", s.getGame().platform))
-	    			.add(Restrictions.eq("group", s.getGroup()))
+	    			.add(Restrictions.eq("group", s.getGroup().getEffectiveSongOrderGroup()))
 	    			.add(Restrictions.eq("song", s.getSong()))
 	    		.uniqueResult()
 	    	);

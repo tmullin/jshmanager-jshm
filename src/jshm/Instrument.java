@@ -39,13 +39,13 @@ public enum Instrument {
 		this.shortString = shortString;
 	}
 	
-	public javax.swing.ImageIcon getIcon() {
+	public final javax.swing.ImageIcon getIcon() {
 		String s = WTDRUMS == this ? "DRUMS" : name();
 		return jshm.gui.GuiUtil.getIcon(
 			"instruments/" + s + "_32.png");
 	}
 	
-	public boolean isDrums() {
+	public final boolean isDrums() {
 		switch (this) {
 			case WTDRUMS:
 			case DRUMS: return true;
@@ -54,15 +54,15 @@ public enum Instrument {
 		return false;
 	}
 	
-	public String toShortString() {
+	public final String toShortString() {
 		return shortString;
 	}
 	
-	public String getLongName() {
+	public final String getLongName() {
 		return getLongName(false);
 	}
 	
-	public String getLongName(boolean getWtVersion) {
+	public final String getLongName(final boolean getWtVersion) {
 		if (getWtVersion) {
 			try {
 				return getText("wt.longName");
@@ -75,15 +75,15 @@ public enum Instrument {
 	
 	private static Text t = null;
 	
-	public final String getText(String key) {
+	public final String getText(final String key) {
 		if (null == t)
 			t = new Text(Instrument.class);
 		
 		return t.get(name() + "." + key);
 	}
 	
-	public static Instrument smartValueOf(String value) {
-		String value2 = value.toUpperCase().replace("_", "");
+	public static Instrument smartValueOf(final String value) {
+		final String value2 = value.toUpperCase().replace("_", "");
 		
 		if ("RBDRUMS".equals(value))
 			return DRUMS;
@@ -138,16 +138,35 @@ public enum Instrument {
 			this.instruments = instruments;
 		}
 		
-		public javax.swing.ImageIcon getIcon() {
+		/**
+		 * This returns the 'effective' group that this group is
+		 * represented in the database by. The song data scrapers only
+		 * scrape for guitar, bass, drums, vocals, and guitar_bass orders
+		 * so as to not need to scrape <i>every</i> combination. Also, the
+		 * order for wtdrums is the same as rbdrums.
+		 * @return
+		 */
+		public final Group getEffectiveSongOrderGroup() {
+			switch (this) {
+				case GUITAR:
+				case BASS:
+				case DRUMS:
+				case VOCALS: return this;
+				case WTDRUMS: return DRUMS;
+				default: return GUITAR_BASS;
+			}
+		}
+		
+		public final javax.swing.ImageIcon getIcon() {
 			if (size != 1) return null;
 			return instruments[0].getIcon();
 		}
 		
-		public String getLongName() {
+		public final String getLongName() {
 			return getLongName(false);
 		}
 		
-		public String getLongName(boolean getWtVersion) {
+		public final String getLongName(final boolean getWtVersion) {
 			if (getWtVersion) {
 				try {
 					return getText("wt.longName");
@@ -158,11 +177,11 @@ public enum Instrument {
 			return getText("longName");
 		}
 		
-		public String getWikiUrl() {
+		public final String getWikiUrl() {
 			return getWikiUrl(false);
 		}
 		
-		public String getWikiUrl(boolean getWtVersion) {
+		public final String getWikiUrl(final boolean getWtVersion) {
 			if (getWtVersion) {
 				try {
 					return getText("wt.wikiUrl");
@@ -173,7 +192,7 @@ public enum Instrument {
 			return getText("wikiUrl");
 		}
 		
-		public final String getText(String key) {
+		public final String getText(final String key) {
 			if (null == t)
 				t = new Text(Instrument.class);
 			
