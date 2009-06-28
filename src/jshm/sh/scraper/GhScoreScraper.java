@@ -184,6 +184,7 @@ public class GhScoreScraper {
 		private final Difficulty difficulty;
 		private final List<GhScore> scores;
 		private final List<Integer> scoreCounts;
+		private int curTierLevel = 0;
 		
 		public LatestScoresHandler(
 			final GhGame game,
@@ -203,6 +204,17 @@ public class GhScoreScraper {
 				game.title.platforms.length == 1
 				? GhDataTable.MANAGE_SCORES_SINGLE_PLAT
 				: GhDataTable.MANAGE_SCORES;
+		}
+		
+		@Override
+		public void handleTierRow(String tierName) throws ScraperException {
+			// this will prevent retrieval of the demo tier
+			if (curTierLevel >= game.getTierCount()) {
+				ignoreNewData = true;
+				return;
+			}
+			
+			curTierLevel++;
 		}
 		
 		// "-|text=int|link=songid~text|-|-|text=int|img=rating~text=float|text=int|text=int|text|text"

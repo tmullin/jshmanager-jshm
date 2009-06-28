@@ -198,7 +198,6 @@ public class Patcher {
 						Arrays.asList(props.getArray("folderdelete")));
 					
 					log("Patching complete.", 1, 1);
-					gui.setClosedEnabled(true);
 					
 					if (restartJshm) {
 						log("Restarting JSHManager...");
@@ -211,6 +210,8 @@ public class Patcher {
 					}
 					
 				}
+				
+				gui.setClosedEnabled(true);
 				
 				if (unattended) {
 					LOG.finer("Disposing GUI due to unattended switch");

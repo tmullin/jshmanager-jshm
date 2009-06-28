@@ -48,7 +48,7 @@ public class JshmThreadManager {
 	static final String
 		VERSION = JSHManager.Version.VERSION,
 		DOWNLOAD_URL =
-			"http://sourceforge.net/project/showfiles.php?group_id=240590&package_id=292656&release_id=691575",
+			"http://sourceforge.net/project/showfiles.php?group_id=240590&package_id=292656&release_id=692947",
 		SUBJECT =
 			"JSHManager " + VERSION +
 			" - GHWT/M/SH Support! - Manage Scores Locally and Upload to SH";
@@ -143,7 +143,9 @@ public class JshmThreadManager {
 	    // add the changes for the latest version
 	    if (APPEND_NEW_VERSION_CHANGELOG)
 	    	newVersionLines.addAll(lines.subList(
-	    		changesStartLine, lastLatestChangeLine));
+	    		changesStartLine, lastLatestChangeLine + 1));
+	    
+	    jshm.util.Print.print(newVersionLines);
 	    
 	    String newVersionPostBody = PhpUtil.implode("\n", newVersionLines);
 	    

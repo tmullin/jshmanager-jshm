@@ -3,8 +3,7 @@ Bump for $version
 [url=http://jshm.sourceforge.net]Home Page[/url]
 [url=$downloadUrl]Download[/url]
 
+I sort of neglected to ensure that WT drums actually worked, mainly since I have RB drums...
 
-This is a really huge update. Lots of bug fixes and feature additions.
-
-Though I think I've worked everything out, it might not be a bad idea to make a backup of your data folder for safe keeping in case of some bug. Keep in mind the only thing you lose if the database gets corrupted are locally saved scores that ScoreHero deleted because you entered higher ones.
+Anyway, I think the wiki path viewer is pretty neat.
 

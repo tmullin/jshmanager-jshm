@@ -179,6 +179,7 @@ public class RbScoreScraper {
 		private final Difficulty difficulty;
 		private final List<RbScore> scores;
 		private final List<Integer> scoreCounts;
+		private int curTierLevel = 0;
 		
 		public LatestScoresHandler(
 			final RbGame game,
@@ -197,6 +198,17 @@ public class RbScoreScraper {
 		@Override
 		public DataTable getDataTable() {
 			return RbDataTable.MANAGE_SCORES;
+		}
+		
+		@Override
+		public void handleTierRow(String tierName) throws ScraperException {
+			// this will prevent retrieval of the demo tier
+			if (curTierLevel >= game.getTierCount()) {
+				ignoreNewData = true;
+				return;
+			}
+			
+			curTierLevel++;
 		}
 		
 		// "-|text=int|link=songid~text|-|text=int|img=rating|text=int|text=int|text|text"

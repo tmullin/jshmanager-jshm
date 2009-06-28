@@ -1,5 +1,9 @@
 JSHManager ChangeLog
 
+Version 0.3.2
+-------------
+- Corrected issue when downloading scores for a game with a demo tier.
+
 Version 0.3.1
 -------------
 - Added a right click menu item to fetch user-submitted SP paths from
