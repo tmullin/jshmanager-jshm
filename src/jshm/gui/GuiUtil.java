@@ -301,8 +301,12 @@ public class GuiUtil {
 					Header h = method.getResponseHeader("Content-type");
 
 					if (h.getValue().toLowerCase().startsWith("image/")) {
+//						image = javax.imageio.ImageIO.read(url);
 						image = GraphicsUtilities.loadCompatibleImage(url);
 					}
+				} catch (OutOfMemoryError e) {
+					LOG.log(Level.WARNING, "OutOfMemoryError trying to load image", e);
+					image = null; // make it open in browser
 				} catch (Throwable e) {
 					t = e;
 				}

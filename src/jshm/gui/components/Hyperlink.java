@@ -57,13 +57,13 @@ public class Hyperlink extends JXHyperlink {
 	
 	public void setUrl(final String url, final boolean checkForImage) {
 		if (null != url) {
-			setToolTipText(url);
 			
 			if (null != urlListener) {
 				removeActionListener(urlListener);
 			}
 			
 			if (checkForImage) {
+				setToolTipText("<html>" + url + "<br>This will attempt to open in the internal image viewer.<br>Ctrl-click to open in your browser.");
 				urlListener = new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						if (GUI.CTRL_MASK == (GUI.CTRL_MASK & e.getModifiers())) {
@@ -74,6 +74,7 @@ public class Hyperlink extends JXHyperlink {
 					}
 				};
 			} else {
+				setToolTipText("<html>" + url + "<br>This will open in your browser.");
 				urlListener = new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						Util.openURL(url);

@@ -306,7 +306,7 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 					} else {
 						for (final Link l : links) {
 							JMenuItem item = new JMenuItem(l.name);
-							item.setToolTipText(l.getUrl());
+							item.setToolTipText("<html>" + l.getUrl() + "<br>This will attempt to open in the internal image viewer.<br>Ctrl-click to open in your browser.");
 							
 							item.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
