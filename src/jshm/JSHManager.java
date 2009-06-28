@@ -44,7 +44,7 @@ public class JSHManager {
 		public static final int MAJOR = 0;
 		public static final int MINOR = 3;
 		public static final int POINT = 1;
-		public static final boolean IS_BETA = true;
+		public static final boolean IS_BETA = false;
 		
 		public static final String
 		VERSION =

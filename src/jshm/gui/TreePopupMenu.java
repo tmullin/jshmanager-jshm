@@ -85,6 +85,7 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener, MouseLi
 			noChartsMenuItem.setEnabled(false);
 			
 		userPathsMenuItem = new JMenuItem("View paths from wiki");
+		userPathsMenuItem.setIcon(gui.searchWikiMenuItem.getIcon());
 		userPathsMenuItem.addActionListener(this);
 			
 		cancelMenuItem = new JMenuItem("Cancel", 'C');
