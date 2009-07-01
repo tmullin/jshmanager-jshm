@@ -24,7 +24,6 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -37,6 +36,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
+import javax.swing.ProgressMonitor;
+import javax.swing.ProgressMonitorInputStream;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
@@ -51,7 +52,7 @@ import jshm.sh.Client;
 import jshm.util.Util;
 
 import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.methods.HeadMethod;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
@@ -280,6 +281,7 @@ public class GuiUtil {
 		
 		Graphics g = bi.createGraphics();
 		g.drawImage(img, 0, 0, width, height, null);
+		g.dispose();
 		
 		return new javax.swing.ImageIcon(bi);
 	}
@@ -287,34 +289,64 @@ public class GuiUtil {
 	
 	public static void openImageOrBrowser(final Frame owner, final String urlStr) {
 		new SwingWorker<Void, Void>() {
-			BufferedImage image = null;
-			URL url = null;
-			Throwable t = null;
+			private BufferedImage image = null;
+			private Throwable t = null;
+			private boolean canceled = false;
 			
 			protected Void doInBackground() throws Exception {
+				ProgressMonitor progress = null;
+				
 				try {
-					url = new URL(urlStr);
-
 					// try to see if it's an image before downloading the
 					// whole thing
-					HeadMethod method = Client.makeHeadRequest(urlStr);
+					GetMethod method = new GetMethod(urlStr);
+					Client.getHttpClient().executeMethod(method);
 					Header h = method.getResponseHeader("Content-type");
 
-					if (h.getValue().toLowerCase().startsWith("image/")) {
-//						image = javax.imageio.ImageIO.read(url);
-						image = GraphicsUtilities.loadCompatibleImage(url);
+					if (null != h && h.getValue().toLowerCase().startsWith("image/")) {
+//						jshm.util.TestTimer.start();
+						ProgressMonitorInputStream pmis = new ProgressMonitorInputStream(
+							owner, "Loading image...", method.getResponseBodyAsStream());
+						progress = pmis.getProgressMonitor();
+//						System.out.println("BEFORE max: " + progress.getMaximum());
+						h = method.getResponseHeader("Content-length");
+						
+						if (null != h) {
+							try {
+								progress.setMaximum(Integer.parseInt(h.getValue()));
+							} catch (NumberFormatException e) {}
+						}
+//						System.out.println("AFTER max: " + progress.getMaximum());
+						
+						progress.setMillisToDecideToPopup(250);
+						progress.setMillisToPopup(1000);
+						
+						image = javax.imageio.ImageIO.read(pmis);
+						pmis.close();
+//						jshm.util.TestTimer.stop();
+//						jshm.util.TestTimer.start();
+						image = GraphicsUtilities.toCompatibleImage(image);
+//						jshm.util.TestTimer.stop();
 					}
+					
+					method.releaseConnection();
 				} catch (OutOfMemoryError e) {
 					LOG.log(Level.WARNING, "OutOfMemoryError trying to load image", e);
 					image = null; // make it open in browser
 				} catch (Throwable e) {
-					t = e;
+					if (null != progress && progress.isCanceled()) {
+						canceled = true;
+					} else {
+						t = e;
+					}
 				}
 				
 				return null;
 			}
 			
 			public void done() {
+				if (canceled) return;
+				
 				if (null == image) {
 					if (null == t) {
 						// no error, just the url wasn't an image, so launch the browser
@@ -326,7 +358,7 @@ public class GuiUtil {
 					}
 				} else {
 					SpInfoViewer viewer = new SpInfoViewer();
-					viewer.setTitle(url.toExternalForm());
+					viewer.setTitle(urlStr);
 					viewer.setImage(image, true);
 					viewer.setLocationRelativeTo(owner);
 					viewer.setVisible(true);

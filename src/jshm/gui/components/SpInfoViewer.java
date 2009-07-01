@@ -283,6 +283,12 @@ public class SpInfoViewer extends javax.swing.JFrame {
 		nip.setImage(newImage);
 	}
 	
+	@Override public void dispose() {
+		super.dispose();
+		setImage((Image) null);
+		System.gc(); // meh
+	}
+	
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
