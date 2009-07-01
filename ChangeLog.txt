@@ -2,7 +2,8 @@ JSHManager ChangeLog
 
 Version 0.3.2
 -------------
-- Corrected issue when downloading scores for a game with a demo tier.
+- Scores for demo tiers are now correctly ignored.
+- Empty tiers in the upload score wizard are no longer shown.
 
 Version 0.3.1
 -------------

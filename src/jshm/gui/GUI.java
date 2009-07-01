@@ -2201,15 +2201,16 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			KeyStroke.getKeyStroke(KeyEvent.VK_U, CTRL_MASK | KeyEvent.ALT_DOWN_MASK), 'U'){
 
 			public void actionPerformed(ActionEvent e) {
-				ScoresTreeTableModel newModel = 
-					((ScoresTreeTableModel) tree.getTreeTableModel()).createNewScoresModel();
+				ScoresTreeTableModel model = 
+					(ScoresTreeTableModel) tree.getTreeTableModel();
 				
-				if (newModel.getScoreCount() == 0) {
+				if (!model.hasSubmittableScores()) {
 					JOptionPane.showMessageDialog(GUI.this, "There are no new scores to upload", "Error", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
 				
-				Wizard wiz = ScoreUploadWizard.createWizard(newModel);
+				Wizard wiz = ScoreUploadWizard.createWizard(
+					model.createSubmittableScoresModel());
 				wiz.show();
 				tree.repaint(); // takes care of de-highlighting the new scores
 			}

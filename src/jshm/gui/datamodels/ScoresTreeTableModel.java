@@ -451,6 +451,8 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 		if (selectRow)
 			parent.getSelectionModel()
 			.setSelectionInterval(rowToSelect, rowToSelect);
+		
+		parent.packAll();
 	}
 
 	public void deleteScore(TreePath p) {
@@ -525,8 +527,7 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 	 * @return A new instance of {@link ScoresTreeTableModel}
 	 * that contains only the new scores that this model contains.
 	 */
-	// TODO rename to indicate new or unknown
-	public ScoresTreeTableModel createNewScoresModel() {
+	public ScoresTreeTableModel createSubmittableScoresModel() {
 		List<Song> songs = new ArrayList<Song>();
 		List<Score> newScores = new ArrayList<Score>();
 		
@@ -543,7 +544,10 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 			}
 		}
 		
-		return new ScoresTreeTableModel(game, group, diff, sorting, songs, newScores);
+		ScoresTreeTableModel ret =
+			new ScoresTreeTableModel(game, group, diff, sorting, songs, newScores);
+		ret.setDisplayEmptyScores(false);
+		return ret;
 	}
 	
 	/**
@@ -573,6 +577,19 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 		}
 		
 		return count;
+	}
+	
+	public boolean hasSubmittableScores() {
+		for (Tier t : model.tiers) {
+			for (SongScores ss : t.songs) {
+				for (Score score : ss.scores) {
+					if (score.isSubmittable())
+						return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 	
 	public List<? extends Score> getScores() {		
