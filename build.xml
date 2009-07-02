@@ -6,20 +6,34 @@
 	<property name="src_dir" value="${basedir}/src"/>
 	<property name="internal_src_dir" value="${basedir}/internal"/>
 	<property name="test_src_dir" value="${basedir}/test"/>
+	<property name="test_bin_dir" value="${basedir}/test_bin"/>
 	<property name="lib_dir" value="${basedir}/lib"/>
+	<property name="internal_lib_dir" value="${basedir}/internal_lib"/>
+	<property name="launch4j_dir" value="${internal_lib_dir}/launch4j"/>
 	
 	<path id="classpath">
 		<fileset id="libs" dir="${lib_dir}" includes="**/*.jar"/>
 	</path>
 	
+	<path id="internal_classpath">
+		<fileset id="internal_libs" dir="${internal_lib_dir}" includes="**/*.jar"/>
+	</path>
+	
+	
 	<target name="all" depends="clean,dist"/>
 	
-	<target name="dist" depends="distfiles,jar,patch">
+	<target name="checkos">
+		<condition property="isWindows">
+			<os family="Windows" />
+		</condition>
+	</target>
+
+	<target name="dist" depends="run-tests,distfiles,jar,patch,exewrapper">
 		<zip destfile="${dist_dir}/${jshm.name}-${jshm.version}.zip">
 			<fileset 
 				dir="${dist_dir}"
 				includes="**"
-				excludes="${jshm.name}-patch-*.jar"/>
+				excludes="*.exe,${jshm.name}-patch-*.jar"/>
 		</zip>
 		
 		<!-- 7z a -bd -sfx7z.sfx out.exe *.txt *.jar Licenses/* -->
@@ -32,6 +46,7 @@
 			<arg value="-x!${jshm.name}-patch-*.jar"/>
 			<arg value="${jshm.name}-${jshm.version}.exe"/>
 			<arg value="*.txt"/>
+			<arg value="*.exe"/>
 			<arg value="*.jar"/>
 			<arg value="Licenses\*"/>
 		</exec>
@@ -104,6 +119,18 @@
 		</jar>
 	</target>
 	
+	<target name="exewrapper" depends="checkos,jar,jshminfo,distfiles" if="isWindows">
+		<taskdef name="launch4j"
+			classname="net.sf.launch4j.ant.Launch4jTask"
+			classpath="${launch4j_dir}/launch4j.jar:${launch4j_dir}/lib/xstream.jar" />
+		<launch4j
+			configfile="${basedir}/launch4j.xml"
+			productversion="${jshm.major_version}.${jshm.minor_version}.${jshm.point_version}.${jshm.revision}"
+			txtproductversion="${jshm.version}"
+			fileversion="${jshm.major_version}.${jshm.minor_version}.${jshm.point_version}.${jshm.revision}"
+			txtfileversion="${jshm.version}"/>
+	</target>
+	
 	<target name="jar" depends="compile,jshminfo">
 		<mkdir dir="${dist_dir}"/>
 		
@@ -157,6 +184,45 @@
 		</javac>
 	</target>
 	
+	<target name="run-tests" description="Execute unit tests" depends="compile-tests">
+		<mkdir dir="${test_bin_dir}/rawtestoutput"/>
+		
+		<junit printsummary="true" failureproperty="junit.failure">
+			<classpath>
+				<path refid="classpath"/>
+				<path refid="internal_classpath"/>
+				<pathelement path="${test_bin_dir}"/>
+				<pathelement path="${bin_dir}"/>
+			</classpath>
+			
+			<batchtest todir="${test_bin_dir}/rawtestoutput">
+				<fileset dir="${test_bin_dir}"/>
+				<formatter type="xml"/>
+			</batchtest>
+		</junit>
+		
+		<fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
+		
+		<junitreport todir="${test_bin_dir}">
+			<fileset dir="${test_bin_dir}/rawtestoutput"/>
+			<report todir="${test_bin_dir}/test-reports"/>
+		</junitreport>
+	</target>
+	
+	<target name="compile-tests" depends="compile">
+		<mkdir dir="${test_bin_dir}"/>
+		
+		<javac destdir="${test_bin_dir}" debug="true">
+			<src path="${test_src_dir}"/>
+			<include name="**"/>
+			<classpath>
+				<path refid="classpath"/>
+				<path refid="internal_classpath"/>
+				<pathelement path="${bin_dir}"/>
+			</classpath>
+		</javac>
+	</target>
+	
 	<target name="resources">
 		<mkdir dir="${bin_dir}"/>
 		<copy todir="${bin_dir}/jshm/resources">
@@ -183,5 +249,6 @@
 	<target name="clean">
 		<delete dir="${dist_dir}"/>
 		<delete dir="${bin_dir}"/>
+		<delete dir="${test_bin_dir}"/>
 	</target>
 </project>

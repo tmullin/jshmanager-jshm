@@ -52,9 +52,17 @@ Your settings and data should not be affected.
 
 4.1. Introduction
 -----------------
-On most Windows systems, you can simply double-click JSHManager.jar
-to start it, assuming Java has been installed correctly. You can also
-right-click on the jar to create a shortcut, if desired.
+On Windows systems, a launcher, JSHManager.exe, is provided to ensure the
+right version of Java is installed as well as to ensure enough memory is
+allocated.
+
+On other systems, the command to run the program is
+
+  java -jar JSHManager.jar
+
+You can allocate additional memory if you get OutOfMemoryErrors by running
+
+  java -Xmx256m -jar JSHManager.jar
 
 
 4.2. Download Existing Scores

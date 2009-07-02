@@ -69,6 +69,18 @@ public class TextTest {
 	}
 	
 	@Test public void instrument() {
+		String[] keys = {"longName"};
+		
+		for (Instrument d : Instrument.values()) {
+			for (String key : keys) {
+				String cur = d.getText(key);
+				assertNotNull(cur);
+				assertFalse(cur.isEmpty());
+			}
+		}
+	}
+	
+	@Test public void instrumentGroup() {
 		String[] keys = {"longName", "wikiUrl"};
 		
 		for (Instrument.Group d : Instrument.Group.values()) {
@@ -77,6 +89,16 @@ public class TextTest {
 				assertNotNull(cur);
 				assertFalse(cur.isEmpty());
 			}
+			
+			// check WT names too
+			
+			String cur = d.getLongName(true);
+			assertNotNull(cur);
+			assertFalse(cur.isEmpty());
+			
+			cur = d.getWikiUrl(true);
+			assertNotNull(cur);
+			assertFalse(cur.isEmpty());
 		}
 	}
 	

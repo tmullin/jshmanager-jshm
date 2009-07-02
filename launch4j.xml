@@ -1,0 +1,39 @@
+<launch4jConfig>
+  <dontWrapJar>true</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>JSHManager.jar</jar>
+  <outfile>dist\JSHManager.exe</outfile>
+  <errTitle>JSHManager</errTitle>
+  <cmdLine></cmdLine>
+  <chdir></chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <customProcName>true</customProcName>
+  <stayAlive>false</stayAlive>
+  <manifest></manifest>
+  <icon>src\jshm\resources\images\stitch\psd\stitchasalienicon.ico</icon>
+  <singleInstance>
+    <mutexName>JSHManager</mutexName>
+    <windowTitle>JSHManager</windowTitle>
+  </singleInstance>
+  <jre>
+    <path></path>
+    <minVersion>1.6.0</minVersion>
+    <maxVersion></maxVersion>
+    <jdkPreference>preferJre</jdkPreference>
+    <maxHeapSize>256</maxHeapSize>
+  </jre>
+  <versionInfo>
+    <fileVersion>0.0.0.0</fileVersion>
+    <txtFileVersion>0.0.0.0</txtFileVersion>
+    <fileDescription>Java ScoreHero Manager Launcher</fileDescription>
+    <copyright>Copyright 2009 Tim Mullin</copyright>
+    <productVersion>0.0.0.0</productVersion>
+    <txtProductVersion>0.0.0.0</txtProductVersion>
+    <productName>JSHManager</productName>
+    <companyName></companyName>
+    <internalName>jshm</internalName>
+    <originalFilename>JSHManager.exe</originalFilename>
+  </versionInfo>
+</launch4jConfig>

@@ -4,6 +4,11 @@ Version 0.3.2
 -------------
 - Scores for demo tiers are now correctly ignored.
 - Empty tiers in the upload score wizard are no longer shown.
+- The self-extracting exe for Windows now includes a launcher program,
+  JSHManager.exe, that checks that the correct version of Java is installed
+  as well as allocates more memory to prevent OutOfMemoryErrors when loading
+  chart images. It is recommended, but not required, to use the launcher.
+  The patcher program will still update JSHManager.jar correctly.
 
 Version 0.3.1
 -------------
