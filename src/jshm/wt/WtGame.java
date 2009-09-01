@@ -21,7 +21,10 @@ public class WtGame extends Game {
 		WT_PS2 = new Tiers(Arrays.copyOf(WT_DLC.tiers, WT_DLC.tiers.length - 1)),
 	
 		M_ALL = new Tiers("The Forum|Tushino Air Field|Metallica at Tushino|Hammersmith Apollo|Damaged Justice Tour|The Meadowlands|Donington Park|The Ice Cave|Downloadable Content"),
-		SH_ALL = new Tiers("Amazon Rain Forest|Grand Canyon|Polar Ice Cap|London Sewerage System|The Sphinx|The Great Wall Of China|The Lost City of Atlantis|Quebec City")
+		SH_ALL = new Tiers("Amazon Rain Forest|Grand Canyon|Polar Ice Cap|London Sewerage System|The Sphinx|The Great Wall Of China|The Lost City of Atlantis|Quebec City"),
+		
+		FIVE_DLC = new Tiers("Main Setlist|Downloadable Content"),
+		FIVE_PS2 = new Tiers(Arrays.copyOf(FIVE_DLC.tiers, FIVE_DLC.tiers.length - 1))
 		;
 	}
 	
@@ -41,7 +44,12 @@ public class WtGame extends Game {
 	GHSH_PS2 = new WtGame(26, WtGameTitle.GHSH, WtTiers.SH_ALL, Platform.PS2, false),
 	GHSH_XBOX360 = new WtGame(27, WtGameTitle.GHSH, WtTiers.SH_ALL, Platform.XBOX360, false),
 	GHSH_PS3 = new WtGame(28, WtGameTitle.GHSH, WtTiers.SH_ALL, Platform.PS3, false),
-	GHSH_WII = new WtGame(29, WtGameTitle.GHSH, WtTiers.SH_ALL, Platform.WII, false)
+	GHSH_WII = new WtGame(29, WtGameTitle.GHSH, WtTiers.SH_ALL, Platform.WII, false),
+	
+	GH5_PS2 = new WtGame(31, WtGameTitle.GH5, WtTiers.FIVE_PS2, Platform.PS2, false),
+	GH5_XBOX360 = new WtGame(32, WtGameTitle.GH5, WtTiers.FIVE_DLC, Platform.XBOX360, true),
+	GH5_PS3 = new WtGame(33, WtGameTitle.GH5, WtTiers.FIVE_DLC, Platform.PS3, true),
+	GH5_WII = new WtGame(34, WtGameTitle.GH5, WtTiers.FIVE_DLC, Platform.WII, true)
 	;
 	
 	protected WtGame(int scoreHeroId, GameTitle title, Tiers tiers, Platform platform,

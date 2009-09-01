@@ -14,7 +14,8 @@ public class WtGameTitle extends GameTitle {
 	public static final WtGameTitle
 		GHWT = new WtGameTitle("GHWT", 7, false, Platform.BIG_FOUR),
 		GHM = new WtGameTitle("GHM", 9, true, Platform.BIG_FOUR),
-		GHSH = new WtGameTitle("GHSH", 11, true, Platform.BIG_FOUR)
+		GHSH = new WtGameTitle("GHSH", 11, true, Platform.BIG_FOUR),
+		GH5 = new WtGameTitle("GH5", 12, true, Platform.BIG_FOUR)
 	;
 
 	public final int scoreHeroGroupId;

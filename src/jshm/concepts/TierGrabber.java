@@ -50,7 +50,7 @@ public class TierGrabber {
 	}
 	
 	static void doWt() throws Exception {
-		List<Game> games = Game.getByTitle(WtGameTitle.GHSH); // .getBySeries(GameSeries.ROCKBAND);
+		List<Game> games = Game.getByTitle(WtGameTitle.GH5); // .getBySeries(GameSeries.ROCKBAND);
 //		
 		for (Game game : games) {
 //		Game game = GhGame.GH3_XBOX360;

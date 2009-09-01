@@ -9,6 +9,8 @@ Version 0.3.2
   as well as allocates more memory to prevent OutOfMemoryErrors when loading
   chart images. It is recommended, but not required, to use the launcher.
   The patcher program will still update JSHManager.jar correctly.
+- GH5 support.
+
 
 Version 0.3.1
 -------------
