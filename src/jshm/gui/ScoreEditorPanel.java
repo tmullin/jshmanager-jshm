@@ -529,17 +529,15 @@ private void videoUrlOpenButtonActionPerformed(java.awt.event.ActionEvent evt) {
     						} catch (Exception e) {
     							throw new NumberFormatException("Invalid score: " + scoreField.getText());
     						}
-    			
-    						score.setRating(0);
-    						
+    			    						
     						if (score instanceof GhScore || score instanceof WtScore) {
-    							for (int i : new int[] {3, 4, 5})
+    							for (int i : new int[] {0, 3, 4, 5})
     								if (GhScore.getRatingIcon(i) == ratingCombo.getSelectedItem()) {
     									score.setRating(i);
     									break;
     								}
     						} else if (score instanceof RbScore) {
-    							for (int i : new int[] {1, 2, 3, 4, 5, 6})
+    							for (int i : new int[] {0, 1, 2, 3, 4, 5, 6})
     								if (RbScore.getRatingIcon(i) == ratingCombo.getSelectedItem()) {
     									score.setRating(i);
     									break;
