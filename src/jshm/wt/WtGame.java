@@ -23,8 +23,8 @@ public class WtGame extends Game {
 		M_ALL = new Tiers("The Forum|Tushino Air Field|Metallica at Tushino|Hammersmith Apollo|Damaged Justice Tour|The Meadowlands|Donington Park|The Ice Cave|Downloadable Content"),
 		SH_ALL = new Tiers("Amazon Rain Forest|Grand Canyon|Polar Ice Cap|London Sewerage System|The Sphinx|The Great Wall Of China|The Lost City of Atlantis|Quebec City"),
 		
-		FIVE_DLC = new Tiers("Main Setlist|Downloadable Content"),
-		FIVE_PS2 = new Tiers(Arrays.copyOf(FIVE_DLC.tiers, FIVE_DLC.tiers.length - 1))
+		FIVE_DLC = new Tiers("Main Setlist|GH World Tour (Imported)|Downloadable Content"),
+		FIVE_PS2 = new Tiers(Arrays.copyOf(FIVE_DLC.tiers, FIVE_DLC.tiers.length - 2)) // no DLC or import
 		;
 	}
 	
@@ -35,6 +35,7 @@ public class WtGame extends Game {
 	GHWT_XBOX360 = new WtGame(17, WtGameTitle.GHWT, WtTiers.WT_DLC, Platform.XBOX360, true),
 	GHWT_PS3 = new WtGame(18, WtGameTitle.GHWT, WtTiers.WT_DLC, Platform.PS3, true),
 	GHWT_WII = new WtGame(19, WtGameTitle.GHWT, WtTiers.WT_DLC, Platform.WII, true),
+	GHWT_PC = new WtGame(30, WtGameTitle.GHWT, WtTiers.WT_PS2, Platform.PC, false),
 	
 	GHM_PS2 = new WtGame(21, WtGameTitle.GHM, WtTiers.M_ALL, Platform.PS2, true),
 	GHM_XBOX360 = new WtGame(22, WtGameTitle.GHM, WtTiers.M_ALL, Platform.XBOX360, true),
@@ -83,7 +84,7 @@ public class WtGame extends Game {
 
 	@Override
 	public Song getSongByScoreHeroId(int scoreHeroId, Difficulty diff) {
-		return WtSong.getByScoreHeroId(scoreHeroId, diff);
+		return WtSong.getByScoreHeroId((WtGameTitle) title, scoreHeroId, diff);
 	}
 
 	@Override

@@ -191,7 +191,7 @@ public class WtSongScraper {
 			try {
 				WtSong s = songMap != null
 					? songMap.get(Integer.parseInt(data[1][1]))
-					: WtSong.getByScoreHeroId(Integer.parseInt(data[1][1]));
+					: WtSong.getByScoreHeroId((WtGameTitle) game.title, Integer.parseInt(data[1][1]));
 				
 				if (null == s)
 					throw new ScraperException("Song not found with scoreHeroId=" + data[1][1]);

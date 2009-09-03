@@ -41,6 +41,7 @@ import jshm.scraper.TieredTabularDataHandler;
 import jshm.sh.DateFormats;
 import jshm.sh.URLs;
 import jshm.wt.WtGame;
+import jshm.wt.WtGameTitle;
 import jshm.wt.WtScore;
 import jshm.wt.WtSong;
 
@@ -229,6 +230,7 @@ public class WtScoreScraper {
 		public void handleDataRow(String[][] data) throws ScraperException {
 			WtSong song =
 				WtSong.getByScoreHeroId(
+					(WtGameTitle) game.title,
 					Integer.parseInt(data[2][0]));
 			
 			if (null == song)

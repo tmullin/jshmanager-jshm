@@ -32,35 +32,36 @@ import jshm.xml.GhSongInfoFetcher.SongInfo;
 public class WtSong extends Song {
 	static final Logger LOG = Logger.getLogger(WtSong.class.getName());
 	
-	public static WtSong getByScoreHeroId(final int id) {
-		return getByScoreHeroId(id, Difficulty.EXPERT);
+	public static WtSong getByScoreHeroId(final WtGameTitle title, final int id) {
+		return getByScoreHeroId(title, id, Difficulty.EXPERT);
 	}
 	
-	public static WtSong getByScoreHeroId(final int id, Difficulty diff) {
+	public static WtSong getByScoreHeroId(final WtGameTitle title, final int id, Difficulty diff) {
 		LOG.finest("Querying database for WtSong with scoreHeroId=" + id);
 		
 		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
-	    WtSong result = getByScoreHeroId(session, id, diff);
+	    WtSong result = getByScoreHeroId(session, title, id, diff);
 	    session.getTransaction().commit();
 		
 		return result;
 	}
 	
-	public static WtSong getByScoreHeroId(org.hibernate.Session session, final int id) {
-		return getByScoreHeroId(session, id, Difficulty.EXPERT);
+	public static WtSong getByScoreHeroId(org.hibernate.Session session, final WtGameTitle title, final int id) {
+		return getByScoreHeroId(session, title, id, Difficulty.EXPERT);
 	}
 	
-	public static WtSong getByScoreHeroId(org.hibernate.Session session, final int id, Difficulty diff) {
+	public static WtSong getByScoreHeroId(org.hibernate.Session session, final WtGameTitle title, final int id, Difficulty diff) {
+		if (Difficulty.EXPERT_PLUS == diff &&
+			!title.supportsExpertPlus)
+			return null;
+		
 		WtSong ret = (WtSong)
 			session.createQuery(
-				"from WtSong where scoreHeroId=:shid")
+				"FROM WtSong WHERE scoreHeroId=:shid AND gameTitle=:ttl")
 				.setInteger("shid", id)
+				.setString("ttl", title.title)
 				.uniqueResult();
-		
-		if (Difficulty.EXPERT_PLUS == diff &&
-			!((WtGameTitle) ret.gameTitle).supportsExpertPlus)
-			return null;
 			
 		return ret;
 	}

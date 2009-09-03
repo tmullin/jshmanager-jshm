@@ -111,6 +111,7 @@ public class WtSongUpdater {
 				// not the detached one we used before from the xml
 				order.setSong(
 					WtSong.getByScoreHeroId(session,
+						(WtGameTitle) game,
 						order.getSong().getScoreHeroId()));
 				
 		    	// new insert
