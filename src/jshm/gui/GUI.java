@@ -27,6 +27,8 @@
 package jshm.gui;
 
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -76,7 +78,6 @@ import jshm.Song.Sorting;
 import jshm.exceptions.SongHiddenException;
 import jshm.gh.GhGame;
 import jshm.gh.GhGameTitle;
-import jshm.gui.components.SelectSongDialog;
 import jshm.gui.components.StatusBar;
 import jshm.gui.datamodels.GhSongDataTreeTableModel;
 import jshm.gui.datamodels.Parentable;
@@ -84,6 +85,7 @@ import jshm.gui.datamodels.RbSongDataTreeTableModel;
 import jshm.gui.datamodels.ScoresTreeTableModel;
 import jshm.gui.datamodels.SongSortable;
 import jshm.gui.datamodels.WtSongDataTreeTableModel;
+import jshm.gui.notificationbars.SelectSongBar;
 import jshm.gui.wizards.csvimport.CsvImportWizard;
 import jshm.gui.wizards.scoredownload.ScoreDownloadWizard;
 import jshm.gui.wizards.scoreupload.ScoreUploadWizard;
@@ -121,6 +123,8 @@ public class GUI extends javax.swing.JFrame {
 	
 	private HoverHelp hh = null;
 	TreePopupMenu treePopup = null;
+	
+	private SelectSongBar selectSongBar = null;
 	
     /** Creates new form GUITest */
     public GUI() {    	
@@ -235,6 +239,30 @@ public class GUI extends javax.swing.JFrame {
         
         
         treePopup = new TreePopupMenu(this, tree);
+        
+        
+        // set up songSelectBar
+        selectSongBar = new SelectSongBar();
+        selectSongBar.getSelectButton().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Song song = selectSongBar.getSelectedSong();
+
+				if (null != song) {
+					assert song.getActiveGame() == getCurGame();
+					assert tree.getTreeTableModel() instanceof ScoresTreeTableModel;
+					
+					try {
+						((ScoresTreeTableModel) tree.getTreeTableModel())
+							.expandAndScrollTo(song, true);
+					} catch (SongHiddenException e1) {
+						JOptionPane.showMessageDialog(GUI.this,
+							"That song is hidden because it doesn't have any scores\n" +
+							"and you're hiding songs without scores.",
+							"Notice", JOptionPane.WARNING_MESSAGE);
+					}
+				}
+			}
+		});
         
         
         // check for updates
@@ -352,10 +380,13 @@ public class GUI extends javax.swing.JFrame {
         aboutDialog1 = new AboutDialog(this);
         textFileViewerDialog1 = new TextFileViewerDialog(this, true);
         checkUpdatesDialog1 = new jshm.gui.CheckUpdatesDialog();
-        innerPanel = new javax.swing.JPanel();
-        statusBar1 = new jshm.gui.components.StatusBar();
+        innerPanel1 = new javax.swing.JPanel();
+        innerPanel2 = new javax.swing.JPanel();
         treeScrollPane = new javax.swing.JScrollPane();
         tree = new org.jdesktop.swingx.JXTreeTable();
+        upperNotificationBar = new jshm.gui.notificationbars.NotificationBar();
+        lowerNotificationBar = new jshm.gui.notificationbars.NotificationBar();
+        statusBar1 = new jshm.gui.components.StatusBar();
         editorCollapsiblePane = new org.jdesktop.swingx.JXCollapsiblePane();
         scoreEditorPanel1 = new ScoreEditorPanel(this);
         toolbar = new javax.swing.JToolBar();
@@ -412,8 +443,9 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        innerPanel.setLayout(new java.awt.BorderLayout());
-        innerPanel.add(statusBar1, java.awt.BorderLayout.SOUTH);
+        innerPanel1.setLayout(new java.awt.BorderLayout());
+
+        innerPanel2.setLayout(new java.awt.BorderLayout());
 
         tree.setColumnControlVisible(true);
         tree.setPreferredScrollableViewportSize(new java.awt.Dimension(800, 600));
@@ -433,15 +465,20 @@ public class GUI extends javax.swing.JFrame {
         });
         treeScrollPane.setViewportView(tree);
 
-        innerPanel.add(treeScrollPane, java.awt.BorderLayout.CENTER);
+        innerPanel2.add(treeScrollPane, java.awt.BorderLayout.CENTER);
+        innerPanel2.add(upperNotificationBar, java.awt.BorderLayout.NORTH);
+        innerPanel2.add(lowerNotificationBar, java.awt.BorderLayout.SOUTH);
+
+        innerPanel1.add(innerPanel2, java.awt.BorderLayout.CENTER);
+        innerPanel1.add(statusBar1, java.awt.BorderLayout.SOUTH);
 
         editorCollapsiblePane.setCollapsed(true);
         editorCollapsiblePane.getContentPane().setLayout(new java.awt.BorderLayout());
         editorCollapsiblePane.getContentPane().add(scoreEditorPanel1, java.awt.BorderLayout.CENTER);
 
-        innerPanel.add(editorCollapsiblePane, java.awt.BorderLayout.NORTH);
+        innerPanel1.add(editorCollapsiblePane, java.awt.BorderLayout.NORTH);
 
-        getContentPane().add(innerPanel, java.awt.BorderLayout.CENTER);
+        getContentPane().add(innerPanel1, java.awt.BorderLayout.CENTER);
 
         toolbar.setRollover(true);
         initToolbar(toolbar);
@@ -1620,6 +1657,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 	
 	scoreEditorPanel1.setScore(null);
 	editorCollapsiblePane.setCollapsed(true);
+	upperNotificationBar.removeMainPanel();
 	
 	final GhGame ggame = (GhGame) game;
 	
@@ -1675,8 +1713,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 			downloadGhSongMetaDataMenuItem.setEnabled(true);
 			downloadRbSongDataMenuItem.setEnabled(false);
 			downloadRbSongMetaDataMenuItem.setEnabled(false);
-			editorCollapsiblePane.setCollapsed(true);
-			
+
 			GUI.this.setIconImage(game.title.getIcon().getImage());
 			GUI.this.setTitle(game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " on " + difficulty.toShortString() + " - Song Data");
 			
@@ -1702,6 +1739,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 	
 	scoreEditorPanel1.setScore(null);
 	editorCollapsiblePane.setCollapsed(true);
+	upperNotificationBar.removeMainPanel();
 	
 	new SwingWorker<Void, Void>() {
 		List<RbSong> songs = null;
@@ -1755,8 +1793,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 			downloadGhSongMetaDataMenuItem.setEnabled(false);
 			downloadRbSongDataMenuItem.setEnabled(true);
 			downloadRbSongMetaDataMenuItem.setEnabled(true);
-			editorCollapsiblePane.setCollapsed(true);
-			
+
 			GUI.this.setIconImage(game.title.getIcon().getImage());
 			GUI.this.setTitle(game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " " + group + " - Song Data");
 			
@@ -1782,6 +1819,7 @@ private void wtSongDataMenuItemActionPerformed(final ActionEvent evt, final WtGa
 	
 	scoreEditorPanel1.setScore(null);
 	editorCollapsiblePane.setCollapsed(true);
+	upperNotificationBar.removeMainPanel();
 	
 	new SwingWorker<Void, Void>() {
 		List<WtSong> songs = null;
@@ -1835,8 +1873,7 @@ private void wtSongDataMenuItemActionPerformed(final ActionEvent evt, final WtGa
 			downloadGhSongMetaDataMenuItem.setEnabled(true);
 			downloadRbSongDataMenuItem.setEnabled(false);
 			downloadRbSongMetaDataMenuItem.setEnabled(false);
-			editorCollapsiblePane.setCollapsed(true);
-			
+
 			GUI.this.setIconImage(game.title.getIcon().getImage());
 			GUI.this.setTitle(game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " " + group.getLongName(game instanceof WtGame) + " - Song Data");
 			
@@ -1915,6 +1952,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 						}
 						
 						scoreEditorPanel1.setSongs(orderedSongs);
+						selectSongBar.setSongs(orderedSongs);
 					}
 				});
 			} catch (Exception e) {
@@ -2004,7 +2042,8 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     javax.swing.JMenuItem goToWikiPageMenuItem;
     private javax.swing.JMenu helpMenu;
     javax.swing.JCheckBoxMenuItem hideEmptySongsMenuItem;
-    private javax.swing.JPanel innerPanel;
+    private javax.swing.JPanel innerPanel1;
+    private javax.swing.JPanel innerPanel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
@@ -2012,6 +2051,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator8;
     private javax.swing.JMenuItem licenseMenuItem;
+    private jshm.gui.notificationbars.NotificationBar lowerNotificationBar;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu rbLinksMenu;
     private javax.swing.JMenu rbMenu;
@@ -2028,6 +2068,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     org.jdesktop.swingx.JXTreeTable tree;
     private javax.swing.JScrollPane treeScrollPane;
     private javax.swing.JMenuItem uploadLogsMenuItem;
+    private jshm.gui.notificationbars.NotificationBar upperNotificationBar;
     private javax.swing.JMenu viewLogMenu;
     private javax.swing.JMenu wikiMenu;
     // End of variables declaration//GEN-END:variables
@@ -2089,6 +2130,12 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		GuiUtil.openImageOrBrowser(this, url);
 	}
 	
+	public void showUpperNotificationBar(Component comp) {
+		upperNotificationBar.add(comp, BorderLayout.CENTER);
+		upperNotificationBar.validate();
+		upperNotificationBar.setCollapsed(false);
+	}
+	
 	
 	final Actions actions = new Actions();
 	
@@ -2099,22 +2146,8 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			KeyStroke.getKeyStroke(KeyEvent.VK_G, CTRL_MASK), 0){
 
 			public void actionPerformed(ActionEvent e) {
-				Song song = SelectSongDialog.show(GUI.this, orderedSongs);
-//				System.out.println(song);
-				
-				if (null != song) {
-					assert tree.getTreeTableModel() instanceof ScoresTreeTableModel;
-					
-					try {
-						((ScoresTreeTableModel) tree.getTreeTableModel())
-							.expandAndScrollTo(song, true);
-					} catch (SongHiddenException e1) {
-						JOptionPane.showMessageDialog(GUI.this,
-							"That song is hidden because it doesn't have any scores\n" +
-							"and you're hiding songs without scores.",
-							"Notice", JOptionPane.WARNING_MESSAGE);
-					}
-				}
+				upperNotificationBar.setMainPanel(selectSongBar);
+				selectSongBar.focus();
 			}
 		};
 		
