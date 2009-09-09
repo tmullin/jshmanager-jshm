@@ -57,7 +57,7 @@ public class RbSongDataGenerator {
 	public static final String DTD_URL = "http://jshm.sourceforge.net/songdata/rb_songdata.dtd";
 	
 	private static void usage() {
-		System.out.println("Usage: java " + RbSongDataGenerator.class.getName() + " <RB1|RB2>");
+		System.out.println("Usage: java " + RbSongDataGenerator.class.getName() + " <RB1|RB2|TBRB>");
 		System.exit(-1);
 	}
 	

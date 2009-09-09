@@ -23,8 +23,8 @@ public class WtGame extends Game {
 		M_ALL = new Tiers("The Forum|Tushino Air Field|Metallica at Tushino|Hammersmith Apollo|Damaged Justice Tour|The Meadowlands|Donington Park|The Ice Cave|Downloadable Content"),
 		SH_ALL = new Tiers("Amazon Rain Forest|Grand Canyon|Polar Ice Cap|London Sewerage System|The Sphinx|The Great Wall Of China|The Lost City of Atlantis|Quebec City"),
 		
-		FIVE_DLC = new Tiers("Main Setlist|GH World Tour (Imported)|Downloadable Content"),
-		FIVE_PS2 = new Tiers(Arrays.copyOf(FIVE_DLC.tiers, FIVE_DLC.tiers.length - 2)) // no DLC or import
+		FIVE_DLC = new Tiers("Main Setlist|GH World Tour (Imported)|GH Smash Hits (Imported)|Downloadable Content"),
+		FIVE_PS2 = new Tiers(Arrays.copyOf(FIVE_DLC.tiers, FIVE_DLC.tiers.length - 3)) // no DLC or import
 		;
 	}
 	

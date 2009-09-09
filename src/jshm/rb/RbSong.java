@@ -226,10 +226,15 @@ public class RbSong extends Song {
 	
 	@Transient @Override
 	public javax.swing.ImageIcon getSongSourceIcon() {
-		if (null == songSource)
-			return null;
-		SongSource ss = SongSource.smartValueOf(songSource);
-		return null == ss ? null : ss.getIcon();
+		javax.swing.ImageIcon ret = null;
+		
+		if (null != songSource) {
+			SongSource ss = SongSource.smartValueOf(songSource);
+			ret = null == ss ? null : ss.getIcon();
+		}
+		
+		// this will return TBRB icon
+		return null != ret ? ret : super.getSongSourceIcon();
 	}
 	
 	// fields for http://pksage.com/xml.php

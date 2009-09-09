@@ -59,7 +59,10 @@ public class RbGame extends Game {
 			RB2_NEXTGEN = new Tiers("Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Rock Band Imported|AC/DC Live Track Pack|Downloaded Songs"),
 			RB2_WII = new Tiers("Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Downloaded Songs"),
 			
-			RB2_DIFFS = new Tiers("<UNKNOWN>|Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs")
+			RB2_DIFFS = new Tiers("<UNKNOWN>|Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs"),
+		
+			TBRB = new Tiers("Beginner|Apprentice|Moderate|Solid|Tricky|Challenging|Demanding"),
+			TBRB_DIFFS = new Tiers("<UNKNOWN>|Beginner|Apprentice|Moderate|Solid|Tricky|Challenging|Demanding")
 			;
 	}
 	
@@ -72,7 +75,11 @@ public class RbGame extends Game {
 		RB2_PS2 = new RbGame(RbGameTitle.RB2, RbTiers.RB2_PS2, Platform.PS2, false),
 		RB2_XBOX360 = new RbGame(RbGameTitle.RB2, RbTiers.RB2_NEXTGEN, Platform.XBOX360, true),
 		RB2_PS3 = new RbGame(RbGameTitle.RB2, RbTiers.RB2_NEXTGEN, Platform.PS3, true),
-		RB2_WII = new RbGame(RbGameTitle.RB2, RbTiers.RB2_WII, Platform.WII, true)
+		RB2_WII = new RbGame(RbGameTitle.RB2, RbTiers.RB2_WII, Platform.WII, true),
+		
+		TBRB_XBOX360 = new RbGame(RbGameTitle.TBRB, RbTiers.TBRB, Platform.XBOX360, false),
+		TBRB_PS3 = new RbGame(RbGameTitle.TBRB, RbTiers.TBRB, Platform.PS3, false),
+		TBRB_WII = new RbGame(RbGameTitle.TBRB, RbTiers.TBRB, Platform.WII, false)
 		;
 	
 	public static void init() {}

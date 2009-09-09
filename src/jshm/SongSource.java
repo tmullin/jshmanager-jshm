@@ -25,7 +25,8 @@ public enum SongSource {
 	RB1,
 	RB2,
 	RBDLC,
-	ACDC;
+	ACDC,
+	TBRB;
 	
 	public ImageIcon getIcon() {
 		return getIcon(32);

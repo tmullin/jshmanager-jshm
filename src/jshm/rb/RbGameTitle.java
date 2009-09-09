@@ -38,7 +38,8 @@ public class RbGameTitle extends GameTitle {
 	
 	public static final RbGameTitle
 		RB1 = new RbGameTitle(1, "RB1", Platform.BIG_FOUR),
-		RB2 = new RbGameTitle(2, "RB2", Platform.BIG_FOUR)
+		RB2 = new RbGameTitle(2, "RB2", Platform.BIG_FOUR),
+		TBRB = new RbGameTitle(4, "TBRB", new Platform[] {Platform.XBOX360, Platform.PS3, Platform.WII})
 	;
 	
 	public final int scoreHeroId;

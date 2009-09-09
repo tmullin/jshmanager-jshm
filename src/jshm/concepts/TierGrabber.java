@@ -44,8 +44,8 @@ public class TierGrabber {
 //		jshm.logging.Log.configTestLogging();
 
 		jshm.util.TestTimer.start();
-		doWt();
-//		doRb();
+//		doWt();
+		doRb();
 		jshm.util.TestTimer.stop();
 	}
 	
@@ -69,7 +69,7 @@ public class TierGrabber {
 	}
 	
 	static void doRb() throws Exception {
-		List<Game> games = Game.getByTitle(RbGameTitle.RB1); // .getBySeries(GameSeries.ROCKBAND);
+		List<Game> games = Game.getByTitle(RbGameTitle.TBRB); // .getBySeries(GameSeries.ROCKBAND);
 		
 		for (Game game : games) {
 			List<String> tiers = RbTierScraper.scrape((RbGame) game, Instrument.Group.GUITAR);
