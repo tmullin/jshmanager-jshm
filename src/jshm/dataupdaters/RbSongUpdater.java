@@ -310,8 +310,9 @@ public class RbSongUpdater {
 				// extra steps taken to try to cope with song title inconsistencies
 				List<RbSong> result =
 					(List<RbSong>) session.createQuery(
-						"FROM RbSong WHERE UPPER(title) LIKE :ttl")
+						"FROM RbSong WHERE UPPER(title) LIKE :ttl AND gameTitle != :tbrbGt")
 					.setString("ttl", ttlReplacement)
+					.setString("tbrbGt", RbGameTitle.TBRB.title) // just ignore tbrb for now
 					.list();
 				
 				if (!upperTtl.equals(ttlReplacement)) {

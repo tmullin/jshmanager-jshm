@@ -61,7 +61,7 @@ public class RbGame extends Game {
 			
 			RB2_DIFFS = new Tiers("<UNKNOWN>|Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs"),
 		
-			TBRB = new Tiers("Beginner|Apprentice|Moderate|Solid|Tricky|Challenging|Demanding"),
+			TBRB = new Tiers("Beginner|Apprentice|Moderate|Solid|Tricky|Challenging|Demanding|Downloaded Songs"),
 			TBRB_DIFFS = new Tiers("<UNKNOWN>|Beginner|Apprentice|Moderate|Solid|Tricky|Challenging|Demanding")
 			;
 	}
@@ -77,9 +77,9 @@ public class RbGame extends Game {
 		RB2_PS3 = new RbGame(RbGameTitle.RB2, RbTiers.RB2_NEXTGEN, Platform.PS3, true),
 		RB2_WII = new RbGame(RbGameTitle.RB2, RbTiers.RB2_WII, Platform.WII, true),
 		
-		TBRB_XBOX360 = new RbGame(RbGameTitle.TBRB, RbTiers.TBRB, Platform.XBOX360, false),
-		TBRB_PS3 = new RbGame(RbGameTitle.TBRB, RbTiers.TBRB, Platform.PS3, false),
-		TBRB_WII = new RbGame(RbGameTitle.TBRB, RbTiers.TBRB, Platform.WII, false)
+		TBRB_XBOX360 = new RbGame(RbGameTitle.TBRB, RbTiers.TBRB, Platform.XBOX360, true),
+		TBRB_PS3 = new RbGame(RbGameTitle.TBRB, RbTiers.TBRB, Platform.PS3, true),
+		TBRB_WII = new RbGame(RbGameTitle.TBRB, RbTiers.TBRB, Platform.WII, true)
 		;
 	
 	public static void init() {}

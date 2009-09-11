@@ -9,8 +9,8 @@ Version 0.3.2
   as well as allocates more memory to prevent OutOfMemoryErrors when loading
   chart images. It is recommended, but not required, to use the launcher.
   The patcher program will still update JSHManager.jar correctly.
-- Added GH5 support. Also added GHWT for PC for completeness.
-- Added Beatles Rock Band support.
+- Added GH5 support. Also added GHWT PC for completeness.
+- Added The Beatles: Rock Band support.
 - Fixed bug that sometimes set star rating to blank when quick-editing a
   score via the song list and later editing/saving it via the editor.
 - Changed Go To Song behavior from a dialog box to a small bar like

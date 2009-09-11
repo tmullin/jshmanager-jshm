@@ -32,6 +32,7 @@ import org.htmlparser.tags.InputTag;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.tags.Span;
 import org.htmlparser.tags.TableColumn;
+import org.htmlparser.tags.TableHeader;
 
 /**
  * 
@@ -260,7 +261,10 @@ public class TableColumnFormat {
 	 * @param tc
 	 * @return
 	 */
-	public String[] getData(TableColumn tc) {
+	public String[] getData(Node tc) {
+		if (!(tc instanceof TableColumn || tc instanceof TableHeader))
+			throw new IllegalArgumentException("Expecting TableColumn or TableHeader, got: " + tc.getClass().getName());
+		
 		List<String> data = new ArrayList<String>();
 		
 		// for each of the node types we are interested in
@@ -270,13 +274,17 @@ public class TableColumnFormat {
 			NodeFormat[] curFormats = formats.get(i);
 			
 			NodeFilter filter = getNodeFilter(types.get(i));
-			NodeList nodes = tc.getChildren().extractAllNodesThatMatch(filter, true);
-			final int nodesSize = nodes.size();
+			NodeList nodes = tc.getChildren();
 			
-			// for each of the nodes of the current type we find
-			for (int j = 0; j < nodesSize && j < curFormats.length; j++) {
-				// get the text from the current node
-				data.add(curFormats[j].getText(nodes.elementAt(j)));
+			if (null != nodes) {
+				nodes = nodes.extractAllNodesThatMatch(filter, true);
+				final int nodesSize = nodes.size();
+			
+				// for each of the nodes of the current type we find
+				for (int j = 0; j < nodesSize && j < curFormats.length; j++) {
+					// get the text from the current node
+					data.add(curFormats[j].getText(nodes.elementAt(j)));
+				}
 			}
 		}
 		

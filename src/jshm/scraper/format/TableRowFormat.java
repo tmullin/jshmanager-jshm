@@ -101,10 +101,10 @@ public class TableRowFormat {
 			// ignoring this column
 			if (null == curFormat) continue;
 			
-			if (!(children.elementAt(i) instanceof TableColumn))
+			/*if (!(children.elementAt(i) instanceof TableColumn))
 				throw new FormatException("Received a TableRow where one of the child nodes isn't a TableColumn, was a " + children.elementAt(i).getClass().getName());
-			
-			String[] curData = curFormat.getData((TableColumn) children.elementAt(i));
+			*/
+			String[] curData = curFormat.getData(/*(TableColumn)*/ children.elementAt(i));
 			
 //			if (null != curData)
 				data.add(curData);
