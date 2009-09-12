@@ -35,58 +35,37 @@ import jshm.Instrument.Group;
 public class RbGame extends Game {
 	static class RbTiers {
 		public static final Tiers
-//			TierGrabber - 4/3/09:
-//			Mem: 0.500/4.938 (used/total) mb
-//			RB1_PS2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|European Exclusives|Track Pack Volume 1|AC/DC Live Track Pack|Track Pack Volume 2",
-//			RB1_XBOX360 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|AC/DC Live Track Pack|Downloaded Songs",
-//			RB1_PS3 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|AC/DC Live Track Pack|Downloaded Songs",
-//			RB1_WII = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|European Exclusives|Track Pack Volume 1|AC/DC Live Track Pack|Track Pack Volume 2",
-//			Time: 5.093 seconds
-//			Mem: 9.784/11.754 (used/total) mb
-		    RB1_PS2 = new Tiers("Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|European Exclusives|Track Pack Volume 1|AC/DC Live Track Pack|Track Pack Volume 2|Classic Rock Track Pack"),
-			RB1_NEXTGEN = new Tiers("Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|AC/DC Live Track Pack|Downloaded Songs"),
-			RB1_WII = new Tiers("Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Skilled Songs|Challenging Songs|Blistering Songs|Nightmare Songs|Impossible Songs|European Exclusives|Track Pack Volume 1|AC/DC Live Track Pack|Track Pack Volume 2"),
-		
-//			TierGrabber - 4/3/09:
-//			Mem: 0.500/4.938 (used/total) mb
-//			RB2_PS2 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs",
-//			RB2_XBOX360 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Rock Band Imported|AC/DC Live Track Pack|Downloaded Songs",
-//			RB2_PS3 = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Rock Band Imported|AC/DC Live Track Pack|Downloaded Songs",
-//			RB2_WII = "Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Downloaded Songs",
-//			Time: 5.527 seconds
-//			Mem: 6.740/15.379 (used/total) mb
-			RB2_PS2 = new Tiers("Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs"),
-			RB2_NEXTGEN = new Tiers("Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Rock Band Imported|AC/DC Live Track Pack|Downloaded Songs"),
-			RB2_WII = new Tiers("Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs|Downloaded Songs"),
-			
 			RB2_DIFFS = new Tiers("<UNKNOWN>|Warmup Songs|Apprentice Songs|Solid Songs|Moderate Songs|Challenging Songs|Nightmare Songs|Impossible Songs"),
-		
-			TBRB = new Tiers("Beginner|Apprentice|Moderate|Solid|Tricky|Challenging|Demanding|Downloaded Songs"),
 			TBRB_DIFFS = new Tiers("<UNKNOWN>|Beginner|Apprentice|Moderate|Solid|Tricky|Challenging|Demanding")
 			;
 	}
 	
 	public static final RbGame
-		RB1_PS2 = new RbGame(RbGameTitle.RB1, RbTiers.RB1_PS2, Platform.PS2, false),
-		RB1_XBOX360 = new RbGame(RbGameTitle.RB1, RbTiers.RB1_NEXTGEN, Platform.XBOX360, true),
-		RB1_PS3 = new RbGame(RbGameTitle.RB1, RbTiers.RB1_NEXTGEN, Platform.PS3, true),
-		RB1_WII = new RbGame(RbGameTitle.RB1, RbTiers.RB1_WII, Platform.WII, false),
+		RB1_PS2 = new RbGame(RbGameTitle.RB1, Platform.PS2, false),
+		RB1_XBOX360 = new RbGame(RbGameTitle.RB1, Platform.XBOX360, true),
+		RB1_PS3 = new RbGame(RbGameTitle.RB1, Platform.PS3, true),
+		RB1_WII = new RbGame(RbGameTitle.RB1, Platform.WII, false),
 	
-		RB2_PS2 = new RbGame(RbGameTitle.RB2, RbTiers.RB2_PS2, Platform.PS2, false),
-		RB2_XBOX360 = new RbGame(RbGameTitle.RB2, RbTiers.RB2_NEXTGEN, Platform.XBOX360, true),
-		RB2_PS3 = new RbGame(RbGameTitle.RB2, RbTiers.RB2_NEXTGEN, Platform.PS3, true),
-		RB2_WII = new RbGame(RbGameTitle.RB2, RbTiers.RB2_WII, Platform.WII, true),
+		RB2_PS2 = new RbGame(RbGameTitle.RB2, Platform.PS2, false),
+		RB2_XBOX360 = new RbGame(RbGameTitle.RB2, Platform.XBOX360, true),
+		RB2_PS3 = new RbGame(RbGameTitle.RB2, Platform.PS3, true),
+		RB2_WII = new RbGame(RbGameTitle.RB2, Platform.WII, true),
 		
-		TBRB_XBOX360 = new RbGame(RbGameTitle.TBRB, RbTiers.TBRB, Platform.XBOX360, true),
-		TBRB_PS3 = new RbGame(RbGameTitle.TBRB, RbTiers.TBRB, Platform.PS3, true),
-		TBRB_WII = new RbGame(RbGameTitle.TBRB, RbTiers.TBRB, Platform.WII, true)
+		TBRB_XBOX360 = new RbGame(RbGameTitle.TBRB, Platform.XBOX360, true),
+		TBRB_PS3 = new RbGame(RbGameTitle.TBRB, Platform.PS3, true),
+		TBRB_WII = new RbGame(RbGameTitle.TBRB, Platform.WII, true)
 		;
 	
 	public static void init() {}
 	
-	protected RbGame(RbGameTitle title, Tiers tiers, Platform platform,
+	protected RbGame(RbGameTitle title, Platform platform,
 			boolean supportsDLC) {
 		super(title.scoreHeroId, title, platform, supportsDLC);
+		mapTiers(Tiers.getTiers(this));
+	}
+	
+	public void mapTiers(Tiers tiers) {
+		if (null == tiers) return;
 		
 		// rb tiers are the same for everything, unlike some gh games
 		for (Instrument.Group g : title.getSupportedInstrumentGroups()) {

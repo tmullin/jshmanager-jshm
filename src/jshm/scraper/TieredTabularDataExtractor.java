@@ -98,8 +98,12 @@ public class TieredTabularDataExtractor {
         		
         		// should be the tier row
         		String[][] tierData = DataTable.TIER_ROW_FORMAT.getData(tr);
-        		LOG.finest("handling tier row: " + tierData[0][0]);
-        		handler.handleTierRow(tierData[0][0]);
+        		String tierName =
+        			null != tierData[0] && !tierData[0][0].isEmpty()
+        			? tierData[0][0]
+        			: "<BLANK>";
+        		LOG.finest("handling tier row: " + tierName);
+        		handler.handleTierRow(tierName);
         		continue;
         	}
         	

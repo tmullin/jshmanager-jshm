@@ -46,12 +46,15 @@ public class RbSongScraper {
 		Formats.init();
 	}
 	
+	public static List<String> lastScrapedTiers = null;
+	
 	public static List<RbSong> scrape(
 		final RbGame game) 
 	throws ScraperException, ParserException {
 		
 		List<RbSong> songs = new ArrayList<RbSong>();
-		TieredTabularDataAdapter handler = new SongHandler(game, songs);
+		lastScrapedTiers = new ArrayList<String>();
+		TieredTabularDataAdapter handler = new SongHandler(game, songs, lastScrapedTiers);
 		
 		NodeList nodes = Scraper.scrape(
 			URLs.rb.getTopScoresUrl(
@@ -126,16 +129,25 @@ public class RbSongScraper {
 	private static class SongHandler extends TieredTabularDataAdapter {
 		final RbGame game;
 		final List<RbSong> songs;
+		final List<String> tiers;
 		
-		public SongHandler(final RbGame game, final List<RbSong> songs) {
+		public SongHandler(final RbGame game, final List<RbSong> songs, final List<String> tiers) {
 			this.invalidChildCountStrategy = InvalidChildCountStrategy.HANDLE;
 			this.game = game;
 			this.songs = songs;
+			this.tiers = tiers;
 		}
 		
 		@Override
 		public DataTable getDataTable() {
 			return RbDataTable.TOP_SCORES;
+		}
+		
+		@Override
+		public void handleTierRow(String tierName) throws ScraperException {
+			if (null != tiers)
+				tiers.add(tierName);
+			//System.out.println("new tier: " + tierName);
 		}
 		
 		@Override
@@ -178,10 +190,11 @@ public class RbSongScraper {
 		
 		@Override
 		public void handleTierRow(String tierName) throws ScraperException {
-			if (curTierLevel >= game.getTierCount()) {
-				ignoreNewData = true;
-				return;
-			}
+			// can't ignore since we update tiers dynamically now
+//			if (curTierLevel >= game.getTierCount()) {
+//				ignoreNewData = true;
+//				return;
+//			}
 			
 			curTierLevel++;
 			curOrder = 0;

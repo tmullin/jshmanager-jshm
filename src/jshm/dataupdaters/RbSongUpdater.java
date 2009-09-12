@@ -23,6 +23,7 @@ package jshm.dataupdaters;
 import static jshm.hibernate.HibernateUtil.openSession;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.hibernate.HibernateException;
@@ -64,6 +65,20 @@ public class RbSongUpdater {
 			fetcher.fetch((RbGameTitle) game);
 			
 			LOG.finer("xml updated at " + fetcher.updated);
+			
+			Map<RbGame, Tiers> tiers = fetcher.tierMap;
+			LOG.finer("xml had " + tiers.size() + " tiers for " + game);
+			
+			if (null != progress)
+				progress.setBusy("Updating tiers");
+			
+			for (RbGame key : tiers.keySet()) {
+				Tiers.setTiers(key, tiers.get(key));
+				key.mapTiers(tiers.get(key));
+			}
+			
+			Tiers.write();
+			
 			
 			List<RbSong> songs = fetcher.songs;
 			
@@ -181,6 +196,12 @@ public class RbSongUpdater {
 				
 				LOG.finer("scraped " + songs.size() + " songs for " + g);
 				
+				assert null != RbSongScraper.lastScrapedTiers;
+				LOG.finer("remapping " + RbSongScraper.lastScrapedTiers.size() + " tiers for " + g);
+				Tiers tiers = new Tiers(RbSongScraper.lastScrapedTiers);
+				Tiers.setTiers(g, tiers);
+				((RbGame) g).mapTiers(tiers);
+				
 				int i = 0, total = songs.size(); 
 				for (RbSong song : songs) {
 					if (null != progress)
@@ -218,6 +239,9 @@ public class RbSongUpdater {
 				    i++;
 				}
 			}
+			
+			// need to save tiers at some point
+			Tiers.write();
 			
 		    
 			// faster to delete them all and insert instead of checking

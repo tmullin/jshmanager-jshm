@@ -37,10 +37,13 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import jshm.Game;
 import jshm.GameTitle;
 import jshm.Instrument;
 import jshm.Platform;
 import jshm.SongOrder;
+import jshm.Tiers;
+import jshm.rb.RbGame;
 import jshm.rb.RbGameTitle;
 import jshm.rb.RbSong;
 import jshm.util.IsoDateParser;
@@ -54,6 +57,7 @@ public class RbSongDataFetcher {
 	public List<RbSong> songs = null;
 	public Map<Integer, RbSong> songMap = null;
 	public List<SongOrder> orders = null;
+	public Map<RbGame, Tiers> tierMap = null;
 	
 	public void fetch(final RbGameTitle ttl) throws ParserConfigurationException, SAXException, IOException {
 //		File in = new File(ttl.toString() + ".xml");
@@ -76,6 +80,18 @@ public class RbSongDataFetcher {
 			d.getElementsByTagName("date")
 			.item(0).getFirstChild().getTextContent()
 		);
+		
+		NodeList tierNodes = d.getElementsByTagName("tier");
+		tierMap = new HashMap<RbGame, Tiers>(tierNodes.getLength());
+		
+		for (int i = tierNodes.getLength() - 1; i >= 0; i--) {
+			Element tierEl = (Element) tierNodes.item(i);
+			Game game = Game.valueOf(tierEl.getAttribute("game"));
+			
+			assert game instanceof RbGame;
+			
+			tierMap.put((RbGame) game, new Tiers(tierEl.getAttribute("packed")));
+		}
 		
 		NodeList songNodes = d.getElementsByTagName("song");
 		songs = new ArrayList<RbSong>(songNodes.getLength());

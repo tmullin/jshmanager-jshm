@@ -197,10 +197,11 @@ public class WtSongScraper {
 		
 		@Override
 		public void handleTierRow(String tierName) throws ScraperException {
-			if (curTierLevel >= game.getTierCount()) {
-				ignoreNewData = true;
-				return;
-			}
+			// can't ignore since we update tiers dynamically now
+//			if (curTierLevel >= game.getTierCount()) {
+//				ignoreNewData = true;
+//				return;
+//			}
 			
 			curTierLevel++;
 			curOrder = 0;

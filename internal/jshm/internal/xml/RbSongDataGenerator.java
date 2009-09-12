@@ -46,6 +46,7 @@ import jshm.Game;
 import jshm.GameTitle;
 import jshm.Platform;
 import jshm.SongOrder;
+import jshm.Tiers;
 import jshm.internal.ConsoleProgressHandle;
 import jshm.rb.RbGame;
 import jshm.rb.RbGameTitle;
@@ -75,12 +76,16 @@ public class RbSongDataGenerator {
 		
 		Map<Integer, RbSong> songMap = new HashMap<Integer, RbSong>();
 		List<SongOrder> allOrders = new ArrayList<SongOrder>();
+		Map<String, String> tierMap = new HashMap<String, String>();
 		
 		for (Game g : Game.getByTitle(ttl)) {
 //			if (g.platform != Platform.XBOX360) continue;
 			
 			progress.setBusy("Downloading song list for " + g);
 			List<RbSong> songs = RbSongScraper.scrape((RbGame) g);
+			
+			assert null != RbSongScraper.lastScrapedTiers;
+			tierMap.put(g.toString(), new Tiers(RbSongScraper.lastScrapedTiers).getPacked());
 			
 			progress.setBusy(String.format("Processing %s songs", songs.size()));
 			for (RbSong s : songs) {
@@ -100,13 +105,13 @@ public class RbSongDataGenerator {
 		
 		
 		progress.setBusy("Creating XML file");
-		createXml(ttl, songMap, allOrders);
+		createXml(ttl, songMap, allOrders, tierMap);
 		
 		jshm.util.TestTimer.stop();
 		progress.setBusy("All done");
 	}
 	
-	private static void createXml(GameTitle ttl, Map<Integer, RbSong> songMap, List<SongOrder> orders) {
+	private static void createXml(GameTitle ttl, Map<Integer, RbSong> songMap, List<SongOrder> orders, Map<String, String> tierMap) {
 		Document xml = null;
 		DocumentBuilderFactory factory = 
 			DocumentBuilderFactory.newInstance();
@@ -123,6 +128,18 @@ public class RbSongDataGenerator {
 			AC(root, tmp);
 			
 			_(xml, root, "date", IsoDateParser.getIsoDate(new Date()));
+			
+			// create tiers section
+			Element tiers = CE(xml, "tiers");
+			AC(root, tiers);
+			
+			for (String key : tierMap.keySet()) {
+				Element el = CE(xml, "tier");
+				AC(tiers, el);
+				
+				el.setAttribute("game", key);
+				el.setAttribute("packed", tierMap.get(key));
+			}
 			
 			
 			// create songs section
