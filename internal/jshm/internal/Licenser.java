@@ -109,7 +109,8 @@ public class Licenser {
 			File to = new File(f.getAbsolutePath() + ".tmp");
 			
 			if (alreadyLicensed(f, ft)) {
-				System.out.println("Skipping licensed file " + f.getPath());
+				// too many to print out
+				//System.out.println("Skipping licensed file " + f.getPath());
 				totalSkipped++;
 				continue;
 			} else {

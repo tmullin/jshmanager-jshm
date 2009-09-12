@@ -15,6 +15,9 @@ Version 0.3.2
   score via the song list and later editing/saving it via the editor.
 - Changed Go To Song behavior from a dialog box to a small bar like
   Internet Explorer or Firefox use for notifications.
+- Tiers are now updated with the song data so I won't need to make a new
+  release just for tier changes. Tiers are not updated for GH1 through GHA
+  since it is unlikely they will ever change.
 
 Version 0.3.1
 -------------

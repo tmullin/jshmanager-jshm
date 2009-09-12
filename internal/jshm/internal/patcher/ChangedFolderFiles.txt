@@ -1,1 +1,3 @@
 ChangeLog.txt
+launch4j.xml
+Readme.txt

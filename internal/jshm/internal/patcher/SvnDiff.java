@@ -40,7 +40,7 @@ public class SvnDiff {
 	
 	static final String[] IGNORE_PREFIX = new String[] {
 		".", "lib", "scripts/",
-		"build.xml", "test/", "internal", "src/jshm/concepts/"
+		"build.xml", "launch4j.xml", "test/", "internal", "src/jshm/concepts/"
 	};
 	
 	static final String[] IGNORE_SUFFIX = new String[] {
