@@ -209,6 +209,9 @@ public abstract class Game {
 			this.platform.equals(g.platform);
 	}
 	
+	/**
+	 * @return title + "_" + platform
+	 */
 	@Override
 	public String toString() {
 		return title + "_" + platform;

@@ -31,12 +31,19 @@ import java.util.ArrayList;
  *
  */
 public class Properties extends java.util.Properties {
+	private boolean ignoreCase = true;
+	
 	public Properties() {
 		super();
 	}
 	
 	public Properties(Properties defaults) {
+		this(defaults, true);
+	}
+	
+	public Properties(Properties defaults, boolean ignoreCase) {
 		super(defaults);
+		this.ignoreCase = ignoreCase;
 	}
 	
 	public boolean has(String key) {
@@ -151,7 +158,8 @@ public class Properties extends java.util.Properties {
 	}
 	
 	public String get(String propertyName) {
-		propertyName = propertyName.toLowerCase();
+		if (ignoreCase)
+			propertyName = propertyName.toLowerCase();
 		
 		if (!has(propertyName))
 			throw new NullPointerException("Key not found: " + propertyName);
@@ -160,6 +168,9 @@ public class Properties extends java.util.Properties {
 	}
 
 	public void set(String propertyName, Object value) {
-		setProperty(propertyName.toLowerCase(), value.toString());
+		if (ignoreCase)
+			propertyName = propertyName.toLowerCase();
+		
+		setProperty(propertyName, value.toString());
 	}
 }

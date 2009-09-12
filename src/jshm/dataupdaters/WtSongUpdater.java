@@ -23,6 +23,7 @@ package jshm.dataupdaters;
 import static jshm.hibernate.HibernateUtil.openSession;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import jshm.Difficulty;
@@ -30,6 +31,7 @@ import jshm.Game;
 import jshm.GameTitle;
 import jshm.Instrument;
 import jshm.SongOrder;
+import jshm.Tiers;
 import jshm.wt.*;
 import jshm.xml.GhSongInfoFetcher;
 import jshm.xml.WtSongDataFetcher;
@@ -67,6 +69,20 @@ public class WtSongUpdater {
 			fetcher.fetch((WtGameTitle) game);
 			
 			LOG.finer("xml updated at " + fetcher.updated);
+			
+			Map<WtGame, Tiers> tiers = fetcher.tierMap;
+			LOG.finer("xml had " + tiers.size() + " tiers for " + game);
+			
+			if (null != progress)
+				progress.setBusy("Updating tiers");
+			
+			for (WtGame key : tiers.keySet()) {
+				Tiers.setTiers(key, tiers.get(key));
+				key.mapTiers(tiers.get(key));
+			}
+			
+			Tiers.write();
+			
 			
 			List<WtSong> songs = fetcher.songs;
 			
@@ -182,9 +198,15 @@ public class WtSongUpdater {
 				if (null != progress)
 					progress.setBusy("Downloading song list for " + g);
 				
-				List<WtSong> songs = WtSongScraper.scrape((WtGame) g);
-				
+				List<WtSong> songs = WtSongScraper.scrape((WtGame) g);				
 				LOG.finer("scraped " + songs.size() + " songs for " + g);
+				
+				assert null != WtSongScraper.lastScrapedTiers;
+				
+				LOG.finer("remapping " + WtSongScraper.lastScrapedTiers.size() + " tiers");
+				Tiers tiers = new Tiers(WtSongScraper.lastScrapedTiers);
+				Tiers.setTiers(g, tiers);
+				((WtGame) g).mapTiers(tiers);
 				
 				int i = 0, total = songs.size(); 
 				for (WtSong song : songs) {
@@ -261,6 +283,9 @@ public class WtSongUpdater {
 					}
 				}
 			}
+			
+			// need to save tiers at some point
+			Tiers.write();
 			
 		    
 			// faster to delete them all and insert instead of checking

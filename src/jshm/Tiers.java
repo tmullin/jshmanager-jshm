@@ -20,7 +20,15 @@
  */
 package jshm;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import jshm.util.PhpUtil;
+import jshm.util.Properties;
 
 /**
  * Represents a collection of tier headings.
@@ -30,6 +38,57 @@ import java.util.Collection;
  *
  */
 public class Tiers {
+	static final Logger LOG = Logger.getLogger(Tiers.class.getName());
+			
+	// save/loading stuff
+	public static final File propsFile = new File("data/tiers.properties");
+	public static final Properties DEFAULTS = new Properties();
+	static final Properties p = new Properties(DEFAULTS, false);
+	
+	static {
+		try {
+			DEFAULTS.load(
+				Config.class.getResourceAsStream("/jshm/properties/tiers.defaults.properties"));
+		} catch (Throwable e) {
+			LOG.log(Level.SEVERE, "Unable to load default tier properties", e);
+			System.exit(-1);
+		}
+		
+		if (propsFile.exists()) {
+			try {
+				FileInputStream fs = new FileInputStream(propsFile);
+				p.load(fs);
+			} catch (Throwable e) {
+				LOG.log(Level.SEVERE, "Unable to load tier properties", e);
+				System.exit(-1);
+			}
+		}
+	}
+	
+	public static Tiers getTiers(Game game) {
+		return
+		p.has(game.toString())
+		? new Tiers(p.get(game.toString()))
+		: null;
+	}
+	
+	public static void setTiers(Game game, Tiers tiers) {
+		p.set(game.toString(), tiers.getPacked());
+	}
+	
+	public static void write() {
+		LOG.fine("Saving tiers to " + propsFile.getName());
+
+		try {
+			FileOutputStream fs = new FileOutputStream(propsFile);
+			p.store(fs, "Tier Settings");
+		} catch (Throwable t) {
+			LOG.log(Level.WARNING, "Error saving tier properties", t);
+		}
+	}
+	
+	
+	
 	public static final Tiers ALPHA_NUM_TIERS;
 	
 	static {
@@ -44,8 +103,8 @@ public class Tiers {
 	
 	public final String[] tiers;
 	
-	public Tiers(final String tiers) {
-		this(tiers.split("\\|"));
+	public Tiers(final String packed) {
+		this(packed.split("\\|"));
 	}
 	
 	public Tiers(final Collection<String> tiers) {
@@ -81,5 +140,13 @@ public class Tiers {
 	
 	public int getCount() {
 		return tiers.length;
+	}
+	
+	/**
+	 * 
+	 * @return A piped delimited packed form of the tier names
+	 */
+	public String getPacked() {
+		return PhpUtil.implode("|", tiers);
 	}
 }

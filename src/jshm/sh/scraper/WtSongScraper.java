@@ -50,11 +50,14 @@ public class WtSongScraper {
 		return scrape(game, Instrument.Group.GUITAR, Difficulty.EXPERT);
 	}
 	
+	public static List<String> lastScrapedTiers = null;
+	
 	public static List<WtSong> scrape(final WtGame game, Instrument.Group group, Difficulty diff)
 	throws ScraperException, ParserException {
 		
 		List<WtSong> songs = new ArrayList<WtSong>();
-		SongHandler handler = new SongHandler(game, songs);
+		lastScrapedTiers = new ArrayList<String>();
+		SongHandler handler = new SongHandler(game, songs, lastScrapedTiers);
 		NodeList nodes = Scraper.scrape(
 			URLs.wt.getTopScoresUrl(
 				game, group, diff),
@@ -125,10 +128,12 @@ public class WtSongScraper {
 		final WtGame game;
 		final List<WtSong> songs;
 		int curTierLevel = 0;
+		List<String> tiers;
 		
-		public SongHandler(WtGame game, List<WtSong> songs) {
+		public SongHandler(WtGame game, List<WtSong> songs, List<String> tiers) {
 			this.game = game;
 			this.songs = songs;
+			this.tiers = tiers;
 			this.invalidChildCountStrategy = TieredTabularDataExtractor.InvalidChildCountStrategy.HANDLE;
 		}
 		
@@ -141,12 +146,15 @@ public class WtSongScraper {
 		public void handleTierRow(String tierName) throws ScraperException {
 			// this will prevent retrieval of the ghsh demo tier
 			// on the ghwt page, for example
-			if (curTierLevel >= game.getTierCount()) {
-				ignoreNewData = true;
-				return;
-			}
+//			if (curTierLevel >= game.getTierCount()) {
+//				ignoreNewData = true;
+//				return;
+//			}
 			
 			curTierLevel++;
+			
+			if (null != tiers)
+				tiers.add(tierName);
 		}
 		
 		@Override

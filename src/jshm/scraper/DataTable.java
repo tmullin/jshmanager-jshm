@@ -20,9 +20,9 @@
  */
 package jshm.scraper;
 
-import org.htmlparser.NodeFilter;
+import jshm.scraper.format.TableRowFormat;
 
-import jshm.scraper.format.*;
+import org.htmlparser.NodeFilter;
 
 /**
  * This stores some information about the table layouts
