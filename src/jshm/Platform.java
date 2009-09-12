@@ -39,6 +39,10 @@ public enum Platform {
 		PS2, XBOX360, PS3, WII
 	};
 	
+	public static final Platform[] BIG_FOUR_AND_PC = {
+		PS2, XBOX360, PS3, WII, PC
+	};
+	
 	public final javax.swing.ImageIcon getIcon() {
 		return jshm.gui.GuiUtil.getIcon(
 			"platforms/" + name() + "_32.png");
