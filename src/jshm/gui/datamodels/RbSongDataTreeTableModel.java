@@ -48,9 +48,18 @@ public class RbSongDataTreeTableModel extends AbstractTreeTableModel implements 
 			for (int i = 1; i <= game.getTierCount(sorting); i++) {
 				tiers.add(new Tier(game.getTierName(sorting, i)));
 			}
-			
+						
 			for (RbSong song : songs) {
-				tiers.get(song.getTierLevel(sorting) - 1).songs.add(song);
+				try {
+					tiers.get(song.getTierLevel(sorting) - 1).songs.add(song);
+				} catch (IndexOutOfBoundsException e) {
+					GUI.LOG.log(java.util.logging.Level.WARNING,
+						String.format(
+							"Got song with higher tier (%s) than total tier count (%s)",
+							song.getTierLevel(sorting), tiers.size()),
+					e);
+					GUI.LOG.warning("SongOrder: " + song.getSongOrder());
+				}
 			}
 		}
 	}

@@ -50,7 +50,16 @@ public class WtSongDataTreeTableModel extends AbstractTreeTableModel implements 
 			}
 			
 			for (WtSong song : songs) {
-				tiers.get(song.getTierLevel(sorting) - 1).songs.add(song);
+				try {
+					tiers.get(song.getTierLevel(sorting) - 1).songs.add(song);
+				} catch (IndexOutOfBoundsException e) {
+					GUI.LOG.log(java.util.logging.Level.WARNING,
+						String.format(
+							"Got song with higher tier (%s) than total tier count (%s)",
+							song.getTierLevel(sorting), tiers.size()),
+					e);
+					GUI.LOG.warning("SongOrder: " + song.getSongOrder());
+				}
 			}
 		}
 	}

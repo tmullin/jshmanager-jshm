@@ -3,7 +3,9 @@ Bump for $version
 [url=http://jshm.sourceforge.net]Home Page[/url]
 [url=$downloadUrl]Download[/url]
 
-I sort of neglected to ensure that WT drums actually worked, mainly since I have RB drums...
+GH5 and TBRB support are obvious features. I also made it so that it can update the tiers automatically when it updates the song data so I won't have to make a release just for tier name changes (except for GH1-GHA but they don't ever change).
 
-Anyway, I think the wiki path viewer is pretty neat.
+The other noteable feature is I've added a launcher, JSHManager.exe, if you download the self-extracing archive for Windows. This just helps to check that Java is installed and also increases the memory limit.
+
+I hope there is still interest in my program after all this time.
 

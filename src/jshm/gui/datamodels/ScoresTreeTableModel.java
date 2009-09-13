@@ -89,19 +89,32 @@ public class ScoresTreeTableModel extends AbstractTreeTableModel implements Pare
 			}
 			
 			for (Song song : songs) {
-				tiers.get(song.getTierLevel(sorting) - 1).songs.add(
-					new SongScores(song));
+				try {
+					tiers.get(song.getTierLevel(sorting) - 1).songs.add(
+						new SongScores(song));
+				} catch (IndexOutOfBoundsException e) {
+					LOG.log(java.util.logging.Level.WARNING,
+							String.format(
+								"Got song with higher tier (%s) than total tier count (%s)",
+								song.getTierLevel(sorting), tiers.size()),
+						e);
+						LOG.warning("SongOrder: " + song.getSongOrder());
+					}
 			}
 
 			for (Score score : scores) {
-				tiers.get(Math.max(score.getSong().getTierLevel(sorting) - 1, 0))
-					.addScore(score);
+				try {
+					tiers.get(Math.max(score.getSong().getTierLevel(sorting) - 1, 0))
+						.addScore(score);
+				} catch (IndexOutOfBoundsException e) {
+					LOG.log(java.util.logging.Level.WARNING,
+						String.format(
+							"Got score with higher tier (%s) than total tier count (%s)",
+							score.getSong().getTierLevel(sorting), tiers.size()),
+						e);
+						LOG.warning("SongOrder: " + score.getSong().getSongOrder());
+				}
 			}
-
-//			for (GhSong song : songs) {
-//				tiers.get(song.getTierLevel() - 1).addScore(
-//						GhScore.createNewScoreTemplate(song));
-//			}
 		}
 	}
 

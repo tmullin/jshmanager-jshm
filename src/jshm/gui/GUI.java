@@ -107,7 +107,7 @@ import org.netbeans.spi.wizard.Wizard;
  * @author Tim Mullin
  */
 public class GUI extends javax.swing.JFrame {
-	static final Logger LOG = Logger.getLogger(GUI.class.getName());
+	public static final Logger LOG = Logger.getLogger(GUI.class.getName());
 	
 	/**
 	 * The "real" control key accelerator mask via {@link Toolkit#getMenuShortcutKeyMask()}. 

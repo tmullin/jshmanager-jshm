@@ -48,10 +48,10 @@ public class JshmThreadManager {
 	static final String
 		VERSION = JSHManager.Version.VERSION,
 		DOWNLOAD_URL =
-			"http://sourceforge.net/project/showfiles.php?group_id=240590&package_id=292656&release_id=692947",
+			"http://sourceforge.net/projects/jshm/files/jshm/0.3.2",
 		SUBJECT =
 			"JSHManager " + VERSION +
-			" - GHWT/M/SH Support! - Manage Scores Locally and Upload to SH";
+			" - GH5/TBRB Support! - Manage Scores Locally and Upload to SH";
 	
 	static final int
 		GH_THREAD_ID = 74670,
