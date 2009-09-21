@@ -81,7 +81,7 @@ public class CheckUpdatesDialog extends EscapeableDialog {
 				latestVersionField.setText(info.latestVersion);
 				int versionComp = Util.versionCompare(JSHManager.Version.VERSION, info.latestVersion);
 				
-				if (versionComp < 0 || (versionComp == 0 && JSHManager.Version.IS_BETA)) {
+				if (info.isUpdateAvailable()) {
 					statusLabel.setForeground(runningOldFg);
 					statusLabel.setText("A newer version is available.");
 					downloadLink.setToolTipText(info.getUpdateUrl());

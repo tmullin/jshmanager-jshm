@@ -106,7 +106,7 @@ public class UpdateChecker {
 		
 		public boolean isUpdateAvailable() {
 			int versionComp = Util.versionCompare(JSHManager.Version.VERSION, latestVersion);
-			return versionComp < 0;
+			return versionComp < 0 || (versionComp == 0 && JSHManager.Version.IS_BETA);
 		}
 		
 		public String getUpdateUrl() {
