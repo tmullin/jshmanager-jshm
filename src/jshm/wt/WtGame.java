@@ -56,7 +56,12 @@ public class WtGame extends Game {
 	GH5_PS2 = new WtGame(31, WtGameTitle.GH5, Platform.PS2, false),
 	GH5_XBOX360 = new WtGame(32, WtGameTitle.GH5, Platform.XBOX360, true),
 	GH5_PS3 = new WtGame(33, WtGameTitle.GH5, Platform.PS3, true),
-	GH5_WII = new WtGame(34, WtGameTitle.GH5, Platform.WII, true)
+	GH5_WII = new WtGame(34, WtGameTitle.GH5, Platform.WII, true),
+	
+	GHVH_PS2 = new WtGame(35, WtGameTitle.GHVH, Platform.PS2, false),
+	GHVH_XBOX360 = new WtGame(36, WtGameTitle.GHVH, Platform.XBOX360, false),
+	GHVH_PS3 = new WtGame(37, WtGameTitle.GHVH, Platform.PS3, false),
+	GHVH_WII = new WtGame(38, WtGameTitle.GHVH, Platform.WII, false)
 	;
 	
 	protected WtGame(int scoreHeroId, GameTitle title, Platform platform,

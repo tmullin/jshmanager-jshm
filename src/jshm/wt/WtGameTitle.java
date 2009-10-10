@@ -33,13 +33,18 @@ public class WtGameTitle extends GameTitle {
 	
 	public static final WtGameTitle
 		GHWT = new WtGameTitle("GHWT", 7, false, Platform.BIG_FOUR_AND_PC),
-		GHM = new WtGameTitle("GHM", 9, true, Platform.BIG_FOUR),
-		GHSH = new WtGameTitle("GHSH", 11, true, Platform.BIG_FOUR),
-		GH5 = new WtGameTitle("GH5", 12, true, Platform.BIG_FOUR)
+		GHM = new WtGameTitle("GHM", 9, Platform.BIG_FOUR),
+		GHSH = new WtGameTitle("GHSH", 11, Platform.BIG_FOUR),
+		GH5 = new WtGameTitle("GH5", 12, Platform.BIG_FOUR),
+		GHVH = new WtGameTitle("GHVH", 13, Platform.BIG_FOUR)
 	;
 
 	public final int scoreHeroGroupId;
 	public final boolean supportsExpertPlus;
+	
+	protected WtGameTitle(String title, int scoreHeroGroupId, Platform ... platforms) {
+		this(title, scoreHeroGroupId, true, platforms);
+	}
 	
 	protected WtGameTitle(String title, int scoreHeroGroupId, boolean supportsExpertPlus, Platform ... platforms) {
 		super(GameSeries.WORLD_TOUR, title, platforms);
