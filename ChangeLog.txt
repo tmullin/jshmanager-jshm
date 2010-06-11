@@ -5,6 +5,7 @@ Version 0.3.3
 - Added some additional error checking to handle tier errors on ScoreHero
   (namely RB2 expert drums on Wii).
 - Added GHVH support.
+- Added Green Day: Rock Band support.
 
 Version 0.3.2
 -------------

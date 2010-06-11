@@ -49,7 +49,7 @@ public abstract class Song implements Comparable<Song> {
 	 * The ScoreHero id for this song.
 	 */
 	protected int		scoreHeroId	= 0;
-	private Game	game		= null;
+	private   Game		game		= null;
 	protected String
 		title		= "UNKNOWN",
 		artist		= null,

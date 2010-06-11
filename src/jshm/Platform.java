@@ -39,6 +39,13 @@ public enum Platform {
 		PS2, XBOX360, PS3, WII
 	};
 	
+	/**
+	 * A constant array consisting of Xbox, PS3, and Wii
+	 */
+	public static final Platform[] BIG_THREE = {
+		Platform.XBOX360, Platform.PS3, Platform.WII
+	};
+	
 	public static final Platform[] BIG_FOUR_AND_PC = {
 		PS2, XBOX360, PS3, WII, PC
 	};

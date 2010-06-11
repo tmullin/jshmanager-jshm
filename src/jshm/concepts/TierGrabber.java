@@ -44,17 +44,17 @@ public class TierGrabber {
 //		jshm.logging.Log.configTestLogging();
 
 		jshm.util.TestTimer.start();
-//		doWt();
-		doRb();
+		doWt();
+//		doRb();
 		jshm.util.TestTimer.stop();
 	}
 	
 	static void doWt() throws Exception {
 		List<Game> games = Game.getByTitle(WtGameTitle.GH5); // .getBySeries(GameSeries.ROCKBAND);
-//		
-		for (Game game : games) {
+		
+//		for (Game game : games) {
 //		Game game = GhGame.GH3_XBOX360;
-//		Game game = WtGame.GHWT_XBOX360;
+		Game game = WtGame.GH5_WII;
 //			List<String> tiers = GhTierScraper.scrape((GhGame) game);
 			List<String> tiers = GhTierScraper.scrape(
 				(WtGame) game, Instrument.Group.GUITAR);
@@ -65,7 +65,7 @@ public class TierGrabber {
 				System.out.print(tiers.get(i));
 			}
 			System.out.println("\",");
-		}
+		//}
 	}
 	
 	static void doRb() throws Exception {

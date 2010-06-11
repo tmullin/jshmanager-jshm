@@ -43,6 +43,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import jshm.Game;
+import jshm.GameSeries;
 import jshm.GameTitle;
 import jshm.Platform;
 import jshm.SongOrder;
@@ -53,12 +54,17 @@ import jshm.rb.RbGameTitle;
 import jshm.rb.RbSong;
 import jshm.sh.scraper.RbSongScraper;
 import jshm.util.IsoDateParser;
+import jshm.util.PhpUtil;
 
 public class RbSongDataGenerator {
 	public static final String DTD_URL = "http://jshm.sourceforge.net/songdata/rb_songdata.dtd";
 	
 	private static void usage() {
-		System.out.println("Usage: java " + RbSongDataGenerator.class.getName() + " <RB1|RB2|TBRB>");
+		List<GameTitle> titles = GameTitle.getBySeries(GameSeries.ROCKBAND);
+		System.out.printf(
+			"Usage: java %s <%s>\n",
+			RbSongDataGenerator.class.getName(),
+			PhpUtil.implode("|", titles));
 		System.exit(-1);
 	}
 	

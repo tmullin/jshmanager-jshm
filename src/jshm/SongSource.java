@@ -46,7 +46,8 @@ public enum SongSource {
 	RB2,
 	RBDLC,
 	ACDC,
-	TBRB;
+	TBRB,
+	GDRB;
 	
 	public ImageIcon getIcon() {
 		return getIcon(32);
@@ -60,7 +61,14 @@ public enum SongSource {
 			default: throw new IllegalArgumentException("invalid size: " + size);
 		}
 		
-		return GuiUtil.getIcon("songsources/" + size + "/" + name() + ".png");
+		ImageIcon ret = GuiUtil.getIcon("songsources/" + size + "/" + name() + ".png");
+		
+		// if no special source icon, use the default game icon instead
+		if (null == ret) {
+			ret = GuiUtil.getIcon("gametitles/" + name() + "_" + size + ".png");
+		}
+		
+		return ret;
 	}
 	
 	public static SongSource smartValueOf(String name) {
@@ -77,6 +85,7 @@ public enum SongSource {
 	public static SongSource smartValueOf(String name, boolean dlcVersion) {
 		if (null == name || name.isEmpty())
 			return null;
+		
 		if ("DLC".equals(name))
 			return RBDLC;
 		if ("AC/DC".equals(name))

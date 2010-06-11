@@ -29,6 +29,7 @@ import jshm.Instrument;
 import jshm.SongOrder;
 import jshm.exceptions.ScraperException;
 import jshm.rb.RbGame;
+import jshm.rb.RbGameTitle;
 import jshm.rb.RbSong;
 import jshm.scraper.DataTable;
 import jshm.scraper.Scraper;
@@ -56,10 +57,17 @@ public class RbSongScraper {
 		lastScrapedTiers = new ArrayList<String>();
 		TieredTabularDataAdapter handler = new SongHandler(game, songs, lastScrapedTiers);
 		
+		Instrument.Group group = Instrument.Group.GUITAR;
+		
+		// TODO better accomodation for GDRB having a vox-only song
+		if (RbGameTitle.GDRB == game.title) {
+			group = Instrument.Group.VOCALS;
+		}
+		
 		NodeList nodes = Scraper.scrape(
 			URLs.rb.getTopScoresUrl(
 				game,
-				Instrument.Group.GUITAR,
+				group,
 				Difficulty.EXPERT),
 			handler);
 		

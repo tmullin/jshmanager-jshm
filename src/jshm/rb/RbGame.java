@@ -53,7 +53,11 @@ public class RbGame extends Game {
 		
 		TBRB_XBOX360 = new RbGame(RbGameTitle.TBRB, Platform.XBOX360, true),
 		TBRB_PS3 = new RbGame(RbGameTitle.TBRB, Platform.PS3, true),
-		TBRB_WII = new RbGame(RbGameTitle.TBRB, Platform.WII, true)
+		TBRB_WII = new RbGame(RbGameTitle.TBRB, Platform.WII, true),
+		
+		GDRB_XBOX360 = new RbGame(RbGameTitle.GDRB, Platform.XBOX360, true),
+		GDRB_PS3 = new RbGame(RbGameTitle.GDRB, Platform.PS3, true),
+		GDRB_WII = new RbGame(RbGameTitle.GDRB, Platform.WII, true)
 		;
 	
 	public static void init() {}

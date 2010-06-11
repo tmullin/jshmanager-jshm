@@ -1699,7 +1699,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 		public void done() {
 			if (null == songs) return;
 			
-			statusBar1.setText("Viewing song data for " + game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " on " + difficulty);
+			statusBar1.setText("Viewing song data for " + game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " on " + difficulty.getLongName());
 			
 			actions.downloadScores.setEnabled(true);
 			actions.uploadScores.setEnabled(false);
@@ -1795,7 +1795,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 			downloadRbSongMetaDataMenuItem.setEnabled(true);
 
 			GUI.this.setIconImage(game.title.getIcon().getImage());
-			GUI.this.setTitle(game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " " + group + " - Song Data");
+			GUI.this.setTitle(game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " " + group.getLongName() + " - Song Data");
 			
 			if (songs.size() == 0 && null != evt) { // if evt == null we're recursing
 				if (JOptionPane.YES_OPTION ==
