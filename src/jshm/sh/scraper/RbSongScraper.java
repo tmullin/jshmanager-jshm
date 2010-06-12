@@ -36,7 +36,6 @@ import jshm.scraper.TieredTabularDataAdapter;
 import jshm.scraper.TieredTabularDataExtractor;
 import jshm.scraper.TieredTabularDataExtractor.InvalidChildCountStrategy;
 import jshm.sh.URLs;
-import jshm.util.Print;
 
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;

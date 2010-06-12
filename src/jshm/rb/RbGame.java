@@ -58,6 +58,10 @@ public class RbGame extends Game {
 		TBRB_PS3 = new RbGame(RbGameTitle.TBRB, Platform.PS3, true),
 		TBRB_WII = new RbGame(RbGameTitle.TBRB, Platform.WII, true),
 		
+		LRB_XBOX360 = new RbGame(RbGameTitle.LRB, Platform.XBOX360, true),
+		LRB_PS3 = new RbGame(RbGameTitle.LRB, Platform.PS3, true),
+		LRB_WII = new RbGame(RbGameTitle.LRB, Platform.WII, false),
+		
 		GDRB_XBOX360 = new RbGame(RbGameTitle.GDRB, Platform.XBOX360, true),
 		GDRB_PS3 = new RbGame(RbGameTitle.GDRB, Platform.PS3, true),
 		GDRB_WII = new RbGame(RbGameTitle.GDRB, Platform.WII, true)
