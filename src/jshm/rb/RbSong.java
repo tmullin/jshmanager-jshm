@@ -229,7 +229,13 @@ public class RbSong extends Song {
 		javax.swing.ImageIcon ret = null;
 		
 		if (null != songSource) {
-			SongSource ss = SongSource.smartValueOf(songSource);
+			String ssVal = songSource;
+			
+			if ("TP".equals(songSource) && "AC/DC Live Track Pack".equals(songPack)) {
+				ssVal = "ACDC";
+			}
+			
+			SongSource ss = SongSource.smartValueOf(ssVal);
 			ret = null == ss ? null : ss.getIcon();
 		}
 		

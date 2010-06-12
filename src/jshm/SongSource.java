@@ -46,6 +46,7 @@ public enum SongSource {
 	RB2,
 	RBDLC,
 	ACDC,
+	LEGO,
 	TBRB,
 	GDRB;
 	

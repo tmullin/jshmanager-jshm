@@ -29,7 +29,6 @@ import jshm.Instrument;
 import jshm.SongOrder;
 import jshm.exceptions.ScraperException;
 import jshm.rb.RbGame;
-import jshm.rb.RbGameTitle;
 import jshm.rb.RbSong;
 import jshm.scraper.DataTable;
 import jshm.scraper.Scraper;
@@ -55,14 +54,11 @@ public class RbSongScraper {
 		
 		List<RbSong> songs = new ArrayList<RbSong>();
 		lastScrapedTiers = new ArrayList<String>();
-		TieredTabularDataAdapter handler = new SongHandler(game, songs, lastScrapedTiers);
-		
+		SongHandler handler = new SongHandler(game, songs, lastScrapedTiers);
+				
+		// need to scrape once for guitar and once for vocals to account
+		// for songs that have missing parts
 		Instrument.Group group = Instrument.Group.GUITAR;
-		
-		// TODO better accomodation for GDRB having a vox-only song
-		if (RbGameTitle.GDRB == game.title) {
-			group = Instrument.Group.VOCALS;
-		}
 		
 		NodeList nodes = Scraper.scrape(
 			URLs.rb.getTopScoresUrl(
@@ -72,6 +68,19 @@ public class RbSongScraper {
 			handler);
 		
 		TieredTabularDataExtractor.extract(nodes, handler);
+		
+		
+		handler.tiers = null; // don't re-add tier names
+		group = Instrument.Group.VOCALS;
+		nodes = Scraper.scrape(
+			URLs.rb.getTopScoresUrl(
+				game,
+				group,
+				Difficulty.EXPERT),
+			handler);
+		
+		TieredTabularDataExtractor.extract(nodes, handler);
+		
 		
 		return songs;
 	}
@@ -137,7 +146,7 @@ public class RbSongScraper {
 	private static class SongHandler extends TieredTabularDataAdapter {
 		final RbGame game;
 		final List<RbSong> songs;
-		final List<String> tiers;
+		List<String> tiers;
 		
 		public SongHandler(final RbGame game, final List<RbSong> songs, final List<String> tiers) {
 			this.invalidChildCountStrategy = InvalidChildCountStrategy.HANDLE;
@@ -172,7 +181,8 @@ public class RbSongScraper {
     		
     		curSong.setTitle(data[1][0]);
     		
-    		songs.add(curSong);
+    		if (!songs.contains(curSong))
+    			songs.add(curSong);
 		}
 	}
 	

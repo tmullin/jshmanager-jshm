@@ -6,6 +6,8 @@ Version 0.3.3
   (namely RB2 expert drums on Wii).
 - Added GHVH support.
 - Added Green Day: Rock Band support.
+- Fixed issue that was preventing updating of Rock Band song data due to
+  new DLC that didn't have a guitar part.
 
 Version 0.3.2
 -------------
