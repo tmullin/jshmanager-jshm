@@ -50,6 +50,10 @@ public enum Platform {
 		PS2, XBOX360, PS3, WII, PC
 	};
 	
+	public static final Platform[] NEXT_GEN = {
+		XBOX360, PS3
+	};
+	
 	public final javax.swing.ImageIcon getIcon() {
 		return jshm.gui.GuiUtil.getIcon(
 			"platforms/" + name() + "_32.png");

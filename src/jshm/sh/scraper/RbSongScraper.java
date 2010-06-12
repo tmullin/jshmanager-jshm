@@ -36,6 +36,7 @@ import jshm.scraper.TieredTabularDataAdapter;
 import jshm.scraper.TieredTabularDataExtractor;
 import jshm.scraper.TieredTabularDataExtractor.InvalidChildCountStrategy;
 import jshm.sh.URLs;
+import jshm.util.Print;
 
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
@@ -169,15 +170,33 @@ public class RbSongScraper {
 		
 		@Override
 		public void handleDataRow(String[][] data) throws ScraperException {
+			// namely for last row in RBN not being a song
+			if (data.length <= 1) return;
+			
 			RbSong curSong = new RbSong();
 			curSong.setGameTitle(game.title);
 			curSong.addPlatform(game.platform);
 			
-			try {
-    			curSong.setScoreHeroId(Integer.parseInt(data[1][1]));
-    		} catch (NumberFormatException e) {
-    			throw new ScraperException("Error parsing song id", e);
-    		}
+			// changes were needed to accomodate extra links next to
+			// RBN song names
+			
+			Exception lastExecption = null;
+//			Print.print(data);
+//			System.out.println();
+			
+			for (int i = 1; i <= 3; i++) {
+				try {
+	    			curSong.setScoreHeroId(Integer.parseInt(data[1][i]));
+	    			lastExecption = null;
+	    			break;
+	    		} catch (NumberFormatException e) {
+	    			lastExecption = e;
+	    		}
+			}
+			
+			if (null != lastExecption) {
+				throw new ScraperException("Error parsing song id", lastExecption);
+			}
     		
     		curSong.setTitle(data[1][0]);
     		
@@ -222,28 +241,44 @@ public class RbSongScraper {
 		
 		@Override
 		public void handleDataRow(String[][] data) throws ScraperException {
+			if (data.length == 1) return;
+			
 			SongOrder order = new SongOrder();
 			order.setGroup(group);
 			order.setPlatform(game.platform);
 			order.setOrder(curOrder);
 			order.setTier(curTierLevel);
 			
-			try {
 				// for testing
 //				RbSong s = new RbSong();
 //				s.setTitle(data[1][0]);
 //				s.setScoreHeroId(Integer.parseInt(data[1][1]));
 //				s.addPlatform(game.platform);
 //				order.setSong(s);
-				RbSong s = songMap != null
-					? songMap.get(Integer.parseInt(data[1][1]))
-					: RbSong.getByScoreHeroId(Integer.parseInt(data[1][1]));
-				if (null == s)
-					throw new ScraperException("Song not found with scoreHeroId=" + data[1][1]);
-    			order.setSong(s);
-    		} catch (NumberFormatException e) {
-    			throw new ScraperException("Error parsing song id", e);
-    		}
+				
+			int id = -1;
+			Exception lastExecption = null;
+			
+			for (int i = 1; i <= 3; i++) {
+				try {
+	    			id = Integer.parseInt(data[1][i]);
+	    			lastExecption = null;
+	    			break;
+	    		} catch (NumberFormatException e) {
+	    			lastExecption = e;
+	    		}
+			}
+			
+			if (null != lastExecption) {
+				throw new ScraperException("Error parsing song id", lastExecption);
+			}
+			
+			RbSong s = songMap != null
+				? songMap.get(id)
+				: RbSong.getByScoreHeroId(id);
+			if (null == s)
+				throw new ScraperException("Song not found with scoreHeroId=" + data[1][1]);
+			order.setSong(s);
 			
     		orders.add(order);
 			curOrder++;

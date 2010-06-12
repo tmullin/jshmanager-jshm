@@ -39,6 +39,7 @@ public class RbGameTitle extends GameTitle {
 	public static final RbGameTitle
 		RB1 = new RbGameTitle(1, "RB1", Platform.BIG_FOUR),
 		RB2 = new RbGameTitle(2, "RB2", Platform.BIG_FOUR),
+		RBN = new RbGameTitle(7, "RBN", Platform.NEXT_GEN),
 		TBRB = new RbGameTitle(4, "TBRB", Platform.BIG_THREE),
 		GDRB = new RbGameTitle(8, "GDRB", Platform.BIG_THREE)
 	;

@@ -33,7 +33,7 @@ import org.htmlparser.filters.TagNameFilter;
 public class RbDataTable extends DataTable {
 	public static final RbDataTable
 	TOP_SCORES = new RbDataTable(3, 3, 8,
-		"-|text~link=songid|text=int|img=rating|text=int|text=int|text|span"
+		"-|text~link=songid,songid,songid|text=int|img=rating|text=int|text=int|text|span"
 	),
 	MANAGE_SCORES = new RbDataTable(3, 3, 10,
 		"-|text=int|link=songid~text|-|text=int~link=picvid,picvid|img=rating|text=int|text=int|text|span"
