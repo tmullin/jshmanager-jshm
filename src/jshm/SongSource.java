@@ -40,8 +40,13 @@ public enum SongSource {
 	GH3,
 	GH3DLC,
 	GHA,
-	GHM,
 
+	GHM,
+	GHWT,
+	GHSH,
+	GH5,
+	GHVH,
+	
 	RB1,
 	RB2,
 	RBDLC,
