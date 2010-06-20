@@ -31,7 +31,9 @@ public class HibernateUtil {
 			// Create the SessionFactory from hibernate.cfg.xml
 			//            sessionFactory = new Configuration().configure().buildSessionFactory();
 			sessionFactory = new AnnotationConfiguration()
-				.configure("jshm/hibernate/hibernate.cfg.xml")
+				.configure(
+					HibernateUtil.class.getResource(
+						"/jshm/hibernate/hibernate.cfg.xml"))
 				.buildSessionFactory();
 
 		} catch (Throwable ex) {

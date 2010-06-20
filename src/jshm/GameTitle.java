@@ -182,7 +182,18 @@ public abstract class GameTitle {
 	 * @return An array of the possible instrument combinations JSHManager supports for this game.
 	 */
 	public abstract Instrument.Group[] getSupportedInstrumentGroups();
-	
+
+	public final boolean supportsInstrumentGroup(final Instrument.Group group) {
+		if (null == group)
+			return false;
+
+		for (Instrument.Group g : getSupportedInstrumentGroups()) {
+			if (group == g) return true;
+		}
+
+		return false;
+	}
+
 	public abstract Song.Sorting[] getSupportedSortings();
 	
 	public final boolean supportsSorting(final Song.Sorting sorting) {

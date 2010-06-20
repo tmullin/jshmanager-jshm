@@ -3,9 +3,12 @@ Bump for $version
 [url=http://jshm.sourceforge.net]Home Page[/url]
 [url=$downloadUrl]Download[/url]
 
-GH5 and TBRB support are obvious features. I also made it so that it can update the tiers automatically when it updates the song data so I won't have to make a release just for tier name changes (except for GH1-GHA but they don't ever change).
+I've taken a bit of a break from GH/RB lately but Green Day: Rock Band may have brought me back a bit.
 
-The other noteable feature is I've added a launcher, JSHManager.exe, if you download the self-extracing archive for Windows. This just helps to check that Java is installed and also increases the memory limit.
+I actually added GHVH back when it came out but never published it due to apparant lack of interest.
 
-I hope there is still interest in my program after all this time.
+I've added RBN support but have not done extensive testing so hopefully it works.
 
+I found that the Rock Band song data hadn't been getting updated since April some time. This was due to a DLC song that didn't have a guitar part, a situation I never planned for. I've corrected that error for now hopefully. 
+
+Hopefully this new release will get some more people interested in my program. Haven't been too many posts in these threads.

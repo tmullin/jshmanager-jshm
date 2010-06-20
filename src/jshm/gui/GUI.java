@@ -281,7 +281,10 @@ public class GUI extends javax.swing.JFrame {
 				statusBar1.setExtraLink("JSHManager update available", info.getUpdateUrl());
 			}
         }.execute();
-        
+
+
+		gamePanel.gui = this;
+
         
         // restore last game/group/diff
         if (true) {
@@ -310,6 +313,8 @@ public class GUI extends javax.swing.JFrame {
 	        if (lastGame != null && lastGroup != null && lastDiff != null) {
 	            LOG.finer(String.format("Restoring game/group/diff: %s/%s/%s",
 	                lastGame, lastGroup, lastDiff));
+
+				gamePanel.setCombos(lastGame, lastGroup, lastDiff);
 	        	myScoresMenuItemActionPerformed(null, lastGame, lastGroup, lastDiff);
 	        } else {
 	        	LOG.finer("No previous game/group/diff found");
@@ -380,6 +385,7 @@ public class GUI extends javax.swing.JFrame {
         aboutDialog1 = new AboutDialog(this);
         textFileViewerDialog1 = new TextFileViewerDialog(this, true);
         checkUpdatesDialog1 = new jshm.gui.CheckUpdatesDialog();
+        innerPanel3 = new javax.swing.JPanel();
         innerPanel1 = new javax.swing.JPanel();
         innerPanel2 = new javax.swing.JPanel();
         treeScrollPane = new javax.swing.JScrollPane();
@@ -389,6 +395,7 @@ public class GUI extends javax.swing.JFrame {
         statusBar1 = new jshm.gui.components.StatusBar();
         editorCollapsiblePane = new org.jdesktop.swingx.JXCollapsiblePane();
         scoreEditorPanel1 = new ScoreEditorPanel(this);
+        gamePanel = new jshm.gui.GameSelectorPanel();
         toolbar = new javax.swing.JToolBar();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
@@ -443,6 +450,8 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        innerPanel3.setLayout(new java.awt.BorderLayout());
+
         innerPanel1.setLayout(new java.awt.BorderLayout());
 
         innerPanel2.setLayout(new java.awt.BorderLayout());
@@ -478,7 +487,10 @@ public class GUI extends javax.swing.JFrame {
 
         innerPanel1.add(editorCollapsiblePane, java.awt.BorderLayout.NORTH);
 
-        getContentPane().add(innerPanel1, java.awt.BorderLayout.CENTER);
+        innerPanel3.add(innerPanel1, java.awt.BorderLayout.CENTER);
+        innerPanel3.add(gamePanel, java.awt.BorderLayout.NORTH);
+
+        getContentPane().add(innerPanel3, java.awt.BorderLayout.CENTER);
 
         toolbar.setRollover(true);
         initToolbar(toolbar);
@@ -2035,6 +2047,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     org.jdesktop.swingx.JXCollapsiblePane editorCollapsiblePane;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
+    private jshm.gui.GameSelectorPanel gamePanel;
     private javax.swing.JMenu ghLinksMenu;
     private javax.swing.JMenu ghMenu;
     private javax.swing.JMenu ghScoresMenu;
@@ -2044,6 +2057,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
     javax.swing.JCheckBoxMenuItem hideEmptySongsMenuItem;
     private javax.swing.JPanel innerPanel1;
     private javax.swing.JPanel innerPanel2;
+    private javax.swing.JPanel innerPanel3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
