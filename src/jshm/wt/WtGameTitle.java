@@ -36,7 +36,9 @@ public class WtGameTitle extends GameTitle {
 		GHM = new WtGameTitle("GHM", 9, Platform.BIG_FOUR),
 		GHSH = new WtGameTitle("GHSH", 11, Platform.BIG_FOUR),
 		GH5 = new WtGameTitle("GH5", 12, Platform.BIG_FOUR),
-		GHVH = new WtGameTitle("GHVH", 13, Platform.BIG_FOUR)
+		GHVH = new WtGameTitle("GHVH", 13, Platform.BIG_FOUR),
+		BH = new WtGameTitle("BH", 14, Platform.BIG_FOUR),
+		GHWOR = new WtGameTitle("GHWOR", 18, Platform.BIG_THREE)
 	;
 
 	public final int scoreHeroGroupId;
@@ -59,12 +61,15 @@ public class WtGameTitle extends GameTitle {
 	 * @see jshm.Game#initDynamicTiersInternal()
 	 */
 	@SuppressWarnings("unchecked")
-	@Override protected void initDynamicTiersInternal() {		
+	@Override protected void initDynamicTiersInternal() {
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSessionSilent();
+
+		if (null == session) return;
+
 		List<String> tiers = new ArrayList<String>();
 		List<String> list_s = null;
 		List<Integer> list_i = null;
 		
-		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
 	    
 	    // make the decades tier

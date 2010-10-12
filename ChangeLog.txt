@@ -2,7 +2,9 @@ JSHManager ChangeLog
 
 Version 0.3.4
 -------------
-- Added new bar to quickly switch between games/instruments.
+- Added new toolbar with drop down menus to quickly switch between
+  games/instruments/difficulties.
+- Added GH:WoR and BH support.
 
 Version 0.3.3
 -------------

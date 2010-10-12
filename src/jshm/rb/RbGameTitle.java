@@ -63,13 +63,15 @@ public class RbGameTitle extends GameTitle {
 		// make difficulty tier
 		// not necessarily dynamic but whatever
 		mapTiers(Sorting.DIFFICULTY, RbGame.RbTiers.RB2_DIFFS);
-		
+
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSessionSilent();
+
+		if (null == session) return;
 		
 		List<String> tiers = new ArrayList<String>();
 		List<String> list_s = null;
 		List<Integer> list_i = null;
 		
-		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
 	    
 	    // make the decades tier

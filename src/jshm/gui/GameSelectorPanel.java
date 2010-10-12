@@ -12,11 +12,13 @@
 package jshm.gui;
 
 import java.awt.Color;
+import java.awt.Toolkit;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.border.Border;
 import jshm.*;
+import jshm.gui.renderers.GeneralListCellRenderer;
 import jshm.wt.WtGameTitle;
 
 /**
@@ -25,6 +27,8 @@ import jshm.wt.WtGameTitle;
  */
 public class GameSelectorPanel extends javax.swing.JPanel {
 	GUI gui;
+
+	private GeneralListCellRenderer renderer = new GeneralListCellRenderer();
 
 	private Border
 		defaultBorder = null,
@@ -106,24 +110,28 @@ public class GameSelectorPanel extends javax.swing.JPanel {
         diffCombo = new javax.swing.JComboBox();
         goButton = new javax.swing.JButton();
 
+        gameCombo.setRenderer(renderer);
         gameCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 gameComboActionPerformed(evt);
             }
         });
 
+        instCombo.setRenderer(renderer);
         instCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 instComboActionPerformed(evt);
             }
         });
 
+        platCombo.setRenderer(renderer);
         platCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 platComboActionPerformed(evt);
             }
         });
 
+        diffCombo.setRenderer(renderer);
         diffCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 diffComboActionPerformed(evt);
@@ -262,6 +270,8 @@ public class GameSelectorPanel extends javax.swing.JPanel {
 
 		if (!error && null != gui) {
 			gui.myScoresMenuItemActionPerformed(null, game, grp, diff);
+		} else {
+			Toolkit.getDefaultToolkit().beep();
 		}
 	}//GEN-LAST:event_goButtonActionPerformed
 

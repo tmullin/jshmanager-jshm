@@ -61,7 +61,16 @@ public class WtGame extends Game {
 	GHVH_PS2 = new WtGame(35, WtGameTitle.GHVH, Platform.PS2, false),
 	GHVH_XBOX360 = new WtGame(36, WtGameTitle.GHVH, Platform.XBOX360, false),
 	GHVH_PS3 = new WtGame(37, WtGameTitle.GHVH, Platform.PS3, false),
-	GHVH_WII = new WtGame(38, WtGameTitle.GHVH, Platform.WII, false)
+	GHVH_WII = new WtGame(38, WtGameTitle.GHVH, Platform.WII, false),
+	
+	BH_PS2 = new WtGame(39, WtGameTitle.BH, Platform.PS2, false),
+	BH_XBOX360 = new WtGame(40, WtGameTitle.BH, Platform.XBOX360, false),
+	BH_PS3 = new WtGame(41, WtGameTitle.BH, Platform.PS3, false),
+	BH_WII = new WtGame(42, WtGameTitle.BH, Platform.WII, false),
+	
+	GHWOR_XBOX360 = new WtGame(49, WtGameTitle.GHWOR, Platform.XBOX360, true),
+	GHWOR_PS3 = new WtGame(50, WtGameTitle.GHWOR, Platform.PS3, true),
+	GHWOR_WII = new WtGame(51, WtGameTitle.GHWOR, Platform.WII, true)
 	;
 	
 	protected WtGame(int scoreHeroId, GameTitle title, Platform platform,

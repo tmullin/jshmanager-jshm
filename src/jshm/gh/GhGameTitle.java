@@ -64,12 +64,15 @@ public class GhGameTitle extends jshm.GameTitle {
 	 * @see jshm.Game#initDynamicTiersInternal()
 	 */
 	@SuppressWarnings("unchecked")
-	@Override protected void initDynamicTiersInternal() {		
+	@Override protected void initDynamicTiersInternal() {
+		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSessionSilent();
+
+		if (null == session) return;
+
 		List<String> tiers = new ArrayList<String>();
 		List<String> list_s = null;
 		List<Integer> list_i = null;
 		
-		org.hibernate.Session session = jshm.hibernate.HibernateUtil.getCurrentSession();
 	    session.beginTransaction();
 	    
 	    // make the decades tier

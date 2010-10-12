@@ -21,6 +21,9 @@
 package jshm.xml;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +43,11 @@ public class RbSongInfoFetcher {
 	public static final String XML_URL =
 		"http://pksage.com/xml.php";
 
+	private static final SimpleDateFormat RELEASE_DATE_FMT =
+		new SimpleDateFormat("yyyy-MM-dd");
+	
 	public Map<String, SongInfo> songMap = null;
+	public Map<String, SongInfo> shortTitleMap = null;
 	
 	public void fetch() throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory f 
@@ -52,6 +59,7 @@ public class RbSongInfoFetcher {
 		d.getDocumentElement().normalize();
 		
 		songMap = new HashMap<String, SongInfo>();
+		shortTitleMap = new HashMap<String, SongInfo>();
 		
 		NodeList songNodes = d.getElementsByTagName("song");
 		
@@ -64,12 +72,17 @@ public class RbSongInfoFetcher {
 			
 //			if ("Unreleased".equals(si.genre)) continue;
 			
+			si.shortTitle = songEl.getElementsByTagName("shorttitle").item(0).getTextContent();
 			si.title = songEl.getElementsByTagName("songtitle").item(0).getTextContent();
 			si.artist = songEl.getElementsByTagName("artist").item(0).getTextContent();
 			si.album = songEl.getElementsByTagName("album").item(0).getTextContent();
 			
 			si.game = songEl.getElementsByTagName("game").item(0).getTextContent();
 			si.pack = songEl.getElementsByTagName("pack").item(0).getTextContent();
+			
+			try {
+				si.released = RELEASE_DATE_FMT.parse(songEl.getElementsByTagName("datereleased").item(0).getTextContent());
+			} catch (ParseException e) {}
 			
 			try { si.trackNum = Integer.parseInt(songEl.getElementsByTagName("tracknum").item(0).getTextContent());
 			} catch (NumberFormatException e) {}
@@ -102,18 +115,22 @@ public class RbSongInfoFetcher {
 			
 //			songMap.put(si.title.toLowerCase(), si);
 			songMap.put(si.title, si);
+			shortTitleMap.put(si.shortTitle, si);
 		}
 	}
 	
 	public static class SongInfo {
 		public String
+			shortTitle,
 			title,
 			artist,
 			album,
 			genre,
 			game,
 			pack;
-			
+		
+		public Date released = null; 
+		
 		public int
 			trackNum = 0,
 			year = 0,
@@ -134,7 +151,8 @@ public class RbSongInfoFetcher {
 		
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
-			sb.append("t=");
+			sb.append(shortTitle);
+			sb.append(",t=");
 			sb.append(title);
 			sb.append(",ar=");
 			sb.append(artist);
