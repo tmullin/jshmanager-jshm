@@ -5,6 +5,7 @@ Version 0.3.4
 - Added new toolbar with drop down menus to quickly switch between
   games/instruments/difficulties.
 - Added GH:WoR and BH support.
+- Added partial RB3 support (only the 4 classic instruments, no keys or pro yet).
 
 Version 0.3.3
 -------------
