@@ -37,7 +37,7 @@ public class WtGameTitle extends GameTitle {
 		GHSH = new WtGameTitle("GHSH", 11, Platform.BIG_FOUR),
 		GH5 = new WtGameTitle("GH5", 12, Platform.BIG_FOUR),
 		GHVH = new WtGameTitle("GHVH", 13, Platform.BIG_FOUR),
-		BH = new WtGameTitle("BH", 14, Platform.BIG_FOUR),
+		BH = new WtGameTitle("BH", 14, false, Platform.BIG_FOUR),
 		GHWOR = new WtGameTitle("GHWOR", 18, Platform.BIG_THREE)
 	;
 

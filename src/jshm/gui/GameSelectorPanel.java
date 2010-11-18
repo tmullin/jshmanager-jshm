@@ -28,17 +28,18 @@ import jshm.wt.WtGameTitle;
 public class GameSelectorPanel extends javax.swing.JPanel {
 	GUI gui;
 
-	private GeneralListCellRenderer renderer = new GeneralListCellRenderer();
+	private GeneralListCellRenderer renderer =
+		new GeneralListCellRenderer();
 
 	private Border
 		defaultBorder = null,
 		errorBorder = BorderFactory.createLineBorder(Color.RED);
 
-	private final String
-		selectGame = "Game...",
-		selectPlat = "Platform...",
-		selectInst = "Instrument...",
-		selectDiff = "Difficulty...";
+	private static final String
+		SELECT_GAME = "Game...",
+		SELECT_PLAT = "Platform...",
+		SELECT_INST = "Instrument...",
+		SELECT_DIFF = "Difficulty...";
 
 	private DefaultComboBoxModel
 		gameModel, platModel, instModel, diffModel;
@@ -50,7 +51,7 @@ public class GameSelectorPanel extends javax.swing.JPanel {
 		defaultBorder = gameCombo.getBorder();
 
 		Vector<Object> items = new Vector<Object>();
-		items.add(selectGame);
+		items.add(SELECT_GAME);
 
 		items.addAll(GameTitle.getBySeries(GameSeries.GUITAR_HERO));
 		items.addAll(GameTitle.getBySeries(GameSeries.WORLD_TOUR));
@@ -59,35 +60,102 @@ public class GameSelectorPanel extends javax.swing.JPanel {
 		gameModel = new DefaultComboBoxModel(items);
 		gameCombo.setModel(gameModel);
 
+		populateCombos();
+	}
 
-		items = new Vector<Object>();
-		items.add(selectPlat);
-		for (Platform p : Platform.values())
-			items.add(p);
+    /**
+     * Takes care of filling in the combo boxes with the allowed
+     * values for a given game.
+     */
+    private void populateCombos() {
+    	Object o = gameCombo.getSelectedItem();
+    	GameTitle selectedGame = o instanceof GameTitle ? (GameTitle) o : null;
+    	
+    	Object lastPlat = platCombo.getSelectedItem();
+    	Object lastInst = instCombo.getSelectedItem();
+    	Object lastDiff = diffCombo.getSelectedItem();
+    	
+    	renderer.setGameTitle(selectedGame);
+    	
+		Vector<Object> items = new Vector<Object>();
+		items.add(SELECT_PLAT);
+		
+		if (null != selectedGame) {
+			for (Platform p : selectedGame.platforms)
+				items.add(p);
+		}
 
 		platModel = new DefaultComboBoxModel(items);
 		platCombo.setModel(platModel);
 
 
 		items = new Vector<Object>();
-		items.add(selectInst);
-		items.addAll(Instrument.Group.getBySize(1, true));
+		items.add(SELECT_INST);
+		
+		if (null != selectedGame) {
+			for (Instrument.Group g : selectedGame.getSupportedInstrumentGroups())
+				items.add(g);
+		}
 
 		instModel = new DefaultComboBoxModel(items);
 		instCombo.setModel(instModel);
 
-
-		diffModel = new DefaultComboBoxModel(new Object[] {
-			selectDiff,
-			Difficulty.EASY,
-			Difficulty.MEDIUM,
-			Difficulty.HARD,
-			Difficulty.EXPERT,
-			Difficulty.EXPERT_PLUS
-		});
+		
+		populateDiffCombo();
+		
+		
+		platCombo.setSelectedItem(lastPlat);
+		instCombo.setSelectedItem(lastInst);		
+		
+		// may as well preset the only possible choices when there is only 1
+		
+		if (null != selectedGame && 1 == selectedGame.platforms.length) {
+			platCombo.setSelectedItem(selectedGame.platforms[0]);
+		}
+		
+		if (null != selectedGame && 1 == selectedGame.getSupportedInstrumentGroups().length) {
+			instCombo.setSelectedItem(selectedGame.getSupportedInstrumentGroups()[0]);
+		}
+    }
+    
+    private void populateDiffCombo() {
+    	Object lastDiff = diffCombo.getSelectedItem();
+    	
+		Vector<Object> items = new Vector<Object>();
+		items.add(SELECT_DIFF);
+		
+		if (SELECT_GAME != gameCombo.getSelectedItem()) {
+			items.add(Difficulty.EASY);
+			items.add(Difficulty.MEDIUM);
+			items.add(Difficulty.HARD);
+			items.add(Difficulty.EXPERT);
+			
+			if (gameCombo.getSelectedItem() instanceof WtGameTitle) {
+				Object drumObj = instCombo.getSelectedItem();
+				boolean isDrums =
+					drumObj instanceof Instrument.Group &&
+					(Instrument.Group.DRUMS == drumObj || Instrument.Group.WTDRUMS == drumObj);
+				
+				WtGameTitle wtgt = (WtGameTitle) gameCombo.getSelectedItem();
+				
+				if (isDrums && wtgt.supportsExpertPlus) {
+					items.add(Difficulty.EXPERT_PLUS);
+				}
+			}
+		}
+		
+		diffModel = new DefaultComboBoxModel(items);
 		diffCombo.setModel(diffModel);
-	}
-
+		
+		diffCombo.setSelectedItem(lastDiff);
+		
+		// if it was set to x+ but the new game doesn't support it
+		// or we switched instruments revert to plain expert
+		if (Difficulty.EXPERT_PLUS == lastDiff && SELECT_DIFF == diffCombo.getSelectedItem()) {
+			diffCombo.setSelectedItem(Difficulty.EXPERT);
+		}
+    }
+    
 	public void setCombos(Game game, Instrument.Group group, Difficulty diff) {
 		gameCombo.setSelectedItem(game.title);
 		platCombo.setSelectedItem(game.platform);
@@ -269,75 +337,15 @@ public class GameSelectorPanel extends javax.swing.JPanel {
 
 
 		if (!error && null != gui) {
-			gui.myScoresMenuItemActionPerformed(null, game, grp, diff);
+			/// XXX passing evt here may or may not be an issue
+			gui.myScoresMenuItemActionPerformed(evt, game, grp, diff);
 		} else {
 			Toolkit.getDefaultToolkit().beep();
 		}
 	}//GEN-LAST:event_goButtonActionPerformed
 
 	private void gameComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gameComboActionPerformed
-		// we'll do it the easy way for now and handle everything in goButton's actionPerformed
-//		Object o = gameCombo.getSelectedItem();
-//
-//		if (!(o instanceof GameTitle)) return;
-//
-//		GameTitle g = (GameTitle) o;
-//
-//		boolean sameItems = true;
-//
-//		if (platModel.getSize() != g.platforms.length + 1) {
-//			sameItems = false;
-//		}
-//
-//		if (sameItems) {
-//			for (int i = 1; i < platModel.getSize(); i++) {
-//				if (platModel.getElementAt(i) != g.platforms[i - 1]) {
-//					sameItems = false;
-//					break;
-//				}
-//			}
-//		}
-//
-//		if (!sameItems) {
-//			Object lastSelected = platModel.getSelectedItem();
-//			platModel.removeAllElements();
-//			platModel.addElement(selectPlat);
-//
-//			for (Platform p : g.platforms) {
-//				platModel.addElement(p);
-//			}
-//
-//			platModel.setSelectedItem(lastSelected);
-//		}
-//
-//
-//		sameItems = true;
-//		Instrument.Group[] groups = g.getSupportedInstrumentGroups();
-//
-//		if (instModel.getSize() != groups.length + 1) {
-//			sameItems = false;
-//		}
-//
-//		if (sameItems) {
-//			for (int i = 1; i < instModel.getSize(); i++) {
-//				if (instModel.getElementAt(i) != groups[i - 1]) {
-//					sameItems = false;
-//					break;
-//				}
-//			}
-//		}
-//
-//		if (!sameItems) {
-//			Object lastSelected = instModel.getSelectedItem();
-//			instModel.removeAllElements();
-//			instModel.addElement(selectPlat);
-//
-//			for (Instrument.Group grp : groups) {
-//				instModel.addElement(grp);
-//			}
-//
-//			instModel.setSelectedItem(lastSelected);
-//		}
+		populateCombos();
 	}//GEN-LAST:event_gameComboActionPerformed
 
 	private void platComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_platComboActionPerformed
@@ -345,7 +353,7 @@ public class GameSelectorPanel extends javax.swing.JPanel {
 	}//GEN-LAST:event_platComboActionPerformed
 
 	private void instComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_instComboActionPerformed
-		
+		populateDiffCombo();
 	}//GEN-LAST:event_instComboActionPerformed
 
 	private void diffComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_diffComboActionPerformed

@@ -62,6 +62,11 @@ public enum Instrument {
 		return getLongName(false);
 	}
 	
+	/**
+	 * Returns a "proper" name for this instrument.
+	 * @param getWtVersion If true, "RB Drums" would be returned instead of "Drums" for example.
+	 * @return
+	 */
 	public final String getLongName(final boolean getWtVersion) {
 		if (getWtVersion) {
 			try {

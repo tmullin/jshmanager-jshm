@@ -8,10 +8,17 @@ package jshm.gui.renderers;
 import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
+import javax.swing.ListCellRenderer;
+
 import jshm.*;
 
 /**
- *
+ * <p>This {@link ListCellRenderer} can handle rendering of
+ * {@link Game}, {@link GameTitle}, {@link Platform}, {@link Difficulty},
+ * {@link Instrument}, and {@link Instrument.Group} to display their
+ * "proper" name instead of their internal name.
+ * <p>You can set the game for the renderer to determine whether
+ * to display "Drums" or "RB Drums" for example.
  * @author Tim
  */
 public class GeneralListCellRenderer extends DefaultListCellRenderer {
@@ -23,6 +30,14 @@ public class GeneralListCellRenderer extends DefaultListCellRenderer {
 
 	public void setWtMode(boolean b) {
 		wtMode = b;
+	}
+	
+	public void setGame(Game g) {
+		setGameTitle(g.title);
+	}
+	
+	public void setGameTitle(GameTitle gt) {
+		setWtMode(null != gt && GameSeries.WORLD_TOUR == gt.series);
 	}
 
 	@Override

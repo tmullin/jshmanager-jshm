@@ -6,6 +6,7 @@ Version 0.3.4
   games/instruments/difficulties.
 - Added GH:WoR and BH support.
 - Added partial RB3 support (only the 4 classic instruments, no keys or pro yet).
+- RBN is now separated for RB2 and RB3, matching ScoreHero, Wii support also added.
 
 Version 0.3.3
 -------------
