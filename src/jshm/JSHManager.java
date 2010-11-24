@@ -36,7 +36,7 @@ import jshm.hibernate.HibernateUtil;
 /**
  * A Java-based program to manage one's ScoreHero.com account.
  * @author Tim Mullin
- *
+ * 
  */
 public class JSHManager {
 	public static class Version {

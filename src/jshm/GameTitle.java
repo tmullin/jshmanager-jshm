@@ -30,10 +30,11 @@ import jshm.util.Text;
  * Represents a specific game title such as Guitar Hero 2
  * or Rockband. This is more for containing information about
  * a given title that is consistent across platforms.
+ * <p>The natural ordering of this class is ascending by title.
  * @author Tim Mullin
  *
  */
-public abstract class GameTitle {
+public abstract class GameTitle implements Comparable<GameTitle> {
 	private static final List<GameTitle> values =
 		new ArrayList<GameTitle>();
 	
@@ -81,6 +82,10 @@ public abstract class GameTitle {
 
 		initDynamicTiers();
 		initSortingComparators();
+	}
+	
+	@Override public int compareTo(GameTitle o) {
+		return this.title.compareTo(o.title);
 	}
 	
 	final Map<Sorting, Tiers> sortingTiersMap =

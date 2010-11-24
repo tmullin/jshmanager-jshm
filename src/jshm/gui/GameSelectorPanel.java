@@ -13,7 +13,10 @@ package jshm.gui;
 
 import java.awt.Color;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.util.Vector;
+import java.util.logging.Logger;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.border.Border;
@@ -26,6 +29,8 @@ import jshm.wt.WtGameTitle;
  * @author Tim
  */
 public class GameSelectorPanel extends javax.swing.JPanel {
+	static final Logger LOG = Logger.getLogger(GameSelectorPanel.class.getName());
+	
 	GUI gui;
 
 	private GeneralListCellRenderer renderer =
@@ -45,11 +50,14 @@ public class GameSelectorPanel extends javax.swing.JPanel {
 		gameModel, platModel, instModel, diffModel;
 
     /** Creates new form GameSelectorPanel */
-    public GameSelectorPanel() {
+//    @SuppressWarnings("unchecked")
+	public GameSelectorPanel() {
         initComponents();
 
 		defaultBorder = gameCombo.getBorder();
 
+		// could sort alphabetically but seems better to keep it in SH order
+//		Vector items = new Vector();
 		Vector<Object> items = new Vector<Object>();
 		items.add(SELECT_GAME);
 
@@ -57,6 +65,10 @@ public class GameSelectorPanel extends javax.swing.JPanel {
 		items.addAll(GameTitle.getBySeries(GameSeries.WORLD_TOUR));
 		items.addAll(GameTitle.getBySeries(GameSeries.ROCKBAND));
 
+//		Collections.sort(items);
+//		
+//		items.add(0, SELECT_GAME);
+		
 		gameModel = new DefaultComboBoxModel(items);
 		gameCombo.setModel(gameModel);
 
@@ -73,8 +85,7 @@ public class GameSelectorPanel extends javax.swing.JPanel {
     	
     	Object lastPlat = platCombo.getSelectedItem();
     	Object lastInst = instCombo.getSelectedItem();
-    	Object lastDiff = diffCombo.getSelectedItem();
-    	
+
     	renderer.setGameTitle(selectedGame);
     	
 		Vector<Object> items = new Vector<Object>();
@@ -115,6 +126,11 @@ public class GameSelectorPanel extends javax.swing.JPanel {
 		
 		if (null != selectedGame && 1 == selectedGame.getSupportedInstrumentGroups().length) {
 			instCombo.setSelectedItem(selectedGame.getSupportedInstrumentGroups()[0]);
+		}
+		
+		// when switching from WT Drums in GHM to RB2 for example set to plain drums
+		if (SELECT_INST == instCombo.getSelectedItem() && Instrument.Group.WTDRUMS == lastInst) {
+			instCombo.setSelectedItem(Instrument.Group.DRUMS);
 		}
     }
     
@@ -184,11 +200,21 @@ public class GameSelectorPanel extends javax.swing.JPanel {
                 gameComboActionPerformed(evt);
             }
         });
+        gameCombo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                gameComboKeyPressed(evt);
+            }
+        });
 
         instCombo.setRenderer(renderer);
         instCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 instComboActionPerformed(evt);
+            }
+        });
+        instCombo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                instComboKeyPressed(evt);
             }
         });
 
@@ -198,11 +224,21 @@ public class GameSelectorPanel extends javax.swing.JPanel {
                 platComboActionPerformed(evt);
             }
         });
+        platCombo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                platComboKeyPressed(evt);
+            }
+        });
 
         diffCombo.setRenderer(renderer);
         diffCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 diffComboActionPerformed(evt);
+            }
+        });
+        diffCombo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                diffComboKeyPressed(evt);
             }
         });
 
@@ -349,7 +385,7 @@ public class GameSelectorPanel extends javax.swing.JPanel {
 	}//GEN-LAST:event_gameComboActionPerformed
 
 	private void platComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_platComboActionPerformed
-		
+
 	}//GEN-LAST:event_platComboActionPerformed
 
 	private void instComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_instComboActionPerformed
@@ -357,9 +393,30 @@ public class GameSelectorPanel extends javax.swing.JPanel {
 	}//GEN-LAST:event_instComboActionPerformed
 
 	private void diffComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_diffComboActionPerformed
-		
+
 	}//GEN-LAST:event_diffComboActionPerformed
 
+	private void gameComboKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_gameComboKeyPressed
+		comboKeyPressed(evt);
+	}//GEN-LAST:event_gameComboKeyPressed
+
+	private void platComboKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_platComboKeyPressed
+		comboKeyPressed(evt);
+	}//GEN-LAST:event_platComboKeyPressed
+
+	private void instComboKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_instComboKeyPressed
+		comboKeyPressed(evt);
+	}//GEN-LAST:event_instComboKeyPressed
+
+	private void diffComboKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_diffComboKeyPressed
+		comboKeyPressed(evt);
+	}//GEN-LAST:event_diffComboKeyPressed
+
+	private void comboKeyPressed(KeyEvent evt) {
+		if (KeyEvent.VK_ENTER == evt.getKeyCode()) {
+			goButton.doClick();
+		}
+	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox diffCombo;

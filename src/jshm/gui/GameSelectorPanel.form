@@ -52,6 +52,7 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gameComboActionPerformed"/>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="gameComboKeyPressed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="instCombo">
@@ -62,6 +63,7 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="instComboActionPerformed"/>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="instComboKeyPressed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="platCombo">
@@ -72,6 +74,7 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="platComboActionPerformed"/>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="platComboKeyPressed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="diffCombo">
@@ -82,6 +85,7 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="diffComboActionPerformed"/>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="diffComboKeyPressed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="goButton">
