@@ -3,12 +3,6 @@ Bump for $version
 [url=http://jshm.sourceforge.net]Home Page[/url]
 [url=$downloadUrl]Download[/url]
 
-I've taken a bit of a break from GH/RB lately but Green Day: Rock Band may have brought me back a bit.
+Sorry for the lack of updates. Been busy with other things.
 
-I actually added GHVH back when it came out but never published it due to apparant lack of interest.
-
-I've added RBN support but have not done extensive testing so hopefully it works.
-
-I found that the Rock Band song data hadn't been getting updated since April some time. This was due to a DLC song that didn't have a guitar part, a situation I never planned for. I've corrected that error for now hopefully. 
-
-Hopefully this new release will get some more people interested in my program. Haven't been too many posts in these threads.
+Main features are GHWoR support and partial RB3 support. I plan to work on adding keys and pro mode for RB3 and possibly harmony support for RB vocals soon. Aside from that see change log below.

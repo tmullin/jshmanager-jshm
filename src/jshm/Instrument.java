@@ -29,7 +29,12 @@ public enum Instrument {
 	BASS("bass"), // will also mean rhythm for GH
 	WTDRUMS("drums"),
 	DRUMS("drums"),
-	VOCALS("vocals");
+	VOCALS("vocals"),
+	KEYS("keys"),
+	PROGUITAR("gtr"),
+	PROBASS("bass"),
+	PRODRUMS("drums"),
+	PROKEYS("keys");
 	
 	// needed for submitting rb scores
 	// TODO move into Text
@@ -41,6 +46,10 @@ public enum Instrument {
 	
 	public final javax.swing.ImageIcon getIcon() {
 		String s = WTDRUMS == this ? "DRUMS" : name();
+		
+		if (s.startsWith("PRO"))
+			s = s.substring(3);
+		
 		return jshm.gui.GuiUtil.getIcon(
 			"instruments/" + s + "_32.png");
 	}
@@ -49,6 +58,17 @@ public enum Instrument {
 		switch (this) {
 			case WTDRUMS:
 			case DRUMS: return true;
+		}
+		
+		return false;
+	}
+	
+	public final boolean isPro() {
+		switch (this) {
+			case PROGUITAR:
+			case PROBASS:
+			case PRODRUMS:
+			case PROKEYS: return true;
 		}
 		
 		return false;
@@ -107,6 +127,11 @@ public enum Instrument {
 		WTDRUMS(0, 3, Instrument.WTDRUMS),
 		DRUMS(3, 4, Instrument.DRUMS),
 		VOCALS(4, 5, Instrument.VOCALS),
+		KEYS(24, 0, Instrument.KEYS),
+		PROGUITAR(25, 0, Instrument.PROGUITAR),
+		PROBASS(26, 0, Instrument.PROBASS),
+		PRODRUMS(27, 0, Instrument.PRODRUMS),
+		PROKEYS(28, 0, Instrument.PROKEYS),
 		
 		GUITAR_BASS(5, 6, Instrument.GUITAR, Instrument.BASS),
 		GUITAR_WTDRUMS(0, 7, Instrument.GUITAR, Instrument.WTDRUMS),
@@ -156,7 +181,12 @@ public enum Instrument {
 				case GUITAR:
 				case BASS:
 				case DRUMS:
-				case VOCALS: return this;
+				case VOCALS:
+				case KEYS:
+				case PROGUITAR:
+				case PROBASS:
+				case PRODRUMS:
+				case PROKEYS: return this;
 				case WTDRUMS: return DRUMS;
 				default: return GUITAR_BASS;
 			}

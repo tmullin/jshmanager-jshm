@@ -1420,8 +1420,8 @@ private void initGhGameMenu(final JMenu menu) {
 				JMenu groupSizeMenu = menu == ghSongDataMenu
 				? new JMenu(groupSize + "-part") : platformMenu; // new JMenu(groupSize + "-part");
 				
-				for (final Group group : Group.getBySize(groupSize, true)) {
-
+				//for (final Group group : Group.getBySize(groupSize, true)) {
+				for (final Group group : game.title.getSupportedInstrumentGroups()) {
 					if (menu == ghScoresMenu) {
 						JMenu groupMenu = new JMenu(group.getLongName(true));
 						groupMenu.setIcon(group.getIcon());
@@ -1500,7 +1500,9 @@ private void initRbGameMenu(final JMenu menu) {
 				for (int groupSize = 1; groupSize <= 1; groupSize++) {
 					JMenu groupSizeMenu = platformMenu; // new JMenu(groupSize + "-part");
 					
-					for (final Group group : Group.getBySize(groupSize)) {						JMenu groupMenu = new JMenu(group.getLongName());
+					//for (final Group group : Group.getBySize(groupSize)) {
+					for (final Group group : g.title.getSupportedInstrumentGroups()) {
+						JMenu groupMenu = new JMenu(group.getLongName());
 						groupMenu.setIcon(group.getIcon());
 						
 						for (final Difficulty d : Difficulty.values()) {
@@ -1987,6 +1989,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 			GUI.this.setTitle(game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " on " + difficulty.toShortString() + " " + group.getLongName(game instanceof WtGame) + " - Scores");
 			
 			statusBar1.setText("Viewing scores for " + game.title.getWikiAbbr() + " " + game.platform.getShortName() + " on " + difficulty.toShortString());
+			GUI.this.gamePanel.setCombos(game, group, difficulty);
 			
 			actions.downloadScores.setEnabled(true);
 			actions.uploadScores.setEnabled(true);

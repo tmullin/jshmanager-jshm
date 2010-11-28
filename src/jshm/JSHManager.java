@@ -36,15 +36,15 @@ import jshm.hibernate.HibernateUtil;
 /**
  * A Java-based program to manage one's ScoreHero.com account.
  * @author Tim Mullin
- *
+ * 
  */
 public class JSHManager {
 	public static class Version {
 		public static final String NAME = "JSHManager";
 		public static final int MAJOR = 0;
 		public static final int MINOR = 3;
-		public static final int POINT = 4;
-		public static final boolean IS_BETA = false;
+		public static final int POINT = 5;
+		public static final boolean IS_BETA = true;
 		
 		public static final String
 		VERSION =
@@ -52,8 +52,8 @@ public class JSHManager {
 		STRING =
 			String.format("%s%s", VERSION, IS_BETA ? " beta" : "");
 		
-		public static final String LAST = "0.3.3";
-		public static final int LAST_REVISION = 425;
+		public static final String LAST = "0.3.4";
+		public static final int LAST_REVISION = 436;
 		
 		public static final java.util.Date DATE = initDate("$Date$");
 		public static final int REVISION = initRevision("$Revision$");

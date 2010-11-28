@@ -44,7 +44,7 @@ public class RbGameTitle extends GameTitle {
 		TBRB = new RbGameTitle(4, "TBRB", Platform.BIG_THREE),
 		LRB = new RbGameTitle(5, "LRB", Platform.BIG_THREE),
 		GDRB = new RbGameTitle(8, "GDRB", Platform.BIG_THREE),
-		RB3 = new RbGameTitle(9, "RB3", Platform.BIG_THREE)
+		RB3 = new Rb3GameTitle(9, "RB3", Platform.BIG_THREE)
 	;
 	
 	public final int scoreHeroId;
@@ -176,5 +176,28 @@ public class RbGameTitle extends GameTitle {
 	@Override
 	public boolean supportsCalculatedRating() {
 		return false;
+	}
+	
+	/**
+	 * Accomodates the only real difference with RB3 that we have to
+	 * care about, additional instruments.
+	 * @author Tim Mullin
+	 *
+	 */
+	public static class Rb3GameTitle extends RbGameTitle {
+		protected Rb3GameTitle(int scoreHeroId, String title,
+				Platform ... platforms) {
+			super(scoreHeroId, title, platforms);
+		}
+		
+		private static final Group[] SUPPORTED_GROUPS = {
+			Group.GUITAR, Group.BASS, Group.DRUMS, Group.VOCALS, Group.KEYS,
+			Group.PROGUITAR, Group.PROBASS, Group.PRODRUMS, Group.PROKEYS
+		};
+		
+		@Override
+		public Group[] getSupportedInstrumentGroups() {
+			return SUPPORTED_GROUPS;
+		}
 	}
 }
