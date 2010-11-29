@@ -40,7 +40,7 @@ public class RbGameTitle extends GameTitle {
 		RB1 = new RbGameTitle(1, "RB1", Platform.BIG_FOUR),
 		RB2 = new RbGameTitle(2, "RB2", Platform.BIG_FOUR),
 		RBN = new RbGameTitle(7, "RBN", Platform.BIG_THREE),
-		RBNRB3 = new RbGameTitle(10, "RBNRB3", Platform.BIG_THREE),
+		RBNRB3 = new RbnRb3GameTitle(10, "RBNRB3", Platform.BIG_THREE),
 		TBRB = new RbGameTitle(4, "TBRB", Platform.BIG_THREE),
 		LRB = new RbGameTitle(5, "LRB", Platform.BIG_THREE),
 		GDRB = new RbGameTitle(8, "GDRB", Platform.BIG_THREE),
@@ -193,6 +193,23 @@ public class RbGameTitle extends GameTitle {
 		private static final Group[] SUPPORTED_GROUPS = {
 			Group.GUITAR, Group.BASS, Group.DRUMS, Group.VOCALS, Group.KEYS,
 			Group.PROGUITAR, Group.PROBASS, Group.PRODRUMS, Group.PROKEYS
+		};
+		
+		@Override
+		public Group[] getSupportedInstrumentGroups() {
+			return SUPPORTED_GROUPS;
+		}
+	}
+	
+	public static class RbnRb3GameTitle extends RbGameTitle {
+		protected RbnRb3GameTitle(int scoreHeroId, String title,
+				Platform ... platforms) {
+			super(scoreHeroId, title, platforms);
+		}
+		
+		private static final Group[] SUPPORTED_GROUPS = {
+			Group.GUITAR, Group.BASS, Group.DRUMS, Group.VOCALS,
+			Group.PRODRUMS
 		};
 		
 		@Override
