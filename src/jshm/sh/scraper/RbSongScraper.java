@@ -21,6 +21,7 @@
 package jshm.sh.scraper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -117,7 +118,9 @@ public class RbSongScraper {
 		
 		List<SongOrder> orders = new ArrayList<SongOrder>();
 		
-		List<Instrument.Group> groups = Instrument.Group.getBySize(1);
+		List<Instrument.Group> groups = new ArrayList<Instrument.Group>(); //Instrument.Group.getBySize(1);
+		groups.addAll(Arrays.asList(game.title.getSupportedInstrumentGroups()));
+		
 		groups.add(Instrument.Group.GUITAR_BASS);
 		
 		for (Instrument.Group g : groups) {

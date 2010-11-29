@@ -41,6 +41,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -1551,7 +1552,11 @@ private void initRbGameMenu(final JMenu menu) {
 			for (int groupSize = 1; groupSize <= 4; groupSize++) {
 				JMenu groupSizeMenu = new JMenu(groupSize + "-part");
 				
-				for (final Group group : Group.getBySize(groupSize)) {
+				Iterable<Group> groups = 1 == groupSize
+					? Arrays.asList(g.title.getSupportedInstrumentGroups())
+					: Group.getBySize(groupSize);
+					
+				for (final Group group : groups) {
 					JMenuItem groupMenuItem = new JMenuItem(group.getLongName());
 					groupMenuItem.setIcon(group.getIcon());
 					

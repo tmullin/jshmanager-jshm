@@ -54,7 +54,8 @@ public enum SongSource {
 	ACDC,
 	LEGO,
 	TBRB,
-	GDRB;
+	GDRB,
+	RB3;
 	
 	public ImageIcon getIcon() {
 		return getIcon(32);
