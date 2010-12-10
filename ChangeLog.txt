@@ -3,7 +3,10 @@ JSHManager ChangeLog
 Version 0.3.5
 -------------
 - Added keys and pro mode support for RB3.
-- Known Issue: tiers may be incorrect for pro mode song lists.
+- Known Issue: tiers may be incorrect for pro mode song lists
+  since I had previously made the assumption that tier names would
+  be consistent across all instruments. Songs will still appear,
+  just not in the correct tier.
 
 Version 0.3.4
 -------------
