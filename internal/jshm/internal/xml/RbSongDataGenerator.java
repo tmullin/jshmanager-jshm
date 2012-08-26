@@ -45,6 +45,7 @@ import org.w3c.dom.Text;
 import jshm.Game;
 import jshm.GameSeries;
 import jshm.GameTitle;
+import jshm.Instrument;
 import jshm.Platform;
 import jshm.SongOrder;
 import jshm.Tiers;
@@ -62,7 +63,7 @@ public class RbSongDataGenerator {
 	private static void usage() {
 		List<GameTitle> titles = GameTitle.getBySeries(GameSeries.ROCKBAND);
 		System.out.printf(
-			"Usage: java %s <%s>\n",
+			"Usage: java %s <%s> [GROUP1[,GROUP2[,..]]]\n",
 			RbSongDataGenerator.class.getName(),
 			PhpUtil.implode("|", titles));
 		System.exit(-1);
@@ -71,12 +72,23 @@ public class RbSongDataGenerator {
 	static ResultProgressHandle progress = ConsoleProgressHandle.getInstance();
 	
 	public static void main(String[] args) throws Exception {
-		if (args.length != 1) usage();
+		if (args.length < 1) usage();
 		
 		final String ttlString = args[0];
 		GameTitle ttl = GameTitle.valueOf(ttlString);
 		
 		if (!(ttl instanceof RbGameTitle)) usage();
+		
+		Instrument.Group[] groups = RbSongScraper.DEFAULT_GROUPS;
+		
+		if (args.length >= 2) {
+			String[] parts = args[1].split(",");
+			groups = new Instrument.Group[parts.length];
+			
+			for (int i = 0; i < parts.length; i++) {
+				groups[i] = Instrument.Group.valueOf(parts[i]);
+			}
+		}
 		
 		jshm.util.TestTimer.start();
 		
@@ -88,7 +100,7 @@ public class RbSongDataGenerator {
 //			if (g.platform != Platform.XBOX360) continue;
 			
 			progress.setBusy("Downloading song list for " + g);
-			List<RbSong> songs = RbSongScraper.scrape((RbGame) g);
+			List<RbSong> songs = RbSongScraper.scrape((RbGame) g, groups);
 			
 			assert null != RbSongScraper.lastScrapedTiers;
 			tierMap.put(g.toString(), new Tiers(RbSongScraper.lastScrapedTiers).getPacked());

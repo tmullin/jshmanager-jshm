@@ -43,44 +43,58 @@ import org.htmlparser.util.ParserException;
 import org.netbeans.spi.wizard.ResultProgressHandle;
 
 public class RbSongScraper {
+	public static final Instrument.Group[] DEFAULT_GROUPS =
+		new Instrument.Group[] {Instrument.Group.GUITAR, Instrument.Group.VOCALS};
+	
 	static {
 		Formats.init();
 	}
-	
+
 	public static List<String> lastScrapedTiers = null;
-	
+
+	public static List<RbSong> scrape(final RbGame game)
+	throws ParserException, ScraperException {
+		return scrape(game, DEFAULT_GROUPS);
+	}
+		
 	public static List<RbSong> scrape(
-		final RbGame game) 
+		final RbGame game, Instrument.Group ... groups)
 	throws ScraperException, ParserException {
+		
+		if (groups.length < 1)
+			throw new IllegalArgumentException("groups must contain at least 1 group");
 		
 		List<RbSong> songs = new ArrayList<RbSong>();
 		lastScrapedTiers = new ArrayList<String>();
 		SongHandler handler = new SongHandler(game, songs, lastScrapedTiers);
 				
-		// need to scrape once for guitar and once for vocals to account
-		// for songs that have missing parts
-		Instrument.Group group = Instrument.Group.GUITAR;
+		// Need to scrape once for guitar and once for vocals to account
+		// for songs that have missing parts.
+		// Also need to scrape bass for an RBN song
+		Instrument.Group group = groups[0]; // guitar by default
 		
-		NodeList nodes = Scraper.scrape(
-			URLs.rb.getTopScoresUrl(
-				game,
-				group,
-				Difficulty.EXPERT),
-			handler);
+		String url = URLs.rb.getTopScoresUrl(
+			game,
+			group,
+			Difficulty.EXPERT);
+		NodeList nodes = Scraper.scrape(url, handler);
 		
 		TieredTabularDataExtractor.extract(nodes, handler);
 		
 		
 		handler.tiers = null; // don't re-add tier names
-		group = Instrument.Group.VOCALS;
-		nodes = Scraper.scrape(
-			URLs.rb.getTopScoresUrl(
-				game,
-				group,
-				Difficulty.EXPERT),
-			handler);
 		
-		TieredTabularDataExtractor.extract(nodes, handler);
+		for (int i = 1; i < groups.length; i++) {
+			group = groups[i];
+			nodes = Scraper.scrape(
+				URLs.rb.getTopScoresUrl(
+					game,
+					group,
+					Difficulty.EXPERT),
+				handler);
+			
+			TieredTabularDataExtractor.extract(nodes, handler);
+		}
 		
 		
 		return songs;
@@ -279,7 +293,7 @@ public class RbSongScraper {
 				? songMap.get(id)
 				: RbSong.getByScoreHeroId(id);
 			if (null == s)
-				throw new ScraperException("Song not found with scoreHeroId=" + data[1][1]);
+				throw new ScraperException("Song not found with scoreHeroId=" + id);
 			order.setSong(s);
 			
     		orders.add(order);

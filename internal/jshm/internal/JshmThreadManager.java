@@ -42,16 +42,16 @@ import jshm.util.Util;
 @SuppressWarnings("unused")
 public class JshmThreadManager {
 	static final boolean
-		CREATE_NEW_VERSION_POST = true,
+		CREATE_NEW_VERSION_POST = false,
 		APPEND_NEW_VERSION_CHANGELOG = true;
 	
 	static final String
 		VERSION = JSHManager.Version.VERSION,
 		DOWNLOAD_URL =
-			"http://sourceforge.net/projects/jshm/files/jshm/0.3.4",
+			"http://sourceforge.net/projects/jshm/files/jshm/0.3.5",
 		SUBJECT =
 			"JSHManager " + VERSION +
-			" - WoR/Partial RB3 Support! - Manage Scores Locally and Upload to SH";
+			" - WoR/RB3 Support (+Pro)! - Manage Scores Locally and Upload to SH";
 	
 	static final int
 		GH_THREAD_ID = 74670,

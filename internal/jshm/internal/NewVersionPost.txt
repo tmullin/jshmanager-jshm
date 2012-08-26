@@ -3,6 +3,5 @@ Bump for $version
 [url=http://jshm.sourceforge.net]Home Page[/url]
 [url=$downloadUrl]Download[/url]
 
-Sorry for the lack of updates. Been busy with other things.
+Small update mainly to add pro instruments for RB3.
 
-Main features are GHWoR support and partial RB3 support. I plan to work on adding keys and pro mode for RB3 and possibly harmony support for RB vocals soon. Aside from that see change log below.
