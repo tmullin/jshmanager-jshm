@@ -28,7 +28,9 @@ public enum Platform {
 	XBOX360,
 	WII,
 	PC,
-	DS
+	DS,
+	XBOXONE,
+	PS4
 	;
 	
 	/**
@@ -52,6 +54,10 @@ public enum Platform {
 	
 	public static final Platform[] NEXT_GEN = {
 		XBOX360, PS3
+	};
+	
+	public static final Platform[] NEXT_NEXT_GEN = {
+		XBOXONE, PS4
 	};
 	
 	public final javax.swing.ImageIcon getIcon() {
