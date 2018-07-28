@@ -22,6 +22,7 @@ package jshm.internal.xml;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -75,7 +76,7 @@ public class GhSongMetaDataGenerator {
 	}
 	
 	private static void usage() {
-		System.out.printf("Usage: java %s <%s>%n",
+		System.out.printf("Usage: java %s <ALL|%s>%n",
 			GhSongMetaDataGenerator.class.getName(),
 			PhpUtil.implode("|", validTitles));
 		System.exit(-1);
@@ -85,11 +86,23 @@ public class GhSongMetaDataGenerator {
 		if (args.length < 1)
 			usage();
 		
-		GameTitle ttl = GameTitle.valueOf(
-			args[0]
-//			"GH3"
-		);
+		List<GameTitle> titles = new ArrayList<GameTitle>();
 		
+		if ("ALL".equalsIgnoreCase(args[0])) {
+			titles.addAll(validTitles);
+		} else {
+			titles.add(GameTitle.valueOf(
+				args[0]
+//				"GH3"
+			));
+		}
+		
+		for (GameTitle ttl : titles) {
+			doTitle(ttl);
+		}
+	}
+	
+	private static void doTitle(GameTitle ttl) throws Exception {
 		if (!validTitles.contains(ttl))
 			usage();
 		
