@@ -21,6 +21,7 @@
 package jshm.sh.scraper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -100,9 +101,16 @@ public class WtSongScraper {
 		
 		List<SongOrder> orders = new ArrayList<SongOrder>();
 
-		// WT drum order is same as RB so we're not going to get them both
-		List<Group> groups = Instrument.Group.getBySize(1, false);
-		groups.add(Group.GUITAR_BASS);
+		List<Group> groups = new ArrayList<Instrument.Group>();
+		
+		if (WtGameTitle.GHL.equals(game.title)) {
+			// Hard-coded optimization for fewer requests to SH.
+			groups.addAll(Arrays.asList(game.title.getSupportedInstrumentGroups()));
+		} else {
+			// WT drum order is same as RB so we're not going to get them both
+			Instrument.Group.getBySize(1, false);
+			groups.add(Group.GUITAR_BASS);
+		}
 		
 		for (Group g : groups) {
 			if (null != progress)

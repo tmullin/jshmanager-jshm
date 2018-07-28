@@ -36,7 +36,7 @@ import jshm.Song.Sorting;
 public class WtGame extends Game {
 	public static void init() {}
 	
-	public static WtGame
+	public static final WtGame
 	GHWT_PS2 = new WtGame(16, WtGameTitle.GHWT, Platform.PS2, false),
 	GHWT_XBOX360 = new WtGame(17, WtGameTitle.GHWT, Platform.XBOX360, true),
 	GHWT_PS3 = new WtGame(18, WtGameTitle.GHWT, Platform.PS3, true),
@@ -70,7 +70,12 @@ public class WtGame extends Game {
 	
 	GHWOR_XBOX360 = new WtGame(49, WtGameTitle.GHWOR, Platform.XBOX360, true),
 	GHWOR_PS3 = new WtGame(50, WtGameTitle.GHWOR, Platform.PS3, true),
-	GHWOR_WII = new WtGame(51, WtGameTitle.GHWOR, Platform.WII, true)
+	GHWOR_WII = new WtGame(51, WtGameTitle.GHWOR, Platform.WII, true),
+			
+	GHL_XBOX360 = new WtGame(61, WtGameTitle.GHL, Platform.XBOX360, false),
+	GHL_PS3 = new WtGame(62, WtGameTitle.GHL, Platform.PS3, false),
+	GHL_XBOXONE = new WtGame(63, WtGameTitle.GHL, Platform.XBOXONE, false),
+	GHL_PS4 = new WtGame(64, WtGameTitle.GHL, Platform.PS4, false)
 	;
 	
 	protected WtGame(int scoreHeroId, GameTitle title, Platform platform,
