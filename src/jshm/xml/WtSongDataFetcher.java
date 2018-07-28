@@ -48,7 +48,7 @@ import jshm.util.IsoDateParser;
 
 public class WtSongDataFetcher {
 	public static final String
-	XML_URL = "http://jshm.sourceforge.net/songdata/%s.xml"
+	XML_URL = "http://jshm-s3.tmullin.net//songdata/%s.xml"
 	;
 	
 	public Date updated = null;
@@ -63,7 +63,10 @@ public class WtSongDataFetcher {
 		
 		DocumentBuilderFactory f 
 			= DocumentBuilderFactory.newInstance();
-		f.setValidating(true); // Default is false
+//		f.setValidating(true); // Default is false
+		// TODO need to add new platform/game enum values to DTD.
+		f.setValidating(false);
+		f.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 		DocumentBuilder b = f.newDocumentBuilder();
 		b.setErrorHandler(jshm.xml.ErrorHandler.getInstance());
 		Document d = b.parse(in);

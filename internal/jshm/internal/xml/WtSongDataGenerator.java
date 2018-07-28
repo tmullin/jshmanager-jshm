@@ -55,7 +55,7 @@ import jshm.sh.scraper.WtSongScraper;
 import jshm.util.IsoDateParser;
 
 public class WtSongDataGenerator {
-	public static final String DTD_URL = "http://jshm.sourceforge.net/songdata/wt_songdata.dtd";
+	public static final String DTD_URL = "http://jshm-s3.tmullin.net/songdata/wt_songdata.dtd";
 	
 	private static void usage() {
 		System.out.println("Usage: java " + WtSongDataGenerator.class.getName() + " <GHWT|GHM|GHSH|GH5|BH|GHWOR>");

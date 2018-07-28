@@ -63,7 +63,7 @@ import jshm.wt.WtSong;
 
 public class GhSongMetaDataGenerator {
 	public static final String DTD_URL =
-		"http://jshm.sourceforge.net/songdata/gh_songmetadata.dtd";
+		"http://jshm-s3.tmullin.net/songdata/gh_songmetadata.dtd";
 	
 	static final ResultProgressHandle progress = ConsoleProgressHandle.getInstance();
 	
