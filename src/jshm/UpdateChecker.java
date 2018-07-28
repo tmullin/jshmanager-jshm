@@ -39,8 +39,7 @@ public class UpdateChecker {
 	static final Logger LOG = Logger.getLogger(UpdateChecker.class.getName());
 	
 	public static final String UPDATE_URL =
-		"http://jshm.sourceforge.net/version.xml";
-//		"http://zero.selfip.net/jshm/htdocs/version.xml";
+		"http://jshm-s3.tmullin.net/version.xml";
 	
 	private static Info cache = null;
 	
