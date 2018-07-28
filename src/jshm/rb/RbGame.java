@@ -73,7 +73,10 @@ public class RbGame extends Game {
 		
 		RB3_XBOX360 = new RbGame(RbGameTitle.RB3, Platform.XBOX360, true),
 		RB3_PS3 = new RbGame(RbGameTitle.RB3, Platform.PS3, true),
-		RB3_WII = new RbGame(RbGameTitle.RB3, Platform.WII, true)
+		RB3_WII = new RbGame(RbGameTitle.RB3, Platform.WII, true),
+				
+		RB4_XBOXONE = new RbGame(RbGameTitle.RB4, Platform.XBOXONE, true),
+		RB4_PS4 = new RbGame(RbGameTitle.RB4, Platform.PS4, true)
 		;
 	
 	public static void init() {}

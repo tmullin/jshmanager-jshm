@@ -1990,7 +1990,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		public void done() {
 			if (null == scores) return;
 			
-			GUI.this.setIconImage(game.title.getIcon().getImage());
+			GUI.this.setIconImage(null != game.title.getIcon() ? game.title.getIcon().getImage() : null);
 			GUI.this.setTitle(game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " on " + difficulty.toShortString() + " " + group.getLongName(game instanceof WtGame) + " - Scores");
 			
 			statusBar1.setText("Viewing scores for " + game.title.getWikiAbbr() + " " + game.platform.getShortName() + " on " + difficulty.toShortString());
