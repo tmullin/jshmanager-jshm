@@ -37,6 +37,8 @@ public class RbPlatform {
 			case PS3: return 3;
 			case WII: return 4;
 			case PC: return 5;
+			case XBOXONE: return 15;
+			case PS4: return 16;
 		}
 		
 		throw new IllegalArgumentException("invalid platform: " + platform);

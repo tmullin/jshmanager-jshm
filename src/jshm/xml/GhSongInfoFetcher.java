@@ -41,7 +41,7 @@ import jshm.wt.WtGameTitle;
 
 public class GhSongInfoFetcher {
 	public static final String XML_URL =
-		"http://jshm.sourceforge.net/songdata/%s_meta.xml";
+		"http://jshm-s3.tmullin.net/songdata/%s_meta.xml";
 
 	public Map<String, SongInfo> songMap = null;
 	
@@ -51,7 +51,9 @@ public class GhSongInfoFetcher {
 		
 		DocumentBuilderFactory f 
 			= DocumentBuilderFactory.newInstance();
+		// TODO need to add new platform/game enum values to DTD.
 		f.setValidating(false);
+		f.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 		DocumentBuilder b = f.newDocumentBuilder();
 		b.setErrorHandler(jshm.xml.ErrorHandler.getInstance());
 		Document d = b.parse(String.format(XML_URL, ttl.title));

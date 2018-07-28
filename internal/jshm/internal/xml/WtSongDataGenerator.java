@@ -44,18 +44,21 @@ import org.w3c.dom.Text;
 
 import jshm.Difficulty;
 import jshm.Game;
+import jshm.GameSeries;
 import jshm.GameTitle;
+import jshm.Instrument.Group;
 import jshm.Platform;
 import jshm.SongOrder;
 import jshm.Tiers;
-import jshm.wt.*;
-import jshm.Instrument.Group;
 import jshm.internal.ConsoleProgressHandle;
 import jshm.sh.scraper.WtSongScraper;
 import jshm.util.IsoDateParser;
+import jshm.wt.WtGame;
+import jshm.wt.WtGameTitle;
+import jshm.wt.WtSong;
 
 public class WtSongDataGenerator {
-	public static final String DTD_URL = "http://jshm.sourceforge.net/songdata/wt_songdata.dtd";
+	public static final String DTD_URL = "http://jshm-s3.tmullin.net/songdata/wt_songdata.dtd";
 	
 	private static void usage() {
 		System.out.println("Usage: java " + WtSongDataGenerator.class.getName() + " <GHWT|GHM|GHSH|GH5|BH|GHWOR>");
@@ -67,9 +70,21 @@ public class WtSongDataGenerator {
 	public static void main(String[] args) throws Exception {
 		if (args.length != 1) usage();
 		
-		final String ttlString = args[0];
-		GameTitle ttl = GameTitle.valueOf(ttlString);
+		List<GameTitle> titles = new ArrayList<GameTitle>();
 		
+		if ("ALL".equalsIgnoreCase(args[0])) {
+			titles.addAll(GameTitle.getBySeries(GameSeries.WORLD_TOUR));
+		} else {
+			final String ttlString = args[0];
+			titles.add(GameTitle.valueOf(ttlString));
+		}
+		
+		for (GameTitle ttl : titles) {
+			doTitle(ttl);
+		}
+	}
+	
+	private static void doTitle(GameTitle ttl) throws Exception {
 		if (!(ttl instanceof WtGameTitle)) usage();
 		WtGameTitle wttl = (WtGameTitle) ttl;
 		

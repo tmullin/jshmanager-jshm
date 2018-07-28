@@ -84,6 +84,10 @@ public class RbSongUpdater {
 			
 			LOG.finer("xml had " + songs.size() + " songs for " + game);
 			
+			if (songs.isEmpty()) {
+				throw new Exception("xml had 0 songs for " + game + ", it's probably out of date");
+			}
+			
 			int i = 0, total = songs.size(); 
 			for (RbSong song : songs) {
 				if (null != progress)

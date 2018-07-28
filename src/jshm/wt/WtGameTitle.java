@@ -38,7 +38,8 @@ public class WtGameTitle extends GameTitle {
 		GH5 = new WtGameTitle("GH5", 12, Platform.BIG_FOUR),
 		GHVH = new WtGameTitle("GHVH", 13, Platform.BIG_FOUR),
 		BH = new WtGameTitle("BH", 14, false, Platform.BIG_FOUR),
-		GHWOR = new WtGameTitle("GHWOR", 18, Platform.BIG_THREE)
+		GHWOR = new WtGameTitle("GHWOR", 18, Platform.BIG_THREE),
+		GHL = new GhlGameTitle("GHL", 22, Platform.XBOX360, Platform.PS3, Platform.XBOXONE, Platform.PS4)
 	;
 
 	public final int scoreHeroGroupId;
@@ -171,5 +172,21 @@ public class WtGameTitle extends GameTitle {
 	@Override
 	public boolean supportsCalculatedRating() {
 		return false;
+	}
+	
+	public static class GhlGameTitle extends WtGameTitle {
+		protected GhlGameTitle(String title, int scoreHeroGroupId,
+				Platform... platforms) {
+			super(title, scoreHeroGroupId, false, platforms);
+		}
+
+		private static final Group[] SUPPORTED_GROUPS = {
+			Group.GUITAR, Group.VOCALS
+		};
+		
+		@Override
+		public Group[] getSupportedInstrumentGroups() {
+			return SUPPORTED_GROUPS;
+		}
 	}
 }

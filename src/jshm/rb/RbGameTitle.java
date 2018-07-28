@@ -44,7 +44,8 @@ public class RbGameTitle extends GameTitle {
 		TBRB = new RbGameTitle(4, "TBRB", Platform.BIG_THREE),
 		LRB = new RbGameTitle(5, "LRB", Platform.BIG_THREE),
 		GDRB = new RbGameTitle(8, "GDRB", Platform.BIG_THREE),
-		RB3 = new Rb3GameTitle(9, "RB3", Platform.BIG_THREE)
+		RB3 = new Rb3GameTitle(9, "RB3", Platform.BIG_THREE),
+		RB4 = new RbnRb3GameTitle(13, "RB4", Platform.NEXT_NEXT_GEN) // RbnRb3GameTitle for supported group list.
 	;
 	
 	public final int scoreHeroId;
