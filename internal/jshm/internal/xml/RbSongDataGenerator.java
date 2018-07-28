@@ -58,12 +58,12 @@ import jshm.util.IsoDateParser;
 import jshm.util.PhpUtil;
 
 public class RbSongDataGenerator {
-	public static final String DTD_URL = "http://jshm.sourceforge.net/songdata/rb_songdata.dtd";
+	public static final String DTD_URL = "http://jshm-s3.tmullin.net/songdata/rb_songdata.dtd";
 	
 	private static void usage() {
 		List<GameTitle> titles = GameTitle.getBySeries(GameSeries.ROCKBAND);
 		System.out.printf(
-			"Usage: java %s <%s> [GROUP1[,GROUP2[,..]]]\n",
+			"Usage: java %s <ALL|%s> [GROUP1[,GROUP2[,..]]]\n",
 			RbSongDataGenerator.class.getName(),
 			PhpUtil.implode("|", titles));
 		System.exit(-1);
@@ -75,11 +75,43 @@ public class RbSongDataGenerator {
 		if (args.length < 1) usage();
 		
 		final String ttlString = args[0];
-		GameTitle ttl = GameTitle.valueOf(ttlString);
 		
-		if (!(ttl instanceof RbGameTitle)) usage();
+		List<GameTitle> titles = new ArrayList<GameTitle>();
 		
-		Instrument.Group[] groups = RbSongScraper.DEFAULT_GROUPS;
+		if ("ALL".equalsIgnoreCase(ttlString)) {
+			titles.addAll(GameTitle.getBySeries(GameSeries.ROCKBAND));
+		} else {
+			GameTitle ttl = GameTitle.valueOf(ttlString);
+			
+			if (!(ttl instanceof RbGameTitle)) usage();
+			
+			titles.add(ttl);
+		}
+		
+		for (GameTitle title : titles) {
+			doTitle(args, (RbGameTitle) title);
+		}
+		
+		System.out.println("Current working directory: " + new File(".").getAbsolutePath());
+	}
+	
+	private static Instrument.Group[] defaultGroupsForTitle(RbGameTitle ttl) {
+		if (RbGameTitle.RBN.equals(ttl)
+				|| RbGameTitle.RBNRB3.equals(ttl)) {
+			return new Instrument.Group[] {
+					Instrument.Group.GUITAR,
+					Instrument.Group.BASS,
+					Instrument.Group.DRUMS,
+					Instrument.Group.VOCALS,
+					Instrument.Group.GUITAR_BASS
+			};
+		}
+		
+		return RbSongScraper.DEFAULT_GROUPS;
+	}
+	
+	private static void doTitle(String[] args, RbGameTitle ttl) throws Exception {
+		Instrument.Group[] groups = defaultGroupsForTitle(ttl);
 		
 		if (args.length >= 2) {
 			String[] parts = args[1].split(",");
