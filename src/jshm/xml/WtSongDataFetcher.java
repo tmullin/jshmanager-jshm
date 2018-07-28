@@ -48,7 +48,7 @@ import jshm.util.IsoDateParser;
 
 public class WtSongDataFetcher {
 	public static final String
-	XML_URL = "http://jshm-s3.tmullin.net//songdata/%s.xml"
+	XML_URL = "http://jshm-s3.tmullin.net/songdata/%s.xml"
 	;
 	
 	public Date updated = null;
