@@ -61,6 +61,11 @@ public class ActionsScraper {
 		GetMethod method = new GetMethod(wikiUrl);
 		client.executeMethod(method);
 		
+		if (method.getStatusCode() != 200) {
+			LOG.warning("Non-200 response for " + wikiUrl + " - " + method.getStatusLine());
+			return ret;
+		}
+		
 		String charset = method.getResponseCharSet();
 		LOG.fine("Charset for HTTP response is: " + charset);
 		if (null == charset || charset.isEmpty())
