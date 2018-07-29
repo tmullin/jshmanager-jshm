@@ -51,6 +51,7 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -328,6 +329,10 @@ public class GUI extends javax.swing.JFrame {
     	super.setTitle(
     		(title.isEmpty() ? "" : title + " - ") +
     		JSHManager.Version.NAME + " " + JSHManager.Version.STRING);
+    }
+    
+    public void setIconImage(ImageIcon icon) {
+    	super.setIconImage(null != icon ? icon.getImage() : null);
     }
     
     @Override
@@ -1733,7 +1738,7 @@ private void songDataMenuItemActionPerformed(final ActionEvent evt, final Game g
 			downloadRbSongDataMenuItem.setEnabled(false);
 			downloadRbSongMetaDataMenuItem.setEnabled(false);
 
-			GUI.this.setIconImage(game.title.getIcon().getImage());
+			GUI.this.setIconImage(game.title.getIcon());
 			GUI.this.setTitle(game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " on " + difficulty.toShortString() + " - Song Data");
 			
 			if (songs.size() == 0 && null != evt) { // if evt == null we're recursing
@@ -1813,7 +1818,7 @@ private void rbSongDataMenuItemActionPerformed(final ActionEvent evt, final RbGa
 			downloadRbSongDataMenuItem.setEnabled(true);
 			downloadRbSongMetaDataMenuItem.setEnabled(true);
 
-			GUI.this.setIconImage(game.title.getIcon().getImage());
+			GUI.this.setIconImage(game.title.getIcon());
 			GUI.this.setTitle(game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " " + group.getLongName() + " - Song Data");
 			
 			if (songs.size() == 0 && null != evt) { // if evt == null we're recursing
@@ -1893,7 +1898,7 @@ private void wtSongDataMenuItemActionPerformed(final ActionEvent evt, final WtGa
 			downloadRbSongDataMenuItem.setEnabled(false);
 			downloadRbSongMetaDataMenuItem.setEnabled(false);
 
-			GUI.this.setIconImage(game.title.getIcon().getImage());
+			GUI.this.setIconImage(game.title.getIcon());
 			GUI.this.setTitle(game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " " + group.getLongName(game instanceof WtGame) + " - Song Data");
 			
 			if (songs.size() == 0 && null != evt) { // if evt == null we're recursing
@@ -1990,7 +1995,7 @@ public void myScoresMenuItemActionPerformed(final java.awt.event.ActionEvent evt
 		public void done() {
 			if (null == scores) return;
 			
-			GUI.this.setIconImage(null != game.title.getIcon() ? game.title.getIcon().getImage() : null);
+			GUI.this.setIconImage(game.title.getIcon());
 			GUI.this.setTitle(game.title.getWikiAbbr() + ":" + game.platform.getShortName() + " on " + difficulty.toShortString() + " " + group.getLongName(game instanceof WtGame) + " - Scores");
 			
 			statusBar1.setText("Viewing scores for " + game.title.getWikiAbbr() + " " + game.platform.getShortName() + " on " + difficulty.toShortString());
