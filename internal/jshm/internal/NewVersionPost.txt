@@ -1,7 +1,12 @@
 Bump for $version
 
-[url=http://jshm.sourceforge.net]Home Page[/url]
+[url=https://github.com/tmullin/jshmanager-jshm]Home Page[/url]
 [url=$downloadUrl]Download[/url]
 
-Small update mainly to add pro instruments for RB3.
+This update adds preliminary support for RB4 and GHL. I guess I got bored enough...
+
+This is the first version to be released via GitHub.
+
+If there are issues downloading song data, let me know what game/instrument combination you're having trouble with.
+
 

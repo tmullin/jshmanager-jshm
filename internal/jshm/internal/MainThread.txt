@@ -22,11 +22,12 @@ Please read the Readme.txt carefully. If you ask a question I have answered ther
 
 [b]Important links:[/b]
 [list]
-[*][url=http://jshm.sourceforge.net/]Project Homepage[/url]
+[*][url=https://github.com/tmullin/jshmanager-jshm]Project Homepage[/url]
 [*][url=http://jshm.uservoice.com/]Suggest Features via UserVoice[/url]
 [*][url=http://jshm.sourceforge.net/faq]FAQ[/url]
 [*][url=http://jshm.sourceforge.net/features]Implemented/Future Features[/url]
-[*][url=http://sourceforge.net/projects/jshm/files/]Downloads[/url]
+[*][url=https://github.com/tmullin/jshmanager-jshm/releases]Downloads (current)[/url]
+[*][url=http://sourceforge.net/projects/jshm/files/]Downloads (0.3.5 and older)[/url]
 [/list]
 
 
