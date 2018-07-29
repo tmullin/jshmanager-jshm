@@ -28,7 +28,7 @@
 		</condition>
 	</target>
 
-	<target name="dist" depends="run-tests,distfiles,jar"> <!-- ,patch,exewrapper -->
+	<target name="dist" depends="run-tests,distfiles,jar,exewrapper"> <!-- ,patch -->
 		<zip destfile="${dist_dir}/${jshm.name}-${jshm.version}.zip">
 			<fileset 
 				dir="${dist_dir}"
