@@ -1,5 +1,14 @@
 JSHManager ChangeLog
 
+Version 0.3.6
+-------------
+- Added RB4 and GHL support.
+- JSHManager will be released on GitHub instead of SourceForge going forward.
+- There will no longer be a patcher jar. It will be necessary to download the
+  entire JSHManager release when upgrading to a new version.
+- Known Issue: There are no icons for RB4/GHL/XB1/PS4.
+- Known Issue: Revision will show as 0 due to switching from SVN to Git.
+
 Version 0.3.5
 -------------
 - Added keys and pro mode support for RB3.
