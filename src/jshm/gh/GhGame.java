@@ -41,7 +41,7 @@ public class GhGame extends jshm.Game {
 			GH80 = new Tiers("Opening Licks|Amp-Warmers|String Snappers|Return of the Shred|Relentless Riffs|Furious Fretwork"),
 			GH3_DLC = new Tiers("Starting Out Small|Your First Real Gig|Making the Video|European Invasion|Bighouse Blues|The Hottest Band on Earth|Live in Japan|Battle for Your Soul|Quickplay Exclusives|Bonus Tracks|Downloaded Songs"),
 			GH3 = new Tiers(Arrays.copyOf(GH3_DLC.tiers, GH3_DLC.tiers.length - 1)),
-			GHOT = new Tiers("Subway|Rooftop|Parade|Greek Arena|Battleship|Bonus"),
+			GHOT = new Tiers("Subway|Rooftop|Parade|Greek Arena|Battleship|Bonus|European Exclusives"),
 			GHA = new Tiers("Getting The Band Together|First Taste Of Success|The Triumphant Return|International Superstars|The Great American Band|Rock 'N Roll Legends|The Vault")
 		;
 	}
