@@ -108,7 +108,8 @@ public class WtSongScraper {
 			groups.addAll(Arrays.asList(game.title.getSupportedInstrumentGroups()));
 		} else {
 			// WT drum order is same as RB so we're not going to get them both
-			Instrument.Group.getBySize(1, false);
+			groups.addAll(Instrument.Group.getBySize(1, false));
+			groups.retainAll(Arrays.asList(game.title.getSupportedInstrumentGroups()));
 			groups.add(Group.GUITAR_BASS);
 		}
 		
