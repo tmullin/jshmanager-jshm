@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
+    <info organisation="net.tmullin" module="jshm"/>
+    <configurations defaultconfmapping="compile->default">
+    	<conf name="compile"/>
+    	<conf name="internal" extends="compile"/>
+    	<conf name="sources"/>
+    </configurations>
+    <dependencies>
+	    <!-- https://mvnrepository.com/artifact/au.com.bytecode.opencsv/opencsv -->
+		<dependency conf="compile" org="au.com.bytecode.opencsv" name="opencsv" rev="1.8">
+			<artifact name="opencsv"/>
+			<artifact name="opencsv" e:classifier="sources"/>
+		</dependency>
+    </dependencies>
+</ivy-module>

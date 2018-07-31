@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project default="all" name="JSHManager" basedir=".">
+<project default="all" name="JSHManager" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 	<property name="dist_dir" value="${basedir}/dist"/>
 	<property name="bin_dir" value="${basedir}/bin"/>
 	<property name="src_dir" value="${basedir}/src"/>
@@ -18,6 +18,41 @@
 	<path id="internal_classpath">
 		<fileset id="internal_libs" dir="${internal_lib_dir}" includes="**/*.jar"/>
 	</path>
+	
+    
+	
+	<property name="ivy.install.version" value="2.5.0-rc1"/>
+    <condition property="ivy.home" value="${env.IVY_HOME}">
+      <isset property="env.IVY_HOME"/>
+    </condition>
+    <property name="ivy.home" value="${user.home}/.ant"/>
+    <property name="ivy.jar.dir" value="${ivy.home}/lib"/>
+    <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar"/>
+
+    <target name="download-ivy" unless="offline">
+        <mkdir dir="${ivy.jar.dir}"/>
+        <!-- download Ivy from web site so that it can be used even without any special installation -->
+    	<echo message="Installing ivy..."/>
+        <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+             dest="${ivy.jar.file}" usetimestamp="true"/>
+    </target>
+
+    <target name="init-ivy" depends="download-ivy" description="--> init ivy">
+      <!-- try to load Ivy here from Ivy home, in case the user has not already dropped
+              it into Ant's lib dir (note that the latter copy will always take precedence).
+              We will not fail as long as local lib dir exists (it may be empty) and
+              Ivy is in at least one of Ant's lib dir or the local lib dir. -->
+        <path id="ivy.lib.path">
+            <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+
+        </path>
+        <taskdef resource="org/apache/ivy/ant/antlib.xml"
+                 uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+    </target>
+    
+	<target name="resolve" depends="init-ivy" description="--> retrieve dependencies with Ivy">
+        <ivy:retrieve conf="compile" pattern="${lib_dir}/[organisation]/[artifact]-[revision](-[classifier]).[ext]"/>
+    </target>
 	
 	
 	<target name="all" depends="clean,dist"/>
