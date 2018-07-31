@@ -102,10 +102,6 @@ public class GhSongUpdater {
 		GhSongInfoFetcher fetcher = new GhSongInfoFetcher();
 		fetcher.fetch(ttl);
 		
-		if (fetcher.songMap.isEmpty()) {
-			throw new Exception("xml had 0 songs for " + ttl + ", it's probably out of date");
-		}
-		
 		Session session = null;
 		Transaction tx = null;
 		
