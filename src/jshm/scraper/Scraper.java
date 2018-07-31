@@ -121,6 +121,10 @@ public class Scraper {
         LOG.finest("calling bean.getNodes()");
         NodeList nodes = bean.getNodes();
         
+        if (nodes.size() == 0) {
+        	LOG.warning("No nodes returned for " + url);
+        }
+        
         //System.out.println(nodes.toHtml());
         
         if (removeWhitespace) {
